@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Set;
+
 @Data
 @Builder
 @Entity
@@ -14,6 +16,9 @@ public class MuscleEntity {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "muscle_id_seq")
     private Long id;
+
+    @ManyToMany(mappedBy = "muscleEntities")
+    private Set<ExerciseEntity> exerciseEntities;
 
     @Column(name = "name", length = 50, nullable = false)
     private String name;
