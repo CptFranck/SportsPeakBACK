@@ -31,4 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+/data/pg_subtrans/
 /data/
+/data/pg_xact/
+/data/pg_wal/

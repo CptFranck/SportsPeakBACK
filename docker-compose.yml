@@ -8,4 +8,4 @@ services:
     environment:
       POSTGRES_PASSWORD: changemeinprod!
     volumes:
-      - ./data:/var/lib/postgresql/data
+      - /var/lib/postgresql/data
