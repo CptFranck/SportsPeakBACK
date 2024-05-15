@@ -1,0 +1,12 @@
+query {
+    getMuscles {
+        id
+        exercises {
+            id
+            name
+            goal
+        }
+        name
+        function
+    }
+}
