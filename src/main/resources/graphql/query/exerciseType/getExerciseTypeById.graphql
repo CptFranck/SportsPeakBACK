@@ -1,0 +1,12 @@
+query ($id : ID!){
+    getExerciseTypeById (id : $id){
+        id
+        exercises {
+            id
+            name
+            goal
+        }
+        name
+        goal
+    }
+}

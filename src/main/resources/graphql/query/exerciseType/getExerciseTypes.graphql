@@ -1,0 +1,12 @@
+query {
+    getExerciseTypes {
+        id
+        exercises {
+            id
+            name
+            goal
+        }
+        name
+        goal
+    }
+}
