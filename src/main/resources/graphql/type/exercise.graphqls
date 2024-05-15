@@ -1,0 +1,25 @@
+type Exercise {
+    id: ID!
+    muscles: [Muscle]!
+    exerciseTypes: [ExerciseType]!
+    name: String!
+    description: String!
+    goal: String!
+}
+
+input InputNewExercise {
+    muscles: [ID]!
+    exerciseTypes: [ID]!
+    name: String!
+    description: String!
+    goal: String!
+}
+
+input InputExercise {
+    id: ID!
+    muscles: [ID]!
+    exerciseTypes: [ID]!
+    name: String!
+    description: String!
+    goal: String!
+}

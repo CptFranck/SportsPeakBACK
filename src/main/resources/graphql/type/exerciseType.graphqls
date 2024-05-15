@@ -1,0 +1,19 @@
+type ExerciseType {
+    id: ID!
+    exercises: [Exercise]!
+    name: String!
+    goal: String!
+}
+
+input InputNewExerciseType {
+    exercises: [ID]!
+    name: String!
+    goal: String!
+}
+
+input InputExerciseType {
+    id: ID!
+    exercises: [ID]!
+    name: String!
+    goal: String!
+}

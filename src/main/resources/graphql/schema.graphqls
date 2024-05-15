@@ -1,0 +1,24 @@
+type Query {
+    getExercises: [Exercise]!
+    getExerciseById(id: ID): Exercise
+
+    getExerciseTypes: [ExerciseType]!
+    getExerciseTypeById(id: ID): ExerciseType
+
+    getMuscles: [Muscle]!
+    getMuscleById(id: ID): Muscle
+}
+
+type Mutation {
+    addExercise(inputNewExercise: InputNewExercise!): Exercise!
+    modifyExercise(inputExercise: InputExercise!): Exercise!
+    deleteExercise(exerciseId: ID!): ID!
+
+    addExerciseType(inputNewExerciseType: InputNewExerciseType!): ExerciseType!
+    modifyExerciseType(inputExerciseType: InputExerciseType!): ExerciseType!
+    deleteExerciseType(exerciseTypeId: ID!): ID!
+
+    addMuscle(inputNewMuscle: InputNewMuscle!): Muscle!
+    modifyMuscle(inputMuscle: InputMuscle!): Muscle!
+    deleteMuscle(muscleId: ID!): ID!
+}
