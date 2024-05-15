@@ -1,0 +1,17 @@
+mutation ($inputNewExercise : InputNewExercise!){
+    addExercise(inputNewExercise: $inputNewExercise) {
+        id
+        muscles {
+            id
+            name
+            function
+        }
+        exerciseTypes {
+            id
+            name
+            goal
+        }
+        name
+        goal
+    }
+}
