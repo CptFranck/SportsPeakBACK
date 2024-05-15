@@ -16,18 +16,6 @@ public class ExerciseEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "exercise_id_seq")
     private Long id;
 
-    @ManyToMany
-    @JoinTable(name = "classified_exercise",
-            joinColumns = @JoinColumn(name = "exercise_id"),
-            inverseJoinColumns = @JoinColumn(name = "exercise_type_id"))
-    private Set<ExerciseTypeEntity> exerciseTypeEntities;
-
-    @ManyToMany
-    @JoinTable(name = "solicited_muscle",
-            joinColumns = @JoinColumn(name = "exercise_id"),
-            inverseJoinColumns = @JoinColumn(name = "muscle_id"))
-    private Set<MuscleEntity> muscleEntities;
-
     @Column(name = "name", length = 50, nullable = false)
     private String name;
 
@@ -36,4 +24,16 @@ public class ExerciseEntity {
 
     @Column(name = "goal", columnDefinition = "TEXT", nullable = false)
     private String goal;
+
+    @ManyToMany
+    @JoinTable(name = "classified_exercise",
+            joinColumns = @JoinColumn(name = "exercise_id"),
+            inverseJoinColumns = @JoinColumn(name = "exercise_type_id"))
+    private Set<ExerciseTypeEntity> exerciseTypes;
+
+    @ManyToMany
+    @JoinTable(name = "solicited_muscle",
+            joinColumns = @JoinColumn(name = "exercise_id"),
+            inverseJoinColumns = @JoinColumn(name = "muscle_id"))
+    private Set<MuscleEntity> muscles;
 }

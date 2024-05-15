@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Set;
+
 @Data
 @AllArgsConstructor
 @Builder
@@ -14,4 +16,6 @@ public class ExerciseTypeDto {
     private String name;
 
     private String goal;
+
+    private Set<ExerciseDto> exercises;
 }

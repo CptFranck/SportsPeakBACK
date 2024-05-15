@@ -16,12 +16,12 @@ public class ExerciseTypeEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "exercise_type_id_seq")
     private Long id;
 
-    @ManyToMany(mappedBy = "exerciseTypeEntities")
-    private Set<ExerciseEntity> exerciseEntities;
-
     @Column(name = "name", length = 50, nullable = false)
     private String name;
 
     @Column(name = "goal", columnDefinition = "TEXT", nullable = false)
     private String goal;
+
+    @ManyToMany(mappedBy = "exerciseTypes")
+    private Set<ExerciseEntity> exercises;
 }
