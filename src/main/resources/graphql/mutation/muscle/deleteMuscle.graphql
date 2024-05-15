@@ -1,0 +1,3 @@
+mutation ($muscleId : ID!){
+    deleteMuscle(muscleId: $muscleId)
+}

@@ -1,0 +1,12 @@
+mutation ($inputMuscle : InputMuscle!){
+    modifyMuscle(inputMuscle: $inputMuscle) {
+        id
+        exercises {
+            id
+            name
+            goal
+        }
+        name
+        function
+    }
+}
