@@ -1,25 +1,25 @@
 type Exercise {
-    id: ID!
-    muscles: [Muscle]!
-    exerciseTypes: [ExerciseType]!
+    id: Int!
     name: String!
     description: String!
     goal: String!
+    muscles: [Muscle]!
+    exerciseTypes: [ExerciseType]!
 }
 
 input InputNewExercise {
-    muscles: [ID]!
-    exerciseTypes: [ID]!
     name: String!
     description: String!
     goal: String!
+    muscles: [Int]!
+    exerciseTypes: [Int]!
 }
 
 input InputExercise {
-    id: ID!
-    muscles: [ID]!
-    exerciseTypes: [ID]!
+    id: Int!
     name: String!
     description: String!
     goal: String!
+    muscles: [Int]!
+    exerciseTypes: [Int]!
 }

@@ -1,19 +1,19 @@
 type Muscle {
-    id: ID!
-    exercises: [Exercise]!
+    id: Int!
     name: String!
     function: String!
+    exercises: [Exercise]!
 }
 
 input InputNewMuscle {
-    exercises: [ID]!
     name: String!
     function: String!
+    exercises: [Int]!
 }
 
 input InputMuscle {
-    id: ID!
-    exercises: [ID]!
+    id: Int!
     name: String!
     function: String!
+    exercises: [Int]!
 }

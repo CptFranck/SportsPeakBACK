@@ -1,19 +1,19 @@
 type ExerciseType {
-    id: ID!
-    exercises: [Exercise]!
+    id: Int!
     name: String!
     goal: String!
+    exercises: [Exercise]!
 }
 
 input InputNewExerciseType {
-    exercises: [ID]!
     name: String!
     goal: String!
+    exercises: [Int]!
 }
 
 input InputExerciseType {
-    id: ID!
-    exercises: [ID]!
+    id: Int!
     name: String!
     goal: String!
+    exercises: [Int]!
 }

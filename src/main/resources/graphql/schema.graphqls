@@ -1,24 +1,24 @@
 type Query {
     getExercises: [Exercise]!
-    getExerciseById(id: ID): Exercise
+    getExerciseById(id: Int): Exercise
 
     getExerciseTypes: [ExerciseType]!
-    getExerciseTypeById(id: ID): ExerciseType
+    getExerciseTypeById(id: Int): ExerciseType
 
     getMuscles: [Muscle]!
-    getMuscleById(id: ID): Muscle
+    getMuscleById(id: Int): Muscle
 }
 
 type Mutation {
     addExercise(inputNewExercise: InputNewExercise!): Exercise!
     modifyExercise(inputExercise: InputExercise!): Exercise!
-    deleteExercise(exerciseId: ID!): ID!
+    deleteExercise(exerciseId: Int!): Int!
 
     addExerciseType(inputNewExerciseType: InputNewExerciseType!): ExerciseType!
     modifyExerciseType(inputExerciseType: InputExerciseType!): ExerciseType!
-    deleteExerciseType(exerciseTypeId: ID!): ID!
+    deleteExerciseType(exerciseTypeId: Int!): Int!
 
     addMuscle(inputNewMuscle: InputNewMuscle!): Muscle!
     modifyMuscle(inputMuscle: InputMuscle!): Muscle!
-    deleteMuscle(muscleId: ID!): ID!
+    deleteMuscle(muscleId: Int!): Int!
 }
