@@ -15,6 +15,10 @@ public class MuscleServiceImpl implements MuscleService {
 
     MuscleRepository muscleRepository;
 
+    public MuscleServiceImpl(MuscleRepository muscleRepository) {
+        this.muscleRepository = muscleRepository;
+    }
+
     @Override
     public MuscleEntity save(MuscleEntity muscleEntity) {
         return muscleRepository.save(muscleEntity);

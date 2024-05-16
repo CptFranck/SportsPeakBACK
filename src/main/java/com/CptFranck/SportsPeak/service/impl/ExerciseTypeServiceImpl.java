@@ -15,6 +15,10 @@ public class ExerciseTypeServiceImpl implements ExerciseTypeService {
 
     ExerciseTypeRepository exerciseTypeRepository;
 
+    public ExerciseTypeServiceImpl(ExerciseTypeRepository exerciseTypeRepository) {
+        this.exerciseTypeRepository = exerciseTypeRepository;
+    }
+
     @Override
     public ExerciseTypeEntity save(ExerciseTypeEntity exerciseTypeEntity) {
         return exerciseTypeRepository.save(exerciseTypeEntity);

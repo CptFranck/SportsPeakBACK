@@ -15,6 +15,10 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     ExerciseRepository exerciseRepository;
 
+    public ExerciseServiceImpl(ExerciseRepository exerciseRepository) {
+        this.exerciseRepository = exerciseRepository;
+    }
+
     @Override
     public ExerciseEntity save(ExerciseEntity exerciseEntity) {
         return exerciseRepository.save(exerciseEntity);
