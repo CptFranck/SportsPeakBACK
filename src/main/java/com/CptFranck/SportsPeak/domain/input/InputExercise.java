@@ -1,21 +1,12 @@
 package com.CptFranck.SportsPeak.domain.input;
 
 import lombok.Data;
-
-import java.util.Set;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class InputExercise {
+@EqualsAndHashCode(callSuper = true)
+public class InputExercise extends InputNewExercise {
 
     private Integer id;
 
-    private String name;
-
-    private String description;
-
-    private String goal;
-
-    private Set<Integer> muscleIds;
-
-    private Set<Integer> exerciseTypeIds;
 }
