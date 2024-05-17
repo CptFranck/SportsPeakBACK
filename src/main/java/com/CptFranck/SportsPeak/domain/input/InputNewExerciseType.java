@@ -12,5 +12,5 @@ public class InputNewExerciseType {
 
     private String goal;
 
-    private List<InputNewExercise> exercises;
+    private List<Integer> exerciseIds;
 }
