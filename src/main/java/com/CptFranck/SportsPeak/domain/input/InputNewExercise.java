@@ -13,7 +13,7 @@ public class InputNewExercise {
 
     private String goal;
 
-    private List<Integer> muscleIds;
+    private List<Long> muscleIds;
 
-    private List<Integer> exerciseTypeIds;
+    private List<Long> exerciseTypeIds;
 }

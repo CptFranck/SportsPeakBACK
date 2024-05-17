@@ -14,11 +14,11 @@ import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsMutation;
 import com.netflix.graphql.dgs.DgsQuery;
 import com.netflix.graphql.dgs.InputArgument;
+import graphql.com.google.common.collect.Sets;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @DgsComponent
 public class ExerciseController {
@@ -41,8 +41,8 @@ public class ExerciseController {
     }
 
     @DgsQuery
-    public ExerciseDto getExerciseById(@InputArgument Integer id) {
-        Optional<ExerciseEntity> exerciseEntity = exerciseService.findOne(id.longValue());
+    public ExerciseDto getExerciseById(@InputArgument Long id) {
+        Optional<ExerciseEntity> exerciseEntity = exerciseService.findOne(id);
         return exerciseEntity.map(exerciseMapper::mapTo).orElse(null);
     }
 
@@ -53,43 +53,39 @@ public class ExerciseController {
 
     @DgsMutation
     public ExerciseDto modifyExercise(@InputArgument InputExercise inputExercise) {
-        if (!exerciseService.exists(inputExercise.getId().longValue())) {
+        if (!exerciseService.exists(inputExercise.getId())) {
             return null;
         }
         return exerciseMapper.mapTo(exerciseService.save(inputToEntity(inputExercise)));
     }
 
-    private ExerciseEntity inputToEntity(InputNewExercise inputExercise) {
-        Set<Long> muscleIds = inputExercise.getExerciseTypeIds().stream()
-                .map(Integer::longValue)
-                .collect(Collectors.toSet());
-        Set<Long> exerciseTypeIds = inputExercise.getExerciseTypeIds().stream()
-                .map(Integer::longValue)
-                .collect(Collectors.toSet());
+    @DgsMutation
+    public Long deleteExercise(@InputArgument Long exerciseId) {
+        if (!exerciseService.exists(exerciseId)) {
+            return null;
+        }
+        exerciseService.delete(exerciseId);
+        return exerciseId;
+    }
+
+    private ExerciseEntity inputToEntity(InputNewExercise inputNewExercise) {
+        Set<Long> muscleIds = Sets.newHashSet(inputNewExercise.getExerciseTypeIds());
+        Set<Long> exerciseTypeIds = Sets.newHashSet(inputNewExercise.getExerciseTypeIds());
 
         Set<MuscleEntity> muscles = muscleService.findMany(muscleIds);
         Set<ExerciseTypeEntity> exerciseTypes = exerciseTypeService.findMany(exerciseTypeIds);
 
         Long id = null;
-        if (inputExercise instanceof InputExercise) {
-            id = ((InputExercise) inputExercise).getId().longValue();
+        if (inputNewExercise instanceof InputExercise) {
+            id = ((InputExercise) inputNewExercise).getId();
         }
         return new ExerciseEntity(
                 id,
-                inputExercise.getName(),
-                inputExercise.getDescription(),
-                inputExercise.getGoal(),
+                inputNewExercise.getName(),
+                inputNewExercise.getDescription(),
+                inputNewExercise.getGoal(),
                 exerciseTypes,
                 muscles
         );
-    }
-
-    @DgsMutation
-    public Integer deleteExercise(@InputArgument Integer exerciseId) {
-        if (!exerciseService.exists(exerciseId.longValue())) {
-            return null;
-        }
-        exerciseService.delete(exerciseId.longValue());
-        return exerciseId;
     }
 }

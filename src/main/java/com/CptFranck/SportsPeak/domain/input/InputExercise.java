@@ -7,6 +7,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class InputExercise extends InputNewExercise {
 
-    private Integer id;
+    private Long id;
 
 }
