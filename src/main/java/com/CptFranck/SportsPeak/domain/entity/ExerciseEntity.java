@@ -18,6 +18,8 @@ public class ExerciseEntity {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "exercise_id_seq")
+    @SequenceGenerator(name = "exercise_id_seq", sequenceName = "exercise_id_seq", allocationSize = 1)
+
     private Long id;
 
     @Column(name = "name", length = 50, nullable = false)
