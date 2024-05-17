@@ -20,8 +20,8 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
-    public ExerciseEntity save(ExerciseEntity exerciseEntity) {
-        return exerciseRepository.save(exerciseEntity);
+    public ExerciseEntity save(ExerciseEntity exercise) {
+        return exerciseRepository.save(exercise);
     }
 
     @Override
@@ -36,6 +36,11 @@ public class ExerciseServiceImpl implements ExerciseService {
     @Override
     public Optional<ExerciseEntity> findOne(Long id) {
         return exerciseRepository.findById(id);
+    }
+
+    @Override
+    public boolean exists(Long id) {
+        return exerciseRepository.existsById(id);
     }
 
     @Override

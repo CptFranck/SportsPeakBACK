@@ -11,7 +11,9 @@ public interface ExerciseService {
 
     Optional<ExerciseEntity> findOne(Long id);
 
-    ExerciseEntity save(ExerciseEntity exerciseEntity);
+    boolean exists(Long id);
+
+    ExerciseEntity save(ExerciseEntity exercise);
 
     void delete(Long id);
 }
