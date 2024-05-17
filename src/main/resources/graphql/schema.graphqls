@@ -1,9 +1,9 @@
 type Query {
     getExercises: [Exercise]!
-    getExerciseById(id: Int): Exercise
+    getExerciseById(id: Int): Exercise!
 
     getExerciseTypes: [ExerciseType]!
-    getExerciseTypeById(id: Int): ExerciseType
+    getExerciseTypeById(id: Int): ExerciseType!
 
     getMuscles: [Muscle]!
     getMuscleById(id: Int): Muscle
