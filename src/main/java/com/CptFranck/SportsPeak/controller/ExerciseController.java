@@ -4,6 +4,7 @@ import com.CptFranck.SportsPeak.domain.dto.ExerciseDto;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
+import com.CptFranck.SportsPeak.domain.input.InputExercise;
 import com.CptFranck.SportsPeak.domain.input.InputNewExercise;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.ExerciseService;
@@ -47,45 +48,48 @@ public class ExerciseController {
 
     @DgsMutation
     public ExerciseDto addExercise(@InputArgument InputNewExercise inputNewExercise) {
-        System.out.println(inputNewExercise.getName());
-        System.out.println(inputNewExercise.getGoal());
-        System.out.println(inputNewExercise.getDescription());
-        System.out.println(inputNewExercise.getMuscleIds());
-        System.out.println(inputNewExercise.getExerciseTypeIds());
-        Set<Long> muscleIds = inputNewExercise.getExerciseTypeIds().stream()
+        return exerciseMapper.mapTo(exerciseService.save(inputToEntity(inputNewExercise)));
+    }
+
+    @DgsMutation
+    public ExerciseDto modifyExercise(@InputArgument InputExercise inputExercise) {
+        if (!exerciseService.exists(inputExercise.getId().longValue())) {
+            return null;
+        }
+        return exerciseMapper.mapTo(exerciseService.save(inputToEntity(inputExercise)));
+    }
+
+    private ExerciseEntity inputToEntity(InputNewExercise inputExercise) {
+        Set<Long> muscleIds = inputExercise.getExerciseTypeIds().stream()
                 .map(Integer::longValue)
                 .collect(Collectors.toSet());
-        ;
-        Set<Long> exerciseTypeIds = inputNewExercise.getExerciseTypeIds().stream()
+        Set<Long> exerciseTypeIds = inputExercise.getExerciseTypeIds().stream()
                 .map(Integer::longValue)
                 .collect(Collectors.toSet());
 
         Set<MuscleEntity> muscles = muscleService.findMany(muscleIds);
         Set<ExerciseTypeEntity> exerciseTypes = exerciseTypeService.findMany(exerciseTypeIds);
 
-        ExerciseEntity exercise = new ExerciseEntity(
-                null,
-                inputNewExercise.getName(),
-                inputNewExercise.getDescription(),
-                inputNewExercise.getGoal(),
+        Long id = null;
+        if (inputExercise instanceof InputExercise) {
+            id = ((InputExercise) inputExercise).getId().longValue();
+        }
+        return new ExerciseEntity(
+                id,
+                inputExercise.getName(),
+                inputExercise.getDescription(),
+                inputExercise.getGoal(),
                 exerciseTypes,
                 muscles
         );
-        return exerciseMapper.mapTo(exerciseService.save(exercise));
     }
 
-//    @DgsMutation
-//    public ExerciseDto modifyExercise (@InputArgument InputExercise inputExercise) {
-//
-//        return exerciseEntity.map(exerciseMapper::mapTo).orElse(null);
-//    }
-
-//    @DgsMutation
-//    public Integer deleteExercise (@InputArgument Integer exerciseId) {
-//        if(!exerciseService.exists(exerciseId.longValue())){
-//            return null;
-//        }
-//        exerciseService.delete(exerciseId.longValue());
-//        return exerciseId;
-//    }
+    @DgsMutation
+    public Integer deleteExercise(@InputArgument Integer exerciseId) {
+        if (!exerciseService.exists(exerciseId.longValue())) {
+            return null;
+        }
+        exerciseService.delete(exerciseId.longValue());
+        return exerciseId;
+    }
 }
