@@ -8,12 +8,12 @@ type Muscle {
 input InputNewMuscle {
     name: String!
     function: String!
-    exercises: [Int]!
+    exerciseIds: [Int]!
 }
 
 input InputMuscle {
     id: Int!
     name: String!
     function: String!
-    exercises: [Int]!
+    exerciseIds: [Int]!
 }

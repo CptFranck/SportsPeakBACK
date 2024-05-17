@@ -8,12 +8,12 @@ type ExerciseType {
 input InputNewExerciseType {
     name: String!
     goal: String!
-    exercises: [Int]!
+    exerciseIds: [Int]!
 }
 
 input InputExerciseType {
     id: Int!
     name: String!
     goal: String!
-    exercises: [Int]!
+    exerciseIds: [Int]!
 }

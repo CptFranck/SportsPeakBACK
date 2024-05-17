@@ -11,8 +11,8 @@ input InputNewExercise {
     name: String!
     description: String!
     goal: String!
-    muscles: [Int]!
-    exerciseTypes: [Int]!
+    muscleIds: [Int]!
+    exerciseTypeIds: [Int]!
 }
 
 input InputExercise {
@@ -20,6 +20,6 @@ input InputExercise {
     name: String!
     description: String!
     goal: String!
-    muscles: [Int]!
-    exerciseTypes: [Int]!
+    muscleIds: [Int]!
+    exerciseTypeIds: [Int]!
 }
