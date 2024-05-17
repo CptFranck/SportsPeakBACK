@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -36,6 +37,20 @@ public class ExerciseTypeServiceImpl implements ExerciseTypeService {
     @Override
     public Optional<ExerciseTypeEntity> findOne(Long id) {
         return exerciseTypeRepository.findById(id);
+    }
+
+    @Override
+    public Set<ExerciseTypeEntity> findMany(Set<Long> ids) {
+        return ids.stream()
+                .map(this::findOne)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public boolean exists(Long id) {
+        return exerciseTypeRepository.existsById(id);
     }
 
     @Override
