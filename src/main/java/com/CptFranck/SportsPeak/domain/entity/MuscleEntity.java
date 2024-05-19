@@ -3,14 +3,14 @@ package com.CptFranck.SportsPeak.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Set;
 
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -25,9 +25,9 @@ public class MuscleEntity {
     @Column(name = "name", length = 50, nullable = false)
     private String name;
 
+    @Column(name = "function", columnDefinition = "TEXT", nullable = false)
     private String function;
 
-    @Column(name = "function", columnDefinition = "TEXT", nullable = false)
     @ManyToMany(mappedBy = "muscles")
     private Set<ExerciseEntity> exercises;
 }
