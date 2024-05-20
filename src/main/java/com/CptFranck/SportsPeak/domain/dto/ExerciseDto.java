@@ -1,9 +1,6 @@
 package com.CptFranck.SportsPeak.domain.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 
@@ -21,7 +18,9 @@ public class ExerciseDto {
 
     private String goal;
 
+    @EqualsAndHashCode.Exclude
     private Set<MuscleDto> muscles;
 
+    @EqualsAndHashCode.Exclude
     private Set<ExerciseTypeDto> exerciseTypes;
 }
