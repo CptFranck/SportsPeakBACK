@@ -69,7 +69,7 @@ public class ExerciseController {
     }
 
     private ExerciseEntity inputToEntity(InputNewExercise inputNewExercise) {
-        Set<Long> muscleIds = Sets.newHashSet(inputNewExercise.getExerciseTypeIds());
+        Set<Long> muscleIds = Sets.newHashSet(inputNewExercise.getMuscleIds());
         Set<Long> exerciseTypeIds = Sets.newHashSet(inputNewExercise.getExerciseTypeIds());
 
         Set<MuscleEntity> muscles = muscleService.findMany(muscleIds);
