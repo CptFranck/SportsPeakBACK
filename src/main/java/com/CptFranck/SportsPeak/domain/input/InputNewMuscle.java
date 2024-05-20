@@ -7,11 +7,9 @@ import java.util.List;
 @Data
 public class InputNewMuscle {
 
-    private Long id;
-
     private String name;
 
     private String function;
 
-    private List<InputNewExercise> exercises;
+    private List<Long> exerciseIds;
 }
