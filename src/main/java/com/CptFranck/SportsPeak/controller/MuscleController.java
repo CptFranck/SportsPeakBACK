@@ -14,6 +14,7 @@ import com.netflix.graphql.dgs.DgsQuery;
 import com.netflix.graphql.dgs.InputArgument;
 import graphql.com.google.common.collect.Sets;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -65,20 +66,26 @@ public class MuscleController {
     }
 
     private MuscleEntity inputToEntity(InputNewMuscle inputNewMuscle) {
-        Set<Long> exerciseIds = Sets.newHashSet(inputNewMuscle.getExerciseIds());
+        Set<Long> oldExerciseIds = new HashSet<Long>();
+        Set<Long> newExerciseIds = Sets.newHashSet(inputNewMuscle.getExerciseIds());
 
-        Set<ExerciseEntity> exercises = exerciseService.findMany(exerciseIds);
+        Set<ExerciseEntity> exercises = exerciseService.findMany(newExerciseIds);
 
         Long id = null;
         if (inputNewMuscle instanceof InputMuscle) {
             id = ((InputMuscle) inputNewMuscle).getId();
+            Optional<MuscleEntity> exerciseType = muscleService.findOne(id);
+            exerciseType.ifPresent(exerciseTypeEntity ->
+                    exerciseTypeEntity.getExercises().forEach(e -> oldExerciseIds.add(e.getId())));
         }
-        return new MuscleEntity(
+        MuscleEntity muscle = new MuscleEntity(
                 id,
                 inputNewMuscle.getName(),
                 inputNewMuscle.getDescription(),
                 inputNewMuscle.getFunction(),
                 exercises
         );
+        exerciseService.updateMuscleRelation(newExerciseIds, oldExerciseIds, muscle);
+        return muscle;
     }
 }
