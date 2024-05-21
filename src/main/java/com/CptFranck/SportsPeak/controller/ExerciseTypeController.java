@@ -1,7 +1,6 @@
 package com.CptFranck.SportsPeak.controller;
 
 import com.CptFranck.SportsPeak.domain.dto.ExerciseTypeDto;
-import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.input.exerciseType.InputExerciseType;
 import com.CptFranck.SportsPeak.domain.input.exerciseType.InputNewExerciseType;
@@ -14,6 +13,7 @@ import com.netflix.graphql.dgs.DgsQuery;
 import com.netflix.graphql.dgs.InputArgument;
 import graphql.com.google.common.collect.Sets;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -38,8 +38,8 @@ public class ExerciseTypeController {
 
     @DgsQuery
     public ExerciseTypeDto getExerciseTypeById(@InputArgument Long id) {
-        Optional<ExerciseTypeEntity> exerciseTypeEntity = exerciseTypeService.findOne(id);
-        return exerciseTypeEntity.map(exerciseTypeMapper::mapTo).orElse(null);
+        Optional<ExerciseTypeEntity> exerciseType = exerciseTypeService.findOne(id);
+        return exerciseType.map(exerciseTypeMapper::mapTo).orElse(null);
     }
 
     @DgsMutation
@@ -65,19 +65,23 @@ public class ExerciseTypeController {
     }
 
     private ExerciseTypeEntity inputToEntity(InputNewExerciseType inputNewExerciseType) {
-        Set<Long> exerciseTypeIds = Sets.newHashSet(inputNewExerciseType.getExerciseIds());
-
-        Set<ExerciseEntity> exercise = exerciseService.findMany(exerciseTypeIds);
+        Set<Long> oldExerciseIds = new HashSet<Long>();
+        Set<Long> newExerciseIds = Sets.newHashSet(inputNewExerciseType.getExerciseIds());
 
         Long id = null;
         if (inputNewExerciseType instanceof InputExerciseType) {
             id = ((InputExerciseType) inputNewExerciseType).getId();
+            Optional<ExerciseTypeEntity> exerciseType = exerciseTypeService.findOne(id);
+            exerciseType.ifPresent(exerciseTypeEntity ->
+                    exerciseTypeEntity.getExercises().forEach(e -> oldExerciseIds.add(e.getId())));
         }
-        return new ExerciseTypeEntity(
+        ExerciseTypeEntity exerciseType = new ExerciseTypeEntity(
                 id,
                 inputNewExerciseType.getName(),
                 inputNewExerciseType.getGoal(),
-                exercise
+                Set.of()
         );
+        exerciseService.updateExerciseTypeRelation(newExerciseIds, oldExerciseIds, exerciseType);
+        return exerciseType;
     }
 }
