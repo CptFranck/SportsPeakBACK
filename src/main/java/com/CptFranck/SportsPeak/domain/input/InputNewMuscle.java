@@ -11,5 +11,7 @@ public class InputNewMuscle {
 
     private String function;
 
+    private String description;
+
     private List<Long> exerciseIds;
 }
