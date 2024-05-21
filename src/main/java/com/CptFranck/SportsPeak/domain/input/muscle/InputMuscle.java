@@ -1,12 +1,11 @@
-package com.CptFranck.SportsPeak.domain.input;
+package com.CptFranck.SportsPeak.domain.input.muscle;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class InputExerciseType extends InputNewExerciseType {
+public class InputMuscle extends InputNewMuscle {
 
     private Long id;
 

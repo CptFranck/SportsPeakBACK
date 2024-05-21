@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.domain.input;
+package com.CptFranck.SportsPeak.domain.input.exercise;
 
 import lombok.Data;
 
