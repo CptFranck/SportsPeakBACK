@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="t2RLY6Rsk9fh3t6uzkRq" name="Page-1">
-        <mxGraphModel dx="2190" dy="779" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+        <mxGraphModel dx="2430" dy="779" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -86,7 +86,7 @@
                     <mxGeometry y="60" width="140" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="171" value="muscle" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;swimlaneFillColor=default;" parent="1" vertex="1">
-                    <mxGeometry x="-175" y="465" width="140" height="120" as="geometry"/>
+                    <mxGeometry x="-175" y="465" width="140" height="150" as="geometry"/>
                 </mxCell>
                 <mxCell id="172" value="&lt;font color=&quot;#ffffff&quot;&gt;id&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;color: rgb(255, 255, 255);&quot;&gt;(PK)&lt;/span&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#5C5C5C;" parent="171" vertex="1">
                     <mxGeometry y="30" width="140" height="30" as="geometry"/>
@@ -94,8 +94,11 @@
                 <mxCell id="173" value="&lt;font color=&quot;#ffffff&quot;&gt;name&lt;/font&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#5C5C5C;" parent="171" vertex="1">
                     <mxGeometry y="60" width="140" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="249" value="&lt;font style=&quot;&quot; color=&quot;#ffffff&quot;&gt;function&lt;/font&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#5C5C5C;" parent="171" vertex="1">
+                <mxCell id="249" value="&lt;font style=&quot;&quot; color=&quot;#ffffff&quot;&gt;description&lt;/font&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#5C5C5C;" parent="171" vertex="1">
                     <mxGeometry y="90" width="140" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="330" value="&lt;font style=&quot;&quot; color=&quot;#ffffff&quot;&gt;function&lt;/font&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontColor=#5C5C5C;" vertex="1" parent="171">
+                    <mxGeometry y="120" width="140" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="283" style="edgeStyle=none;html=1;fontColor=#FFFFFF;" parent="1" source="193" target="258" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
@@ -195,7 +198,7 @@
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="268" value="Un exercice peut soliciter plusieurs muscles" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;fontColor=#FFFFFF;fillColor=#504361;" parent="1" vertex="1">
-                    <mxGeometry x="-350" y="590" width="250" height="30" as="geometry"/>
+                    <mxGeometry x="-345" y="630" width="250" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="269" value="&lt;div style=&quot;line-height: 120%;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;Un exercice peut avoir plusieur type (cardio, équilibre, étirement, muscu). Ex:&amp;nbsp;&lt;br&gt;&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&amp;nbsp;pompes en poirié (l'équilibre &amp;amp; musculation)&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;fontColor=#FFFFFF;fillColor=#504361;align=left;" parent="1" vertex="1">
                     <mxGeometry x="-430" y="70" width="420" height="50" as="geometry"/>
