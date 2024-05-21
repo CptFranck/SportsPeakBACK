@@ -17,6 +17,8 @@ public class MuscleDto {
 
     private String name;
 
+    private String description;
+
     private String function;
 
     private Set<ExerciseDto> exercises;

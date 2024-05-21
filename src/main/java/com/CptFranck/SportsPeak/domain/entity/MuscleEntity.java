@@ -25,6 +25,9 @@ public class MuscleEntity {
     @Column(name = "name", length = 50, nullable = false)
     private String name;
 
+    @Column(name = "description", columnDefinition = "TEXT", nullable = false)
+    private String description;
+
     @Column(name = "function", columnDefinition = "TEXT", nullable = false)
     private String function;
 

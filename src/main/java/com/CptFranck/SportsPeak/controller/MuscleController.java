@@ -76,6 +76,7 @@ public class MuscleController {
         return new MuscleEntity(
                 id,
                 inputNewMuscle.getName(),
+                inputNewMuscle.getDescription(),
                 inputNewMuscle.getFunction(),
                 exercises
         );
