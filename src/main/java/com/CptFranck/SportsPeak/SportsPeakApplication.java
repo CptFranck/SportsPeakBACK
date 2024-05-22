@@ -18,7 +18,7 @@ public class SportsPeakApplication {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/greeting-javaconfig").allowedOrigins("http://localhost:4200");
+                registry.addMapping("/service/api/graphql").allowedOrigins("http://localhost:4200");
             }
         };
     }
