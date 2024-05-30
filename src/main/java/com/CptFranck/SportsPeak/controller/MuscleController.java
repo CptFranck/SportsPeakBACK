@@ -45,7 +45,8 @@ public class MuscleController {
 
     @DgsMutation
     public MuscleDto addMuscle(@InputArgument InputNewMuscle inputNewMuscle) {
-        return muscleMapper.mapTo(muscleService.save(inputToEntity(inputNewMuscle)));
+        System.out.println(inputNewMuscle);
+        return muscleMapper.mapTo(inputToEntity(inputNewMuscle));
     }
 
     @DgsMutation
@@ -53,7 +54,7 @@ public class MuscleController {
         if (!muscleService.exists(inputMuscle.getId())) {
             return null;
         }
-        return muscleMapper.mapTo(muscleService.save(inputToEntity(inputMuscle)));
+        return muscleMapper.mapTo(inputToEntity(inputMuscle));
     }
 
     @DgsMutation
@@ -66,7 +67,7 @@ public class MuscleController {
     }
 
     private MuscleEntity inputToEntity(InputNewMuscle inputNewMuscle) {
-        Set<Long> oldExerciseIds = new HashSet<Long>();
+        Set<Long> oldExerciseIds = new HashSet<>();
         Set<Long> newExerciseIds = Sets.newHashSet(inputNewMuscle.getExerciseIds());
 
         Set<ExerciseEntity> exercises = exerciseService.findMany(newExerciseIds);
@@ -85,6 +86,8 @@ public class MuscleController {
                 inputNewMuscle.getFunction(),
                 exercises
         );
+
+        muscleService.save(muscle);
         exerciseService.updateMuscleRelation(newExerciseIds, oldExerciseIds, muscle);
         return muscle;
     }

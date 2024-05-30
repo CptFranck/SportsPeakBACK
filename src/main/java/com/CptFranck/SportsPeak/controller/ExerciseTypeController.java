@@ -44,7 +44,7 @@ public class ExerciseTypeController {
 
     @DgsMutation
     public ExerciseTypeDto addExerciseType(@InputArgument InputNewExerciseType inputNewExerciseType) {
-        return exerciseTypeMapper.mapTo(exerciseTypeService.save(inputToEntity(inputNewExerciseType)));
+        return exerciseTypeMapper.mapTo(inputToEntity(inputNewExerciseType));
     }
 
     @DgsMutation
@@ -52,7 +52,7 @@ public class ExerciseTypeController {
         if (!exerciseTypeService.exists(inputExerciseType.getId())) {
             return null;
         }
-        return exerciseTypeMapper.mapTo(exerciseTypeService.save(inputToEntity(inputExerciseType)));
+        return exerciseTypeMapper.mapTo(inputToEntity(inputExerciseType));
     }
 
     @DgsMutation
@@ -65,7 +65,7 @@ public class ExerciseTypeController {
     }
 
     private ExerciseTypeEntity inputToEntity(InputNewExerciseType inputNewExerciseType) {
-        Set<Long> oldExerciseIds = new HashSet<Long>();
+        Set<Long> oldExerciseIds = new HashSet<>();
         Set<Long> newExerciseIds = Sets.newHashSet(inputNewExerciseType.getExerciseIds());
 
         Long id = null;
@@ -81,6 +81,7 @@ public class ExerciseTypeController {
                 inputNewExerciseType.getGoal(),
                 Set.of()
         );
+        exerciseTypeService.save(exerciseType);
         exerciseService.updateExerciseTypeRelation(newExerciseIds, oldExerciseIds, exerciseType);
         return exerciseType;
     }
