@@ -1,12 +1,12 @@
 mutation ($inputExerciseType : InputExerciseType!){
     modifyExerciseType(inputExerciseType: $inputExerciseType) {
         id
+        name
+        goal
         exercises {
             id
             name
             goal
         }
-        name
-        goal
     }
 }

@@ -1,6 +1,8 @@
 mutation ($inputNewExercise : InputNewExercise!){
     addExercise(inputNewExercise: $inputNewExercise) {
         id
+        name
+        goal
         muscles {
             id
             name
@@ -11,7 +13,5 @@ mutation ($inputNewExercise : InputNewExercise!){
             name
             goal
         }
-        name
-        goal
     }
 }

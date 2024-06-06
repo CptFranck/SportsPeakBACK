@@ -1,12 +1,12 @@
 mutation ($inputNewMuscle : InputNewMuscle!){
     addMuscle(inputNewMuscle: $inputNewMuscle) {
         id
+        name
+        function
         exercises {
             id
             name
             goal
         }
-        name
-        function
     }
 }
