@@ -53,8 +53,7 @@ public class ExerciseTypeController {
         if (!exerciseTypeService.exists(inputExerciseType.getId())) {
             return null;
         }
-        ExerciseTypeDto pouet = exerciseTypeMapper.mapTo(inputToEntity(inputExerciseType));
-        return pouet;
+        return exerciseTypeMapper.mapTo(inputToEntity(inputExerciseType));
     }
 
     @DgsMutation
