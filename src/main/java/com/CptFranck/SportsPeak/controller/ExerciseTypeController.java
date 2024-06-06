@@ -1,6 +1,7 @@
 package com.CptFranck.SportsPeak.controller;
 
 import com.CptFranck.SportsPeak.domain.dto.ExerciseTypeDto;
+import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.input.exerciseType.InputExerciseType;
 import com.CptFranck.SportsPeak.domain.input.exerciseType.InputNewExerciseType;
@@ -52,7 +53,8 @@ public class ExerciseTypeController {
         if (!exerciseTypeService.exists(inputExerciseType.getId())) {
             return null;
         }
-        return exerciseTypeMapper.mapTo(inputToEntity(inputExerciseType));
+        ExerciseTypeDto pouet = exerciseTypeMapper.mapTo(inputToEntity(inputExerciseType));
+        return pouet;
     }
 
     @DgsMutation
@@ -68,6 +70,8 @@ public class ExerciseTypeController {
         Set<Long> oldExerciseIds = new HashSet<>();
         Set<Long> newExerciseIds = Sets.newHashSet(inputNewExerciseType.getExerciseIds());
 
+        Set<ExerciseEntity> exercises = exerciseService.findMany(newExerciseIds);
+
         Long id = null;
         if (inputNewExerciseType instanceof InputExerciseType) {
             id = ((InputExerciseType) inputNewExerciseType).getId();
@@ -79,7 +83,7 @@ public class ExerciseTypeController {
                 id,
                 inputNewExerciseType.getName(),
                 inputNewExerciseType.getGoal(),
-                Set.of()
+                exercises
         );
         exerciseTypeService.save(exerciseType);
         exerciseService.updateExerciseTypeRelation(newExerciseIds, oldExerciseIds, exerciseType);
