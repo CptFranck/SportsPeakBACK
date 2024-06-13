@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: SportsPeak
+# DB CONNECTION
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: changemeinprod!
+    driver-class-name: org.postgresql.Driver
+# JPA
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        ddl-auto: update
+# DGS Framework
+dgs:
+  graphql:
+    path: /service/api/graphql
+    schema-locations: classpath*:/graphql/**/*.graphql*
