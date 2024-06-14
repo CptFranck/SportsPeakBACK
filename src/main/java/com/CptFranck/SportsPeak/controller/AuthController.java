@@ -1,5 +1,6 @@
 package com.CptFranck.SportsPeak.controller;
 
+import com.CptFranck.SportsPeak.config.UserAuthProvider;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
@@ -18,21 +19,27 @@ import java.nio.CharBuffer;
 public class AuthController {
 
     private final AuthService authService;
+    private final UserAuthProvider userAuthProvider;
     private final Mapper<UserEntity, UserDto> userMapper;
 
-    public AuthController(AuthService authService, Mapper<UserEntity, UserDto> userMapper) {
+    public AuthController(AuthService authService, UserAuthProvider userAuthProvider, Mapper<UserEntity, UserDto> userMapper) {
         this.authService = authService;
+        this.userAuthProvider = userAuthProvider;
         this.userMapper = userMapper;
     }
 
     @DgsQuery
     public UserDto login(@InputArgument InputCredentials inputCredentials) throws Exception {
-        return userMapper.mapTo(authService.login(inputCredentials));
+        UserDto user = userMapper.mapTo(authService.login(inputCredentials));
+        user.setToken(userAuthProvider.createToken(user));
+        return user;
     }
 
     @DgsMutation
     public UserDto register(@InputArgument InputNewUser inputNewUser) {
-        return userMapper.mapTo(authService.register(this.inputToEntity(inputNewUser)));
+        UserDto user = userMapper.mapTo(authService.register(this.inputToEntity(inputNewUser)));
+        user.setToken(userAuthProvider.createToken(user));
+        return user;
     }
 
     private UserEntity inputToEntity(InputNewUser inputNewUser) {
