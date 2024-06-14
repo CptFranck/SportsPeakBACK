@@ -19,3 +19,8 @@ dgs:
   graphql:
     path: /service/api/graphql
     schema-locations: classpath*:/graphql/**/*.graphql*
+# SECURITY
+security:
+  jwt:
+    token:
+      secret-key: changemeinprod!
