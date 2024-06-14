@@ -1,0 +1,10 @@
+query ($inputCredentials: InputCredentials!){
+    login(inputCredentials: $inputCredentials){
+        id
+        email
+        firstName
+        lastName
+        username
+        token
+    }
+}
