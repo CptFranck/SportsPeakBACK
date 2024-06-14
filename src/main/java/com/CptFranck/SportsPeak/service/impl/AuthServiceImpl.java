@@ -33,9 +33,13 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserEntity register(UserEntity user) {
-        Optional<UserEntity> userOptional = userRepository.findByEmail(user.getEmail());
-        if (userOptional.isPresent()) {
+        Optional<UserEntity> userOptionalEmail = userRepository.findByEmail(user.getEmail());
+        Optional<UserEntity> userOptionalUsername = userRepository.findByUsername(user.getUsername());
+        if (userOptionalEmail.isPresent()) {
             throw new RuntimeException("An user has already used this email");
+        }
+        if (userOptionalUsername.isPresent()) {
+            throw new RuntimeException("An user has already used this username");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
