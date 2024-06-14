@@ -1,0 +1,10 @@
+mutation ($inputUser : InputUser!){
+    modifyUser(inputUser: $inputUser) {
+        id
+        email
+        firstName
+        lastName
+        username
+        token
+    }
+}
