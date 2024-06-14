@@ -13,18 +13,18 @@ import java.util.Optional;
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    UserRepository userRepository;
-    PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthServiceImpl(UserRepository userRepository) {
+    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public UserEntity login(InputCredentials credentials) {
-        UserEntity user = userRepository.findByEmail(credentials.getLogin())
+        UserEntity user = userRepository.findByEmail(credentials.getEmail())
                 .orElseThrow(() -> new RuntimeException("User email unknown"));
-
         if (passwordEncoder.matches(CharBuffer.wrap(credentials.getPassword()), user.getPassword())) {
             return user;
         }
