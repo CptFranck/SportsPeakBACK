@@ -1,4 +1,9 @@
 type Query {
+    login(inputCredentials: InputCredentials!): User
+
+    getUsers: [User]!
+    getUserById(id: Int): User!
+
     getExercises: [Exercise]!
     getExerciseById(id: Int): Exercise!
 
@@ -10,6 +15,12 @@ type Query {
 }
 
 type Mutation {
+
+    register(inputNewUser: InputNewUser!): User!
+
+    modifyUser(inputUser: InputUser!): User!
+    deleteUser(userId: Int!): Int!
+
     addExercise(inputNewExercise: InputNewExercise!): Exercise!
     modifyExercise(inputExercise: InputExercise!): Exercise!
     deleteExercise(exerciseId: Int!): Int!
