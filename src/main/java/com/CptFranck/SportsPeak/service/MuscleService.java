@@ -13,7 +13,7 @@ public interface MuscleService {
 
     Optional<MuscleEntity> findOne(Long id);
 
-    Set<MuscleEntity> findMany(Set<Long> muscleIds);
+    Set<MuscleEntity> findMany(Set<Long> ids);
 
     boolean exists(Long id);
 

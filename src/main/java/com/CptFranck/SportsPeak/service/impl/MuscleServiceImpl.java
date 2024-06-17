@@ -51,7 +51,6 @@ public class MuscleServiceImpl implements MuscleService {
     @Override
     public boolean exists(Long id) {
         return muscleRepository.existsById(id);
-
     }
 
     @Override
