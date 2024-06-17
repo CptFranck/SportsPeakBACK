@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.config;
+package com.CptFranck.SportsPeak.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
