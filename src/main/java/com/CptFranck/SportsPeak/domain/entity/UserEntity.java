@@ -1,5 +1,6 @@
 package com.CptFranck.SportsPeak.domain.entity;
 
+import com.CptFranck.SportsPeak.domain.role.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,4 +34,7 @@ public class UserEntity {
 
     @Column(name = "password", nullable = false)
     private String password;
+
+    @Column(name = "role", nullable = false)
+    private UserRole userRole;
 }
