@@ -33,6 +33,7 @@ public class MuscleController {
         this.muscleMapper = muscleMapper;
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DgsQuery
     public List<MuscleDto> getMuscles() {
         return muscleService.findAll().stream().map(muscleMapper::mapTo).toList();

@@ -36,6 +36,7 @@ public class ExerciseController {
         this.exerciseMapper = exerciseMapper;
     }
 
+    @DgsQuery
     public List<ExerciseDto> getExercises() {
         return exerciseService.findAll().stream().map(exerciseMapper::mapTo).toList();
     }
