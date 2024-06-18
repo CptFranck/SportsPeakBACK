@@ -26,4 +26,4 @@ dgs:
 security:
   jwt:
     token:
-      secret-key: changemeinprod!
+      secret-key: Y2hhbmdlbWVpbnByb2QhY2hhbmdlbWVpbnByb2Qh
