@@ -1,5 +1,6 @@
 package com.CptFranck.SportsPeak.domain.dto;
 
+import com.CptFranck.SportsPeak.domain.enumType.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,5 +22,5 @@ public class UserDto {
 
     private String username;
 
-    private String token;
+    private UserRole userRole;
 }
