@@ -12,5 +12,5 @@ public class InputNewUser {
 
     private String username;
 
-    private char[] password;
+    private String password;
 }

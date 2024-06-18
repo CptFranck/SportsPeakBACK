@@ -7,5 +7,5 @@ public class InputCredentials {
 
     private String email;
 
-    private char[] password;
+    private String password;
 }
