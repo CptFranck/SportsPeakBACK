@@ -1,12 +1,13 @@
 package com.CptFranck.SportsPeak.controller;
 
 import com.CptFranck.SportsPeak.config.security.JwtProvider;
+import com.CptFranck.SportsPeak.domain.dto.AuthDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.enumType.UserRole;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.user.InputNewUser;
 import com.CptFranck.SportsPeak.domain.input.user.InputUser;
-import com.CptFranck.SportsPeak.domain.role.UserRole;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.AuthService;
 import com.netflix.graphql.dgs.DgsComponent;
@@ -39,23 +40,21 @@ public class AuthController {
     }
 
     @DgsQuery
-    public UserDto login(@InputArgument InputCredentials inputCredentials) throws Exception {
+    public AuthDto login(@InputArgument InputCredentials inputCredentials) throws Exception {
         UserDto user = userMapper.mapTo(authService.login(inputCredentials));
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(inputCredentials.getEmail(), CharBuffer.wrap(inputCredentials.getPassword())));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        user.setToken(userAuthProvider.generateToken(authentication));
-        return user;
+        return new AuthDto(userAuthProvider.generateToken(authentication), user);
     }
 
     @DgsMutation
-    public UserDto register(@InputArgument InputNewUser inputNewUser) {
+    public AuthDto register(@InputArgument InputNewUser inputNewUser) {
         UserDto user = userMapper.mapTo(authService.register(this.inputToEntity(inputNewUser)));
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(inputNewUser.getEmail(), CharBuffer.wrap(inputNewUser.getPassword())));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        user.setToken(userAuthProvider.generateToken(authentication));
-        return user;
+        return new AuthDto(userAuthProvider.generateToken(authentication), user);
     }
 
     private UserEntity inputToEntity(InputNewUser inputNewUser) {
