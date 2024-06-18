@@ -2,7 +2,7 @@ package com.CptFranck.SportsPeak.service.impl;
 
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
-import com.CptFranck.SportsPeak.domain.role.UserRole;
+import com.CptFranck.SportsPeak.domain.enumType.UserRole;
 import com.CptFranck.SportsPeak.repositories.UserRepository;
 import com.CptFranck.SportsPeak.service.UserService;
 import org.springframework.security.core.GrantedAuthority;

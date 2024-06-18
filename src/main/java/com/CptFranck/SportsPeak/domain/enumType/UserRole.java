@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.domain.role;
+package com.CptFranck.SportsPeak.domain.enumType;
 
 public enum UserRole {
     ADMIN("Admin"),

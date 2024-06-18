@@ -1,6 +1,6 @@
 package com.CptFranck.SportsPeak.domain.entity;
 
-import com.CptFranck.SportsPeak.domain.role.UserRole;
+import com.CptFranck.SportsPeak.domain.enumType.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
