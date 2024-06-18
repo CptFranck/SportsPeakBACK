@@ -13,9 +13,6 @@ public class UserMapperImpl implements Mapper<UserEntity, UserDto> {
 
     public UserMapperImpl(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
-        this.modelMapper.typeMap(UserEntity.class, UserDto.class).addMappings(mapper -> {
-            mapper.skip(UserDto::setToken);
-        });
     }
 
     @Override
