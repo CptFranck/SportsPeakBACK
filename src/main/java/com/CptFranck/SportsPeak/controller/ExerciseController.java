@@ -15,6 +15,7 @@ import com.netflix.graphql.dgs.DgsMutation;
 import com.netflix.graphql.dgs.DgsQuery;
 import com.netflix.graphql.dgs.InputArgument;
 import graphql.com.google.common.collect.Sets;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +36,6 @@ public class ExerciseController {
         this.exerciseMapper = exerciseMapper;
     }
 
-    @DgsQuery
     public List<ExerciseDto> getExercises() {
         return exerciseService.findAll().stream().map(exerciseMapper::mapTo).toList();
     }
@@ -46,11 +46,13 @@ public class ExerciseController {
         return exerciseEntity.map(exerciseMapper::mapTo).orElse(null);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DgsMutation
     public ExerciseDto addExercise(@InputArgument InputNewExercise inputNewExercise) {
         return exerciseMapper.mapTo(exerciseService.save(inputToEntity(inputNewExercise)));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DgsMutation
     public ExerciseDto modifyExercise(@InputArgument InputExercise inputExercise) {
         if (!exerciseService.exists(inputExercise.getId())) {
@@ -59,6 +61,7 @@ public class ExerciseController {
         return exerciseMapper.mapTo(exerciseService.save(inputToEntity(inputExercise)));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DgsMutation
     public Long deleteExercise(@InputArgument Long exerciseId) {
         if (!exerciseService.exists(exerciseId)) {

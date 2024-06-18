@@ -13,6 +13,7 @@ import com.netflix.graphql.dgs.DgsMutation;
 import com.netflix.graphql.dgs.DgsQuery;
 import com.netflix.graphql.dgs.InputArgument;
 import graphql.com.google.common.collect.Sets;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.HashSet;
 import java.util.List;
@@ -43,12 +44,14 @@ public class MuscleController {
         return muscleEntity.map(muscleMapper::mapTo).orElse(null);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DgsMutation
     public MuscleDto addMuscle(@InputArgument InputNewMuscle inputNewMuscle) {
         System.out.println(inputNewMuscle);
         return muscleMapper.mapTo(inputToEntity(inputNewMuscle));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DgsMutation
     public MuscleDto modifyMuscle(@InputArgument InputMuscle inputMuscle) {
         if (!muscleService.exists(inputMuscle.getId())) {
@@ -57,6 +60,7 @@ public class MuscleController {
         return muscleMapper.mapTo(inputToEntity(inputMuscle));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DgsMutation
     public Long deleteMuscle(@InputArgument Long muscleId) {
         if (!muscleService.exists(muscleId)) {

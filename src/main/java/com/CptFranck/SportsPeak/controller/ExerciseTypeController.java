@@ -13,6 +13,7 @@ import com.netflix.graphql.dgs.DgsMutation;
 import com.netflix.graphql.dgs.DgsQuery;
 import com.netflix.graphql.dgs.InputArgument;
 import graphql.com.google.common.collect.Sets;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.HashSet;
 import java.util.List;
@@ -43,11 +44,13 @@ public class ExerciseTypeController {
         return exerciseType.map(exerciseTypeMapper::mapTo).orElse(null);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DgsMutation
     public ExerciseTypeDto addExerciseType(@InputArgument InputNewExerciseType inputNewExerciseType) {
         return exerciseTypeMapper.mapTo(inputToEntity(inputNewExerciseType));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DgsMutation
     public ExerciseTypeDto modifyExerciseType(@InputArgument InputExerciseType inputExerciseType) {
         if (!exerciseTypeService.exists(inputExerciseType.getId())) {
@@ -56,6 +59,7 @@ public class ExerciseTypeController {
         return exerciseTypeMapper.mapTo(inputToEntity(inputExerciseType));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DgsMutation
     public Long deleteExerciseType(@InputArgument Long exerciseTypeId) {
         if (!exerciseTypeService.exists(exerciseTypeId)) {
