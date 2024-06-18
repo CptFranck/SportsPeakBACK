@@ -19,8 +19,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.nio.CharBuffer;
-
 @DgsComponent
 public class AuthController {
 
@@ -43,7 +41,7 @@ public class AuthController {
     public AuthDto login(@InputArgument InputCredentials inputCredentials) throws Exception {
         UserDto user = userMapper.mapTo(authService.login(inputCredentials));
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(inputCredentials.getEmail(), CharBuffer.wrap(inputCredentials.getPassword())));
+                new UsernamePasswordAuthenticationToken(inputCredentials.getEmail(), inputCredentials.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return new AuthDto(userAuthProvider.generateToken(authentication), user);
     }
@@ -52,7 +50,7 @@ public class AuthController {
     public AuthDto register(@InputArgument InputNewUser inputNewUser) {
         UserDto user = userMapper.mapTo(authService.register(this.inputToEntity(inputNewUser)));
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(inputNewUser.getEmail(), CharBuffer.wrap(inputNewUser.getPassword())));
+                new UsernamePasswordAuthenticationToken(inputNewUser.getEmail(), inputNewUser.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return new AuthDto(userAuthProvider.generateToken(authentication), user);
     }
@@ -68,7 +66,7 @@ public class AuthController {
                 inputNewUser.getFirstName(),
                 inputNewUser.getLastName(),
                 inputNewUser.getUsername(),
-                CharBuffer.wrap(inputNewUser.getPassword()).toString(),
+                inputNewUser.getPassword(),
                 UserRole.USER
         );
     }

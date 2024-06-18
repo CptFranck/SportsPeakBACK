@@ -7,7 +7,6 @@ import com.CptFranck.SportsPeak.service.AuthService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.nio.CharBuffer;
 import java.util.Optional;
 
 @Service
@@ -25,7 +24,7 @@ public class AuthServiceImpl implements AuthService {
     public UserEntity login(InputCredentials credentials) {
         UserEntity user = userRepository.findByEmail(credentials.getEmail())
                 .orElseThrow(() -> new RuntimeException("User email unknown"));
-        if (passwordEncoder.matches(CharBuffer.wrap(credentials.getPassword()), user.getPassword())) {
+        if (passwordEncoder.matches(credentials.getPassword(), user.getPassword())) {
             return user;
         }
         throw new RuntimeException("Invalid password");
