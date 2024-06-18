@@ -1,0 +1,6 @@
+enum UserRole {
+    ADMIN,
+    STAFF,
+    MODERATOR,
+    USER
+}
