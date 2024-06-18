@@ -1,5 +1,5 @@
 type Query {
-    login(inputCredentials: InputCredentials!): User
+    login(inputCredentials: InputCredentials!): Auth
 
     getUsers: [User]!
     getUserById(id: Int): User!
@@ -16,7 +16,7 @@ type Query {
 
 type Mutation {
 
-    register(inputNewUser: InputNewUser!): User!
+    register(inputNewUser: InputNewUser!): Auth!
 
     modifyUser(inputUser: InputUser!): User!
     deleteUser(userId: Int!): Int!
