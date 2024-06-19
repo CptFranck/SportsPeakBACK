@@ -5,6 +5,13 @@ mutation ($inputUser : InputUser!){
         firstName
         lastName
         username
-        token
+        roles {
+            id
+            name
+            privileges {
+                id
+                name
+            }
+        }
     }
 }
