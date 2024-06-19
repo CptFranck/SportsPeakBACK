@@ -33,25 +33,26 @@ public class PrivilegeController {
         this.privilegeMapper = privilegeMapper;
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsQuery
     public List<PrivilegeDto> getPrivileges() {
         return privilegeService.findAll().stream().map(privilegeMapper::mapTo).toList();
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsQuery
     public PrivilegeDto getPrivilegeById(@InputArgument Long id) {
         Optional<PrivilegeEntity> muscleEntity = privilegeService.findOne(id);
         return muscleEntity.map(privilegeMapper::mapTo).orElse(null);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsMutation
     public PrivilegeDto addPrivilege(@InputArgument InputNewPrivilege inputNewPrivilege) {
-        System.out.println(inputNewPrivilege);
         return privilegeMapper.mapTo(inputToEntity(inputNewPrivilege));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsMutation
     public PrivilegeDto modifyPrivilege(@InputArgument InputPrivilege inputPrivilege) {
         if (!privilegeService.exists(inputPrivilege.getId())) {
@@ -60,7 +61,7 @@ public class PrivilegeController {
         return privilegeMapper.mapTo(inputToEntity(inputPrivilege));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsMutation
     public Long deletePrivilege(@InputArgument Long privilegeId) {
         if (!privilegeService.exists(privilegeId)) {

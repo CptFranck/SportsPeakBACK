@@ -37,26 +37,26 @@ public class RoleController {
         this.roleMapper = roleMapper;
     }
 
-    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsQuery
     public List<RoleDto> getRoles() {
         return roleService.findAll().stream().map(roleMapper::mapTo).toList();
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsQuery
     public RoleDto getRoleById(@InputArgument Long id) {
         Optional<RoleEntity> muscleEntity = roleService.findOne(id);
         return muscleEntity.map(roleMapper::mapTo).orElse(null);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsMutation
     public RoleDto addRole(@InputArgument InputNewRole inputNewRole) {
-        System.out.println(inputNewRole);
         return roleMapper.mapTo(inputToEntity(inputNewRole));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsMutation
     public RoleDto modifyRole(@InputArgument InputRole inputRole) {
         if (!roleService.exists(inputRole.getId())) {
@@ -65,7 +65,7 @@ public class RoleController {
         return roleMapper.mapTo(inputToEntity(inputRole));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsMutation
     public Long deleteRole(@InputArgument Long roleId) {
         if (!roleService.exists(roleId)) {

@@ -33,7 +33,8 @@ public class AuthController {
     private final Mapper<UserEntity, UserDto> userMapper;
 
     public AuthController(AuthenticationManager authenticationManager,
-                          AuthService authService, RoleService roleService,
+                          AuthService authService,
+                          RoleService roleService,
                           JwtProvider userAuthProvider,
                           Mapper<UserEntity, UserDto> userMapper) {
         this.authenticationManager = authenticationManager;

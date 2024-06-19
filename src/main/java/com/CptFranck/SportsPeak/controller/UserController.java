@@ -31,19 +31,20 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
-    @PreAuthorize("hasAuthority('STAFF')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsQuery
     public List<UserDto> getUsers() {
         return userService.findAll().stream().map(userMapper::mapTo).toList();
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsQuery
     public UserDto getUserById(@InputArgument Long id) {
         Optional<UserEntity> muscleEntity = userService.findOne(id);
         return muscleEntity.map(userMapper::mapTo).orElse(null);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsMutation
     public UserDto modifyUser(@InputArgument InputUser inputUser) {
         if (!userService.exists(inputUser.getId())) {
@@ -52,7 +53,7 @@ public class UserController {
         return userMapper.mapTo(inputToEntity(inputUser));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsMutation
     public Long deleteUser(@InputArgument Long userId) {
         if (!userService.exists(userId)) {
