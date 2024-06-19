@@ -1,10 +1,11 @@
 package com.CptFranck.SportsPeak.domain.dto;
 
-import com.CptFranck.SportsPeak.domain.enumType.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @Data
 @Builder
@@ -22,5 +23,5 @@ public class UserDto {
 
     private String username;
 
-    private UserRole userRole;
+    private Set<RoleDto> roles;
 }
