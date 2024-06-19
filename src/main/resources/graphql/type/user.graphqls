@@ -4,7 +4,7 @@ type User {
     firstName: String!
     lastName: String!
     username: String!
-    userRole: UserRole!
+    roles: [Role]!
 }
 
 input InputNewUser {
@@ -22,4 +22,5 @@ input InputUser {
     lastName: String!
     username: String!
     password: String!
+    roleIds: [Int]!
 }
