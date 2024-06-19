@@ -1,0 +1,19 @@
+type Role {
+    id: Int!
+    name: String!
+    users: [User]!
+    privileges: [Privilege]!
+}
+
+input InputNewRole {
+    name: String!
+    userIds: [Int]!
+    privilegeIds: [Int]!
+}
+
+input InputRole {
+    id: Int!
+    name: String!
+    userIds: [Int]!
+    privilegeIds: [Int]!
+}
