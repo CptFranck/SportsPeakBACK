@@ -1,7 +1,7 @@
 package com.CptFranck.SportsPeak.service;
 
 
-import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
+import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 
 import java.util.List;
@@ -16,9 +16,12 @@ public interface UserService {
 
     Set<UserEntity> findMany(Set<Long> ids);
 
+    void updateRoleRelation(Set<Long> newIds, Set<Long> oldIds, RoleEntity roleEntity);
+
     boolean exists(Long id);
 
-    MuscleEntity save(UserEntity userEntity);
+    UserEntity save(UserEntity userEntity);
 
     void delete(Long id);
+
 }
