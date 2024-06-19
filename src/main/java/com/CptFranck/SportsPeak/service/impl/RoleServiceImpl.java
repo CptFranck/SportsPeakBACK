@@ -2,6 +2,7 @@ package com.CptFranck.SportsPeak.service.impl;
 
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
+import com.CptFranck.SportsPeak.domain.exception.role.RoleExistsException;
 import com.CptFranck.SportsPeak.repositories.RoleRepository;
 import com.CptFranck.SportsPeak.service.RoleService;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,11 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleEntity save(RoleEntity role) {
+        Optional<RoleEntity> roleOptional = roleRepository.findByName(role.getName());
+        if (roleOptional.isPresent() &&
+                !Objects.equals(roleOptional.get().getId(), role.getId())) {
+            throw new RoleExistsException();
+        }
         return roleRepository.save(role);
     }
 

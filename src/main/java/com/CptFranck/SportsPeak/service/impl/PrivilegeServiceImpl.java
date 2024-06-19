@@ -1,11 +1,13 @@
 package com.CptFranck.SportsPeak.service.impl;
 
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
+import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeExistsException;
 import com.CptFranck.SportsPeak.repositories.PrivilegeRepository;
 import com.CptFranck.SportsPeak.service.PrivilegeService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,6 +24,11 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 
     @Override
     public PrivilegeEntity save(PrivilegeEntity role) {
+        Optional<PrivilegeEntity> privilegeOptional = privilegeRepository.findByName(role.getName());
+        if (privilegeOptional.isPresent() &&
+                !Objects.equals(privilegeOptional.get().getId(), role.getId())) {
+            throw new PrivilegeExistsException();
+        }
         return privilegeRepository.save(role);
     }
 

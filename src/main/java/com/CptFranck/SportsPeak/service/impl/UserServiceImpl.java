@@ -3,6 +3,8 @@ package com.CptFranck.SportsPeak.service.impl;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailExistsException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.UsernameExistsException;
 import com.CptFranck.SportsPeak.repositories.UserRepository;
 import com.CptFranck.SportsPeak.service.UserService;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,6 +30,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserEntity save(UserEntity userEntity) {
+        Optional<UserEntity> userOptionalEmail = userRepository.findByEmail(userEntity.getEmail());
+        Optional<UserEntity> userOptionalUsername = userRepository.findByUsername(userEntity.getUsername());
+        if (userOptionalEmail.isPresent()
+                && !Objects.equals(userOptionalEmail.get().getEmail(),
+                userEntity.getEmail())) {
+            throw new EmailExistsException();
+        }
+        if (userOptionalUsername.isPresent()
+                && !Objects.equals(userOptionalUsername.get().getUsername(),
+                userEntity.getUsername())) {
+            throw new UsernameExistsException();
+        }
         return userRepository.save(userEntity);
     }
 
