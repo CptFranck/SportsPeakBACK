@@ -8,7 +8,14 @@ mutation ($inputNewUser : InputNewUser!) {
             firstName
             lastName
             username
-            userRole
+            roles {
+                id
+                name
+                privileges {
+                    id
+                    name
+                }
+            }
         }
     }
 }
