@@ -1,0 +1,17 @@
+query {
+    getRoles {
+        id
+        name
+        users {
+            id
+            email
+            firstName
+            lastName
+            username
+        }
+        privileges {
+            id
+            name
+        }
+    }
+}
