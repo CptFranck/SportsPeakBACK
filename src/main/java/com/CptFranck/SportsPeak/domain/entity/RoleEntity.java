@@ -13,15 +13,16 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "role")
+@Table(name = "app_role")
 public class RoleEntity {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "role_id_seq")
     @SequenceGenerator(name = "role_id_seq", sequenceName = "role_id_seq", allocationSize = 1)
     private Long id;
 
-    @Column(name = "name", unique = true, nullable = false)
+    @Column(name = "name", unique = true, length = 50, nullable = false)
     private String name;
 
     @ManyToMany(mappedBy = "roles")
