@@ -12,15 +12,16 @@ import java.util.Collection;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "privilege")
+@Entity(name = "app_privilege")
 public class PrivilegeEntity {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "privilege_id_seq")
     @SequenceGenerator(name = "privilege_id_seq", sequenceName = "privilege_id_seq", allocationSize = 1)
     private Long id;
 
-    @Column(name = "name", unique = true, nullable = false)
+    @Column(name = "name", unique = true, length = 50, nullable = false)
     private String name;
 
     @ManyToMany(mappedBy = "privileges")
