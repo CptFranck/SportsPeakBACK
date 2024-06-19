@@ -17,6 +17,7 @@ import java.util.Collection;
 public class UserEntity {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "app_user_id_seq")
     @SequenceGenerator(name = "app_user_id_seq", sequenceName = "app_user_id_seq", allocationSize = 1)
     private Long id;
