@@ -1,0 +1,3 @@
+mutation ($privilegeId : Int!){
+    deletePrivilege(privilegeId: $privilegeId)
+}

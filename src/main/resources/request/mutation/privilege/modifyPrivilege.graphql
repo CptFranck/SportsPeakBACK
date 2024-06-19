@@ -1,0 +1,14 @@
+mutation ($inputPrivilege : InputPrivilege!){
+    modifyPrivilege(inputPrivilege: $inputPrivilege) {
+        id
+        name
+        roles {
+            id
+            name
+            privileges {
+                id
+                name
+            }
+        }
+    }
+}
