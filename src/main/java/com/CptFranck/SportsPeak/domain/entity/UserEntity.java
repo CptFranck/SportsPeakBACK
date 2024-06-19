@@ -1,11 +1,12 @@
 package com.CptFranck.SportsPeak.domain.entity;
 
-import com.CptFranck.SportsPeak.domain.enumType.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -35,7 +36,9 @@ public class UserEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "role", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private UserRole userRole;
+    @ManyToMany
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "app_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Collection<RoleEntity> roles;
 }
