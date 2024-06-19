@@ -5,6 +5,13 @@ query {
         firstName
         lastName
         username
-        token
+        roles {
+            id
+            name
+            privileges {
+                id
+                name
+            }
+        }
     }
 }
