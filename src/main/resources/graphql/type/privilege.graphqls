@@ -1,0 +1,16 @@
+type Privilege {
+    id: Int!
+    name: String!
+    roles: [Role]!
+}
+
+input InputNewPrivilege {
+    name: String!
+    roleIds: [Int]!
+}
+
+input InputPrivilege {
+    id: Int!
+    name: String!
+    roleIds: [Int]!
+}
