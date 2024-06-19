@@ -8,7 +8,14 @@ query ($inputCredentials: InputCredentials!){
             firstName
             lastName
             username
-            userRole
+            roles {
+                id
+                name
+                privileges {
+                    id
+                    name
+                }
+            }
         }
     }
 }
