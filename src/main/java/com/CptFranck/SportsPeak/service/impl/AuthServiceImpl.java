@@ -1,6 +1,10 @@
 package com.CptFranck.SportsPeak.service.impl;
 
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailExistsException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailUnknownException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.IncorrectPasswordException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.UsernameExistsException;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.repositories.UserRepository;
 import com.CptFranck.SportsPeak.service.AuthService;
@@ -23,11 +27,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public UserEntity login(InputCredentials credentials) {
         UserEntity user = userRepository.findByEmail(credentials.getEmail())
-                .orElseThrow(() -> new RuntimeException("User email unknown"));
+                .orElseThrow(EmailUnknownException::new);
         if (passwordEncoder.matches(credentials.getPassword(), user.getPassword())) {
             return user;
         }
-        throw new RuntimeException("Invalid password");
+        throw new IncorrectPasswordException();
     }
 
     @Override
@@ -35,10 +39,10 @@ public class AuthServiceImpl implements AuthService {
         Optional<UserEntity> userOptionalEmail = userRepository.findByEmail(user.getEmail());
         Optional<UserEntity> userOptionalUsername = userRepository.findByUsername(user.getUsername());
         if (userOptionalEmail.isPresent()) {
-            throw new RuntimeException("An user has already used this email");
+            throw new EmailExistsException();
         }
         if (userOptionalUsername.isPresent()) {
-            throw new RuntimeException("An user has already used this username");
+            throw new UsernameExistsException();
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
