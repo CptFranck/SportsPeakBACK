@@ -1,0 +1,14 @@
+query ($id : Int!) {
+    getPrivilegeById (id: $id) {
+        id
+        name
+        roles {
+            id
+            name
+            privileges {
+                id
+                name
+            }
+        }
+    }
+}

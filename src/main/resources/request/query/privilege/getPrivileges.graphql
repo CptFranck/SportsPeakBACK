@@ -1,0 +1,14 @@
+query {
+    getPrivileges {
+        id
+        name
+        roles {
+            id
+            name
+            privileges {
+                id
+                name
+            }
+        }
+    }
+}
