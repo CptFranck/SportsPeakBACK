@@ -2,13 +2,19 @@ type Query {
     login(inputCredentials: InputCredentials!): Auth
 
     getUsers: [User]!
-    getUserById(id: Int): User!
+    getUserById(id: Int): User
+
+    getRoles: [Role]!
+    getRoleById(id: Int): Role
+
+    getPrivileges: [Privilege]!
+    getPrivilegeById(id: Int): Privilege
 
     getExercises: [Exercise]!
-    getExerciseById(id: Int): Exercise!
+    getExerciseById(id: Int): Exercise
 
     getExerciseTypes: [ExerciseType]!
-    getExerciseTypeById(id: Int): ExerciseType!
+    getExerciseTypeById(id: Int): ExerciseType
 
     getMuscles: [Muscle]!
     getMuscleById(id: Int): Muscle
@@ -20,6 +26,14 @@ type Mutation {
 
     modifyUser(inputUser: InputUser!): User!
     deleteUser(userId: Int!): Int!
+
+    addRole(inputNewRole: InputNewRole!): Role!
+    modifyRole(inputRole: InputRole!): Role!
+    deleteRole(roleId: Int!): Int!
+
+    addPrivilege(inputNewPrivilege: InputNewPrivilege!): Privilege!
+    modifyPrivilege(inputPrivilege: InputPrivilege!): Privilege!
+    deletePrivilege(privilegeId: Int!): Int!
 
     addExercise(inputNewExercise: InputNewExercise!): Exercise!
     modifyExercise(inputExercise: InputExercise!): Exercise!
