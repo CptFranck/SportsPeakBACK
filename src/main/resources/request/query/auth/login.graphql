@@ -2,6 +2,7 @@ query ($inputCredentials: InputCredentials!){
     login(inputCredentials: $inputCredentials){
         tokenType
         accessToken
+        expiration
         user {
             id
             email
