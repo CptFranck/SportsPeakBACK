@@ -1,5 +1,6 @@
 package com.CptFranck.SportsPeak.config.security;
 
+import com.CptFranck.SportsPeak.domain.model.JWToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 @Component
@@ -23,17 +26,21 @@ public class JwtProvider {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(Authentication authentication) {
+    public JWToken generateToken(Authentication authentication) {
         String login = authentication.getName();
-        Date now = new Date();
-        Date validityDate = new Date(now.getTime() + SecurityConstant.JWT_EXPIRATION);
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime validityDate = now.plusHours(1);
+        Date nowDate = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
+        Date validityDateDate = Date.from(validityDate.atZone(ZoneId.systemDefault()).toInstant());
 
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .subject(login)
-                .issuedAt(now)
-                .expiration(validityDate)
+                .issuedAt(nowDate)
+                .expiration(validityDateDate)
                 .signWith(getSigningKey())
                 .compact();
+
+        return new JWToken(token, validityDate);
     }
 
     public String getUsernameFromJWT(String token) {
