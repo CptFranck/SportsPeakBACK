@@ -44,13 +44,13 @@ public class ExerciseTypeController {
         return exerciseType.map(exerciseTypeMapper::mapTo).orElse(null);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
     public ExerciseTypeDto addExerciseType(@InputArgument InputNewExerciseType inputNewExerciseType) {
         return exerciseTypeMapper.mapTo(inputToEntity(inputNewExerciseType));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
     public ExerciseTypeDto modifyExerciseType(@InputArgument InputExerciseType inputExerciseType) {
         if (!exerciseTypeService.exists(inputExerciseType.getId())) {
@@ -59,7 +59,7 @@ public class ExerciseTypeController {
         return exerciseTypeMapper.mapTo(inputToEntity(inputExerciseType));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
     public Long deleteExerciseType(@InputArgument Long exerciseTypeId) {
         if (!exerciseTypeService.exists(exerciseTypeId)) {

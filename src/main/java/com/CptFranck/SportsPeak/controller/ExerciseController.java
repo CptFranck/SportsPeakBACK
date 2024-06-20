@@ -35,7 +35,6 @@ public class ExerciseController {
         this.muscleService = muscleService;
         this.exerciseMapper = exerciseMapper;
     }
-
     @DgsQuery
     public List<ExerciseDto> getExercises() {
         return exerciseService.findAll().stream().map(exerciseMapper::mapTo).toList();
@@ -47,13 +46,13 @@ public class ExerciseController {
         return exerciseEntity.map(exerciseMapper::mapTo).orElse(null);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsMutation
     public ExerciseDto addExercise(@InputArgument InputNewExercise inputNewExercise) {
         return exerciseMapper.mapTo(exerciseService.save(inputToEntity(inputNewExercise)));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsMutation
     public ExerciseDto modifyExercise(@InputArgument InputExercise inputExercise) {
         if (!exerciseService.exists(inputExercise.getId())) {
@@ -62,7 +61,7 @@ public class ExerciseController {
         return exerciseMapper.mapTo(exerciseService.save(inputToEntity(inputExercise)));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsMutation
     public Long deleteExercise(@InputArgument Long exerciseId) {
         if (!exerciseService.exists(exerciseId)) {
