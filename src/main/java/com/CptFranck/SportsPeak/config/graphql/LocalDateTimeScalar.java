@@ -12,14 +12,14 @@ import org.jetbrains.annotations.NotNull;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@DgsScalar(name = "DateTime")
+@DgsScalar(name = "LocalDateTime")
 public class LocalDateTimeScalar implements Coercing<LocalDateTime, String> {
     @Override
     public String serialize(Object dataFetcherResult) throws CoercingSerializeException {
         if (dataFetcherResult instanceof LocalDateTime) {
             return ((LocalDateTime) dataFetcherResult).format(DateTimeFormatter.ISO_DATE_TIME);
         } else {
-            throw new CoercingSerializeException("Not a valid LocalDateTime");
+            throw new CoercingSerializeException("Not a valid DateTime");
         }
     }
 

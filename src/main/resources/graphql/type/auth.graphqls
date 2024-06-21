@@ -2,5 +2,5 @@ type Auth {
     user: User!
     tokenType: String!
     accessToken: String!
-    expiration: DateTime!
+    expiration: LocalDateTime!
 }
