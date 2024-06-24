@@ -12,7 +12,6 @@ import com.CptFranck.SportsPeak.service.AuthService;
 import com.CptFranck.SportsPeak.service.RoleService;
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsMutation;
-import com.netflix.graphql.dgs.DgsQuery;
 import com.netflix.graphql.dgs.InputArgument;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -44,7 +43,7 @@ public class AuthController {
         this.userMapper = userMapper;
     }
 
-    @DgsQuery
+    @DgsMutation
     public AuthDto login(@InputArgument InputCredentials inputCredentials) throws Exception {
         UserDto user = userMapper.mapTo(authService.login(inputCredentials));
         Authentication authentication = authenticationManager.authenticate(

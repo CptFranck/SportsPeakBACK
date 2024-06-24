@@ -1,4 +1,4 @@
-query ($inputCredentials: InputCredentials!){
+mutation ($inputCredentials: InputCredentials!){
     login(inputCredentials: $inputCredentials){
         tokenType
         accessToken
