@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.config;
+package com.CptFranck.SportsPeak.config.mapper;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
