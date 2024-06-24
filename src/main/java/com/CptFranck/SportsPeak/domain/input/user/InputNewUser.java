@@ -1,16 +1,12 @@
 package com.CptFranck.SportsPeak.domain.input.user;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+import java.util.List;
 @Data
-public class InputNewUser {
-    private String email;
+@EqualsAndHashCode(callSuper = true)
+public class InputNewUser extends InputRegisterNewUser {
 
-    private String firstName;
-
-    private String lastName;
-
-    private String username;
-
-    private String password;
+    private List<Long> roleIds;
 }
