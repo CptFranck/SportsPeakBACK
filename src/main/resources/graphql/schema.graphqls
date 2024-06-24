@@ -22,8 +22,9 @@ type Query {
 
 type Mutation {
 
-    register(inputNewUser: InputNewUser!): Auth!
+    register(inputRegisterNewUser: InputRegisterNewUser!): Auth!
 
+    addUser(inputNewUser: InputNewUser!): User!
     modifyUser(inputUser: InputUser!): User!
     deleteUser(userId: Int!): Int!
 
