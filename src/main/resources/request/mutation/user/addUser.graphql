@@ -1,0 +1,17 @@
+mutation ($inputNewUser : InputNewUser!) {
+    addUser(inputNewUser: $inputNewUser){
+        id
+        email
+        firstName
+        lastName
+        username
+        roles {
+            id
+            name
+            privileges {
+                id
+                name
+            }
+        }
+    }
+}
