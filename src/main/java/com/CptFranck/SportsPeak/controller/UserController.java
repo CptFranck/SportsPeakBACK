@@ -3,8 +3,10 @@ package com.CptFranck.SportsPeak.controller;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.input.user.InputNewUser;
 import com.CptFranck.SportsPeak.domain.input.user.InputUser;
 import com.CptFranck.SportsPeak.mappers.Mapper;
+import com.CptFranck.SportsPeak.service.AuthService;
 import com.CptFranck.SportsPeak.service.RoleService;
 import com.CptFranck.SportsPeak.service.UserService;
 import com.netflix.graphql.dgs.DgsComponent;
@@ -23,11 +25,13 @@ public class UserController {
 
     private final RoleService roleService;
     private final UserService userService;
+    private final AuthService authService;
     private final Mapper<UserEntity, UserDto> userMapper;
 
-    public UserController(RoleService roleService, UserService userService, Mapper<UserEntity, UserDto> userMapper) {
+    public UserController(RoleService roleService, UserService userService, AuthService authService, Mapper<UserEntity, UserDto> userMapper) {
         this.roleService = roleService;
         this.userService = userService;
+        this.authService = authService;
         this.userMapper = userMapper;
     }
 
@@ -40,8 +44,14 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsQuery
     public UserDto getUserById(@InputArgument Long id) {
-        Optional<UserEntity> muscleEntity = userService.findOne(id);
-        return muscleEntity.map(userMapper::mapTo).orElse(null);
+        Optional<UserEntity> userEntity = userService.findOne(id);
+        return userEntity.map(userMapper::mapTo).orElse(null);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DgsMutation
+    public UserDto addUser(@InputArgument InputNewUser inputNewUser) {
+        return userMapper.mapTo(authService.register(this.inputToEntity(inputNewUser)));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -63,17 +73,22 @@ public class UserController {
         return userId;
     }
 
-    private UserEntity inputToEntity(InputUser inputUser) {
-        Set<Long> roleIds = Sets.newHashSet(inputUser.getRoleIds());
+    private UserEntity inputToEntity(InputNewUser inputNewUser) {
+        Set<Long> roleIds = Sets.newHashSet((inputNewUser.getRoleIds()));
         Set<RoleEntity> roles = roleService.findMany(roleIds);
 
+        Long id = null;
+        if (inputNewUser instanceof InputUser) {
+            id = ((InputUser) inputNewUser).getId();
+        }
+
         return new UserEntity(
-                inputUser.getId(),
-                inputUser.getEmail(),
-                inputUser.getFirstName(),
-                inputUser.getLastName(),
-                inputUser.getUsername(),
-                inputUser.getPassword(),
+                id,
+                inputNewUser.getEmail(),
+                inputNewUser.getFirstName(),
+                inputNewUser.getLastName(),
+                inputNewUser.getUsername(),
+                inputNewUser.getPassword(),
                 roles
         );
     }

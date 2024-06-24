@@ -6,7 +6,7 @@ import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
-import com.CptFranck.SportsPeak.domain.input.user.InputNewUser;
+import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.AuthService;
 import com.CptFranck.SportsPeak.service.RoleService;
@@ -54,26 +54,26 @@ public class AuthController {
     }
 
     @DgsMutation
-    public AuthDto register(@InputArgument InputNewUser inputNewUser) {
-        UserDto user = userMapper.mapTo(authService.register(this.inputToEntity(inputNewUser)));
+    public AuthDto register(@InputArgument InputRegisterNewUser inputRegisterNewUser) {
+        UserDto user = userMapper.mapTo(authService.register(this.inputToEntity(inputRegisterNewUser)));
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(inputNewUser.getEmail(), inputNewUser.getPassword()));
+                new UsernamePasswordAuthenticationToken(inputRegisterNewUser.getEmail(), inputRegisterNewUser.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return new AuthDto(userAuthProvider.generateToken(authentication), user);
     }
 
-    private UserEntity inputToEntity(InputNewUser inputNewUser) {
+    private UserEntity inputToEntity(InputRegisterNewUser inputRegisterNewUser) {
         Optional<RoleEntity> userRole = roleService.findByName("ROLE_USER");
         Collection<RoleEntity> roles = Set.of(userRole.orElseThrow(
                 () -> new RuntimeException("ROLE_USER not found or does not exist")));
 
         return new UserEntity(
                 null,
-                inputNewUser.getEmail(),
-                inputNewUser.getFirstName(),
-                inputNewUser.getLastName(),
-                inputNewUser.getUsername(),
-                inputNewUser.getPassword(),
+                inputRegisterNewUser.getEmail(),
+                inputRegisterNewUser.getFirstName(),
+                inputRegisterNewUser.getLastName(),
+                inputRegisterNewUser.getUsername(),
+                inputRegisterNewUser.getPassword(),
                 roles
         );
     }
