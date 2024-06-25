@@ -15,21 +15,28 @@ input InputRegisterNewUser {
     password: String!
 }
 
-input InputNewUser {
-    email: String!
+input InputUserIdentity {
+    id: Int!
     firstName: String!
     lastName: String!
-    username: String!
-    password: String!
+}
+
+input InputUserRoles {
+    id: Int!
     roleIds: [Int]!
 }
 
-input InputUser {
+input InputUserEmail {
     id: Int!
-    email: String!
-    firstName: String!
-    lastName: String!
+    newEmail: String!
+}
+
+input InputUserUsername {
+    id: Int!
     username: String!
+}
+
+input InputUserPassword {
+    id: Int!
     password: String!
-    roleIds: [Int]!
 }

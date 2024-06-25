@@ -22,8 +22,11 @@ type Mutation {
     login(inputCredentials: InputCredentials!): Auth
     register(inputRegisterNewUser: InputRegisterNewUser!): Auth!
 
-    addUser(inputNewUser: InputNewUser!): User!
-    modifyUser(inputUser: InputUser!): User!
+    modifyUserIdentity(inputUserIdentity: InputUserIdentity!): User!
+    modifyUserRoles(inputUserRoles: InputUserRoles!): User!
+    modifyUserEmail(inputUserEmail: InputUserEmail!): User!
+    modifyUserUsername(inputUserUsername: InputUserUsername!): User!
+    modifyUserPassword(inputUserPassword: InputUserPassword!): User!
     deleteUser(userId: Int!): Int!
 
     addRole(inputNewRole: InputNewRole!): Role!
