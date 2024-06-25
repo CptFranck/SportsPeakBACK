@@ -4,6 +4,8 @@ import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailExistsException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailUnknownException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UsernameExistsException;
 import com.CptFranck.SportsPeak.repositories.UserRepository;
 import com.CptFranck.SportsPeak.service.UserService;
@@ -13,6 +15,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -23,26 +26,11 @@ import java.util.stream.StreamSupport;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-    }
-
-    @Override
-    public UserEntity save(UserEntity userEntity) {
-        Optional<UserEntity> userOptionalEmail = userRepository.findByEmail(userEntity.getEmail());
-        Optional<UserEntity> userOptionalUsername = userRepository.findByUsername(userEntity.getUsername());
-        if (userOptionalEmail.isPresent()
-                && !Objects.equals(userOptionalEmail.get().getEmail(),
-                userEntity.getEmail())) {
-            throw new EmailExistsException();
-        }
-        if (userOptionalUsername.isPresent()
-                && !Objects.equals(userOptionalUsername.get().getUsername(),
-                userEntity.getUsername())) {
-            throw new UsernameExistsException();
-        }
-        return userRepository.save(userEntity);
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -72,12 +60,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void updateRoleRelation(Set<Long> newIds, Set<Long> oldIds, RoleEntity roleEntity) {
         this.findMany(oldIds).forEach(p -> {
             p.getRoles().removeIf(et -> Objects.equals(et.getId(), roleEntity.getId()));
-            this.save(p);
+            userRepository.save(p);
         });
 
         this.findMany(newIds).forEach(p -> {
             p.getRoles().add(roleEntity);
-            this.save(p);
+            userRepository.save(p);
         });
     }
 
@@ -89,6 +77,55 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void delete(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public UserEntity changeIdentity(Long id, String firstName, String lastName) {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(EmailUnknownException::new);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        return userRepository.save(user);
+    }
+
+    @Override
+    public UserEntity changeRoles(Long id, Collection<RoleEntity> roles) {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(EmailUnknownException::new);
+        user.setRoles(roles);
+        return userRepository.save(user);
+    }
+
+    @Override
+    public UserEntity changeEmail(Long id, String newEmail) {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new);
+        Optional<UserEntity> userOptionalEmail = userRepository.findByEmail(newEmail);
+        if (userOptionalEmail.isPresent()) {
+            throw new EmailExistsException();
+        }
+        user.setEmail(newEmail);
+        return userRepository.save(user);
+    }
+
+    @Override
+    public UserEntity changeUsername(Long id, String newUsername) {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new);
+        Optional<UserEntity> userOptionalUsername = userRepository.findByUsername(newUsername);
+        if (userOptionalUsername.isPresent()) {
+            throw new UsernameExistsException();
+        }
+        user.setUsername(newUsername);
+        return userRepository.save(user);
+    }
+
+    @Override
+    public UserEntity changePassword(Long id, String newPassword) {
+        UserEntity user = userRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new);
+        user.setPassword(passwordEncoder.encode(newPassword));
+        return userRepository.save(user);
     }
 
     @Override
