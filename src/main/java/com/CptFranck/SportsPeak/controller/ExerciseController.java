@@ -49,7 +49,7 @@ public class ExerciseController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsMutation
     public ExerciseDto addExercise(@InputArgument InputNewExercise inputNewExercise) {
-        return exerciseMapper.mapTo(exerciseService.save(inputToEntity(inputNewExercise)));
+        return exerciseMapper.mapTo(inputToEntity(inputNewExercise));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -58,7 +58,7 @@ public class ExerciseController {
         if (!exerciseService.exists(inputExercise.getId())) {
             return null;
         }
-        return exerciseMapper.mapTo(exerciseService.save(inputToEntity(inputExercise)));
+        return exerciseMapper.mapTo(inputToEntity(inputExercise));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -82,7 +82,7 @@ public class ExerciseController {
         if (inputNewExercise instanceof InputExercise) {
             id = ((InputExercise) inputNewExercise).getId();
         }
-        return new ExerciseEntity(
+        ExerciseEntity exerciseEntity = new ExerciseEntity(
                 id,
                 inputNewExercise.getName(),
                 inputNewExercise.getDescription(),
@@ -90,5 +90,7 @@ public class ExerciseController {
                 exerciseTypes,
                 muscles
         );
+        exerciseService.save(exerciseEntity);
+        return exerciseEntity;
     }
 }

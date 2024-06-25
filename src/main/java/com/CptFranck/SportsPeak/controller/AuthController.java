@@ -54,7 +54,7 @@ public class AuthController {
 
     @DgsMutation
     public AuthDto register(@InputArgument InputRegisterNewUser inputRegisterNewUser) {
-        UserDto user = userMapper.mapTo(authService.register(this.inputToEntity(inputRegisterNewUser)));
+        UserDto user = userMapper.mapTo(this.inputToEntity(inputRegisterNewUser));
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(inputRegisterNewUser.getEmail(), inputRegisterNewUser.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -66,7 +66,7 @@ public class AuthController {
         Collection<RoleEntity> roles = Set.of(userRole.orElseThrow(
                 () -> new RuntimeException("ROLE_USER not found or does not exist")));
 
-        return new UserEntity(
+        UserEntity userEntity = new UserEntity(
                 null,
                 inputRegisterNewUser.getEmail(),
                 inputRegisterNewUser.getFirstName(),
@@ -75,5 +75,7 @@ public class AuthController {
                 inputRegisterNewUser.getPassword(),
                 roles
         );
+        authService.register(userEntity);
+        return userEntity;
     }
 }
