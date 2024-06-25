@@ -1,5 +1,5 @@
-mutation ($inputNewUser : InputNewUser!) {
-    addUser(inputNewUser: $inputNewUser){
+mutation ($inputUserUsername : InputUserUsername!){
+    modifyUserUsername(inputUserUsername: $inputUserUsername) {
         id
         email
         firstName

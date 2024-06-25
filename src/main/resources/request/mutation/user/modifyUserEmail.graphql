@@ -1,0 +1,17 @@
+mutation ($inputUserEmail : InputUserEmail!){
+    modifyUserEmail(inputUserEmail: $inputUserEmail) {
+        id
+        email
+        firstName
+        lastName
+        username
+        roles {
+            id
+            name
+            privileges {
+                id
+                name
+            }
+        }
+    }
+}
