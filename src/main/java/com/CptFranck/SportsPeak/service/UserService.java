@@ -27,9 +27,9 @@ public interface UserService {
 
     UserEntity changeRoles(Long id, Collection<RoleEntity> roles);
 
-    UserEntity changeEmail(Long id, String newEmail);
+    UserEntity changeEmail(Long id, String password, String newEmail);
 
     UserEntity changeUsername(Long id, String newUsername);
 
-    UserEntity changePassword(Long id, String newPassword);
+    UserEntity changePassword(Long id, String oldPassword, String newPassword);
 }

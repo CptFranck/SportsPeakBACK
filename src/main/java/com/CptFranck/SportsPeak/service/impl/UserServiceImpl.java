@@ -3,10 +3,7 @@ package com.CptFranck.SportsPeak.service.impl;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
-import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailExistsException;
-import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailUnknownException;
-import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
-import com.CptFranck.SportsPeak.domain.exception.userAuth.UsernameExistsException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.*;
 import com.CptFranck.SportsPeak.repositories.UserRepository;
 import com.CptFranck.SportsPeak.service.UserService;
 import org.springframework.security.core.GrantedAuthority;
@@ -97,14 +94,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserEntity changeEmail(Long id, String newEmail) {
+    public UserEntity changeEmail(Long id, String password, String newEmail) {
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
-        Optional<UserEntity> userOptionalEmail = userRepository.findByEmail(newEmail);
-        if (userOptionalEmail.isPresent()) {
-            throw new EmailExistsException();
+        if (passwordEncoder.matches(password, user.getPassword())) {
+            Optional<UserEntity> userOptionalEmail = userRepository.findByEmail(newEmail);
+            if (userOptionalEmail.isPresent()) {
+                throw new EmailExistsException();
+            }
+            user.setEmail(newEmail);
+        } else {
+            throw new IncorrectPasswordException();
         }
-        user.setEmail(newEmail);
         return userRepository.save(user);
     }
 
@@ -121,10 +122,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserEntity changePassword(Long id, String newPassword) {
+    public UserEntity changePassword(Long id, String oldPassword, String newPassword) {
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
-        user.setPassword(passwordEncoder.encode(newPassword));
+
+        if (passwordEncoder.matches(oldPassword, user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(newPassword));
+        } else {
+            throw new IncorrectPasswordException();
+        }
         return userRepository.save(user);
     }
 
