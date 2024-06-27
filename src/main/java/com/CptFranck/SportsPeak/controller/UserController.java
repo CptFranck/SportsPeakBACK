@@ -44,7 +44,7 @@ public class UserController {
         return userEntity.map(userMapper::mapTo).orElse(null);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
     public UserDto modifyUserIdentity(@InputArgument InputUserIdentity inputUserIdentity) {
         UserEntity userEntity = userService.changeIdentity(inputUserIdentity.getId(),
@@ -62,28 +62,28 @@ public class UserController {
         return userMapper.mapTo(userEntity);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
     public UserDto modifyUserEmail(@InputArgument InputUserEmail inputUserEmail) {
-        UserEntity userEntity = userService.changeEmail(inputUserEmail.getId(), inputUserEmail.getNewEmail());
+        UserEntity userEntity = userService.changeEmail(inputUserEmail.getId(), inputUserEmail.getPassword(), inputUserEmail.getNewEmail());
         return userMapper.mapTo(userEntity);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
     public UserDto modifyUserUsername(@InputArgument InputUserUsername inputUserUsername) {
         UserEntity userEntity = userService.changeUsername(inputUserUsername.getId(), inputUserUsername.getNewUsername());
         return userMapper.mapTo(userEntity);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
     public UserDto modifyUserPassword(@InputArgument InputUserPassword inputUserPassword) {
-        UserEntity userEntity = userService.changePassword(inputUserPassword.getId(), inputUserPassword.getPassword());
+        UserEntity userEntity = userService.changePassword(inputUserPassword.getId(), inputUserPassword.getOldPassword(), inputUserPassword.getNewPassword());
         return userMapper.mapTo(userEntity);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
     public Long deleteUser(@InputArgument Long userId) {
         if (!userService.exists(userId)) {
