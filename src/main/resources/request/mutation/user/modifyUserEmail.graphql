@@ -1,16 +1,20 @@
 mutation ($inputUserEmail : InputUserEmail!){
     modifyUserEmail(inputUserEmail: $inputUserEmail) {
-        id
-        email
-        firstName
-        lastName
-        username
-        roles {
+        tokenType
+        accessToken
+        user {
             id
-            name
-            privileges {
+            email
+            firstName
+            lastName
+            username
+            roles {
                 id
                 name
+                privileges {
+                    id
+                    name
+                }
             }
         }
     }

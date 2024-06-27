@@ -1,5 +1,7 @@
 package com.CptFranck.SportsPeak.controller;
 
+import com.CptFranck.SportsPeak.config.security.JwtProvider;
+import com.CptFranck.SportsPeak.domain.dto.AuthDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
@@ -13,6 +15,10 @@ import com.netflix.graphql.dgs.DgsQuery;
 import com.netflix.graphql.dgs.InputArgument;
 import graphql.com.google.common.collect.Sets;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,12 +29,16 @@ public class UserController {
 
     private final RoleService roleService;
     private final UserService userService;
+    private final JwtProvider userAuthProvider;
     private final Mapper<UserEntity, UserDto> userMapper;
+    private final AuthenticationManager authenticationManager;
 
-    public UserController(RoleService roleService, UserService userService, Mapper<UserEntity, UserDto> userMapper) {
+    public UserController(RoleService roleService, UserService userService, JwtProvider userAuthProvider, Mapper<UserEntity, UserDto> userMapper, AuthenticationManager authenticationManager) {
         this.roleService = roleService;
         this.userService = userService;
         this.userMapper = userMapper;
+        this.userAuthProvider = userAuthProvider;
+        this.authenticationManager = authenticationManager;
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -64,9 +74,18 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
-    public UserDto modifyUserEmail(@InputArgument InputUserEmail inputUserEmail) {
-        UserEntity userEntity = userService.changeEmail(inputUserEmail.getId(), inputUserEmail.getPassword(), inputUserEmail.getNewEmail());
-        return userMapper.mapTo(userEntity);
+    public AuthDto modifyUserEmail(@InputArgument InputUserEmail inputUserEmail) {
+        UserEntity userEnt = userService.changeEmail(
+                inputUserEmail.getId(),
+                inputUserEmail.getPassword(),
+                inputUserEmail.getNewEmail()
+        );
+
+        UserDto user = userMapper.mapTo(userEnt);
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(inputUserEmail.getNewEmail(), inputUserEmail.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return new AuthDto(userAuthProvider.generateToken(authentication), user);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")

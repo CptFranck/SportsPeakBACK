@@ -25,22 +25,22 @@ import java.util.Set;
 @DgsComponent
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
     private final AuthService authService;
     private final RoleService roleService;
     private final JwtProvider userAuthProvider;
     private final Mapper<UserEntity, UserDto> userMapper;
+    private final AuthenticationManager authenticationManager;
 
     public AuthController(AuthenticationManager authenticationManager,
                           AuthService authService,
                           RoleService roleService,
                           JwtProvider userAuthProvider,
                           Mapper<UserEntity, UserDto> userMapper) {
-        this.authenticationManager = authenticationManager;
+        this.userMapper = userMapper;
         this.authService = authService;
         this.roleService = roleService;
         this.userAuthProvider = userAuthProvider;
-        this.userMapper = userMapper;
+        this.authenticationManager = authenticationManager;
     }
 
     @DgsMutation
