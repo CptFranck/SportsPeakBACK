@@ -7,5 +7,7 @@ public class InputUserEmail {
 
     private Long id;
 
+    private String password;
+
     private String newEmail;
 }

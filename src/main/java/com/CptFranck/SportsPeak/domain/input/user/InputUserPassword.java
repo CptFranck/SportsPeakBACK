@@ -7,5 +7,7 @@ public class InputUserPassword {
 
     private Long id;
 
-    private String password;
+    private String oldPassword;
+
+    private String newPassword;
 }
