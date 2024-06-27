@@ -28,6 +28,7 @@ input InputUserRoles {
 
 input InputUserEmail {
     id: Int!
+    password: String!
     newEmail: String!
 }
 
@@ -38,5 +39,6 @@ input InputUserUsername {
 
 input InputUserPassword {
     id: Int!
-    password: String!
+    oldPassword: String!
+    newPassword: String!
 }
