@@ -34,7 +34,7 @@ input InputUserEmail {
 
 input InputUserUsername {
     id: Int!
-    username: String!
+    newUsername: String!
 }
 
 input InputUserPassword {
