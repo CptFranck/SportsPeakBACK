@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Collection;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -42,4 +43,7 @@ public class UserEntity {
             joinColumns = @JoinColumn(name = "app_user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Collection<RoleEntity> roles;
+
+    @OneToMany(mappedBy = "creator")
+    private Set<ProgExerciseEntity> prog_exercises_created;
 }
