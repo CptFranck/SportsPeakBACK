@@ -41,4 +41,7 @@ public class ExerciseEntity {
             joinColumns = @JoinColumn(name = "exercise_id"),
             inverseJoinColumns = @JoinColumn(name = "muscle_id"))
     private Set<MuscleEntity> muscles;
+
+    @OneToMany(mappedBy = "exercise")
+    private Set<ProgExerciseEntity> prog_exercises;
 }
