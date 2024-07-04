@@ -14,8 +14,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "performance_logs")
-public class PerformanceLogsEntity {
+@Table(name = "performance_log")
+public class PerformanceLogEntity {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "performance_logs_id_seq")

@@ -53,5 +53,5 @@ public class TargetExerciseSetEntity {
     private TargetExerciseSetEntity exerciseSet;
 
     @OneToMany(mappedBy = "targetExerciseSet")
-    private Set<PerformanceLogsEntity> setPerformanceLogs;
+    private Set<PerformanceLogEntity> performanceLogs;
 }
