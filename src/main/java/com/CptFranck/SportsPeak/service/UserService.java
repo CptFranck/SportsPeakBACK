@@ -1,10 +1,10 @@
 package com.CptFranck.SportsPeak.service;
 
 
+import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -19,13 +19,17 @@ public interface UserService {
 
     void updateRoleRelation(Set<Long> newIds, Set<Long> oldIds, RoleEntity roleEntity);
 
+    void updateProgExerciseCreatedRelations(Set<Long> newIds, Set<Long> oldIds, ProgExerciseEntity progExercise);
+
+    void updateUserProgExerciseRelations(Set<Long> newIds, Set<Long> oldIds, ProgExerciseEntity progExercise);
+
     boolean exists(Long id);
 
     void delete(Long id);
 
     UserEntity changeIdentity(Long id, String firstName, String lastName);
 
-    UserEntity changeRoles(Long id, Collection<RoleEntity> roles);
+    UserEntity changeRoles(Long id, Set<RoleEntity> roles);
 
     UserEntity changeEmail(Long id, String password, String newEmail);
 
