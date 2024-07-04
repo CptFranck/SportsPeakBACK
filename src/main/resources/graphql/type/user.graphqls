@@ -5,6 +5,8 @@ type User {
     lastName: String!
     username: String!
     roles: [Role]!
+    progExercises: [ProgExercise]!
+    progExercisesCreated: [ProgExercise]!
 }
 
 input InputRegisterNewUser {

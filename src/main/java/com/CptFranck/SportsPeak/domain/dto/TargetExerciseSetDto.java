@@ -18,7 +18,7 @@ public class TargetExerciseSetDto {
 
     private Integer repetitionNumber;
 
-    private Integer weight;
+    private Float weight;
 
     private String weightUnit;
 
@@ -30,7 +30,7 @@ public class TargetExerciseSetDto {
 
     private ProgExerciseDto progExercise;
 
-    private TargetExerciseSetDto exerciseSet;
+    private TargetExerciseSetDto targetExerciseSetUpdate;
 
     @EqualsAndHashCode.Exclude
     private Set<PerformanceLogDto> performanceLogs;
