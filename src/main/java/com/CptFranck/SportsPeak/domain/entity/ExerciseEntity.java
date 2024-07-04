@@ -43,5 +43,5 @@ public class ExerciseEntity {
     private Set<MuscleEntity> muscles;
 
     @OneToMany(mappedBy = "exercise")
-    private Set<ProgExerciseEntity> prog_exercises;
+    private Set<ProgExerciseEntity> progExercises;
 }
