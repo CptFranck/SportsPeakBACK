@@ -5,6 +5,7 @@ type Exercise {
     goal: String!
     muscles: [Muscle]!
     exerciseTypes: [ExerciseType]!
+    progExercises: [ProgExercise]!
 }
 
 input InputNewExercise {
