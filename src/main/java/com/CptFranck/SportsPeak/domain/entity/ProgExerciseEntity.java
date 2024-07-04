@@ -25,7 +25,7 @@ public class ProgExerciseEntity {
     private String note;
 
     @Column(name = "visibility", nullable = false)
-    private Boolean visibility;
+    private String visibility;
 
     @Column(name = "label", nullable = false)
     private String label;

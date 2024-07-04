@@ -14,7 +14,7 @@ public class ProgExerciseDto {
 
     private String note;
 
-    private Boolean visibility;
+    private String visibility;
 
     private String label;
 
