@@ -1,0 +1,38 @@
+type TargetExerciseSet {
+    id: Int!
+    setNumber: Int!
+    repetitionNumber: Int!
+    weight: Float!
+    weightUnit: String!
+    physicalExertionUnitTime: Duration!
+    restTime: Duration!
+    creationDate: LocalDateTime!
+    progExercise: ProgExercise!
+    targetExerciseSetUpdate: TargetExerciseSet
+    performanceLogs: [PerformanceLog]!
+}
+
+input InputNewTargetExerciseSet {
+    setNumber: Int!
+    repetitionNumber: Int!
+    weight: Float!
+    weightUnit: String!
+    physicalExertionUnitTime: Duration!
+    restTime: Duration!
+    creationDate: LocalDateTime!
+    progExerciseId: Int!
+    targetExerciseSetUpdateId: Int
+}
+
+input InputTargetExerciseSet {
+    id: Int!
+    setNumber: Int!
+    repetitionNumber: Int!
+    weight: Float!
+    weightUnit: String!
+    physicalExertionUnitTime: Duration!
+    restTime: Duration!
+    creationDate: LocalDateTime!
+    progExerciseId: Int!
+    targetExerciseSetUpdateId: Int
+}
