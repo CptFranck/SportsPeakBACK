@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Getter
@@ -14,8 +15,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "prog_ex_set")
-public class ProgExSetEntity {
+@Table(name = "target_exercise_set")
+public class TargetExerciseSetEntity {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "prog_ex_set_id_seq")
@@ -31,15 +32,26 @@ public class ProgExSetEntity {
     @Column(name = "weight", nullable = false)
     private Integer weight;
 
-    @Column(name = "exercise_time", nullable = false)
-    private Duration exerciseTime;
+    @Column(name = "weight_unit", length = 50, nullable = false)
+    private String weightUnit;
+
+    @Column(name = "physical_exertion_unit_time", nullable = false)
+    private Duration physicalExertionUnitTime;
 
     @Column(name = "rest_time", nullable = false)
     private Duration restTime;
 
+    @Column(name = "creation_date", nullable = false)
+    private LocalDate creationDate;
+
     @ManyToOne
+    @Column(name = "prog_exercise_id", nullable = false)
     private ProgExerciseEntity progExercise;
 
-    @OneToMany(mappedBy = "progExSet")
-    private Set<SetPerformanceLogsEntity> setPerformanceLogs;
+    @OneToOne
+    @Column(name = "target_exercise_set_update_id")
+    private TargetExerciseSetEntity exerciseSet;
+
+    @OneToMany(mappedBy = "targetExerciseSet")
+    private Set<PerformanceLogsEntity> setPerformanceLogs;
 }
