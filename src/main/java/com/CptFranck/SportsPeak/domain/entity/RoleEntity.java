@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Collection;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -26,11 +26,11 @@ public class RoleEntity {
     private String name;
 
     @ManyToMany(mappedBy = "roles")
-    private Collection<UserEntity> users;
+    private Set<UserEntity> users;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "roles_privileges",
             joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "privilege_id"))
-    private Collection<PrivilegeEntity> privileges;
+    private Set<PrivilegeEntity> privileges;
 }
