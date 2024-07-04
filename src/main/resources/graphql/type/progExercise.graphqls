@@ -1,0 +1,29 @@
+type ProgExercise {
+    id: Int!
+    note: String!
+    visibility: String!
+    label: String!
+    users: [User]!
+    creator: User!
+    exercise: Exercise!
+    targetExerciseSets: [TargetExerciseSet]!
+}
+
+input InputNewProgExercise {
+    note: String!
+    visibility: String!
+    label: String!
+    creatorId: Int!
+    exerciseId: Int!
+    targetExerciseSetIds: [Int]!
+}
+
+input InputProgExercise {
+    id: Int!
+    note: String!
+    visibility: String!
+    label: String!
+    creatorId: Int!
+    exerciseId: Int!
+    targetExerciseSetIds: [Int]!
+}
