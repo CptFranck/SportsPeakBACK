@@ -3,6 +3,7 @@ package com.CptFranck.SportsPeak.service.impl;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
+import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import org.springframework.stereotype.Service;
@@ -74,6 +75,19 @@ public class ExerciseServiceImpl implements ExerciseService {
 
         this.findMany(newIds).forEach(e -> {
             e.getMuscles().add(muscle);
+            this.save(e);
+        });
+    }
+
+    @Override
+    public void updateProgExerciseRelation(Set<Long> newIds, Set<Long> oldIds, ProgExerciseEntity progExercise) {
+        this.findMany(oldIds).forEach(e -> {
+            e.getProgExercises().removeIf(et -> Objects.equals(et.getId(), progExercise.getId()));
+            this.save(e);
+        });
+
+        this.findMany(newIds).forEach(e -> {
+            e.getProgExercises().add(progExercise);
             this.save(e);
         });
     }
