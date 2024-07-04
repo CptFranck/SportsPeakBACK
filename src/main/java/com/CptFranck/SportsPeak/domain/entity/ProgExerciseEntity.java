@@ -28,11 +28,13 @@ public class ProgExerciseEntity {
     private Boolean visibility;
 
     @ManyToOne
+    @Column(name = "exercise_id", nullable = false)
     private ExerciseEntity exercise;
 
     @ManyToOne
+    @Column(name = "creator_id", nullable = false)
     private UserEntity creator;
 
     @OneToMany(mappedBy = "progExercise")
-    private Set<ProgExSetEntity> progExSets;
+    private Set<TargetExerciseSetEntity> targetExerciseSets;
 }
