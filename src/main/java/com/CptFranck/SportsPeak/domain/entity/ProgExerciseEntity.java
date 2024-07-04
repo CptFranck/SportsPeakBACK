@@ -30,13 +30,16 @@ public class ProgExerciseEntity {
     @Column(name = "label", nullable = false)
     private String label;
 
-    @ManyToOne
-    @Column(name = "exercise_id", nullable = false)
-    private ExerciseEntity exercise;
+    @ManyToMany(mappedBy = "progExercises")
+    private Set<UserEntity> users;
 
     @ManyToOne
     @Column(name = "creator_id", nullable = false)
     private UserEntity creator;
+
+    @ManyToOne
+    @Column(name = "exercise_id", nullable = false)
+    private ExerciseEntity exercise;
 
     @OneToMany(mappedBy = "progExercise")
     private Set<TargetExerciseSetEntity> targetExerciseSets;

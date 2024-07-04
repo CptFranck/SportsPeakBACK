@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Collection;
 import java.util.Set;
 
 @Getter
@@ -42,8 +41,14 @@ public class UserEntity {
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "app_user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Collection<RoleEntity> roles;
+    private Set<RoleEntity> roles;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "users_prog_exercise",
+            joinColumns = @JoinColumn(name = "app_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "prog_exercise_id"))
+    private Set<ProgExerciseEntity> progExercises;
 
     @OneToMany(mappedBy = "creator")
-    private Set<ProgExerciseEntity> prog_exercises_created;
+    private Set<ProgExerciseEntity> progExercisesCreated;
 }
