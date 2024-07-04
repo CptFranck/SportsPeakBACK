@@ -18,8 +18,6 @@ public class ProgExerciseDto {
 
     private String label;
 
-    private Set<UserDto> users;
-
     private UserEntity creator;
 
     private ExerciseDto exercise;
