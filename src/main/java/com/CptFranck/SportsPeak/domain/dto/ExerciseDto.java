@@ -23,4 +23,7 @@ public class ExerciseDto {
 
     @EqualsAndHashCode.Exclude
     private Set<ExerciseTypeDto> exerciseTypes;
+
+    @EqualsAndHashCode.Exclude
+    private Set<ProgExerciseDto> progExercises;
 }
