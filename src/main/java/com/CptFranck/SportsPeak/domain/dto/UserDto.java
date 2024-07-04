@@ -22,4 +22,10 @@ public class UserDto {
 
     @EqualsAndHashCode.Exclude
     private Set<RoleDto> roles;
+
+    @EqualsAndHashCode.Exclude
+    private Set<ProgExerciseDto> progExercises;
+
+    @EqualsAndHashCode.Exclude
+    private Set<ProgExerciseDto> progExercisesCreated;
 }
