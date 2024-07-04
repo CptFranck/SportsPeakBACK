@@ -1,0 +1,31 @@
+type PerformanceLog {
+    id: Int!
+    setNumber: Int!
+    repetitionNumber: Int!
+    weight: Float!
+    weightUnit: String!
+    restTime: Duration!
+    logDate: LocalDateTime!
+    targetExerciseSet: TargetExerciseSet!
+}
+
+input InputNewPerformanceLog {
+    setNumber: Int!
+    repetitionNumber: Int!
+    weight: Float!
+    weightUnit: String!
+    restTime: Duration!
+    logDate: LocalDateTime!
+    targetExerciseSetId: Int!
+}
+
+input InputPerformanceLog {
+    id: Int!
+    setNumber: Int!
+    repetitionNumber: Int!
+    weight: Float!
+    weightUnit: String!
+    restTime: Duration!
+    logDate: LocalDateTime!
+    targetExerciseSetId: Int!
+}
