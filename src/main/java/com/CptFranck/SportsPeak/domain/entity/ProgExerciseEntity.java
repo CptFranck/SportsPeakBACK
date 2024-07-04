@@ -27,6 +27,9 @@ public class ProgExerciseEntity {
     @Column(name = "visibility", nullable = false)
     private Boolean visibility;
 
+    @Column(name = "label", nullable = false)
+    private String label;
+
     @ManyToOne
     @Column(name = "exercise_id", nullable = false)
     private ExerciseEntity exercise;
