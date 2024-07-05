@@ -17,8 +17,8 @@ import java.time.LocalDate;
 public class PerformanceLogEntity {
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "performance_logs_id_seq")
-    @SequenceGenerator(name = "performance_logs_id_seq", sequenceName = "performance_logs_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "performance_log_id_seq")
+    @SequenceGenerator(name = "performance_log_id_seq", sequenceName = "performance_log_id_seq", allocationSize = 1)
     private Long id;
 
     @Column(name = "set_index", nullable = false)
