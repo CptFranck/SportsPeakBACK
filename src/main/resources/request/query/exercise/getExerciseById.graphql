@@ -11,6 +11,13 @@ query ($id : Int!){
             name
             function
         }
+        progExercises {
+            id
+            name
+            note
+            label
+            visibility
+        }
         name
         description
         goal
