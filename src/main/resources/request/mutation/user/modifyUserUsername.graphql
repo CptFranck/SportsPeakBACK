@@ -13,5 +13,19 @@ mutation ($inputUserUsername : InputUserUsername!){
                 name
             }
         }
+        progExercises {
+            id
+            name
+            note
+            label
+            visibility
+        }
+        progExercisesCreated {
+            id
+            name
+            note
+            label
+            visibility
+        }
     }
 }
