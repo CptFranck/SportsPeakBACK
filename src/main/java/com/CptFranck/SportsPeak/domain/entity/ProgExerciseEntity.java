@@ -37,11 +37,11 @@ public class ProgExerciseEntity {
     private Set<UserEntity> users;
 
     @ManyToOne
-    @Column(name = "creator_id", nullable = false)
+    @JoinColumn(name = "creator_id", nullable = false)
     private UserEntity creator;
 
     @ManyToOne
-    @Column(name = "exercise_id", nullable = false)
+    @JoinColumn(name = "exercise_id", nullable = false)
     private ExerciseEntity exercise;
 
     @OneToMany(mappedBy = "progExercise")

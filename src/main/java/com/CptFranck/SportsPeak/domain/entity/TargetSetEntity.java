@@ -45,11 +45,11 @@ public class TargetSetEntity {
     private LocalDate creationDate;
 
     @ManyToOne
-    @Column(name = "prog_exercise_id", nullable = false)
+    @JoinColumn(name = "prog_exercise_id", nullable = false)
     private ProgExerciseEntity progExercise;
 
     @OneToOne
-    @Column(name = "target_set_update_id")
+    @JoinColumn(name = "target_set_update_id")
     private TargetSetEntity targetSetUpdate;
 
     @OneToMany(mappedBy = "targetSet")

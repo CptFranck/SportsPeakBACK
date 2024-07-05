@@ -37,6 +37,6 @@ public class PerformanceLogEntity {
     private LocalDate logDate;
 
     @ManyToOne
-    @Column(name = "target_set_id", nullable = false)
+    @JoinColumn(name = "target_set_id", nullable = false)
     private TargetSetEntity targetSet;
 }
