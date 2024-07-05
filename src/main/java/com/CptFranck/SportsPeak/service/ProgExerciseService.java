@@ -1,7 +1,7 @@
 package com.CptFranck.SportsPeak.service;
 
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
-import com.CptFranck.SportsPeak.domain.entity.TargetExerciseSetEntity;
+import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +15,7 @@ public interface ProgExerciseService {
 
     Set<ProgExerciseEntity> findMany(Set<Long> ids);
 
-    void updateTargetExerciseSetRelation(Set<Long> newIds, Set<Long> oldIds, TargetExerciseSetEntity targetExerciseSet);
+    void updateTargetExerciseSetRelation(Set<Long> newIds, Set<Long> oldIds, TargetSetEntity targetSet);
 
     boolean exists(Long id);
 

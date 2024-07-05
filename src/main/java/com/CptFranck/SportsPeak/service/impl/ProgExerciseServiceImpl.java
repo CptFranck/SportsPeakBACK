@@ -1,7 +1,7 @@
 package com.CptFranck.SportsPeak.service.impl;
 
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
-import com.CptFranck.SportsPeak.domain.entity.TargetExerciseSetEntity;
+import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.repositories.ProgExerciseRepository;
 import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import org.springframework.stereotype.Service;
@@ -51,14 +51,14 @@ public class ProgExerciseServiceImpl implements ProgExerciseService {
     }
 
     @Override
-    public void updateTargetExerciseSetRelation(Set<Long> newIds, Set<Long> oldIds, TargetExerciseSetEntity targetExerciseSet) {
+    public void updateTargetExerciseSetRelation(Set<Long> newIds, Set<Long> oldIds, TargetSetEntity targetSet) {
         this.findMany(oldIds).forEach(e -> {
-            e.getTargetExerciseSets().removeIf(et -> Objects.equals(et.getId(), targetExerciseSet.getId()));
+            e.getTargetSets().removeIf(et -> Objects.equals(et.getId(), targetSet.getId()));
             this.save(e);
         });
 
         this.findMany(newIds).forEach(e -> {
-            e.getTargetExerciseSets().add(targetExerciseSet);
+            e.getTargetSets().add(targetSet);
             this.save(e);
         });
     }
