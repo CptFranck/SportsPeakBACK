@@ -13,5 +13,12 @@ mutation ($inputExercise : InputExercise!){
             name
             goal
         }
+        progExercises {
+            id
+            name
+            note
+            label
+            visibility
+        }
     }
 }
