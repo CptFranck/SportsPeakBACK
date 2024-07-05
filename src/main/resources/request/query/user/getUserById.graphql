@@ -13,5 +13,19 @@ query ($id: ID!) {
                 name
             }
         }
+        progExercises {
+            id
+            name
+            note
+            label
+            visibility
+        }
+        progExercisesCreated {
+            id
+            name
+            note
+            label
+            visibility
+        }
     }
 }
