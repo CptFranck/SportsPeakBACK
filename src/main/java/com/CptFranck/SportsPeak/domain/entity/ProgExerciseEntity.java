@@ -21,14 +21,17 @@ public class ProgExerciseEntity {
     @SequenceGenerator(name = "prog_exercise_id_seq", sequenceName = "prog_exercise_id_seq", allocationSize = 1)
     private Long id;
 
+    @Column(name = "name", length = 50, nullable = false)
+    private String name;
+
     @Column(name = "note", columnDefinition = "TEXT", nullable = false)
     private String note;
 
     @Column(name = "visibility", nullable = false)
     private String visibility;
 
-    @Column(name = "label", nullable = false)
-    private String label;
+    @Column(name = "trust_label", nullable = false)
+    private String trustLabel;
 
     @ManyToMany(mappedBy = "progExercises")
     private Set<UserEntity> users;
@@ -42,5 +45,5 @@ public class ProgExerciseEntity {
     private ExerciseEntity exercise;
 
     @OneToMany(mappedBy = "progExercise")
-    private Set<TargetExerciseSetEntity> targetExerciseSets;
+    private Set<TargetSetEntity> targetSets;
 }
