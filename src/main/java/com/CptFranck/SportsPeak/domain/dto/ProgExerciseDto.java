@@ -12,16 +12,18 @@ import java.util.Set;
 public class ProgExerciseDto {
     private Long id;
 
+    private String name;
+
     private String note;
 
     private String visibility;
 
-    private String label;
+    private String trustLabel;
 
     private UserEntity creator;
 
     private ExerciseDto exercise;
 
     @EqualsAndHashCode.Exclude
-    private Set<TargetExerciseSetDto> targetExerciseSets;
+    private Set<TargetSetDto> targetExerciseSets;
 }
