@@ -10,7 +10,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TargetExerciseSetDto {
+public class TargetSetDto {
 
     private Long id;
 
@@ -30,7 +30,7 @@ public class TargetExerciseSetDto {
 
     private ProgExerciseDto progExercise;
 
-    private TargetExerciseSetDto targetExerciseSetUpdate;
+    private TargetSetDto targetExerciseSetUpdate;
 
     @EqualsAndHashCode.Exclude
     private Set<PerformanceLogDto> performanceLogs;
