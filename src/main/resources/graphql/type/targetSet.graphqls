@@ -1,4 +1,4 @@
-type TargetExerciseSet {
+type TargetSet {
     id: Int!
     setNumber: Int!
     repetitionNumber: Int!
@@ -8,11 +8,11 @@ type TargetExerciseSet {
     restTime: Duration!
     creationDate: LocalDateTime!
     progExercise: ProgExercise!
-    targetExerciseSetUpdate: TargetExerciseSet
+    targetSetUpdate: TargetSet
     performanceLogs: [PerformanceLog]!
 }
 
-input InputNewTargetExerciseSet {
+input InputNewTargetSet {
     setNumber: Int!
     repetitionNumber: Int!
     weight: Float!
@@ -21,10 +21,10 @@ input InputNewTargetExerciseSet {
     restTime: Duration!
     creationDate: LocalDateTime!
     progExerciseId: Int!
-    targetExerciseSetUpdateId: Int
+    targetSetUpdateId: Int
 }
 
-input InputTargetExerciseSet {
+input InputTargetSet {
     id: Int!
     setNumber: Int!
     repetitionNumber: Int!
@@ -34,5 +34,5 @@ input InputTargetExerciseSet {
     restTime: Duration!
     creationDate: LocalDateTime!
     progExerciseId: Int!
-    targetExerciseSetUpdateId: Int
+    targetSetUpdateId: Int
 }
