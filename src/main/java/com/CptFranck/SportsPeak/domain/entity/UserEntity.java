@@ -44,7 +44,7 @@ public class UserEntity {
     private Set<RoleEntity> roles;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "users_prog_exercise",
+    @JoinTable(name = "users_prog_exercises",
             joinColumns = @JoinColumn(name = "app_user_id"),
             inverseJoinColumns = @JoinColumn(name = "prog_exercise_id"))
     private Set<ProgExerciseEntity> progExercises;
