@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Duration;
 import java.time.LocalDate;
 
 @Getter
@@ -22,25 +21,22 @@ public class PerformanceLogEntity {
     @SequenceGenerator(name = "performance_logs_id_seq", sequenceName = "performance_logs_id_seq", allocationSize = 1)
     private Long id;
 
-    @Column(name = "set_number", nullable = false)
-    private Integer setNumber;
+    @Column(name = "set_index", nullable = false)
+    private Integer setIndex;
 
     @Column(name = "repetition_number", nullable = false)
     private Integer repetitionNumber;
 
     @Column(name = "weight", nullable = false)
-    private Integer weight;
+    private Float weight;
 
     @Column(name = "weight_unit", length = 50, nullable = false)
     private String weightUnit;
-
-    @Column(name = "rest_time", nullable = false)
-    private Duration restTime;
 
     @Column(name = "log_date", nullable = false)
     private LocalDate logDate;
 
     @ManyToOne
-    @Column(name = "target_exercise_set_id", nullable = false)
-    private TargetExerciseSetEntity targetExerciseSet;
+    @Column(name = "target_set_id", nullable = false)
+    private TargetSetEntity targetSet;
 }
