@@ -4,6 +4,8 @@ import com.CptFranck.SportsPeak.domain.dto.ExerciseDto;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
+import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
+import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.exercise.InputExercise;
 import com.CptFranck.SportsPeak.domain.input.exercise.InputNewExercise;
 import com.CptFranck.SportsPeak.mappers.Mapper;
@@ -17,22 +19,27 @@ import com.netflix.graphql.dgs.InputArgument;
 import graphql.com.google.common.collect.Sets;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 @DgsComponent
-public class ExerciseController {
+public class
+ExerciseController {
 
+    private final MuscleService muscleService;
     private final ExerciseService exerciseService;
     private final ExerciseTypeService exerciseTypeService;
-    private final MuscleService muscleService;
     private final Mapper<ExerciseEntity, ExerciseDto> exerciseMapper;
 
-    public ExerciseController(ExerciseService exerciseService, ExerciseTypeService exerciseTypeService, MuscleService muscleService, Mapper<ExerciseEntity, ExerciseDto> exerciseMapper) {
+    public ExerciseController(ExerciseService exerciseService,
+                              ExerciseTypeService exerciseTypeService,
+                              MuscleService muscleService,
+                              Mapper<ExerciseEntity, ExerciseDto> exerciseMapper) {
+        this.muscleService = muscleService;
         this.exerciseService = exerciseService;
         this.exerciseTypeService = exerciseTypeService;
-        this.muscleService = muscleService;
         this.exerciseMapper = exerciseMapper;
     }
     @DgsQuery
@@ -78,9 +85,14 @@ public class ExerciseController {
         Set<MuscleEntity> muscles = muscleService.findMany(muscleIds);
         Set<ExerciseTypeEntity> exerciseTypes = exerciseTypeService.findMany(exerciseTypeIds);
 
-        Long id = null;
+        Long id;
+        Set<ProgExerciseEntity> progExercises = new HashSet<>();
         if (inputNewExercise instanceof InputExercise) {
             id = ((InputExercise) inputNewExercise).getId();
+            progExercises = exerciseService.findOne(id).orElseThrow(() -> new ExerciseNotFoundException(id))
+                    .getProgExercises();
+        } else {
+            id = null;
         }
         ExerciseEntity exerciseEntity = new ExerciseEntity(
                 id,
@@ -88,7 +100,8 @@ public class ExerciseController {
                 inputNewExercise.getDescription(),
                 inputNewExercise.getGoal(),
                 exerciseTypes,
-                muscles
+                muscles,
+                progExercises
         );
         exerciseService.save(exerciseEntity);
         return exerciseEntity;
