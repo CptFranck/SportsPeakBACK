@@ -19,8 +19,8 @@ import java.util.Set;
 public class TargetSetEntity {
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "prog_ex_set_id_seq")
-    @SequenceGenerator(name = "prog_ex_set_id_seq", sequenceName = "prog_ex_set_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "target_set_id_seq")
+    @SequenceGenerator(name = "target_set_id_seq", sequenceName = "target_set_id_seq", allocationSize = 1)
     private Long id;
 
     @Column(name = "set_number", nullable = false)
