@@ -15,8 +15,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "target_exercise_set")
-public class TargetExerciseSetEntity {
+@Table(name = "target_set")
+public class TargetSetEntity {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "prog_ex_set_id_seq")
@@ -49,9 +49,9 @@ public class TargetExerciseSetEntity {
     private ProgExerciseEntity progExercise;
 
     @OneToOne
-    @Column(name = "target_exercise_set_update_id")
-    private TargetExerciseSetEntity targetExerciseSetUpdate;
+    @Column(name = "target_set_update_id")
+    private TargetSetEntity targetSetUpdate;
 
-    @OneToMany(mappedBy = "targetExerciseSet")
+    @OneToMany(mappedBy = "targetSet")
     private Set<PerformanceLogEntity> performanceLogs;
 }
