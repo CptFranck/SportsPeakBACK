@@ -31,13 +31,13 @@ public class ExerciseEntity {
     private String goal;
 
     @ManyToMany
-    @JoinTable(name = "classified_exercise",
+    @JoinTable(name = "classified_exercises",
             joinColumns = @JoinColumn(name = "exercise_id"),
             inverseJoinColumns = @JoinColumn(name = "exercise_type_id"))
     private Set<ExerciseTypeEntity> exerciseTypes;
 
     @ManyToMany
-    @JoinTable(name = "solicited_muscle",
+    @JoinTable(name = "solicited_muscles",
             joinColumns = @JoinColumn(name = "exercise_id"),
             inverseJoinColumns = @JoinColumn(name = "muscle_id"))
     private Set<MuscleEntity> muscles;
