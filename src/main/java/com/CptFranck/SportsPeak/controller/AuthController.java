@@ -5,6 +5,7 @@ import com.CptFranck.SportsPeak.domain.dto.AuthDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
 import com.CptFranck.SportsPeak.mappers.Mapper;
@@ -18,7 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -63,8 +64,7 @@ public class AuthController {
 
     private UserEntity inputToEntity(InputRegisterNewUser inputRegisterNewUser) {
         Optional<RoleEntity> userRole = roleService.findByName("ROLE_USER");
-        Collection<RoleEntity> roles = Set.of(userRole.orElseThrow(
-                () -> new RuntimeException("ROLE_USER not found or does not exist")));
+        Set<RoleEntity> roles = Set.of(userRole.orElseThrow(() -> new RoleNotFoundException("ROLE_USER")));
 
         UserEntity userEntity = new UserEntity(
                 null,
@@ -73,9 +73,10 @@ public class AuthController {
                 inputRegisterNewUser.getLastName(),
                 inputRegisterNewUser.getUsername(),
                 inputRegisterNewUser.getPassword(),
-                roles
+                roles,
+                new HashSet<>(),
+                new HashSet<>()
         );
-        authService.register(userEntity);
-        return userEntity;
+        return authService.register(userEntity);
     }
 }
