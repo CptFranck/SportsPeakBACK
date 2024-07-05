@@ -27,10 +27,10 @@ public class ProgExerciseEntity {
     @Column(name = "note", columnDefinition = "TEXT", nullable = false)
     private String note;
 
-    @Column(name = "visibility", nullable = false)
+    @Column(name = "visibility", length = 50, nullable = false)
     private String visibility;
 
-    @Column(name = "trust_label", nullable = false)
+    @Column(name = "trust_label", length = 50, nullable = false)
     private String trustLabel;
 
     @ManyToMany(mappedBy = "progExercises")
