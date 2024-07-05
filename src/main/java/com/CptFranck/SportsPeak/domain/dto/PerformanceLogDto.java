@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Duration;
 import java.time.LocalDate;
 
 @Data
@@ -15,17 +14,15 @@ import java.time.LocalDate;
 public class PerformanceLogDto {
     private Long id;
 
-    private Integer setNumber;
+    private Integer setIndex;
 
     private Integer repetitionNumber;
 
-    private Integer weight;
+    private Float weight;
 
     private String weightUnit;
 
-    private Duration restTime;
-
     private LocalDate logDate;
 
-    private TargetExerciseSetDto targetExerciseSet;
+    private TargetSetDto targetExerciseSet;
 }
