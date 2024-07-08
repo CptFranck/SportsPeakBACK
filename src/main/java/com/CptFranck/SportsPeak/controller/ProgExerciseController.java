@@ -75,12 +75,12 @@ public class ProgExerciseController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
-    public Long deleteProgExercise(@InputArgument Long privilegeId) {
-        if (!progExerciseService.exists(privilegeId)) {
+    public Long deleteProgExercise(@InputArgument Long progExerciseId) {
+        if (!progExerciseService.exists(progExerciseId)) {
             return null;
         }
-        progExerciseService.delete(privilegeId);
-        return privilegeId;
+        progExerciseService.delete(progExerciseId);
+        return progExerciseId;
     }
 
     private ProgExerciseEntity inputToEntity(InputNewProgExercise inputNewProgExercise) {
