@@ -25,6 +25,8 @@ public interface UserService {
 
     boolean exists(Long id);
 
+    UserEntity save(UserEntity user);
+
     void delete(Long id);
 
     UserEntity changeIdentity(Long id, String firstName, String lastName);
