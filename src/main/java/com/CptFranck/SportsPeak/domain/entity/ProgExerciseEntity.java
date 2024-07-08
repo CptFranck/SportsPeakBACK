@@ -34,7 +34,7 @@ public class ProgExerciseEntity {
     private String trustLabel;
 
     @ManyToMany(mappedBy = "progExercises")
-    private Set<UserEntity> users;
+    private Set<UserEntity> subscribedUsers;
 
     @ManyToOne
     @JoinColumn(name = "creator_id", nullable = false)
