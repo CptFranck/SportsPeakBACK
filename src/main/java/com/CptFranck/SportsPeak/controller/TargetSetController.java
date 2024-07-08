@@ -4,6 +4,7 @@ import com.CptFranck.SportsPeak.domain.dto.TargetSetDto;
 import com.CptFranck.SportsPeak.domain.entity.PerformanceLogEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
+import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputNewTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSet;
 import com.CptFranck.SportsPeak.mappers.Mapper;
@@ -19,7 +20,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 
 @DgsComponent
 public class TargetSetController {
@@ -77,16 +77,17 @@ public class TargetSetController {
     }
 
     private TargetSetEntity inputToEntity(InputNewTargetSet inputNewTargetSet) {
+        ProgExerciseEntity progExercise = progExerciseService.findOne(inputNewTargetSet.getProgExerciseId())
+                .orElseThrow(() -> new ExerciseNotFoundException(inputNewTargetSet.getProgExerciseId()));
+        TargetSetEntity targetSetUpdate = targetSetService.findOne(inputNewTargetSet.getTargetSetUpdateId())
+                .orElse(null);
+
         Long id = null;
-        AtomicReference<ProgExerciseEntity> progExercise = new AtomicReference<>();
-        AtomicReference<TargetSetEntity> targetSetUpdate = new AtomicReference<>();
         Set<PerformanceLogEntity> performanceLogs = new HashSet<>();
         if (inputNewTargetSet instanceof InputTargetSet) {
             id = ((InputTargetSet) inputNewTargetSet).getId();
             Optional<TargetSetEntity> targetSet = targetSetService.findOne(id);
             targetSet.ifPresent(localTargetSet -> {
-                progExercise.set(localTargetSet.getProgExercise());
-                targetSetUpdate.set(localTargetSet.getTargetSetUpdate());
                 performanceLogs.addAll(localTargetSet.getPerformanceLogs());
             });
         }
@@ -100,15 +101,15 @@ public class TargetSetController {
                 inputNewTargetSet.getPhysicalExertionUnitTime(),
                 inputNewTargetSet.getRestTime(),
                 inputNewTargetSet.getCreationDate(),
-                progExercise.get(),
-                targetSetUpdate.get(),
+                progExercise,
+                targetSetUpdate,
                 performanceLogs
         );
 
         targetSet = targetSetService.save(targetSet);
         if (id == null) {
-            progExercise.get().getTargetSets().add(targetSet);
-            progExerciseService.save(progExercise.get());
+            progExercise.getTargetSets().add(targetSet);
+            progExerciseService.save(progExercise);
         }
         return targetSet;
     }
