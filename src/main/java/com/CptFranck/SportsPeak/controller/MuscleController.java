@@ -90,7 +90,7 @@ public class MuscleController {
                 exercises
         );
 
-        muscleService.save(muscle);
+        muscle = muscleService.save(muscle);
         exerciseService.updateMuscleRelation(newExerciseIds, oldExerciseIds, muscle);
         return muscle;
     }

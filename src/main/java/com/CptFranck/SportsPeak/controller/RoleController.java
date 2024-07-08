@@ -97,7 +97,7 @@ public class RoleController {
                 privileges
         );
 
-        roleService.save(role);
+        role = roleService.save(role);
         userService.updateRoleRelation(newUserIds, oldUserIds, role);
         return role;
     }

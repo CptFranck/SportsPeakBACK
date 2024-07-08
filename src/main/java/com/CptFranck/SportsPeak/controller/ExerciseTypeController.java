@@ -88,7 +88,7 @@ public class ExerciseTypeController {
                 inputNewExerciseType.getGoal(),
                 exercises
         );
-        exerciseTypeService.save(exerciseType);
+        exerciseType = exerciseTypeService.save(exerciseType);
         exerciseService.updateExerciseTypeRelation(newExerciseIds, oldExerciseIds, exerciseType);
         return exerciseType;
     }

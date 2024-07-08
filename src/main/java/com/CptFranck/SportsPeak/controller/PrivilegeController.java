@@ -90,7 +90,7 @@ public class PrivilegeController {
                 roles
         );
 
-        privilegeService.save(privilege);
+        privilege = privilegeService.save(privilege);
         roleService.updatePrivilegeRelation(newRoleIds, oldRoleIds, privilege);
         return privilege;
     }
