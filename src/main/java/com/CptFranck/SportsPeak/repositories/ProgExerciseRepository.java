@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface ProgExerciseRepository extends CrudRepository<ProgExerciseEntity, Long> {
-    List<ProgExerciseEntity> findBySubscribedUsersId(Long id);
+    List<ProgExerciseEntity> findAllBySubscribedUsersId(Long id);
 }

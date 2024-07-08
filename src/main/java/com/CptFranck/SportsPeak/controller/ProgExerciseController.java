@@ -54,8 +54,7 @@ public class ProgExerciseController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsQuery
     public List<ProgExerciseDto> getProgExercisesByUserId(@InputArgument Long userId) {
-        List<ProgExerciseEntity> progExercises = progExerciseService.findByUserId(userId);
-        return progExercises.stream().map(progExerciseMapper::mapTo).toList();
+        return progExerciseService.findAllByUserId(userId).stream().map(progExerciseMapper::mapTo).toList();
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")

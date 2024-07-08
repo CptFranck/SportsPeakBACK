@@ -49,8 +49,8 @@ public class ProgExerciseServiceImpl implements ProgExerciseService {
     }
 
     @Override
-    public List<ProgExerciseEntity> findByUserId(Long userId) {
-        return progExerciseRepository.findBySubscribedUsersId(userId);
+    public List<ProgExerciseEntity> findAllByUserId(Long userId) {
+        return progExerciseRepository.findAllBySubscribedUsersId(userId);
     }
 
     @Override
