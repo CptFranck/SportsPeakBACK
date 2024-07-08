@@ -66,12 +66,12 @@ public class PerformanceLogController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
-    public Long deletePerformanceLog(@InputArgument Long targetSetId) {
-        if (!performanceLogService.exists(targetSetId)) {
+    public Long deletePerformanceLog(@InputArgument Long performanceLogId) {
+        if (!performanceLogService.exists(performanceLogId)) {
             return null;
         }
-        performanceLogService.delete(targetSetId);
-        return targetSetId;
+        performanceLogService.delete(performanceLogId);
+        return performanceLogId;
     }
 
     private PerformanceLogEntity inputToEntity(InputNewPerformanceLog inputNewPerformanceLog) {
