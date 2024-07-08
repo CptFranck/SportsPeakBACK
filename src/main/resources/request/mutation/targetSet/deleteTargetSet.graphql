@@ -1,0 +1,3 @@
+mutation ($targetSetId : Int!){
+    deleteTargetSet(targetSetId: $targetSetId)
+}

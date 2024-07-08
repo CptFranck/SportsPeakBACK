@@ -1,0 +1,22 @@
+mutation ($inputTargetSet: InputTargetSet!){
+    modifyTargetSet(inputTargetSet: $inputTargetSet) {
+        id
+        setNumber
+        repetitionNumber
+        weight
+        weightUnit
+        physicalExertionUnitTime
+        restTime
+        targetSetUpdate {
+            id
+        }
+        performanceLogs {
+            id
+            setIndex
+            repetitionNumber
+            weight
+            weightUnit
+            logDate
+        }
+    }
+}
