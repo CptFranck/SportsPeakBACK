@@ -1,7 +1,6 @@
 package com.CptFranck.SportsPeak.service.impl;
 
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
-import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.*;
@@ -63,32 +62,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         this.findMany(newIds).forEach(p -> {
             p.getRoles().add(roleEntity);
-            userRepository.save(p);
-        });
-    }
-
-    @Override
-    public void updateProgExerciseCreatedRelations(Set<Long> newIds, Set<Long> oldIds, ProgExerciseEntity progExercise) {
-        this.findMany(oldIds).forEach(p -> {
-            p.getProgExercisesCreated().removeIf(et -> Objects.equals(et.getId(), progExercise.getId()));
-            userRepository.save(p);
-        });
-
-        this.findMany(newIds).forEach(p -> {
-            p.getProgExercisesCreated().add(progExercise);
-            userRepository.save(p);
-        });
-    }
-
-    @Override
-    public void updateUserProgExerciseRelations(Set<Long> newIds, Set<Long> oldIds, ProgExerciseEntity progExercise) {
-        this.findMany(oldIds).forEach(p -> {
-            p.getProgExercises().removeIf(et -> Objects.equals(et.getId(), progExercise.getId()));
-            userRepository.save(p);
-        });
-
-        this.findMany(newIds).forEach(p -> {
-            p.getProgExercises().add(progExercise);
             userRepository.save(p);
         });
     }
