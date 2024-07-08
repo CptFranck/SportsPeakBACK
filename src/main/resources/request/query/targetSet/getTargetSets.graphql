@@ -1,0 +1,22 @@
+query {
+    getTargetSets {
+        id
+        setNumber
+        repetitionNumber
+        weight
+        weightUnit
+        physicalExertionUnitTime
+        restTime
+        targetSetUpdate {
+            id
+        }
+        performanceLogs {
+            id
+            setIndex
+            repetitionNumber
+            weight
+            weightUnit
+            logDate
+        }
+    }
+}
