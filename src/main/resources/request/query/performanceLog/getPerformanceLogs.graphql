@@ -1,0 +1,13 @@
+query {
+    getPerformanceLogs {
+        id
+        setIndex
+        repetitionNumber
+        weight
+        weightUnit
+        logDate
+        targetSet {
+            id
+        }
+    }
+}

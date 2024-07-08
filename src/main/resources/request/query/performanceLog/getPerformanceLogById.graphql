@@ -1,0 +1,13 @@
+query ($id : Int!){
+    getPerformanceLogById(id: $id) {
+        id
+        setIndex
+        repetitionNumber
+        weight
+        weightUnit
+        logDate
+        targetSet {
+            id
+        }
+    }
+}
