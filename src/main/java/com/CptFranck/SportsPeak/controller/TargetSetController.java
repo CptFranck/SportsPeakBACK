@@ -48,7 +48,7 @@ public class TargetSetController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsQuery
     public List<TargetSetDto> getTargetSetsByProgExerciseId(@InputArgument Long progExerciseId) {
-        return targetSetService.findByProgExerciseId(progExerciseId).stream().map(targetSetMapper::mapTo).toList();
+        return targetSetService.findAllByProgExerciseId(progExerciseId).stream().map(targetSetMapper::mapTo).toList();
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
