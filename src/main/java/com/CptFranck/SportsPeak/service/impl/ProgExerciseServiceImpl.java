@@ -51,6 +51,11 @@ public class ProgExerciseServiceImpl implements ProgExerciseService {
     }
 
     @Override
+    public List<ProgExerciseEntity> findByUserId(Long userId) {
+        return progExerciseRepository.findBySubscribedUsersId(userId);
+    }
+
+    @Override
     public void updateTargetExerciseSetRelation(Set<Long> newIds, Set<Long> oldIds, TargetSetEntity targetSet) {
         this.findMany(oldIds).forEach(e -> {
             e.getTargetSets().removeIf(et -> Objects.equals(et.getId(), targetSet.getId()));

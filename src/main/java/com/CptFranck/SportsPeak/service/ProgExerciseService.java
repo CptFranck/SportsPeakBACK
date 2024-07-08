@@ -15,6 +15,8 @@ public interface ProgExerciseService {
 
     Set<ProgExerciseEntity> findMany(Set<Long> ids);
 
+    List<ProgExerciseEntity> findByUserId(Long userId);
+
     void updateTargetExerciseSetRelation(Set<Long> newIds, Set<Long> oldIds, TargetSetEntity targetSet);
 
     boolean exists(Long id);
