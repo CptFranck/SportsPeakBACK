@@ -103,7 +103,7 @@ ExerciseController {
                 muscles,
                 progExercises
         );
-        exerciseService.save(exerciseEntity);
-        return exerciseEntity;
+
+        return exerciseService.save(exerciseEntity);
     }
 }
