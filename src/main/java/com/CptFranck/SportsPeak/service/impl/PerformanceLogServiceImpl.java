@@ -49,6 +49,11 @@ public class PerformanceLogServiceImpl implements PerformanceLogService {
     }
 
     @Override
+    public List<PerformanceLogEntity> findAllByTargetSetId(Long targetSetId) {
+        return performanceLogRepository.findAllByTargetSetId(targetSetId);
+    }
+
+    @Override
     public boolean exists(Long id) {
         return performanceLogRepository.existsById(id);
     }

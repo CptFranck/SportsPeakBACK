@@ -14,6 +14,8 @@ public interface PerformanceLogService {
 
     Set<PerformanceLogEntity> findMany(Set<Long> ids);
 
+    List<PerformanceLogEntity> findAllByTargetSetId(Long id);
+
     boolean exists(Long id);
 
     PerformanceLogEntity save(PerformanceLogEntity targetExerciseSet);
