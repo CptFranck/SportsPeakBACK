@@ -42,6 +42,13 @@ public class PerformanceLogController {
         return targetSet.map(performanceLogMapper::mapTo).orElse(null);
     }
 
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @DgsQuery
+    public List<PerformanceLogDto> getPerformanceLogsByTargetSetsId(@InputArgument Long targetSetId) {
+        return performanceLogService.findAllByTargetSetId(targetSetId).stream().map(performanceLogMapper::mapTo).toList();
+    }
+
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
     public PerformanceLogDto addPerformanceLog(@InputArgument InputNewPerformanceLog inputNewPerformanceLog) {
