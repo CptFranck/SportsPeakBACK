@@ -1,35 +1,23 @@
 query ($progExerciseId : Int!){
     getTargetSetsByProgExerciseId(progExerciseId: $progExerciseId) {
         id
-        name
-        note
-        exercise {
+        id
+        setNumber
+        repetitionNumber
+        weight
+        weightUnit
+        physicalExertionUnitTime
+        restTime
+        targetSetUpdate {
             id
-            name
-            description
-            goal
         }
-        targetSets {
+        performanceLogs {
             id
-            setNumber
+            setIndex
             repetitionNumber
             weight
             weightUnit
-            physicalExertionUnitTime
-            restTime
-            creationDate
-            targetSetUpdate {
-                id
-            }
+            logDate
         }
-        creator {
-            id
-            email
-            firstName
-            lastName
-            username
-        }
-        visibility
-        label
     }
 }
