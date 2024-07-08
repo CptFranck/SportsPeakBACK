@@ -1,0 +1,13 @@
+mutation ($inputPerformanceLog: InputPerformanceLog!){
+    modifyPerformanceLog(inputPerformanceLog: $inputPerformanceLog) {
+        id
+        setIndex
+        repetitionNumber
+        weight
+        weightUnit
+        logDate
+        targetSet {
+            id
+        }
+    }
+}
