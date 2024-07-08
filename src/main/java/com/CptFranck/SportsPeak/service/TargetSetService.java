@@ -1,6 +1,5 @@
 package com.CptFranck.SportsPeak.service;
 
-import com.CptFranck.SportsPeak.domain.entity.PerformanceLogEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 
 import java.util.List;
@@ -16,8 +15,6 @@ public interface TargetSetService {
     List<TargetSetEntity> findByProgExerciseId(Long progExerciseId);
 
     Set<TargetSetEntity> findMany(Set<Long> ids);
-
-    void updatePerformanceLogRelation(Set<Long> newIds, Set<Long> oldIds, PerformanceLogEntity performanceLog);
 
     boolean exists(Long id);
 
