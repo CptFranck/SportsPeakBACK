@@ -52,6 +52,13 @@ public class ProgExerciseController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
+    @DgsQuery
+    public List<ProgExerciseDto> getProgExercisesByUserId(@InputArgument Long userId) {
+        List<ProgExerciseEntity> muscleEntity = progExerciseService.findByUserId(userId);
+        return muscleEntity.stream().map(progExerciseMapper::mapTo).toList();
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
     public ProgExerciseDto addProgExercise(@InputArgument InputNewProgExercise inputNewProgExercise) {
         return progExerciseMapper.mapTo(inputToEntity(inputNewProgExercise));
