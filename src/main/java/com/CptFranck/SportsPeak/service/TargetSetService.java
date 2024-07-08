@@ -12,7 +12,7 @@ public interface TargetSetService {
 
     Optional<TargetSetEntity> findOne(Long id);
 
-    List<TargetSetEntity> findByProgExerciseId(Long progExerciseId);
+    List<TargetSetEntity> findAllByProgExerciseId(Long progExerciseId);
 
     Set<TargetSetEntity> findMany(Set<Long> ids);
 

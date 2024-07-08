@@ -40,8 +40,8 @@ public class TargetSetServiceImpl implements TargetSetService {
     }
 
     @Override
-    public List<TargetSetEntity> findByProgExerciseId(Long progExerciseId) {
-        return targetSetRepository.findByProgExerciseId(progExerciseId);
+    public List<TargetSetEntity> findAllByProgExerciseId(Long progExerciseId) {
+        return targetSetRepository.findAllByProgExerciseId(progExerciseId);
     }
 
     @Override
