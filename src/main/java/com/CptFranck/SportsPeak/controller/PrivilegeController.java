@@ -42,8 +42,8 @@ public class PrivilegeController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsQuery
     public PrivilegeDto getPrivilegeById(@InputArgument Long id) {
-        Optional<PrivilegeEntity> muscleEntity = privilegeService.findOne(id);
-        return muscleEntity.map(privilegeMapper::mapTo).orElse(null);
+        Optional<PrivilegeEntity> privilege = privilegeService.findOne(id);
+        return privilege.map(privilegeMapper::mapTo).orElse(null);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")

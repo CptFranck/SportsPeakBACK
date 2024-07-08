@@ -46,8 +46,8 @@ public class RoleController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsQuery
     public RoleDto getRoleById(@InputArgument Long id) {
-        Optional<RoleEntity> muscleEntity = roleService.findOne(id);
-        return muscleEntity.map(roleMapper::mapTo).orElse(null);
+        Optional<RoleEntity> role = roleService.findOne(id);
+        return role.map(roleMapper::mapTo).orElse(null);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
