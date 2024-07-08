@@ -119,6 +119,8 @@ public class ProgExerciseController {
         if (id == null) {
             creator.getProgExercises().add(progExerciseEntity);
             userService.save(creator);
+            exercise.getProgExercises().add(progExerciseEntity);
+            exerciseService.save(exercise);
         }
         return progExerciseEntity;
     }
