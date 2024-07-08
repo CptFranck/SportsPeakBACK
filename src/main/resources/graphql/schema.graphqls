@@ -18,6 +18,7 @@ type Query {
 
     getPerformanceLogs: [PerformanceLog]!
     getPerformanceLogById(id: Int): PerformanceLog
+    getPerformanceLogsByTargetSetsId(targetSetId: Int): ProgExercise
 
     getExercises: [Exercise]!
     getExerciseById(id: Int): Exercise
@@ -58,7 +59,7 @@ type Mutation {
 
     addPerformanceLog(inputNewPerformanceLog: InputNewPerformanceLog!): PerformanceLog!
     modifyPerformanceLog(inputPerformanceLog: InputPerformanceLog!): PerformanceLog!
-    deletePerformanceLog(targetSetId: Int!): Int!
+    deletePerformanceLog(performanceLogId: Int!): Int!
 
     addExercise(inputNewExercise: InputNewExercise!): Exercise!
     modifyExercise(inputExercise: InputExercise!): Exercise!
