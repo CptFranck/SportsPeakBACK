@@ -114,9 +114,12 @@ public class ProgExerciseController {
                 exercise,
                 targetSets
         );
-        creator.getProgExercises().add(progExerciseEntity);
-        userService.save(creator);
-        progExerciseService.save(progExerciseEntity);
+
+        progExerciseEntity = progExerciseService.save(progExerciseEntity);
+        if (id == null) {
+            creator.getProgExercises().add(progExerciseEntity);
+            userService.save(creator);
+        }
         return progExerciseEntity;
     }
 }

@@ -105,9 +105,11 @@ public class TargetSetController {
                 performanceLogs
         );
 
-        progExercise.get().getTargetSets().add(targetSet);
-        progExerciseService.save(progExercise.get());
-        targetSetService.save(targetSet);
+        targetSet = targetSetService.save(targetSet);
+        if (id == null) {
+            progExercise.get().getTargetSets().add(targetSet);
+            progExerciseService.save(progExercise.get());
+        }
         return targetSet;
     }
 }
