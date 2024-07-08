@@ -14,11 +14,11 @@ type Query {
 
     getTargetSets: [TargetSet]!
     getTargetSetById(id: Int): TargetSet
-    getTargetSetsByProgExerciseId(progExerciseId: Int): ProgExercise
+    getTargetSetsByProgExerciseId(progExerciseId: Int): TargetSet
 
     getPerformanceLogs: [PerformanceLog]!
     getPerformanceLogById(id: Int): PerformanceLog
-    getPerformanceLogsByTargetSetsId(targetSetId: Int): ProgExercise
+    getPerformanceLogsByTargetSetsId(targetSetId: Int): PerformanceLog
 
     getExercises: [Exercise]!
     getExerciseById(id: Int): Exercise
