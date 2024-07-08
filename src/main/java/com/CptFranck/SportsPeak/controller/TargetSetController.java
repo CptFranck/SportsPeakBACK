@@ -7,6 +7,7 @@ import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputNewTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSet;
 import com.CptFranck.SportsPeak.mappers.Mapper;
+import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import com.CptFranck.SportsPeak.service.TargetSetService;
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsMutation;
@@ -24,12 +25,13 @@ import java.util.concurrent.atomic.AtomicReference;
 public class TargetSetController {
 
     private final TargetSetService targetSetService;
+    private final ProgExerciseService progExerciseService;
     private final Mapper<TargetSetEntity, TargetSetDto> targetSetMapper;
 
-    public TargetSetController(TargetSetService targetSetService, Mapper<TargetSetEntity, TargetSetDto> targetSetMapper) {
+    public TargetSetController(TargetSetService targetSetService, ProgExerciseService progExerciseService, Mapper<TargetSetEntity, TargetSetDto> targetSetMapper) {
         this.targetSetService = targetSetService;
-        this.targetSetMapper = targetSetMapper
-        ;
+        this.progExerciseService = progExerciseService;
+        this.targetSetMapper = targetSetMapper;
     }
 
     @DgsQuery
@@ -39,8 +41,14 @@ public class TargetSetController {
 
     @DgsQuery
     public TargetSetDto getTargetSetById(@InputArgument Long id) {
-        Optional<TargetSetEntity> muscleEntity = targetSetService.findOne(id);
-        return muscleEntity.map(targetSetMapper::mapTo).orElse(null);
+        Optional<TargetSetEntity> targetSet = targetSetService.findOne(id);
+        return targetSet.map(targetSetMapper::mapTo).orElse(null);
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @DgsQuery
+    public List<TargetSetDto> getTargetSetsByProgExerciseId(@InputArgument Long progExerciseId) {
+        return targetSetService.findByProgExerciseId(progExerciseId).stream().map(targetSetMapper::mapTo).toList();
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -83,7 +91,7 @@ public class TargetSetController {
             });
         }
 
-        TargetSetEntity progExerciseEntity = new TargetSetEntity(
+        TargetSetEntity targetSet = new TargetSetEntity(
                 id,
                 inputNewTargetSet.getSetNumber(),
                 inputNewTargetSet.getRepetitionNumber(),
@@ -97,7 +105,9 @@ public class TargetSetController {
                 performanceLogs
         );
 
-        targetSetService.save(progExerciseEntity);
-        return progExerciseEntity;
+        progExercise.get().getTargetSets().add(targetSet);
+        progExerciseService.save(progExercise.get());
+        targetSetService.save(targetSet);
+        return targetSet;
     }
 }
