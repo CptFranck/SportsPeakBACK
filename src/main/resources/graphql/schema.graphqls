@@ -11,6 +11,9 @@ type Query {
     getProgExercises: [ProgExercise]!
     getProgExerciseById(id: Int): ProgExercise
 
+    getTargetSets: [TargetSet]!
+    getTargetSetById(id: Int): TargetSet
+
     getExercises: [Exercise]!
     getExerciseById(id: Int): Exercise
 
@@ -43,6 +46,10 @@ type Mutation {
     addProgExercise(inputNewProgExercise: InputNewProgExercise!): ProgExercise!
     modifyProgExercise(inputProgExercise: InputProgExercise!): ProgExercise!
     deleteProgExercise(progExerciseId: Int!): Int!
+
+    addTargetSet(inputNewTargetSet: InputNewTargetSet!): TargetSet!
+    modifyTargetSet(inputTargetSet: InputTargetSet!): TargetSet!
+    deleteTargetSet(targetSetId: Int!): Int!
 
     addExercise(inputNewExercise: InputNewExercise!): Exercise!
     modifyExercise(inputExercise: InputExercise!): Exercise!
