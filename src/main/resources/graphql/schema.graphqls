@@ -8,6 +8,9 @@ type Query {
     getPrivileges: [Privilege]!
     getPrivilegeById(id: Int): Privilege
 
+    getProgExercises: [ProgExercise]!
+    getProgExerciseById(id: Int): ProgExercise
+
     getExercises: [Exercise]!
     getExerciseById(id: Int): Exercise
 
@@ -36,6 +39,10 @@ type Mutation {
     addPrivilege(inputNewPrivilege: InputNewPrivilege!): Privilege!
     modifyPrivilege(inputPrivilege: InputPrivilege!): Privilege!
     deletePrivilege(privilegeId: Int!): Int!
+
+    addProgExercise(inputNewProgExercise: InputNewProgExercise!): ProgExercise!
+    modifyProgExercise(inputProgExercise: InputProgExercise!): ProgExercise!
+    deleteProgExercise(progExerciseId: Int!): Int!
 
     addExercise(inputNewExercise: InputNewExercise!): Exercise!
     modifyExercise(inputExercise: InputExercise!): Exercise!
