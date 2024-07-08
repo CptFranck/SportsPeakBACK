@@ -1,13 +1,11 @@
 package com.CptFranck.SportsPeak.service.impl;
 
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
-import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.repositories.ProgExerciseRepository;
 import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -54,20 +52,6 @@ public class ProgExerciseServiceImpl implements ProgExerciseService {
     public List<ProgExerciseEntity> findByUserId(Long userId) {
         return progExerciseRepository.findBySubscribedUsersId(userId);
     }
-
-    @Override
-    public void updateTargetExerciseSetRelation(Set<Long> newIds, Set<Long> oldIds, TargetSetEntity targetSet) {
-        this.findMany(oldIds).forEach(e -> {
-            e.getTargetSets().removeIf(et -> Objects.equals(et.getId(), targetSet.getId()));
-            this.save(e);
-        });
-
-        this.findMany(newIds).forEach(e -> {
-            e.getTargetSets().add(targetSet);
-            this.save(e);
-        });
-    }
-
 
     @Override
     public boolean exists(Long id) {
