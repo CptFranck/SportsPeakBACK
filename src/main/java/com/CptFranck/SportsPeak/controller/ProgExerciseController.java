@@ -47,15 +47,15 @@ public class ProgExerciseController {
 
     @DgsQuery
     public ProgExerciseDto getProgExerciseById(@InputArgument Long id) {
-        Optional<ProgExerciseEntity> muscleEntity = progExerciseService.findOne(id);
-        return muscleEntity.map(progExerciseMapper::mapTo).orElse(null);
+        Optional<ProgExerciseEntity> progExercise = progExerciseService.findOne(id);
+        return progExercise.map(progExerciseMapper::mapTo).orElse(null);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsQuery
     public List<ProgExerciseDto> getProgExercisesByUserId(@InputArgument Long userId) {
-        List<ProgExerciseEntity> muscleEntity = progExerciseService.findByUserId(userId);
-        return muscleEntity.stream().map(progExerciseMapper::mapTo).toList();
+        List<ProgExerciseEntity> progExercises = progExerciseService.findByUserId(userId);
+        return progExercises.stream().map(progExerciseMapper::mapTo).toList();
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -114,7 +114,8 @@ public class ProgExerciseController {
                 exercise,
                 targetSets
         );
-
+        creator.getProgExercises().add(progExerciseEntity);
+        userService.save(creator);
         progExerciseService.save(progExerciseEntity);
         return progExerciseEntity;
     }
