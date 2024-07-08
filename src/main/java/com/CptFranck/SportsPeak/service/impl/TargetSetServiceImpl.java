@@ -42,6 +42,11 @@ public class TargetSetServiceImpl implements TargetSetService {
     }
 
     @Override
+    public List<TargetSetEntity> findByProgExerciseId(Long progExerciseId) {
+        return targetSetRepository.findByProgExerciseId(progExerciseId);
+    }
+
+    @Override
     public Set<TargetSetEntity> findMany(Set<Long> ids) {
         return ids.stream()
                 .map(this::findOne)

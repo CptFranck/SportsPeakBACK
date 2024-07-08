@@ -13,6 +13,8 @@ public interface TargetSetService {
 
     Optional<TargetSetEntity> findOne(Long id);
 
+    List<TargetSetEntity> findByProgExerciseId(Long progExerciseId);
+
     Set<TargetSetEntity> findMany(Set<Long> ids);
 
     void updatePerformanceLogRelation(Set<Long> newIds, Set<Long> oldIds, PerformanceLogEntity performanceLog);
