@@ -10,6 +10,7 @@ type Query {
 
     getProgExercises: [ProgExercise]!
     getProgExerciseById(id: Int): ProgExercise
+    getProgExercisesByUserId(userId: Int): ProgExercise
 
     getTargetSets: [TargetSet]!
     getTargetSetById(id: Int): TargetSet
