@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -22,7 +22,7 @@ public class PerformanceLogDto {
 
     private String weightUnit;
 
-    private LocalDate logDate;
+    private LocalDateTime logDate;
 
     private TargetSetDto targetExerciseSet;
 }
