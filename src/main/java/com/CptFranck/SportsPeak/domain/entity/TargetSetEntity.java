@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Duration;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
@@ -37,14 +37,14 @@ public class TargetSetEntity {
     @Enumerated(EnumType.STRING)
     private WeightUnit weightUnit;
 
-    @Column(name = "physical_exertion_unit_time", nullable = false)
+    @Column(name = "physical_exertion_unit_time", nullable = false, columnDefinition = "interval")
     private Duration physicalExertionUnitTime;
 
     @Column(name = "rest_time", nullable = false)
     private Duration restTime;
 
-    @Column(name = "creation_date", nullable = false)
-    private LocalDate creationDate;
+    @Column(name = "creation_date", nullable = false, columnDefinition = "TIMESTAMP")
+    private LocalDateTime creationDate;
 
     @ManyToOne
     @JoinColumn(name = "prog_exercise_id", nullable = false)
