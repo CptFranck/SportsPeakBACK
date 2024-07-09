@@ -118,7 +118,7 @@ public class ProgExerciseController {
         );
 
         progExerciseEntity = progExerciseService.save(progExerciseEntity);
-        creator.getProgExercises().add(progExerciseEntity);
+        creator.getSubscribedProgExercises().add(progExerciseEntity);
         userService.save(creator);
         exercise.getProgExercises().add(progExerciseEntity);
         exerciseService.save(exercise);
