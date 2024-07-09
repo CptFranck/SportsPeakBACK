@@ -3,7 +3,7 @@ type ProgExercise {
     name: String!
     note: String!
     visibility: String!
-    label: String!
+    trustLabel: String!
     creator: User!
     exercise: Exercise!
     targetSets: [TargetSet]!
@@ -13,7 +13,6 @@ input InputNewProgExercise {
     name: String!
     note: String!
     visibility: String!
-    label: String!
     creatorId: Int!
     exerciseId: Int!
 }
@@ -23,7 +22,9 @@ input InputProgExercise {
     name: String!
     note: String!
     visibility: String!
-    label: String!
-    creatorId: Int!
-    exerciseId: Int!
+}
+
+input InputProgExerciseTrustLabel{
+    id: Int!
+    trustLabel: String!
 }
