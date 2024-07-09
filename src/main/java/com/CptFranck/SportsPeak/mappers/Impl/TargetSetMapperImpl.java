@@ -3,6 +3,7 @@ package com.CptFranck.SportsPeak.mappers.Impl;
 import com.CptFranck.SportsPeak.domain.dto.TargetSetDto;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.mappers.Mapper;
+import com.CptFranck.SportsPeak.mappers.typeConverter.DurationToInputDurationConverter;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,7 @@ public class TargetSetMapperImpl implements Mapper<TargetSetEntity, TargetSetDto
 
     public TargetSetMapperImpl(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
+        this.modelMapper.addConverter(new DurationToInputDurationConverter());
     }
 
     @Override
