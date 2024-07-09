@@ -17,8 +17,8 @@ input InputNewTargetSet {
     repetitionNumber: Int!
     weight: Float!
     weightUnit: String!
-    physicalExertionUnitTime: Duration!
-    restTime: Duration!
+    physicalExertionUnitTime: InputDuration!
+    restTime: InputDuration!
     creationDate: LocalDateTime!
     progExerciseId: Int!
     targetSetUpdateId: Int
@@ -30,8 +30,8 @@ input InputTargetSet {
     repetitionNumber: Int!
     weight: Float!
     weightUnit: String!
-    physicalExertionUnitTime: Duration!
-    restTime: Duration!
+    physicalExertionUnitTime: InputDuration!
+    restTime: InputDuration!
     creationDate: LocalDateTime!
     progExerciseId: Int!
     targetSetUpdateId: Int
