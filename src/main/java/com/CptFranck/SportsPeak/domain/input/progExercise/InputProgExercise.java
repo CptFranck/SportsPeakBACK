@@ -1,12 +1,15 @@
 package com.CptFranck.SportsPeak.domain.input.progExercise;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class InputProgExercise extends InputNewProgExercise {
+public class InputProgExercise {
 
     private Long id;
 
+    private String name;
+
+    private String note;
+
+    private String visibility;
 }
