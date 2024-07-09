@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -33,8 +33,8 @@ public class PerformanceLogEntity {
     @Column(name = "weight_unit", length = 50, nullable = false)
     private String weightUnit;
 
-    @Column(name = "log_date", nullable = false)
-    private LocalDate logDate;
+    @Column(name = "log_date", nullable = false, columnDefinition = "TIMESTAMP")
+    private LocalDateTime logDate;
 
     @ManyToOne
     @JoinColumn(name = "target_set_id", nullable = false)
