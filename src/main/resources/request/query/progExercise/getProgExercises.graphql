@@ -30,6 +30,6 @@ query {
             username
         }
         visibility
-        label
+        trustLabel
     }
 }
