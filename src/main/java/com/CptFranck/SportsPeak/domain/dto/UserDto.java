@@ -24,7 +24,7 @@ public class UserDto {
     private Set<RoleDto> roles;
 
     @EqualsAndHashCode.Exclude
-    private Set<ProgExerciseDto> progExercises;
+    private Set<ProgExerciseDto> subscribedProgExercises;
 
     @EqualsAndHashCode.Exclude
     private Set<ProgExerciseDto> progExercisesCreated;
