@@ -5,6 +5,7 @@ import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.enumType.TrustLabel;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.progExercise.InputNewProgExercise;
@@ -24,6 +25,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static com.CptFranck.SportsPeak.domain.enumType.Visibility.valueOfLabel;
 
 @DgsComponent
 public class ProgExerciseController {
@@ -89,7 +92,7 @@ public class ProgExerciseController {
                 () -> new ExerciseNotFoundException(inputNewProgExercise.getExerciseId()));
 
         Long id = null;
-        AtomicReference<String> trustLabel = new AtomicReference<>("");
+        AtomicReference<TrustLabel> trustLabel = new AtomicReference<>(TrustLabel.UNVERIFIED);
         Set<TargetSetEntity> targetSets = new HashSet<>();
         Set<UserEntity> subscribedUsers = new HashSet<>();
         if (inputNewProgExercise instanceof InputProgExercise) {
@@ -106,7 +109,7 @@ public class ProgExerciseController {
                 id,
                 inputNewProgExercise.getName(),
                 inputNewProgExercise.getNote(),
-                inputNewProgExercise.getVisibility(),
+                valueOfLabel(inputNewProgExercise.getVisibility()),
                 trustLabel.get(),
                 subscribedUsers,
                 creator,
