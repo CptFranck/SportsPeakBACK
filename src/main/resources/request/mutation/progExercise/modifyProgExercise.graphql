@@ -30,6 +30,6 @@ mutation ($inputProgExercise : InputProgExercise!){
             username
         }
         visibility
-        label
+        trustLabel
     }
 }
