@@ -1,8 +1,8 @@
 package com.CptFranck.SportsPeak.domain.dto;
 
+import com.CptFranck.SportsPeak.domain.input.duration.InputDuration;
 import lombok.*;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -22,9 +22,9 @@ public class TargetSetDto {
 
     private String weightUnit;
 
-    private Duration physicalExertionUnitTime;
+    private InputDuration physicalExertionUnitTime;
 
-    private Duration restTime;
+    private InputDuration restTime;
 
     private LocalDate creationDate;
 
