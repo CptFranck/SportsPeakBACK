@@ -1,5 +1,6 @@
 package com.CptFranck.SportsPeak.domain.entity;
 
+import com.CptFranck.SportsPeak.domain.enumType.WeightUnit;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,7 +34,8 @@ public class TargetSetEntity {
     private Float weight;
 
     @Column(name = "weight_unit", length = 50, nullable = false)
-    private String weightUnit;
+    @Enumerated(EnumType.STRING)
+    private WeightUnit weightUnit;
 
     @Column(name = "physical_exertion_unit_time", nullable = false)
     private Duration physicalExertionUnitTime;
