@@ -47,7 +47,7 @@ public class UserEntity {
     @JoinTable(name = "user_prog_exercise_subscriptions",
             joinColumns = @JoinColumn(name = "app_user_id"),
             inverseJoinColumns = @JoinColumn(name = "prog_exercise_id"))
-    private Set<ProgExerciseEntity> progExercises;
+    private Set<ProgExerciseEntity> subscribedProgExercises;
 
     @OneToMany(mappedBy = "creator")
     private Set<ProgExerciseEntity> progExercisesCreated;
