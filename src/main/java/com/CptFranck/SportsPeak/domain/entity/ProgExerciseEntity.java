@@ -37,7 +37,7 @@ public class ProgExerciseEntity {
     @Enumerated(EnumType.STRING)
     private TrustLabel trustLabel;
 
-    @ManyToMany(mappedBy = "progExercises")
+    @ManyToMany(mappedBy = "subscribedProgExercises")
     private Set<UserEntity> subscribedUsers;
 
     @ManyToOne
