@@ -80,8 +80,10 @@ public class TargetSetController {
     private TargetSetEntity inputToEntity(InputNewTargetSet inputNewTargetSet) {
         ProgExerciseEntity progExercise = progExerciseService.findOne(inputNewTargetSet.getProgExerciseId())
                 .orElseThrow(() -> new ExerciseNotFoundException(inputNewTargetSet.getProgExerciseId()));
-        TargetSetEntity targetSetUpdate = targetSetService.findOne(inputNewTargetSet.getTargetSetUpdateId())
-                .orElse(null);
+        TargetSetEntity targetSetUpdate = null;
+        if (inputNewTargetSet.getTargetSetUpdateId() != null) {
+            targetSetUpdate = targetSetService.findOne(inputNewTargetSet.getTargetSetUpdateId()).orElse(null);
+        }
 
         Long id = null;
         Set<PerformanceLogEntity> performanceLogs = new HashSet<>();
