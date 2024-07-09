@@ -2,7 +2,7 @@ package com.CptFranck.SportsPeak.domain.input.performanceLog;
 
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class InputNewPerformanceLog {
@@ -15,7 +15,7 @@ public class InputNewPerformanceLog {
 
     private String weightUnit;
 
-    private LocalDate logDate;
+    private LocalDateTime logDate;
 
     private Long targetSetId;
 
