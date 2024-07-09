@@ -6,10 +6,12 @@ import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.enumType.TrustLabel;
+import com.CptFranck.SportsPeak.domain.enumType.Visibility;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.progExercise.InputNewProgExercise;
 import com.CptFranck.SportsPeak.domain.input.progExercise.InputProgExercise;
+import com.CptFranck.SportsPeak.domain.input.progExercise.InputProgExerciseTrustLabel;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import com.CptFranck.SportsPeak.service.ProgExerciseService;
@@ -24,7 +26,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static com.CptFranck.SportsPeak.domain.enumType.Visibility.valueOfLabel;
 
@@ -63,7 +64,7 @@ public class ProgExerciseController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
     public ProgExerciseDto addProgExercise(@InputArgument InputNewProgExercise inputNewProgExercise) {
-        return progExerciseMapper.mapTo(inputToEntity(inputNewProgExercise));
+        return progExerciseMapper.mapTo(inputNewToEntity(inputNewProgExercise));
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -73,6 +74,15 @@ public class ProgExerciseController {
             return null;
         }
         return progExerciseMapper.mapTo(inputToEntity(inputProgExercise));
+    }
+
+    @PreAuthorize("hasRole('ROLE_STAFF')")
+    @DgsMutation
+    public ProgExerciseDto modifyProgExerciseTrustLabel(@InputArgument InputProgExerciseTrustLabel inputProgExerciseTrustLabel) {
+        if (!progExerciseService.exists(inputProgExerciseTrustLabel.getId())) {
+            return null;
+        }
+        return progExerciseMapper.mapTo(inputTrustLabelToEntity(inputProgExerciseTrustLabel));
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -85,32 +95,22 @@ public class ProgExerciseController {
         return progExerciseId;
     }
 
-    private ProgExerciseEntity inputToEntity(InputNewProgExercise inputNewProgExercise) {
+    private ProgExerciseEntity inputNewToEntity(InputNewProgExercise inputNewProgExercise) {
         UserEntity creator = userService.findOne(inputNewProgExercise.getCreatorId()).orElseThrow(
                 () -> new UserNotFoundException(inputNewProgExercise.getCreatorId()));
         ExerciseEntity exercise = exerciseService.findOne(inputNewProgExercise.getExerciseId()).orElseThrow(
                 () -> new ExerciseNotFoundException(inputNewProgExercise.getExerciseId()));
 
         Long id = null;
-        AtomicReference<TrustLabel> trustLabel = new AtomicReference<>(TrustLabel.UNVERIFIED);
         Set<TargetSetEntity> targetSets = new HashSet<>();
         Set<UserEntity> subscribedUsers = new HashSet<>();
-        if (inputNewProgExercise instanceof InputProgExercise) {
-            id = ((InputProgExercise) inputNewProgExercise).getId();
-            Optional<ProgExerciseEntity> progExercise = progExerciseService.findOne(id);
-            progExercise.ifPresent(progEx -> {
-                trustLabel.set(progEx.getTrustLabel());
-                targetSets.addAll(progEx.getTargetSets());
-                subscribedUsers.addAll(progEx.getSubscribedUsers());
-            });
-        }
 
         ProgExerciseEntity progExerciseEntity = new ProgExerciseEntity(
                 id,
                 inputNewProgExercise.getName(),
                 inputNewProgExercise.getNote(),
                 valueOfLabel(inputNewProgExercise.getVisibility()),
-                trustLabel.get(),
+                TrustLabel.UNVERIFIED,
                 subscribedUsers,
                 creator,
                 exercise,
@@ -118,12 +118,30 @@ public class ProgExerciseController {
         );
 
         progExerciseEntity = progExerciseService.save(progExerciseEntity);
-        if (id == null) {
-            creator.getProgExercises().add(progExerciseEntity);
-            userService.save(creator);
-            exercise.getProgExercises().add(progExerciseEntity);
-            exerciseService.save(exercise);
-        }
+        creator.getProgExercises().add(progExerciseEntity);
+        userService.save(creator);
+        exercise.getProgExercises().add(progExerciseEntity);
+        exerciseService.save(exercise);
         return progExerciseEntity;
+    }
+
+    private ProgExerciseEntity inputToEntity(InputProgExercise inputProgExercise) {
+
+        ProgExerciseEntity progExercise = progExerciseService.findOne(inputProgExercise.getId()).orElseThrow(
+                () -> new ExerciseNotFoundException(inputProgExercise.getId()));
+
+        progExercise.setNote(inputProgExercise.getNote());
+        progExercise.setName(inputProgExercise.getName());
+        progExercise.setVisibility(Visibility.valueOfLabel(inputProgExercise.getVisibility()));
+
+        return progExerciseService.save(progExercise);
+    }
+
+    private ProgExerciseEntity inputTrustLabelToEntity(InputProgExerciseTrustLabel inputProgExerciseTrustLabel) {
+        ProgExerciseEntity progExercise = progExerciseService.findOne(inputProgExerciseTrustLabel.getId()).orElseThrow(
+                () -> new ExerciseNotFoundException(inputProgExerciseTrustLabel.getId()));
+
+        progExercise.setTrustLabel(TrustLabel.valueOfLabel(inputProgExerciseTrustLabel.getTrustLabel()));
+        return progExerciseService.save(progExercise);
     }
 }
