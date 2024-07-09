@@ -5,8 +5,16 @@ query {
         repetitionNumber
         weight
         weightUnit
-        physicalExertionUnitTime
-        restTime
+        physicalExertionUnitTime{
+            hours
+            minutes
+            seconds
+        }
+        restTime{
+            hours
+            minutes
+            seconds
+        }
         targetSetUpdate {
             id
         }
