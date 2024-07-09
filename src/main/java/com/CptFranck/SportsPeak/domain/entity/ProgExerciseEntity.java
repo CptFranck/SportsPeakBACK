@@ -1,5 +1,7 @@
 package com.CptFranck.SportsPeak.domain.entity;
 
+import com.CptFranck.SportsPeak.domain.enumType.TrustLabel;
+import com.CptFranck.SportsPeak.domain.enumType.Visibility;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,10 +30,12 @@ public class ProgExerciseEntity {
     private String note;
 
     @Column(name = "visibility", length = 50, nullable = false)
-    private String visibility;
+    @Enumerated(EnumType.STRING)
+    private Visibility visibility;
 
     @Column(name = "trust_label", length = 50, nullable = false)
-    private String trustLabel;
+    @Enumerated(EnumType.STRING)
+    private TrustLabel trustLabel;
 
     @ManyToMany(mappedBy = "progExercises")
     private Set<UserEntity> subscribedUsers;
