@@ -13,18 +13,18 @@ query {
                 name
             }
         }
-        progExercises {
+        subscribedProgExercises {
             id
             name
             note
-            label
+            trustLabel
             visibility
         }
         progExercisesCreated {
             id
             name
             note
-            label
+            trustLabel
             visibility
         }
     }

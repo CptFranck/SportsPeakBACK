@@ -5,7 +5,7 @@ type User {
     lastName: String!
     username: String!
     roles: [Role]!
-    progExercises: [ProgExercise]!
+    subscribedProgExercises: [ProgExercise]!
     progExercisesCreated: [ProgExercise]!
 }
 

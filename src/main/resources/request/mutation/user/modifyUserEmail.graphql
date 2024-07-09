@@ -16,7 +16,7 @@ mutation ($inputUserEmail : InputUserEmail!){
                     name
                 }
             }
-            progExercises {
+            subscribedProgExercises {
                 id
                 name
                 note

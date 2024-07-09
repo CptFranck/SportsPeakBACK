@@ -13,7 +13,7 @@ mutation ($inputUserRoles : InputUserRoles!){
                 name
             }
         }
-        progExercises {
+        subscribedProgExercises {
             id
             name
             note

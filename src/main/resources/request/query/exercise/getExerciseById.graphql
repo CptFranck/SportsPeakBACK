@@ -15,7 +15,7 @@ query ($id : Int!){
             id
             name
             note
-            label
+            trustLabel
             visibility
         }
         name
