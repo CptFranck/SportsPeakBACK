@@ -3,7 +3,7 @@ package com.CptFranck.SportsPeak.domain.input.targetSet;
 import com.CptFranck.SportsPeak.domain.input.duration.InputDuration;
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class InputNewTargetSet {
@@ -20,7 +20,7 @@ public class InputNewTargetSet {
 
     private InputDuration restTime;
 
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
 
     private Long progExerciseId;
 
