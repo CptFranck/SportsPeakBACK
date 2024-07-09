@@ -30,6 +30,6 @@ query ($id : Int!){
             username
         }
         visibility
-        label
+        trustLabel
     }
 }
