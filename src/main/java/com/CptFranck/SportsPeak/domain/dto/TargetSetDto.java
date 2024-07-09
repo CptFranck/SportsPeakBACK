@@ -3,7 +3,7 @@ package com.CptFranck.SportsPeak.domain.dto;
 import com.CptFranck.SportsPeak.domain.input.duration.InputDuration;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
@@ -26,7 +26,7 @@ public class TargetSetDto {
 
     private InputDuration restTime;
 
-    private LocalDate creationDate;
+    private LocalDateTime creationDate;
 
     private ProgExerciseDto progExercise;
 
