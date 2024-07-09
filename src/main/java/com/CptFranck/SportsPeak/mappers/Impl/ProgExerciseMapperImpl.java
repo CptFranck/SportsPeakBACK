@@ -3,6 +3,8 @@ package com.CptFranck.SportsPeak.mappers.Impl;
 import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.mappers.Mapper;
+import com.CptFranck.SportsPeak.mappers.typeConverter.TrustLabelToStringConverter;
+import com.CptFranck.SportsPeak.mappers.typeConverter.ValidityToStringConverter;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +15,8 @@ public class ProgExerciseMapperImpl implements Mapper<ProgExerciseEntity, ProgEx
 
     public ProgExerciseMapperImpl(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
+        this.modelMapper.addConverter(new ValidityToStringConverter());
+        this.modelMapper.addConverter(new TrustLabelToStringConverter());
     }
 
     @Override
