@@ -1,8 +1,8 @@
 package com.CptFranck.SportsPeak.domain.input.targetSet;
 
+import com.CptFranck.SportsPeak.domain.input.duration.InputDuration;
 import lombok.Data;
 
-import java.time.Duration;
 import java.time.LocalDate;
 
 @Data
@@ -16,9 +16,9 @@ public class InputNewTargetSet {
 
     private String weightUnit;
 
-    private Duration physicalExertionUnitTime;
+    private InputDuration physicalExertionUnitTime;
 
-    private Duration restTime;
+    private InputDuration restTime;
 
     private LocalDate creationDate;
 
