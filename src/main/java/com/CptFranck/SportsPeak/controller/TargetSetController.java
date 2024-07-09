@@ -4,6 +4,7 @@ import com.CptFranck.SportsPeak.domain.dto.TargetSetDto;
 import com.CptFranck.SportsPeak.domain.entity.PerformanceLogEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
+import com.CptFranck.SportsPeak.domain.enumType.WeightUnit;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputNewTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSet;
@@ -87,9 +88,7 @@ public class TargetSetController {
         if (inputNewTargetSet instanceof InputTargetSet) {
             id = ((InputTargetSet) inputNewTargetSet).getId();
             Optional<TargetSetEntity> targetSet = targetSetService.findOne(id);
-            targetSet.ifPresent(localTargetSet -> {
-                performanceLogs.addAll(localTargetSet.getPerformanceLogs());
-            });
+            targetSet.ifPresent(localTargetSet -> performanceLogs.addAll(localTargetSet.getPerformanceLogs()));
         }
 
         TargetSetEntity targetSet = new TargetSetEntity(
@@ -97,7 +96,7 @@ public class TargetSetController {
                 inputNewTargetSet.getSetNumber(),
                 inputNewTargetSet.getRepetitionNumber(),
                 inputNewTargetSet.getWeight(),
-                inputNewTargetSet.getWeightUnit(),
+                WeightUnit.valueOfLabel(inputNewTargetSet.getWeightUnit()),
                 inputNewTargetSet.getPhysicalExertionUnitTime().InputDurationToDuration(),
                 inputNewTargetSet.getRestTime().InputDurationToDuration(),
                 inputNewTargetSet.getCreationDate(),
