@@ -1,0 +1,35 @@
+mutation ($inputProgExerciseTrustLabel : InputProgExerciseTrustLabel!){
+    modifyProgExerciseTrustLabel(inputProgExerciseTrustLabel: $inputProgExerciseTrustLabel) {
+        id
+        name
+        note
+        exercise {
+            id
+            name
+            description
+            goal
+        }
+        targetSets {
+            id
+            setNumber
+            repetitionNumber
+            weight
+            weightUnit
+            physicalExertionUnitTime
+            restTime
+            creationDate
+            targetSetUpdate {
+                id
+            }
+        }
+        creator {
+            id
+            email
+            firstName
+            lastName
+            username
+        }
+        visibility
+        trustLabel
+    }
+}
