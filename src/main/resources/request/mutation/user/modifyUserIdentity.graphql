@@ -17,14 +17,14 @@ mutation ($inputUserIdentity : InputUserIdentity!){
             id
             name
             note
-            label
+            trustLabel
             visibility
         }
         progExercisesCreated {
             id
             name
             note
-            label
+            trustLabel
             visibility
         }
     }

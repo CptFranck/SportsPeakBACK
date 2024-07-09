@@ -20,14 +20,14 @@ mutation ($inputUserEmail : InputUserEmail!){
                 id
                 name
                 note
-                label
+                trustLabel
                 visibility
             }
             progExercisesCreated {
                 id
                 name
                 note
-                label
+                trustLabel
                 visibility
             }
         }

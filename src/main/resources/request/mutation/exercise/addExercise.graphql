@@ -17,7 +17,7 @@ mutation ($inputNewExercise : InputNewExercise!){
             id
             name
             note
-            label
+            trustLabel
             visibility
         }
     }
