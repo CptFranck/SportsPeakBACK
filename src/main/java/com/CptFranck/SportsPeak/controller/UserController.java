@@ -2,6 +2,7 @@ package com.CptFranck.SportsPeak.controller;
 
 import com.CptFranck.SportsPeak.config.security.JwtProvider;
 import com.CptFranck.SportsPeak.domain.dto.AuthDto;
+import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
@@ -20,6 +21,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -52,6 +54,17 @@ public class UserController {
     public UserDto getUserById(@InputArgument Long id) {
         Optional<UserEntity> userEntity = userService.findOne(id);
         return userEntity.map(userMapper::mapTo).orElse(null);
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @DgsQuery
+    public List<ProgExerciseDto> getUserProgExercises(@InputArgument Long userId) {
+        Optional<UserEntity> userEntity = userService.findOne(userId);
+        UserDto user = userEntity.map(userMapper::mapTo).orElse(null);
+        if (user != null) {
+            return user.getSubscribedProgExercises().stream().toList();
+        }
+        return new LinkedList<>();
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
