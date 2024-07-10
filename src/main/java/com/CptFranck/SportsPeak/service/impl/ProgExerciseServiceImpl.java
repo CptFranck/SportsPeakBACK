@@ -49,11 +49,6 @@ public class ProgExerciseServiceImpl implements ProgExerciseService {
     }
 
     @Override
-    public List<ProgExerciseEntity> findAllByUserId(Long userId) {
-        return progExerciseRepository.findAllBySubscribedUsersId(userId);
-    }
-
-    @Override
     public boolean exists(Long id) {
         return progExerciseRepository.existsById(id);
     }

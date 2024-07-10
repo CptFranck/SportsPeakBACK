@@ -14,8 +14,6 @@ public interface ProgExerciseService {
 
     Set<ProgExerciseEntity> findMany(Set<Long> ids);
 
-    List<ProgExerciseEntity> findAllByUserId(Long userId);
-
     boolean exists(Long id);
 
     ProgExerciseEntity save(ProgExerciseEntity exercise);
