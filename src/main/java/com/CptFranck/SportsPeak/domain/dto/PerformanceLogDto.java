@@ -24,5 +24,5 @@ public class PerformanceLogDto {
 
     private LocalDateTime logDate;
 
-    private TargetSetDto targetExerciseSet;
+    private TargetSetDto targetSet;
 }
