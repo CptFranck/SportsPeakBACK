@@ -25,5 +25,5 @@ public class ProgExerciseDto {
     private ExerciseDto exercise;
 
     @EqualsAndHashCode.Exclude
-    private Set<TargetSetDto> targetExerciseSets;
+    private Set<TargetSetDto> targetSets;
 }
