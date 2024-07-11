@@ -1,5 +1,5 @@
 query ($userId : Int!){
-    getProgExercisesByUserId(userId: $userId) {
+    getUserProgExercises(userId: $userId) {
         id
         name
         note
