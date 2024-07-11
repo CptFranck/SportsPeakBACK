@@ -8,6 +8,10 @@ query {
             name
             description
             goal
+            muscles {
+                id
+                name
+            }
         }
         targetSets {
             id
