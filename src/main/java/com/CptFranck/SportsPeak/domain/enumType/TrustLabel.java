@@ -3,7 +3,7 @@ package com.CptFranck.SportsPeak.domain.enumType;
 public enum TrustLabel {
     UNVERIFIED("Uncertified"),
     TRUSTED("Trusted"),
-    EXPERT_APPROVED("Expert_Approved");
+    EXPERT_APPROVED("Expert Approved");
 
     public final String label;
 
