@@ -8,6 +8,10 @@ query ($userId : Int!){
             name
             description
             goal
+            muscles {
+                id
+                name
+            }
         }
         targetSets {
             id
