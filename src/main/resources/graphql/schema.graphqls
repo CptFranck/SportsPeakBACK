@@ -1,7 +1,6 @@
 type Query {
     getUsers: [User]!
     getUserById(id: Int): User
-    getUserProgExercises(userId: Int): [ProgExercise]!
 
     getRoles: [Role]!
     getRoleById(id: Int): Role
@@ -11,6 +10,7 @@ type Query {
 
     getProgExercises: [ProgExercise]!
     getProgExerciseById(id: Int): ProgExercise
+    getUserProgExercises(userId: Int): [ProgExercise]!
 
     getTargetSets: [TargetSet]!
     getTargetSetById(id: Int): TargetSet
