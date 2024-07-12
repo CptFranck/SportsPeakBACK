@@ -11,5 +11,7 @@ public class InputProgExercise {
 
     private String note;
 
+    private Long exerciseId;
+
     private String visibility;
 }
