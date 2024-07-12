@@ -123,10 +123,16 @@ public class ProgExerciseController {
 
         ProgExerciseEntity progExercise = progExerciseService.findOne(inputProgExercise.getId()).orElseThrow(
                 () -> new ExerciseNotFoundException(inputProgExercise.getId()));
+        ExerciseEntity newExercise = exerciseService.findOne(inputProgExercise.getExerciseId()).orElseThrow(
+                () -> new ExerciseNotFoundException(inputProgExercise.getExerciseId()));
+        ExerciseEntity oldExercise = progExercise.getExercise();
 
         progExercise.setNote(inputProgExercise.getNote());
         progExercise.setName(inputProgExercise.getName());
         progExercise.setVisibility(Visibility.valueOfLabel(inputProgExercise.getVisibility()));
+        progExercise.setExercise(newExercise);
+
+        exerciseService.updateProgExerciseRelation(newExercise, oldExercise, progExercise);
 
         return progExerciseService.save(progExercise);
     }
