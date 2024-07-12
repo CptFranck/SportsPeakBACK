@@ -80,16 +80,11 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
-    public void updateProgExerciseRelation(Set<Long> newIds, Set<Long> oldIds, ProgExerciseEntity progExercise) {
-        this.findMany(oldIds).forEach(e -> {
-            e.getProgExercises().removeIf(et -> Objects.equals(et.getId(), progExercise.getId()));
-            this.save(e);
-        });
-
-        this.findMany(newIds).forEach(e -> {
-            e.getProgExercises().add(progExercise);
-            this.save(e);
-        });
+    public void updateProgExerciseRelation(ExerciseEntity newExercise, ExerciseEntity oldExercise, ProgExerciseEntity progExercise) {
+        oldExercise.getProgExercises().removeIf(progEx -> progEx.getId().equals(progExercise.getId()));
+        newExercise.getProgExercises().add(progExercise);
+        this.save(oldExercise);
+        this.save(newExercise);
     }
 
     @Override

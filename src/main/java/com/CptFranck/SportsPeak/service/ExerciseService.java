@@ -21,7 +21,7 @@ public interface ExerciseService {
 
     void updateMuscleRelation(Set<Long> newIds, Set<Long> oldIds, MuscleEntity muscle);
 
-    void updateProgExerciseRelation(Set<Long> newIds, Set<Long> oldIds, ProgExerciseEntity progExercise);
+    void updateProgExerciseRelation(ExerciseEntity newExercise, ExerciseEntity oldExercise, ProgExerciseEntity progExercise);
 
     boolean exists(Long id);
 
