@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class InputTargetSet extends InputNewTargetSet {
+public class InputTargetSet extends AbstractInputNewTargetSet {
 
     private Long id;
 
