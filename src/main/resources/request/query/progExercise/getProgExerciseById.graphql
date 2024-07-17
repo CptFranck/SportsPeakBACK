@@ -30,6 +30,14 @@ query ($id : Int!){
             targetSetUpdate {
                 id
             }
+            performanceLogs {
+                id
+                setIndex
+                repetitionNumber
+                weight
+                weightUnit
+                logDate
+            }
         }
         creator {
             id
