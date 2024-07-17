@@ -24,6 +24,9 @@ public class TargetSetEntity {
     @SequenceGenerator(name = "target_set_id_seq", sequenceName = "target_set_id_seq", allocationSize = 1)
     private Long id;
 
+    @Column(name = "index", nullable = false)
+    private Integer index;
+
     @Column(name = "set_number", nullable = false)
     private Integer setNumber;
 
