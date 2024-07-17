@@ -1,7 +1,7 @@
 query ($progExerciseId : Int!){
     getTargetSetsByProgExerciseId(progExerciseId: $progExerciseId) {
         id
-        id
+        index
         setNumber
         repetitionNumber
         weight
@@ -26,6 +26,21 @@ query ($progExerciseId : Int!){
             weight
             weightUnit
             logDate
+        }
+        progExercise {
+            id
+            name
+            note
+            exercise {
+                id
+                name
+            }
+            trustLabel
+            visibility
+            creator {
+                id
+                username
+            }
         }
     }
 }

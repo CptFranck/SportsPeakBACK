@@ -11,6 +11,7 @@ mutation ($inputProgExercise : InputProgExercise!){
         }
         targetSets {
             id
+            index
             setNumber
             repetitionNumber
             weight

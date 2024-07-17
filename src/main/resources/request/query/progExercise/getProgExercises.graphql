@@ -15,6 +15,7 @@ query {
         }
         targetSets {
             id
+            index
             setNumber
             repetitionNumber
             weight

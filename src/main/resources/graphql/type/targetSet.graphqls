@@ -1,5 +1,6 @@
 type TargetSet {
     id: Int!
+    index: Int!
     setNumber: Int!
     repetitionNumber: Int!
     weight: Float!
@@ -13,6 +14,7 @@ type TargetSet {
 }
 
 input InputNewTargetSet {
+    index: Int!
     setNumber: Int!
     repetitionNumber: Int!
     weight: Float!
@@ -26,6 +28,7 @@ input InputNewTargetSet {
 
 input InputTargetSet {
     id: Int!
+    index: Int!
     setNumber: Int!
     repetitionNumber: Int!
     weight: Float!

@@ -11,6 +11,7 @@ query ($id : Int!){
         }
         targetSets {
             id
+            index
             setNumber
             repetitionNumber
             weight
