@@ -35,7 +35,4 @@ input InputTargetSet {
     weightUnit: String!
     physicalExertionUnitTime: InputDuration!
     restTime: InputDuration!
-    creationDate: LocalDateTime!
-    progExerciseId: Int!
-    targetSetUpdateId: Int
 }
