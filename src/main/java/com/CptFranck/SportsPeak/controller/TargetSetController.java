@@ -6,6 +6,7 @@ import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.enumType.WeightUnit;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputNewTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSet;
 import com.CptFranck.SportsPeak.mappers.Mapper;
@@ -77,12 +78,17 @@ public class TargetSetController {
         return targetSetId;
     }
 
+    private static Long getTargetSetUpdateId(InputNewTargetSet inputNewTargetSet) {
+        return inputNewTargetSet.getTargetSetUpdateId();
+    }
+
     private TargetSetEntity inputToEntity(InputNewTargetSet inputNewTargetSet) {
         ProgExerciseEntity progExercise = progExerciseService.findOne(inputNewTargetSet.getProgExerciseId())
                 .orElseThrow(() -> new ExerciseNotFoundException(inputNewTargetSet.getProgExerciseId()));
         TargetSetEntity targetSetUpdate = null;
         if (inputNewTargetSet.getTargetSetUpdateId() != null) {
-            targetSetUpdate = targetSetService.findOne(inputNewTargetSet.getTargetSetUpdateId()).orElse(null);
+            targetSetUpdate = targetSetService.findOne(getTargetSetUpdateId(inputNewTargetSet)).orElseThrow
+                    (() -> new TargetSetNotFoundException(inputNewTargetSet.getTargetSetUpdateId()));
         }
 
         Long id = null;
@@ -95,6 +101,7 @@ public class TargetSetController {
 
         TargetSetEntity targetSet = new TargetSetEntity(
                 id,
+                inputNewTargetSet.getIndex(),
                 inputNewTargetSet.getSetNumber(),
                 inputNewTargetSet.getRepetitionNumber(),
                 inputNewTargetSet.getWeight(),
