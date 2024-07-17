@@ -14,6 +14,8 @@ public class TargetSetDto {
 
     private Long id;
 
+    private Integer index;
+
     private Integer setNumber;
 
     private Integer repetitionNumber;
