@@ -7,6 +7,7 @@ import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.enumType.WeightUnit;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
+import com.CptFranck.SportsPeak.domain.input.targetSet.AbstractInputNewTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputNewTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSet;
 import com.CptFranck.SportsPeak.mappers.Mapper;
@@ -18,6 +19,7 @@ import com.netflix.graphql.dgs.DgsQuery;
 import com.netflix.graphql.dgs.InputArgument;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -78,37 +80,46 @@ public class TargetSetController {
         return targetSetId;
     }
 
-    private static Long getTargetSetUpdateId(InputNewTargetSet inputNewTargetSet) {
-        return inputNewTargetSet.getTargetSetUpdateId();
-    }
-
-    private TargetSetEntity inputToEntity(InputNewTargetSet inputNewTargetSet) {
-        ProgExerciseEntity progExercise = progExerciseService.findOne(inputNewTargetSet.getProgExerciseId())
-                .orElseThrow(() -> new ExerciseNotFoundException(inputNewTargetSet.getProgExerciseId()));
-        TargetSetEntity targetSetUpdate = null;
-        if (inputNewTargetSet.getTargetSetUpdateId() != null) {
-            targetSetUpdate = targetSetService.findOne(getTargetSetUpdateId(inputNewTargetSet)).orElseThrow
-                    (() -> new TargetSetNotFoundException(inputNewTargetSet.getTargetSetUpdateId()));
-        }
-
-        Long id = null;
+    private TargetSetEntity inputToEntity(AbstractInputNewTargetSet targetSetInput) {
+        Long id;
+        LocalDateTime creationDate;
+        TargetSetEntity targetSetUpdate;
+        ProgExerciseEntity progExercise;
         Set<PerformanceLogEntity> performanceLogs = new HashSet<>();
-        if (inputNewTargetSet instanceof InputTargetSet) {
-            id = ((InputTargetSet) inputNewTargetSet).getId();
-            Optional<TargetSetEntity> targetSet = targetSetService.findOne(id);
-            targetSet.ifPresent(localTargetSet -> performanceLogs.addAll(localTargetSet.getPerformanceLogs()));
+
+        if (targetSetInput instanceof InputTargetSet inputTargetSet) {
+            id = inputTargetSet.getId();
+            TargetSetEntity targetSet = targetSetService.findOne(id).orElseThrow(
+                    () -> new TargetSetNotFoundException(id));
+            creationDate = targetSet.getCreationDate();
+            progExercise = targetSet.getProgExercise();
+            targetSetUpdate = targetSet.getTargetSetUpdate();
+            performanceLogs.addAll(targetSet.getPerformanceLogs());
+        } else if (targetSetInput instanceof InputNewTargetSet inputNewTargetSet) {
+            id = null;
+            creationDate = inputNewTargetSet.getCreationDate();
+            progExercise = progExerciseService.findOne(inputNewTargetSet.getProgExerciseId()).orElseThrow(
+                    () -> new ExerciseNotFoundException(inputNewTargetSet.getProgExerciseId()));
+            if (inputNewTargetSet.getTargetSetUpdateId() != null) {
+                targetSetUpdate = targetSetService.findOne(inputNewTargetSet.getTargetSetUpdateId()).orElseThrow(
+                        () -> new TargetSetNotFoundException(inputNewTargetSet.getTargetSetUpdateId()));
+            } else {
+                targetSetUpdate = null;
+            }
+        } else {
+            throw new RuntimeException("Unsupported input type " + targetSetInput.getClass().getSimpleName());
         }
 
         TargetSetEntity targetSet = new TargetSetEntity(
                 id,
-                inputNewTargetSet.getIndex(),
-                inputNewTargetSet.getSetNumber(),
-                inputNewTargetSet.getRepetitionNumber(),
-                inputNewTargetSet.getWeight(),
-                WeightUnit.valueOfLabel(inputNewTargetSet.getWeightUnit()),
-                inputNewTargetSet.getPhysicalExertionUnitTime().InputDurationToDuration(),
-                inputNewTargetSet.getRestTime().InputDurationToDuration(),
-                inputNewTargetSet.getCreationDate(),
+                targetSetInput.getIndex(),
+                targetSetInput.getSetNumber(),
+                targetSetInput.getRepetitionNumber(),
+                targetSetInput.getWeight(),
+                WeightUnit.valueOfLabel(targetSetInput.getWeightUnit()),
+                targetSetInput.getPhysicalExertionUnitTime().InputDurationToDuration(),
+                targetSetInput.getRestTime().InputDurationToDuration(),
+                creationDate,
                 progExercise,
                 targetSetUpdate,
                 performanceLogs
@@ -122,3 +133,5 @@ public class TargetSetController {
         return targetSet;
     }
 }
+
+
