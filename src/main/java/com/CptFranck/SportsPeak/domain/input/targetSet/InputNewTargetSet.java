@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 @Data
 public class InputNewTargetSet {
 
+    private Integer index;
+
     private Integer setNumber;
 
     private Integer repetitionNumber;
