@@ -85,6 +85,7 @@ public class TargetSetController {
         LocalDateTime creationDate;
         TargetSetEntity targetSetUpdate;
         ProgExerciseEntity progExercise;
+        TargetSetEntity targetSetUpdated = null;
         Set<PerformanceLogEntity> performanceLogs = new HashSet<>();
 
         if (targetSetInput instanceof InputTargetSet inputTargetSet) {
@@ -97,14 +98,13 @@ public class TargetSetController {
             performanceLogs.addAll(targetSet.getPerformanceLogs());
         } else if (targetSetInput instanceof InputNewTargetSet inputNewTargetSet) {
             id = null;
+            targetSetUpdate = null;
             creationDate = inputNewTargetSet.getCreationDate();
             progExercise = progExerciseService.findOne(inputNewTargetSet.getProgExerciseId()).orElseThrow(
                     () -> new ExerciseNotFoundException(inputNewTargetSet.getProgExerciseId()));
             if (inputNewTargetSet.getTargetSetUpdateId() != null) {
-                targetSetUpdate = targetSetService.findOne(inputNewTargetSet.getTargetSetUpdateId()).orElseThrow(
+                targetSetUpdated = targetSetService.findOne(inputNewTargetSet.getTargetSetUpdateId()).orElseThrow(
                         () -> new TargetSetNotFoundException(inputNewTargetSet.getTargetSetUpdateId()));
-            } else {
-                targetSetUpdate = null;
             }
         } else {
             throw new RuntimeException("Unsupported input type " + targetSetInput.getClass().getSimpleName());
@@ -129,6 +129,10 @@ public class TargetSetController {
         if (id == null) {
             progExercise.getTargetSets().add(targetSet);
             progExerciseService.save(progExercise);
+        }
+        if (targetSetUpdated != null) {
+            targetSetUpdated.setTargetSetUpdate(targetSet);
+            targetSetService.save(targetSetUpdated);
         }
         return targetSet;
     }
