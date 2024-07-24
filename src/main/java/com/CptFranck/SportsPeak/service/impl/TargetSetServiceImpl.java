@@ -1,6 +1,7 @@
 package com.CptFranck.SportsPeak.service.impl;
 
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
+import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
 import com.CptFranck.SportsPeak.repositories.TargetSetRepository;
 import com.CptFranck.SportsPeak.service.TargetSetService;
 import org.springframework.stereotype.Service;
@@ -61,5 +62,16 @@ public class TargetSetServiceImpl implements TargetSetService {
     @Override
     public void delete(Long id) {
         targetSetRepository.deleteById(id);
+    }
+
+    @Override
+    public void updatePreviousUpdateState(Long id, TargetSetState state) {
+        Optional<TargetSetEntity> optionalTargetSet = targetSetRepository.findByTargetSetUpdateId(id);
+        if (optionalTargetSet.isPresent()) {
+            TargetSetEntity targetSet = optionalTargetSet.get();
+            targetSet.setState(state);
+            targetSetRepository.save(targetSet);
+            this.updatePreviousUpdateState(targetSet.getId(), state);
+        }
     }
 }

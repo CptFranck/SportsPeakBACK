@@ -1,6 +1,7 @@
 package com.CptFranck.SportsPeak.service;
 
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
+import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,4 +22,6 @@ public interface TargetSetService {
     TargetSetEntity save(TargetSetEntity targetExerciseSet);
 
     void delete(Long id);
+
+    void updatePreviousUpdateState(Long id, TargetSetState state);
 }
