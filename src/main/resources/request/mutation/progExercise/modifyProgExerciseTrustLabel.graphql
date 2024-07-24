@@ -27,6 +27,7 @@ mutation ($inputProgExerciseTrustLabel : InputProgExerciseTrustLabel!){
                 seconds
             }
             creationDate
+            state
             targetSetUpdate {
                 id
             }

@@ -16,6 +16,8 @@ query ($id : Int!){
             minutes
             seconds
         }
+        creationDate
+        state
         targetSetUpdate {
             id
         }

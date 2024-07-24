@@ -8,6 +8,7 @@ type TargetSet {
     physicalExertionUnitTime: Duration!
     restTime: Duration!
     creationDate: LocalDateTime!
+    state: String!
     progExercise: ProgExercise!
     targetSetUpdate: TargetSet
     performanceLogs: [PerformanceLog]!

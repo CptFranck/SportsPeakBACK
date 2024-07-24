@@ -27,6 +27,7 @@ mutation ($inputProgExercise : InputProgExercise!){
                 seconds
             }
             creationDate
+            state
             targetSetUpdate {
                 id
             }
