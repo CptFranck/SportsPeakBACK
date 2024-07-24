@@ -34,6 +34,8 @@ public class TargetSetDto {
 
     private TargetSetDto targetSetUpdate;
 
+    private String state;
+
     @EqualsAndHashCode.Exclude
     private Set<PerformanceLogDto> performanceLogs;
 }
