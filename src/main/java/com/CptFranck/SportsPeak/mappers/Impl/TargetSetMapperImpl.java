@@ -17,10 +17,6 @@ public class TargetSetMapperImpl implements Mapper<TargetSetEntity, TargetSetDto
         this.modelMapper = modelMapper;
         this.modelMapper.addConverter(new DurationToInputDurationConverter());
         this.modelMapper.addConverter(new WeightUnitToStringConverter());
-        this.modelMapper.typeMap(TargetSetEntity.class, TargetSetDto.class)
-                .addMappings(mapper -> mapper.map(targetSetEntity ->
-                                targetSetEntity.getTargetSetUpdate().getId(),
-                        TargetSetDto::setTargetSetUpdate));
     }
 
     @Override

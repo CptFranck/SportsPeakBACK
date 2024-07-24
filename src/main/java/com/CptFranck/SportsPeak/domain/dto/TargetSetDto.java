@@ -32,7 +32,7 @@ public class TargetSetDto {
 
     private ProgExerciseDto progExercise;
 
-    private Long targetSetUpdate;
+    private TargetSetDto targetSetUpdate;
 
     @EqualsAndHashCode.Exclude
     private Set<PerformanceLogDto> performanceLogs;
