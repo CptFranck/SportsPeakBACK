@@ -56,7 +56,7 @@ type Mutation {
 
     addTargetSet(inputNewTargetSet: InputNewTargetSet!): TargetSet!
     modifyTargetSet(inputTargetSet: InputTargetSet!): TargetSet!
-    modifyTargetSetState(inputTargetSet: InputTargetSetState!): TargetSet!
+    modifyTargetSetState(inputTargetSetState: InputTargetSetState!): TargetSet!
     deleteTargetSet(targetSetId: Int!): Int!
 
     addPerformanceLog(inputNewPerformanceLog: InputNewPerformanceLog!): PerformanceLog!
