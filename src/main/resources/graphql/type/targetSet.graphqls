@@ -37,3 +37,8 @@ input InputTargetSet {
     physicalExertionUnitTime: InputDuration!
     restTime: InputDuration!
 }
+
+input InputTargetSetState {
+    id: Int!
+    state: String!
+}
