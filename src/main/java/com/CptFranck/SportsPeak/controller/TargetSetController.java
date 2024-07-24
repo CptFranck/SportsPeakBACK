@@ -154,8 +154,9 @@ public class TargetSetController {
     private TargetSetEntity inputTrustLabelToEntity(InputTargetSetState inputTargetSetState) {
         TargetSetEntity targetSet = targetSetService.findOne(inputTargetSetState.getId()).orElseThrow(
                 () -> new TargetSetNotFoundException(inputTargetSetState.getId()));
-
-        targetSet.setState(TargetSetState.valueOfLabel(inputTargetSetState.getState()));
+        TargetSetState state = TargetSetState.valueOfLabel(inputTargetSetState.getState());
+        targetSetService.updatePreviousUpdateState(targetSet.getId(), state);
+        targetSet.setState(state);
         return targetSetService.save(targetSet);
     }
 }
