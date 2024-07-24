@@ -4,6 +4,7 @@ import com.CptFranck.SportsPeak.domain.dto.TargetSetDto;
 import com.CptFranck.SportsPeak.domain.entity.PerformanceLogEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
+import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
 import com.CptFranck.SportsPeak.domain.enumType.WeightUnit;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
@@ -86,6 +87,7 @@ public class TargetSetController {
         TargetSetEntity targetSetUpdate;
         ProgExerciseEntity progExercise;
         TargetSetEntity targetSetUpdated = null;
+        TargetSetState targetSetState = TargetSetState.USED;
         Set<PerformanceLogEntity> performanceLogs = new HashSet<>();
 
         if (targetSetInput instanceof InputTargetSet inputTargetSet) {
@@ -94,6 +96,7 @@ public class TargetSetController {
                     () -> new TargetSetNotFoundException(id));
             creationDate = targetSet.getCreationDate();
             progExercise = targetSet.getProgExercise();
+            targetSetState = targetSet.getState();
             targetSetUpdate = targetSet.getTargetSetUpdate();
             performanceLogs.addAll(targetSet.getPerformanceLogs());
         } else if (targetSetInput instanceof InputNewTargetSet inputNewTargetSet) {
@@ -120,6 +123,7 @@ public class TargetSetController {
                 targetSetInput.getPhysicalExertionUnitTime().InputDurationToDuration(),
                 targetSetInput.getRestTime().InputDurationToDuration(),
                 creationDate,
+                targetSetState,
                 progExercise,
                 targetSetUpdate,
                 performanceLogs
