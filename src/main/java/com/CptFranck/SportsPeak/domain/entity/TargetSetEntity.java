@@ -1,5 +1,6 @@
 package com.CptFranck.SportsPeak.domain.entity;
 
+import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
 import com.CptFranck.SportsPeak.domain.enumType.WeightUnit;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -48,6 +49,10 @@ public class TargetSetEntity {
 
     @Column(name = "creation_date", nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime creationDate;
+
+    @Column(name = "state", length = 50, nullable = false)
+    @Enumerated(EnumType.STRING)
+    private TargetSetState state;
 
     @ManyToOne
     @JoinColumn(name = "prog_exercise_id", nullable = false)
