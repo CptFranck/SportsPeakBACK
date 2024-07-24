@@ -11,6 +11,7 @@ import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundExc
 import com.CptFranck.SportsPeak.domain.input.targetSet.AbstractInputNewTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputNewTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSet;
+import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSetState;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import com.CptFranck.SportsPeak.service.TargetSetService;
@@ -69,6 +70,15 @@ public class TargetSetController {
             return null;
         }
         return targetSetMapper.mapTo(inputToEntity(inputTargetSet));
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @DgsMutation
+    public TargetSetDto modifyTargetSetState(@InputArgument InputTargetSetState inputTargetSetState) {
+        if (!targetSetService.exists(inputTargetSetState.getId())) {
+            return null;
+        }
+        return targetSetMapper.mapTo(inputTrustLabelToEntity(inputTargetSetState));
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -139,6 +149,14 @@ public class TargetSetController {
             targetSetService.save(targetSetUpdated);
         }
         return targetSet;
+    }
+
+    private TargetSetEntity inputTrustLabelToEntity(InputTargetSetState inputTargetSetState) {
+        TargetSetEntity targetSet = targetSetService.findOne(inputTargetSetState.getId()).orElseThrow(
+                () -> new TargetSetNotFoundException(inputTargetSetState.getId()));
+
+        targetSet.setState(TargetSetState.valueOfLabel(inputTargetSetState.getState()));
+        return targetSetService.save(targetSet);
     }
 }
 
