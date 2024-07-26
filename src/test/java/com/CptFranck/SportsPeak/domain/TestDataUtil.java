@@ -1,9 +1,13 @@
 package com.CptFranck.SportsPeak.domain;
 
 import com.CptFranck.SportsPeak.domain.entity.*;
+import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
 import com.CptFranck.SportsPeak.domain.enumType.TrustLabel;
 import com.CptFranck.SportsPeak.domain.enumType.Visibility;
+import com.CptFranck.SportsPeak.domain.enumType.WeightUnit;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 
 public class TestDataUtil {
@@ -18,7 +22,7 @@ public class TestDataUtil {
 
     public static MuscleEntity createTestMuscle() {
         return new MuscleEntity(
-                1L,
+                2L,
                 "Muscle name",
                 "Muscle description",
                 "Muscle function",
@@ -28,7 +32,7 @@ public class TestDataUtil {
 
     public static ExerciseEntity createTestExercise() {
         return new ExerciseEntity(
-                1L,
+                3L,
                 "Exercise name",
                 "Exercise description",
                 "Exercise goal",
@@ -40,7 +44,7 @@ public class TestDataUtil {
 
     public static UserEntity createTestUser() {
         return new UserEntity(
-                1L,
+                4L,
                 "test@test.test",
                 "John",
                 "Doe",
@@ -54,7 +58,7 @@ public class TestDataUtil {
 
     public static ProgExerciseEntity createTestProgExercise(UserEntity creator, ExerciseEntity exercise) {
         return new ProgExerciseEntity(
-                1L,
+                5L,
                 "Exercise name",
                 "Exercise note",
                 Visibility.PRIVATE,
@@ -63,6 +67,40 @@ public class TestDataUtil {
                 creator,
                 exercise,
                 new HashSet<TargetSetEntity>()
+        );
+    }
+
+    public static TargetSetEntity createTestTargetSet(ProgExerciseEntity progExercise, TargetSetEntity update) {
+        LocalDateTime creationDate = LocalDateTime.now();
+        Duration effortTime = Duration.ofHours(0).plusMinutes(0).plusSeconds(5);
+        Duration restTime = Duration.ofHours(0).plusMinutes(4).plusSeconds(0);
+        return new TargetSetEntity(
+                6L,
+                1,
+                5,
+                10,
+                0f,
+                WeightUnit.KILOGRAMME,
+                effortTime,
+                restTime,
+                creationDate,
+                TargetSetState.USED,
+                progExercise,
+                update,
+                new HashSet<PerformanceLogEntity>()
+        );
+    }
+
+    public static PerformanceLogEntity createTestPerformanceLog(TargetSetEntity targetSet) {
+        LocalDateTime creationDate = LocalDateTime.now();
+        return new PerformanceLogEntity(
+                7L,
+                1,
+                5,
+                0f,
+                WeightUnit.KILOGRAMME,
+                creationDate,
+                targetSet
         );
     }
 }
