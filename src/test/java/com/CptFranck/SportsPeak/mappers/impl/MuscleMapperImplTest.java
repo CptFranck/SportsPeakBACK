@@ -17,19 +17,19 @@ import static com.CptFranck.SportsPeak.domain.TestDataUtil.createTestMuscle;
 @ExtendWith(MockitoExtension.class)
 public class MuscleMapperImplTest {
 
-    private final Mapper<MuscleEntity, MuscleDto> exerciseTypeMapper;
+    private final Mapper<MuscleEntity, MuscleDto> muscleMapper;
 
     public MuscleMapperImplTest() {
-        this.exerciseTypeMapper = new MuscleMapperImpl(new ModelMapper());
+        this.muscleMapper = new MuscleMapperImpl(new ModelMapper());
     }
 
     @Test
-    void testExerciseTypeMapperMapTo_Success() {
+    void testMuscleMapperMapTo_Success() {
         MuscleEntity muscle = createTestMuscle();
         ExerciseEntity exercise = createTestExercise();
 
         muscle.getExercises().add(exercise);
-        MuscleDto muscleDto = exerciseTypeMapper.mapTo(muscle);
+        MuscleDto muscleDto = muscleMapper.mapTo(muscle);
 
         Assertions.assertEquals(muscle.getId(), muscleDto.getId());
         Assertions.assertEquals(muscle.getName(), muscleDto.getName());
