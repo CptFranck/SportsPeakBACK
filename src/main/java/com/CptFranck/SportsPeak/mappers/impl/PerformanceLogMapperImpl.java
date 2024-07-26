@@ -3,6 +3,7 @@ package com.CptFranck.SportsPeak.mappers.impl;
 import com.CptFranck.SportsPeak.domain.dto.PerformanceLogDto;
 import com.CptFranck.SportsPeak.domain.entity.PerformanceLogEntity;
 import com.CptFranck.SportsPeak.mappers.Mapper;
+import com.CptFranck.SportsPeak.mappers.typeConverter.WeightUnitToStringConverter;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,7 @@ public class PerformanceLogMapperImpl implements Mapper<PerformanceLogEntity, Pe
 
     public PerformanceLogMapperImpl(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
+        this.modelMapper.addConverter(new WeightUnitToStringConverter());
     }
 
     @Override
