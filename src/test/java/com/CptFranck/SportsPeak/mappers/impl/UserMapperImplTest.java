@@ -28,7 +28,7 @@ public class UserMapperImplTest {
     @Test
     void testExerciseTypeMapperMapTo_Success() {
         UserEntity user = createTestUser();
-        RoleEntity role = createTestRoleEntity();
+        RoleEntity role = createTestRole();
         user.getRoles().add(role);
         ExerciseEntity exercise = createTestExercise();
         ProgExerciseEntity progExercise = createTestProgExercise(user, exercise);

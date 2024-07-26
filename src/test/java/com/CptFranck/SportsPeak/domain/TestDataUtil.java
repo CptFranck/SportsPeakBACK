@@ -125,7 +125,7 @@ public class TestDataUtil {
         );
     }
 
-    public static PrivilegeEntity createTestPrivilegeEntity() {
+    public static PrivilegeEntity createTestPrivilege() {
         return new PrivilegeEntity(
                 8L,
                 "Privilege name",
@@ -133,7 +133,7 @@ public class TestDataUtil {
         );
     }
 
-    public static RoleEntity createTestRoleEntity() {
+    public static RoleEntity createTestRole() {
         return new RoleEntity(
                 9L,
                 "Role name",
