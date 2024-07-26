@@ -70,7 +70,28 @@ public class TestDataUtil {
         );
     }
 
-    public static TargetSetEntity createTestTargetSet(ProgExerciseEntity progExercise, TargetSetEntity update) {
+    public static TargetSetEntity createTestTargetSet(ProgExerciseEntity progExercise) {
+        LocalDateTime creationDate = LocalDateTime.now();
+        Duration effortTime = Duration.ofHours(0).plusMinutes(0).plusSeconds(5);
+        Duration restTime = Duration.ofHours(0).plusMinutes(4).plusSeconds(0);
+        return new TargetSetEntity(
+                6L,
+                1,
+                5,
+                10,
+                0f,
+                WeightUnit.KILOGRAMME,
+                effortTime,
+                restTime,
+                creationDate,
+                TargetSetState.USED,
+                progExercise,
+                null,
+                new HashSet<PerformanceLogEntity>()
+        );
+    }
+
+    public static TargetSetEntity createTestTargetSetUpdate(ProgExerciseEntity progExercise, TargetSetEntity update) {
         LocalDateTime creationDate = LocalDateTime.now();
         Duration effortTime = Duration.ofHours(0).plusMinutes(0).plusSeconds(5);
         Duration restTime = Duration.ofHours(0).plusMinutes(4).plusSeconds(0);
