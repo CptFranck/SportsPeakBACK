@@ -124,4 +124,21 @@ public class TestDataUtil {
                 targetSet
         );
     }
+
+    public static PrivilegeEntity createTestPrivilegeEntity() {
+        return new PrivilegeEntity(
+                8L,
+                "Privilege name",
+                new HashSet<RoleEntity>()
+        );
+    }
+
+    public static RoleEntity createTestRoleEntity() {
+        return new RoleEntity(
+                9L,
+                "Role name",
+                new HashSet<UserEntity>(),
+                new HashSet<PrivilegeEntity>()
+        );
+    }
 }
