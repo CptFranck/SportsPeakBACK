@@ -40,6 +40,8 @@ public class TargetSetMapperImplTest {
         ExerciseEntity exercise = createTestExercise();
         ProgExerciseEntity progExercise = createTestProgExercise(user, exercise);
         TargetSetEntity targetSet = createTestTargetSet(progExercise);
+        PerformanceLogEntity performanceLog = createTestPerformanceLog(targetSet);
+        targetSet.getPerformanceLogs().add(performanceLog);
         TargetSetEntity targetSetUpdate = createTestTargetSetUpdate(progExercise, null);
         targetSet.setTargetSetUpdate(targetSetUpdate);
 
