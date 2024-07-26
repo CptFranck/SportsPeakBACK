@@ -14,8 +14,9 @@ public class TargetSetStateToStringConverterTest {
     private TargetSetStateToStringConverter targetSetStateConverter;
 
     @Test
-    void DurationToInputDurationConverter_Success() {
+    void TestTargetSetStateToStringConverterConverter_Success() {
         TargetSetState targetSetState = TargetSetState.USED;
+
         String state = targetSetStateConverter.convert(targetSetState);
 
         Assertions.assertEquals(targetSetState.label, state);

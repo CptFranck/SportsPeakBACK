@@ -16,11 +16,12 @@ public class DurationToInputDurationConverterTest {
     private DurationToInputDurationConverter durationConverter;
 
     @Test
-    void DurationToInputDurationConverter_Success() {
+    void TestDurationToInputDurationConverter_Success() {
         Duration duration = Duration
                 .ofHours(0)
                 .plusMinutes(2)
                 .plusSeconds(30);
+
         InputDuration inputDuration = durationConverter.convert(duration);
 
         Assertions.assertEquals(duration.toHoursPart(), inputDuration.getHours());
