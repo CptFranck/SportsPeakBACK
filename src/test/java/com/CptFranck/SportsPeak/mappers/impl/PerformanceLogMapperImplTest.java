@@ -14,10 +14,10 @@ import static com.CptFranck.SportsPeak.domain.TestDataUtil.*;
 @ExtendWith(MockitoExtension.class)
 public class PerformanceLogMapperImplTest {
 
-    private final Mapper<PerformanceLogEntity, PerformanceLogDto> PerformanceLogMapper;
+    private final Mapper<PerformanceLogEntity, PerformanceLogDto> performanceLogMapper;
 
     public PerformanceLogMapperImplTest() {
-        this.PerformanceLogMapper = new PerformanceLogMapperImpl(new ModelMapper());
+        this.performanceLogMapper = new PerformanceLogMapperImpl(new ModelMapper());
     }
 
     @Test
@@ -28,7 +28,7 @@ public class PerformanceLogMapperImplTest {
         TargetSetEntity targetSet = createTestTargetSet(progExercise);
         PerformanceLogEntity performanceLog = createTestPerformanceLog(targetSet);
 
-        PerformanceLogDto performanceLogDto = PerformanceLogMapper.mapTo(performanceLog);
+        PerformanceLogDto performanceLogDto = performanceLogMapper.mapTo(performanceLog);
 
         Assertions.assertEquals(performanceLog.getId(), performanceLogDto.getId());
         Assertions.assertEquals(performanceLog.getSetIndex(), performanceLogDto.getSetIndex());
