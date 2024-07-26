@@ -27,5 +27,4 @@ public class DurationToInputDurationConverterTest {
         Assertions.assertEquals(duration.toMinutesPart(), inputDuration.getMinutes());
         Assertions.assertEquals(duration.toSecondsPart(), inputDuration.getSeconds());
     }
-
 }
