@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.mappers.Impl;
+package com.CptFranck.SportsPeak.mappers.impl;
 
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
