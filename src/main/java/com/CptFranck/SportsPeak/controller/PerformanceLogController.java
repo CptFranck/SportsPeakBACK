@@ -3,6 +3,7 @@ package com.CptFranck.SportsPeak.controller;
 import com.CptFranck.SportsPeak.domain.dto.PerformanceLogDto;
 import com.CptFranck.SportsPeak.domain.entity.PerformanceLogEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
+import com.CptFranck.SportsPeak.domain.enumType.WeightUnit;
 import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputNewPerformanceLog;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputPerformanceLog;
@@ -88,7 +89,7 @@ public class PerformanceLogController {
                 inputNewPerformanceLog.getSetIndex(),
                 inputNewPerformanceLog.getRepetitionNumber(),
                 inputNewPerformanceLog.getWeight(),
-                inputNewPerformanceLog.getWeightUnit(),
+                WeightUnit.valueOfLabel(inputNewPerformanceLog.getWeightUnit()),
                 inputNewPerformanceLog.getLogDate(),
                 targetSet
         );
