@@ -30,6 +30,16 @@ public class TestDataUtil {
         );
     }
 
+    public static MuscleEntity createNewTestMuscle() {
+        return new MuscleEntity(
+                null,
+                "Muscle name",
+                "Muscle description",
+                "Muscle function",
+                new HashSet<ExerciseEntity>()
+        );
+    }
+
     public static ExerciseEntity createTestExercise() {
         return new ExerciseEntity(
                 3L,
