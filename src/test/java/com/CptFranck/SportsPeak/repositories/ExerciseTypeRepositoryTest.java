@@ -48,7 +48,7 @@ public class ExerciseTypeRepositoryTest {
     }
 
     @Test
-    public void MuscleRepository_findById_ReturnMuscle() {
+    public void ExerciseTypeRepository_findById_ReturnMuscle() {
         ExerciseTypeEntity exerciseType = createNewTestExerciseType();
         ExerciseTypeEntity savedExerciseType = exerciseTypeRepository.save(exerciseType);
 
@@ -60,7 +60,7 @@ public class ExerciseTypeRepositoryTest {
     }
 
     @Test
-    public void MuscleRepository_existById_ReturnTrue() {
+    public void ExerciseTypeRepository_existById_ReturnTrue() {
         ExerciseTypeEntity exerciseType = createNewTestExerciseType();
         ExerciseTypeEntity savedExerciseType = exerciseTypeRepository.save(exerciseType);
 
@@ -70,7 +70,7 @@ public class ExerciseTypeRepositoryTest {
     }
 
     @Test
-    public void MuscleRepository_deleteById_ReturnTrue() {
+    public void ExerciseTypeRepository_deleteById_ReturnTrue() {
         ExerciseTypeEntity exerciseType = createNewTestExerciseType();
         ExerciseTypeEntity savedExerciseType = exerciseTypeRepository.save(exerciseType);
 
