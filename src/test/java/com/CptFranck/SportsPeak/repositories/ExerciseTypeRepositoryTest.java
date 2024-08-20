@@ -22,29 +22,29 @@ public class ExerciseTypeRepositoryTest {
     private ExerciseTypeRepository exerciseTypeRepository;
 
     @Test
-    public void MuscleRepository_Save_ReturnSavedMuscle() {
+    public void ExerciseTypeRepository_Save_ReturnSavedComplexMuscle() {
         ExerciseTypeEntity exerciseType = createNewTestExerciseType();
 
         ExerciseTypeEntity savedExerciseType = exerciseTypeRepository.save(exerciseType);
 
         Assertions.assertNotNull(savedExerciseType);
-        Assertions.assertTrue(exerciseType.getId() > 0L, "Id > 0");
+        Assertions.assertTrue(exerciseType.getId() > 0L, "exerciseType Id must be > 0");
     }
 
     @Test
-    public void MuscleRepository_findAll_ReturnAllMuscle() {
+    public void ExerciseTypeRepository_findAll_ReturnAllMuscle() {
         ExerciseTypeEntity savedExerciseOne = createNewTestExerciseType();
         ExerciseTypeEntity savedExerciseTwo = createNewTestExerciseType();
         exerciseTypeRepository.save(savedExerciseOne);
         exerciseTypeRepository.save(savedExerciseTwo);
 
-        List<ExerciseTypeEntity> muscleEntities = StreamSupport.stream(
+        List<ExerciseTypeEntity> exerciseTypeEntities = StreamSupport.stream(
                         exerciseTypeRepository.findAll().spliterator(),
                         false)
                 .toList();
 
-        Assertions.assertNotNull(muscleEntities);
-        Assertions.assertEquals(muscleEntities.size(), 2);
+        Assertions.assertNotNull(exerciseTypeEntities);
+        Assertions.assertEquals(exerciseTypeEntities.size(), 2);
     }
 
     @Test
@@ -52,11 +52,11 @@ public class ExerciseTypeRepositoryTest {
         ExerciseTypeEntity exerciseType = createNewTestExerciseType();
         ExerciseTypeEntity savedExerciseType = exerciseTypeRepository.save(exerciseType);
 
-        Optional<ExerciseTypeEntity> foundMuscle = exerciseTypeRepository.findById(savedExerciseType.getId());
+        Optional<ExerciseTypeEntity> foundExerciseType = exerciseTypeRepository.findById(savedExerciseType.getId());
 
-        Assertions.assertNotNull(foundMuscle);
-        Assertions.assertTrue(foundMuscle.isPresent());
-        Assertions.assertNotNull(foundMuscle.get());
+        Assertions.assertNotNull(foundExerciseType);
+        Assertions.assertTrue(foundExerciseType.isPresent());
+        Assertions.assertNotNull(foundExerciseType.get());
     }
 
     @Test
@@ -64,9 +64,9 @@ public class ExerciseTypeRepositoryTest {
         ExerciseTypeEntity exerciseType = createNewTestExerciseType();
         ExerciseTypeEntity savedExerciseType = exerciseTypeRepository.save(exerciseType);
 
-        boolean foundMuscle = exerciseTypeRepository.existsById(savedExerciseType.getId());
+        boolean foundExerciseType = exerciseTypeRepository.existsById(savedExerciseType.getId());
 
-        Assertions.assertTrue(foundMuscle);
+        Assertions.assertTrue(foundExerciseType);
     }
 
     @Test
@@ -75,8 +75,8 @@ public class ExerciseTypeRepositoryTest {
         ExerciseTypeEntity savedExerciseType = exerciseTypeRepository.save(exerciseType);
 
         exerciseTypeRepository.deleteById(savedExerciseType.getId());
-        boolean foundMuscle = exerciseTypeRepository.existsById(savedExerciseType.getId());
+        boolean foundExerciseType = exerciseTypeRepository.existsById(savedExerciseType.getId());
 
-        Assertions.assertFalse(foundMuscle);
+        Assertions.assertFalse(foundExerciseType);
     }
 }
