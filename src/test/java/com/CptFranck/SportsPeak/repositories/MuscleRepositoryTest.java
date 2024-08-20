@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 import static com.CptFranck.SportsPeak.domain.TestDataUtil.createNewTestMuscle;
@@ -44,5 +45,17 @@ public class MuscleRepositoryTest {
 
         Assertions.assertNotNull(muscleEntities);
         Assertions.assertEquals(muscleEntities.size(), 2);
+    }
+
+    @Test
+    public void MuscleRepository_findById_ReturnMuscle() {
+        MuscleEntity muscle = createNewTestMuscle();
+        MuscleEntity savedMuscle = muscleRepository.save(muscle);
+
+        Optional<MuscleEntity> foundMuscle = muscleRepository.findById(savedMuscle.getId());
+
+        Assertions.assertNotNull(foundMuscle);
+        Assertions.assertTrue(foundMuscle.isPresent());
+        Assertions.assertNotNull(foundMuscle.get());
     }
 }
