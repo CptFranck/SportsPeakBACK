@@ -2,7 +2,6 @@ package com.CptFranck.SportsPeak.repositories;
 
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
@@ -21,11 +20,6 @@ public class ExerciseTypeRepositoryTest {
 
     @Autowired
     private ExerciseTypeRepository exerciseTypeRepository;
-
-    @BeforeEach
-    public void setUp() {
-        exerciseTypeRepository.deleteAll();
-    }
 
     @Test
     public void ExerciseTypeRepository_Save_ReturnSavedMuscle() {

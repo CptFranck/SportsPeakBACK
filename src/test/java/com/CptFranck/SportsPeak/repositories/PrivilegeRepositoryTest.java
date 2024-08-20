@@ -1,7 +1,6 @@
 package com.CptFranck.SportsPeak.repositories;
 
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +20,6 @@ public class PrivilegeRepositoryTest {
 
     @Autowired
     private PrivilegeRepository privilegeRepository;
-
-    @AfterEach
-    public void setUp() {
-        privilegeRepository.deleteAll();
-    }
 
     @Test
     public void MuscleRepository_Save_ReturnSavedMuscle() {
