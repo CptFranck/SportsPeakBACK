@@ -87,9 +87,37 @@ public class TestDataUtil {
         );
     }
 
+    public static UserEntity createNewTestUser() {
+        return new UserEntity(
+                4L,
+                "test@test.test",
+                "John",
+                "Doe",
+                "John_Doe",
+                "password",
+                new HashSet<RoleEntity>(),
+                new HashSet<ProgExerciseEntity>(),
+                new HashSet<ProgExerciseEntity>()
+        );
+    }
+
     public static ProgExerciseEntity createTestProgExercise(UserEntity creator, ExerciseEntity exercise) {
         return new ProgExerciseEntity(
                 5L,
+                "Exercise name",
+                "Exercise note",
+                Visibility.PRIVATE,
+                TrustLabel.UNVERIFIED,
+                new HashSet<UserEntity>(),
+                creator,
+                exercise,
+                new HashSet<TargetSetEntity>()
+        );
+    }
+
+    public static ProgExerciseEntity createTestNewProgExercise(UserEntity creator, ExerciseEntity exercise) {
+        return new ProgExerciseEntity(
+                null,
                 "Exercise name",
                 "Exercise note",
                 Visibility.PRIVATE,
@@ -164,7 +192,24 @@ public class TestDataUtil {
         );
     }
 
+    public static PrivilegeEntity createNewTestPrivilege() {
+        return new PrivilegeEntity(
+                null,
+                "Privilege name",
+                new HashSet<RoleEntity>()
+        );
+    }
+
     public static RoleEntity createTestRole() {
+        return new RoleEntity(
+                9L,
+                "Role name",
+                new HashSet<UserEntity>(),
+                new HashSet<PrivilegeEntity>()
+        );
+    }
+
+    public static RoleEntity createNewTestRole() {
         return new RoleEntity(
                 9L,
                 "Role name",
