@@ -20,6 +20,15 @@ public class TestDataUtil {
         );
     }
 
+    public static ExerciseTypeEntity createNewTestExerciseType() {
+        return new ExerciseTypeEntity(
+                null,
+                "Exercise type name",
+                "Exercise type goal",
+                new HashSet<ExerciseEntity>()
+        );
+    }
+
     public static MuscleEntity createTestMuscle() {
         return new MuscleEntity(
                 2L,
@@ -43,6 +52,18 @@ public class TestDataUtil {
     public static ExerciseEntity createTestExercise() {
         return new ExerciseEntity(
                 3L,
+                "Exercise name",
+                "Exercise description",
+                "Exercise goal",
+                new HashSet<ExerciseTypeEntity>(),
+                new HashSet<MuscleEntity>(),
+                new HashSet<ProgExerciseEntity>()
+        );
+    }
+
+    public static ExerciseEntity createNewTestExercise() {
+        return new ExerciseEntity(
+                null,
                 "Exercise name",
                 "Exercise description",
                 "Exercise goal",
