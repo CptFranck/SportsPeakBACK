@@ -22,7 +22,7 @@ public class ExerciseTypeRepositoryTest {
     private ExerciseTypeRepository exerciseTypeRepository;
 
     @Test
-    public void ExerciseTypeRepository_Save_ReturnSavedComplexMuscle() {
+    public void ExerciseTypeRepository_Save_ReturnSavedMuscle() {
         ExerciseTypeEntity exerciseType = createNewTestExerciseType();
 
         ExerciseTypeEntity savedExerciseType = exerciseTypeRepository.save(exerciseType);
@@ -32,7 +32,7 @@ public class ExerciseTypeRepositoryTest {
     }
 
     @Test
-    public void ExerciseTypeRepository_findAll_ReturnAllMuscle() {
+    public void ExerciseTypeRepository_findAll_ReturnAllExerciseType() {
         ExerciseTypeEntity savedExerciseOne = createNewTestExerciseType();
         ExerciseTypeEntity savedExerciseTwo = createNewTestExerciseType();
         exerciseTypeRepository.save(savedExerciseOne);
@@ -48,7 +48,7 @@ public class ExerciseTypeRepositoryTest {
     }
 
     @Test
-    public void ExerciseTypeRepository_findById_ReturnMuscle() {
+    public void ExerciseTypeRepository_findById_ReturnExerciseType() {
         ExerciseTypeEntity exerciseType = createNewTestExerciseType();
         ExerciseTypeEntity savedExerciseType = exerciseTypeRepository.save(exerciseType);
 
