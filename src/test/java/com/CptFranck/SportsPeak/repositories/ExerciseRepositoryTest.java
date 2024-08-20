@@ -2,6 +2,7 @@ package com.CptFranck.SportsPeak.repositories;
 
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
@@ -21,6 +22,11 @@ public class ExerciseRepositoryTest {
     @Autowired
     private ExerciseRepository exerciseRepository;
 
+    @BeforeEach
+    public void setUp() {
+        exerciseRepository.deleteAll();
+    }
+
     @Test
     public void ExerciseRepository_Save_ReturnSavedExercise() {
         ExerciseEntity exercise = createNewTestExercise();
@@ -33,10 +39,10 @@ public class ExerciseRepositoryTest {
 
     @Test
     public void ExerciseRepository_findAll_ReturnAllExercise() {
-        ExerciseEntity savedExerciseOne = createNewTestExercise();
-        ExerciseEntity savedExerciseTwo = createNewTestExercise();
-        exerciseRepository.save(savedExerciseOne);
-        exerciseRepository.save(savedExerciseTwo);
+        ExerciseEntity exerciseOne = createNewTestExercise();
+        ExerciseEntity exerciseTwo = createNewTestExercise();
+        exerciseRepository.save(exerciseOne);
+        exerciseRepository.save(exerciseTwo);
 
         List<ExerciseEntity> exerciseTypeEntities = StreamSupport.stream(
                         exerciseRepository.findAll().spliterator(),
