@@ -58,4 +58,25 @@ public class MuscleRepositoryTest {
         Assertions.assertTrue(foundMuscle.isPresent());
         Assertions.assertNotNull(foundMuscle.get());
     }
+
+    @Test
+    public void MuscleRepository_existById_ReturnTrue() {
+        MuscleEntity muscle = createNewTestMuscle();
+        MuscleEntity savedMuscle = muscleRepository.save(muscle);
+
+        boolean foundMuscle = muscleRepository.existsById(savedMuscle.getId());
+
+        Assertions.assertTrue(foundMuscle);
+    }
+
+    @Test
+    public void MuscleRepository_deleteById_ReturnTrue() {
+        MuscleEntity muscle = createNewTestMuscle();
+        MuscleEntity savedMuscle = muscleRepository.save(muscle);
+
+        muscleRepository.deleteById(savedMuscle.getId());
+        boolean foundMuscle = muscleRepository.existsById(savedMuscle.getId());
+
+        Assertions.assertFalse(foundMuscle);
+    }
 }
