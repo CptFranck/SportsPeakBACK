@@ -22,7 +22,7 @@ public class ExerciseTypeRepositoryTest {
     private ExerciseTypeRepository exerciseTypeRepository;
 
     @Test
-    public void ExerciseTypeRepository_Save_ReturnSavedMuscle() {
+    public void ExerciseTypeRepository_Save_ReturnSavedExerciseType() {
         ExerciseTypeEntity exerciseType = createNewTestExerciseType();
 
         ExerciseTypeEntity savedExerciseType = exerciseTypeRepository.save(exerciseType);

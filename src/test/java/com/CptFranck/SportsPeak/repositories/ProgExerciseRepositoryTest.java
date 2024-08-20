@@ -40,7 +40,7 @@ class ProgExerciseRepositoryTest {
     }
 
     @Test
-    public void ExerciseRepository_Save_ReturnSavedExercise() {
+    public void ProgExerciseRepository_Save_ReturnSavedProgExercise() {
         ProgExerciseEntity progExercise = createTestNewProgExercise(creator, exercise);
 
         ProgExerciseEntity savedExercise = progExerciseRepository.save(progExercise);
@@ -50,7 +50,7 @@ class ProgExerciseRepositoryTest {
     }
 
     @Test
-    public void ExerciseRepository_findAll_ReturnAllExercise() {
+    public void ProgExerciseRepository_findAll_ReturnAllProgExercise() {
         ProgExerciseEntity progExerciseOne = createTestNewProgExercise(this.creator, this.exercise);
         ProgExerciseEntity progExerciseTwo = createTestNewProgExercise(this.creator, this.exercise);
         progExerciseRepository.save(progExerciseOne);
@@ -67,7 +67,7 @@ class ProgExerciseRepositoryTest {
     }
 
     @Test
-    public void ExerciseRepository_findById_ReturnExercise() {
+    public void ProgExerciseRepository_findById_ReturnProgExercise() {
         ProgExerciseEntity progExercise = createTestNewProgExercise(this.creator, this.exercise);
         ProgExerciseEntity savedExercise = progExerciseRepository.save(progExercise);
 
@@ -79,7 +79,7 @@ class ProgExerciseRepositoryTest {
     }
 
     @Test
-    public void ExerciseRepository_existById_ReturnTrue() {
+    public void ProgExerciseRepository_existById_ReturnTrue() {
         ProgExerciseEntity progExercise = createTestNewProgExercise(this.creator, this.exercise);
         ProgExerciseEntity savedProgExercise = progExerciseRepository.save(progExercise);
 
@@ -89,7 +89,7 @@ class ProgExerciseRepositoryTest {
     }
 
     @Test
-    public void ExerciseRepository_deleteById_ReturnTrue() {
+    public void ProgExerciseRepository_deleteById_ReturnTrue() {
         ProgExerciseEntity progExercise = createTestNewProgExercise(this.creator, this.exercise);
         ProgExerciseEntity savedExercise = progExerciseRepository.save(progExercise);
 

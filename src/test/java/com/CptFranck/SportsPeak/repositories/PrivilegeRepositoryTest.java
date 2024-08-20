@@ -22,7 +22,7 @@ public class PrivilegeRepositoryTest {
     private PrivilegeRepository privilegeRepository;
 
     @Test
-    public void MuscleRepository_Save_ReturnSavedMuscle() {
+    public void PrivilegeRepository_Save_ReturnSavedPrivilege() {
         PrivilegeEntity privilege = createNewTestPrivilege();
 
         PrivilegeEntity savedPrivilege = privilegeRepository.save(privilege);
@@ -32,7 +32,7 @@ public class PrivilegeRepositoryTest {
     }
 
     @Test
-    public void MuscleRepository_findAll_ReturnAllMuscle() {
+    public void PrivilegeRepository_findAll_ReturnAllPrivilege() {
         PrivilegeEntity privilegeOne = createNewTestPrivilege();
         PrivilegeEntity privilegeTwo = createNewTestPrivilege();
         privilegeOne.setName("privilegeOne");
@@ -50,7 +50,7 @@ public class PrivilegeRepositoryTest {
     }
 
     @Test
-    public void MuscleRepository_findById_ReturnMuscle() {
+    public void PrivilegeRepository_findById_ReturnPrivilege() {
         PrivilegeEntity privilege = createNewTestPrivilege();
         PrivilegeEntity savedPrivilege = privilegeRepository.save(privilege);
 
@@ -62,7 +62,7 @@ public class PrivilegeRepositoryTest {
     }
 
     @Test
-    public void MuscleRepository_existById_ReturnTrue() {
+    public void PrivilegeRepository_existById_ReturnTrue() {
         PrivilegeEntity privilege = createNewTestPrivilege();
         PrivilegeEntity savedPrivilege = privilegeRepository.save(privilege);
 
@@ -72,7 +72,7 @@ public class PrivilegeRepositoryTest {
     }
 
     @Test
-    public void MuscleRepository_deleteById_ReturnTrue() {
+    public void PrivilegeRepository_deleteById_ReturnTrue() {
         PrivilegeEntity privilege = createNewTestPrivilege();
         PrivilegeEntity savedPrivilege = privilegeRepository.save(privilege);
 
