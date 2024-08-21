@@ -50,6 +50,10 @@ public class TestDataUtil {
         );
     }
 
+    public static List<MuscleEntity> createNewTestMuscles() {
+        return List.of(createNewTestMuscle(), createNewTestMuscle());
+    }
+
     public static ExerciseEntity createTestExercise() {
         return new ExerciseEntity(
                 3L,
