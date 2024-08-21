@@ -70,8 +70,7 @@ public class UserRepositoryTest {
 
     @Test
     public void UserRepository_FindAll_ReturnAllUsers() {
-        List<UserEntity> users = createNewTestUsers();
-        userRepository.saveAll(users);
+        saveAllUsersInRepository(null);
 
         List<UserEntity> userEntities = StreamSupport.stream(
                         userRepository.findAll().spliterator(),

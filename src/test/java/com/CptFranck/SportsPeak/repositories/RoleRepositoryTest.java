@@ -70,8 +70,7 @@ public class RoleRepositoryTest {
 
     @Test
     public void RoleRepository_FindAll_ReturnAllRole() {
-        List<RoleEntity> roles = createNewTestRoles();
-        roleRepository.saveAll(roles);
+        saveAllRolesInRepository(null);
 
         List<RoleEntity> roleEntities = StreamSupport.stream(
                         roleRepository.findAll().spliterator(),

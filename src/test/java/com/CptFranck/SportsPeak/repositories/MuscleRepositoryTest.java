@@ -71,8 +71,7 @@ public class MuscleRepositoryTest {
 
     @Test
     public void MuscleRepository_FindAll_ReturnAllMuscles() {
-        List<MuscleEntity> muscles = createNewTestMuscles();
-        muscleRepository.saveAll(muscles);
+        saveAllMusclesInRepository(null);
 
         List<MuscleEntity> muscleEntities = StreamSupport.stream(
                         muscleRepository.findAll().spliterator(),

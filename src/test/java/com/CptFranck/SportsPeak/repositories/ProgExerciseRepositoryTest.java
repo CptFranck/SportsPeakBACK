@@ -88,8 +88,7 @@ class ProgExerciseRepositoryTest {
 
     @Test
     public void ProgExerciseRepository_FindAll_ReturnAllProgExercises() {
-        List<ProgExerciseEntity> progExercises = createNewTestProgExercises(creator, exercise);
-        progExerciseRepository.saveAll(progExercises);
+        saveAllProgExercisesInRepository(null);
 
         List<ProgExerciseEntity> progExerciseTypeEntities = StreamSupport.stream(
                         progExerciseRepository.findAll().spliterator(),

@@ -70,8 +70,7 @@ public class ExerciseTypeRepositoryTest {
     
     @Test
     public void ExerciseTypeRepository_FindAll_ReturnAllExerciseType() {
-        List<ExerciseTypeEntity> exerciseTypes = createNewTestExerciseTypes();
-        exerciseTypeRepository.saveAll(exerciseTypes);
+        saveAllExerciseTypesInRepository(null);
 
         List<ExerciseTypeEntity> exerciseTypeEntities = StreamSupport.stream(
                         exerciseTypeRepository.findAll().spliterator(),
