@@ -105,7 +105,7 @@ class ProgExerciseRepositoryTest {
         List<ProgExerciseEntity> progExercises = createNewTestProgExercises(creator, exercise);
         progExerciseRepository.saveAll(progExercises);
 
-        List<ProgExerciseEntity> userEntities = StreamSupport.stream(
+        List<ProgExerciseEntity> progExerciseEntities = StreamSupport.stream(
                         progExerciseRepository.findAllById(progExercises.stream()
                                         .map(ProgExerciseEntity::getId)
                                         .toList())
@@ -113,8 +113,21 @@ class ProgExerciseRepositoryTest {
                         false)
                 .toList();
 
-        Assertions.assertNotNull(userEntities);
-        Assertions.assertEquals(2, userEntities.size());
+        Assertions.assertNotNull(progExerciseEntities);
+        Assertions.assertEquals(2, progExerciseEntities.size());
+    }
+
+    @Test
+    public void ProgExerciseRepository_FindAllBySubscribedUsersId_ReturnAllProgExercisesWithCreatorId() {
+        List<ProgExerciseEntity> progExercises = createNewTestProgExercises(creator, exercise);
+        progExerciseRepository.saveAll(progExercises);
+        creator.getSubscribedProgExercises().add(progExercises.getFirst());
+        userRepository.save(creator);
+
+        List<ProgExerciseEntity> progExerciseEntities = progExerciseRepository.findAllBySubscribedUsersId(creator.getId());
+
+        Assertions.assertNotNull(progExerciseEntities);
+        Assertions.assertEquals(1, progExerciseEntities.size());
     }
 
     @Test
