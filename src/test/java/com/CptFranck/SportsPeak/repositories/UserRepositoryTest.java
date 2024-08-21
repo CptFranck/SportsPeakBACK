@@ -25,7 +25,7 @@ public class UserRepositoryTest {
     private UserRepository userRepository;
 
     private UserEntity saveOneUserInRepository() {
-        UserEntity user = createNewTestUser();
+        UserEntity user = createNewTestUser(0);
         return userRepository.save(user);
     }
 
@@ -38,7 +38,7 @@ public class UserRepositoryTest {
 
     @Test
     public void UserRepository_Save_ReturnSavedUser() {
-        UserEntity user = createNewTestUser();
+        UserEntity user = createNewTestUser(0);
 
         UserEntity savedUser = userRepository.save(user);
 
