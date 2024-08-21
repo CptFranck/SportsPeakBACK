@@ -9,6 +9,7 @@ import com.CptFranck.SportsPeak.domain.enumType.WeightUnit;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 
 public class TestDataUtil {
     public static ExerciseTypeEntity createTestExerciseType() {
@@ -87,18 +88,37 @@ public class TestDataUtil {
         );
     }
 
-    public static UserEntity createNewTestUser() {
+    public static UserEntity createNewTestUser(int option) {
+        String email = "test@test.test";
+        String firstName = "firstName";
+        String lastName = "lastName";
+        String userName = "userName";
+        if (option == 1) {
+            email = "john.doe@email.com";
+            firstName = "John";
+            lastName = "Doe";
+            userName = "John_Doe";
+        } else if (option == 2) {
+            email = "jane.doe@email.com";
+            firstName = "Jane";
+            lastName = "Doe";
+            userName = "Jane_Doe";
+        }
         return new UserEntity(
-                4L,
-                "test@test.test",
-                "John",
-                "Doe",
-                "John_Doe",
+                null,
+                email,
+                firstName,
+                lastName,
+                userName,
                 "password",
                 new HashSet<RoleEntity>(),
                 new HashSet<ProgExerciseEntity>(),
                 new HashSet<ProgExerciseEntity>()
         );
+    }
+
+    public static List<UserEntity> createNewTestUsers() {
+        return List.of(createNewTestUser(1), createNewTestUser(2));
     }
 
     public static ProgExerciseEntity createTestProgExercise(UserEntity creator, ExerciseEntity exercise) {
