@@ -216,12 +216,22 @@ public class TestDataUtil {
         );
     }
 
-    public static PrivilegeEntity createNewTestPrivilege() {
+    public static PrivilegeEntity createNewTestPrivilege(int option) {
+        String privilgeName = "Privilege name";
+        if (option == 1) {
+            privilgeName = "Privilege One";
+        } else if (option == 2) {
+            privilgeName = "Privilege Two";
+        }
         return new PrivilegeEntity(
                 null,
-                "Privilege name",
+                privilgeName,
                 new HashSet<RoleEntity>()
         );
+    }
+
+    public static List<PrivilegeEntity> createNewTestPrivileges() {
+        return List.of(createNewTestPrivilege(1), createNewTestPrivilege(2));
     }
 
     public static RoleEntity createTestRole() {
@@ -236,9 +246,9 @@ public class TestDataUtil {
     public static RoleEntity createNewTestRole(int option) {
         String roleName = "Role name";
         if (option == 1) {
-            roleName = "RoleOne";
+            roleName = "Role One";
         } else if (option == 2) {
-            roleName = "RoleTwo";
+            roleName = "Role Two";
         }
         return new RoleEntity(
                 null,
