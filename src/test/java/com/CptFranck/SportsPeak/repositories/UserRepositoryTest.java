@@ -31,9 +31,8 @@ public class UserRepositoryTest {
 
     private List<UserEntity> saveAllUsersInRepository(List<UserEntity> users) {
         List<UserEntity> localUsers = Objects.requireNonNullElseGet(users, TestDataUtil::createNewTestUsers);
-        return StreamSupport.stream(userRepository.saveAll(localUsers).spliterator(),
-                        false)
-                .toList();
+        userRepository.saveAll(localUsers);
+        return localUsers;
     }
 
     @Test
