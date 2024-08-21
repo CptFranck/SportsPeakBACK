@@ -54,21 +54,34 @@ public class PrivilegeRepositoryTest {
         PrivilegeEntity privilege = createNewTestPrivilege();
         PrivilegeEntity savedPrivilege = privilegeRepository.save(privilege);
 
-        Optional<PrivilegeEntity> foundMuscle = privilegeRepository.findById(savedPrivilege.getId());
+        Optional<PrivilegeEntity> foundPrivilege = privilegeRepository.findById(savedPrivilege.getId());
 
-        Assertions.assertNotNull(foundMuscle);
-        Assertions.assertTrue(foundMuscle.isPresent());
-        Assertions.assertNotNull(foundMuscle.get());
+        Assertions.assertNotNull(foundPrivilege);
+        Assertions.assertTrue(foundPrivilege.isPresent());
+        Assertions.assertNotNull(foundPrivilege.get());
     }
+
+    @Test
+    public void PrivilegeRepository_ExistByName_ReturnTrue() {
+        PrivilegeEntity privilege = createNewTestPrivilege();
+        PrivilegeEntity savedPrivilege = privilegeRepository.save(privilege);
+
+        Optional<PrivilegeEntity> foundPrivilege = privilegeRepository.findByName(savedPrivilege.getName());
+
+        Assertions.assertNotNull(foundPrivilege);
+        Assertions.assertTrue(foundPrivilege.isPresent());
+        Assertions.assertNotNull(foundPrivilege.get());
+    }
+
 
     @Test
     public void PrivilegeRepository_ExistById_ReturnTrue() {
         PrivilegeEntity privilege = createNewTestPrivilege();
         PrivilegeEntity savedPrivilege = privilegeRepository.save(privilege);
 
-        boolean foundMuscle = privilegeRepository.existsById(savedPrivilege.getId());
+        boolean foundPrivilege = privilegeRepository.existsById(savedPrivilege.getId());
 
-        Assertions.assertTrue(foundMuscle);
+        Assertions.assertTrue(foundPrivilege);
     }
 
     @Test
@@ -77,8 +90,8 @@ public class PrivilegeRepositoryTest {
         PrivilegeEntity savedPrivilege = privilegeRepository.save(privilege);
 
         privilegeRepository.deleteById(savedPrivilege.getId());
-        boolean foundMuscle = privilegeRepository.existsById(savedPrivilege.getId());
+        boolean foundPrivilege = privilegeRepository.existsById(savedPrivilege.getId());
 
-        Assertions.assertFalse(foundMuscle);
+        Assertions.assertFalse(foundPrivilege);
     }
 }
