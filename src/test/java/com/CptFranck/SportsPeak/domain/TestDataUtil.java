@@ -82,6 +82,10 @@ public class TestDataUtil {
         );
     }
 
+    public static List<ExerciseEntity> createNewTestExercises() {
+        return List.of(createNewTestExercise(), createNewTestExercise());
+    }
+
     public static UserEntity createTestUser() {
         return new UserEntity(
                 4L,
