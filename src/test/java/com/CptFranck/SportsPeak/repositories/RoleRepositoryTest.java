@@ -62,6 +62,18 @@ public class RoleRepositoryTest {
     }
 
     @Test
+    public void RoleRepository_FindByName_ReturnRole() {
+        RoleEntity role = createNewTestRole();
+        RoleEntity savedRole = roleRepository.save(role);
+
+        Optional<RoleEntity> foundRole = roleRepository.findByName(savedRole.getName());
+
+        Assertions.assertNotNull(foundRole);
+        Assertions.assertTrue(foundRole.isPresent());
+        Assertions.assertNotNull(foundRole.get());
+    }
+
+    @Test
     public void RoleRepository_ExistById_ReturnTrue() {
         RoleEntity role = createNewTestRole();
         RoleEntity savedRole = roleRepository.save(role);
