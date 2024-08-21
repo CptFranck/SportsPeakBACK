@@ -233,12 +233,22 @@ public class TestDataUtil {
         );
     }
 
-    public static RoleEntity createNewTestRole() {
+    public static RoleEntity createNewTestRole(int option) {
+        String roleName = "Role name";
+        if (option == 1) {
+            roleName = "RoleOne";
+        } else if (option == 2) {
+            roleName = "RoleTwo";
+        }
         return new RoleEntity(
-                9L,
-                "Role name",
+                null,
+                roleName,
                 new HashSet<UserEntity>(),
                 new HashSet<PrivilegeEntity>()
         );
+    }
+
+    public static List<RoleEntity> createNewTestRoles() {
+        return List.of(createNewTestRole(1), createNewTestRole(2));
     }
 }
