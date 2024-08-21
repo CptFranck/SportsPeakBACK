@@ -1,5 +1,6 @@
 package com.CptFranck.SportsPeak.repositories;
 
+import com.CptFranck.SportsPeak.domain.TestDataUtil;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
@@ -27,8 +29,9 @@ public class UserRepositoryTest {
         return userRepository.save(user);
     }
 
-    private List<UserEntity> saveAllUserInRepository(List<UserEntity> users) {
-        return StreamSupport.stream(userRepository.saveAll(users).spliterator(),
+    private List<UserEntity> saveAllUsersInRepository(List<UserEntity> users) {
+        List<UserEntity> localUsers = Objects.requireNonNullElseGet(users, TestDataUtil::createNewTestUsers);
+        return StreamSupport.stream(userRepository.saveAll(localUsers).spliterator(),
                         false)
                 .toList();
     }
@@ -47,7 +50,7 @@ public class UserRepositoryTest {
     public void UserRepository_SaveAll_ReturnSavedUsers() {
         List<UserEntity> users = createNewTestUsers();
 
-        List<UserEntity> savedUsers = saveAllUserInRepository(users);
+        List<UserEntity> savedUsers = saveAllUsersInRepository(users);
 
         Assertions.assertNotNull(savedUsers);
         Assertions.assertEquals(users.size(), savedUsers.size());
@@ -69,8 +72,12 @@ public class UserRepositoryTest {
     @Test
     public void UserRepository_FindAll_ReturnAllUsers() {
         List<UserEntity> users = createNewTestUsers();
+        userRepository.saveAll(users);
 
-        List<UserEntity> userEntities = saveAllUserInRepository(users);
+        List<UserEntity> userEntities = StreamSupport.stream(
+                        userRepository.findAll().spliterator(),
+                        false)
+                .toList();
 
         Assertions.assertNotNull(userEntities);
         Assertions.assertEquals(userEntities.size(), 2);
@@ -104,8 +111,7 @@ public class UserRepositoryTest {
 
     @Test
     public void UserRepository_Count_ReturnUsersListSize() {
-        List<UserEntity> users = createNewTestUsers();
-        List<UserEntity> savedUsers = saveAllUserInRepository(users);
+        List<UserEntity> savedUsers = saveAllUsersInRepository(null);
 
         Long userCount = userRepository.count();
 
@@ -134,9 +140,7 @@ public class UserRepositoryTest {
 
     @Test
     public void UserRepository_DeleteAllById_ReturnAllFalse() {
-        List<UserEntity> users = createNewTestUsers();
-
-        List<UserEntity> userEntities = saveAllUserInRepository(users);
+        List<UserEntity> userEntities = saveAllUsersInRepository(null);
 
         userRepository.deleteAllById(userEntities.stream().map(UserEntity::getId).toList());
 
@@ -148,9 +152,7 @@ public class UserRepositoryTest {
 
     @Test
     public void UserRepository_DeleteAll_ReturnAllFalse() {
-        List<UserEntity> users = createNewTestUsers();
-
-        List<UserEntity> userEntities = saveAllUserInRepository(users);
+        List<UserEntity> userEntities = saveAllUsersInRepository(null);
 
         userRepository.deleteAll();
 
