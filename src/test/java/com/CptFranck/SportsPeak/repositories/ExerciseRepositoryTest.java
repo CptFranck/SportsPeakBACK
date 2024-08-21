@@ -32,7 +32,7 @@ public class ExerciseRepositoryTest {
     }
 
     @Test
-    public void ExerciseRepository_findAll_ReturnAllExercise() {
+    public void ExerciseRepository_FindAll_ReturnAllExercise() {
         ExerciseEntity exerciseOne = createNewTestExercise();
         ExerciseEntity exerciseTwo = createNewTestExercise();
         exerciseRepository.save(exerciseOne);
@@ -48,7 +48,7 @@ public class ExerciseRepositoryTest {
     }
 
     @Test
-    public void ExerciseRepository_findById_ReturnExercise() {
+    public void ExerciseRepository_FindById_ReturnExercise() {
         ExerciseEntity exercise = createNewTestExercise();
         ExerciseEntity savedExercise = exerciseRepository.save(exercise);
 
@@ -60,7 +60,7 @@ public class ExerciseRepositoryTest {
     }
 
     @Test
-    public void ExerciseRepository_existById_ReturnTrue() {
+    public void ExerciseRepository_ExistById_ReturnTrue() {
         ExerciseEntity exercise = createNewTestExercise();
         ExerciseEntity savedExercise = exerciseRepository.save(exercise);
 
@@ -70,7 +70,7 @@ public class ExerciseRepositoryTest {
     }
 
     @Test
-    public void ExerciseRepository_deleteById_ReturnTrue() {
+    public void ExerciseRepository_DeleteById_ReturnTrue() {
         ExerciseEntity exercise = createNewTestExercise();
         ExerciseEntity savedExercise = exerciseRepository.save(exercise);
 

@@ -32,7 +32,7 @@ public class MuscleRepositoryTest {
     }
 
     @Test
-    public void MuscleRepository_findAll_ReturnAllMuscle() {
+    public void MuscleRepository_FindAll_ReturnAllMuscle() {
         MuscleEntity muscleOne = createNewTestMuscle();
         MuscleEntity muscleTwo = createNewTestMuscle();
         muscleRepository.save(muscleOne);
@@ -48,7 +48,7 @@ public class MuscleRepositoryTest {
     }
 
     @Test
-    public void MuscleRepository_findById_ReturnMuscle() {
+    public void MuscleRepository_FindById_ReturnMuscle() {
         MuscleEntity muscle = createNewTestMuscle();
         MuscleEntity savedMuscle = muscleRepository.save(muscle);
 
@@ -60,7 +60,7 @@ public class MuscleRepositoryTest {
     }
 
     @Test
-    public void MuscleRepository_existById_ReturnTrue() {
+    public void MuscleRepository_ExistById_ReturnTrue() {
         MuscleEntity muscle = createNewTestMuscle();
         MuscleEntity savedMuscle = muscleRepository.save(muscle);
 
@@ -70,7 +70,7 @@ public class MuscleRepositoryTest {
     }
 
     @Test
-    public void MuscleRepository_deleteById_ReturnTrue() {
+    public void MuscleRepository_DeleteById_ReturnTrue() {
         MuscleEntity muscle = createNewTestMuscle();
         MuscleEntity savedMuscle = muscleRepository.save(muscle);
 

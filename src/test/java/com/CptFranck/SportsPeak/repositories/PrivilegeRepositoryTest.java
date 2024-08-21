@@ -32,7 +32,7 @@ public class PrivilegeRepositoryTest {
     }
 
     @Test
-    public void PrivilegeRepository_findAll_ReturnAllPrivilege() {
+    public void PrivilegeRepository_FindAll_ReturnAllPrivilege() {
         PrivilegeEntity privilegeOne = createNewTestPrivilege();
         PrivilegeEntity privilegeTwo = createNewTestPrivilege();
         privilegeOne.setName("privilegeOne");
@@ -50,7 +50,7 @@ public class PrivilegeRepositoryTest {
     }
 
     @Test
-    public void PrivilegeRepository_findById_ReturnPrivilege() {
+    public void PrivilegeRepository_FindById_ReturnPrivilege() {
         PrivilegeEntity privilege = createNewTestPrivilege();
         PrivilegeEntity savedPrivilege = privilegeRepository.save(privilege);
 
@@ -62,7 +62,7 @@ public class PrivilegeRepositoryTest {
     }
 
     @Test
-    public void PrivilegeRepository_existById_ReturnTrue() {
+    public void PrivilegeRepository_ExistById_ReturnTrue() {
         PrivilegeEntity privilege = createNewTestPrivilege();
         PrivilegeEntity savedPrivilege = privilegeRepository.save(privilege);
 
@@ -72,7 +72,7 @@ public class PrivilegeRepositoryTest {
     }
 
     @Test
-    public void PrivilegeRepository_deleteById_ReturnTrue() {
+    public void PrivilegeRepository_DeleteById_ReturnTrue() {
         PrivilegeEntity privilege = createNewTestPrivilege();
         PrivilegeEntity savedPrivilege = privilegeRepository.save(privilege);
 

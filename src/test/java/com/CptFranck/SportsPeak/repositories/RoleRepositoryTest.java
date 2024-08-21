@@ -22,7 +22,7 @@ public class RoleRepositoryTest {
     private RoleRepository roleRepository;
 
     @Test
-    public void RoleRepository_Save_ReturnSavedMuscle() {
+    public void RoleRepository_Save_ReturnSavedRole() {
         RoleEntity role = createNewTestRole();
 
         RoleEntity savedRole = roleRepository.save(role);
@@ -32,7 +32,7 @@ public class RoleRepositoryTest {
     }
 
     @Test
-    public void RoleRepository_findAll_ReturnAllMuscle() {
+    public void RoleRepository_FindAll_ReturnAllRole() {
         RoleEntity roleOne = createNewTestRole();
         RoleEntity roleTwo = createNewTestRole();
         roleOne.setName("roleOne");
@@ -50,35 +50,36 @@ public class RoleRepositoryTest {
     }
 
     @Test
-    public void RoleRepository_findById_ReturnMuscle() {
+    public void RoleRepository_FindById_ReturnRole() {
         RoleEntity role = createNewTestRole();
         RoleEntity savedRole = roleRepository.save(role);
 
-        Optional<RoleEntity> foundMuscle = roleRepository.findById(savedRole.getId());
+        Optional<RoleEntity> foundRole = roleRepository.findById(savedRole.getId());
 
-        Assertions.assertNotNull(foundMuscle);
-        Assertions.assertTrue(foundMuscle.isPresent());
-        Assertions.assertNotNull(foundMuscle.get());
+        Assertions.assertNotNull(foundRole);
+        Assertions.assertTrue(foundRole.isPresent());
+        Assertions.assertNotNull(foundRole.get());
     }
 
     @Test
-    public void RoleRepository_existById_ReturnTrue() {
+    public void RoleRepository_ExistById_ReturnTrue() {
         RoleEntity role = createNewTestRole();
         RoleEntity savedRole = roleRepository.save(role);
 
-        boolean foundMuscle = roleRepository.existsById(savedRole.getId());
+        boolean foundRole = roleRepository.existsById(savedRole.getId());
 
-        Assertions.assertTrue(foundMuscle);
+        Assertions.assertTrue(foundRole);
     }
 
     @Test
-    public void RoleRepository_deleteById_ReturnTrue() {
+    public void RoleRepository_DeleteById_ReturnTrue() {
         RoleEntity role = createNewTestRole();
         RoleEntity savedRole = roleRepository.save(role);
 
         roleRepository.deleteById(savedRole.getId());
-        boolean foundMuscle = roleRepository.existsById(savedRole.getId());
+        boolean foundRole = roleRepository.existsById(savedRole.getId());
 
-        Assertions.assertFalse(foundMuscle);
+        Assertions.assertFalse(foundRole);
     }
+
 }
