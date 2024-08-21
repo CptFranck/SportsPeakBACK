@@ -70,8 +70,7 @@ public class PrivilegeRepositoryTest {
 
     @Test
     public void PrivilegeRepository_FindAll_ReturnAllPrivilege() {
-        List<PrivilegeEntity> privileges = createNewTestPrivileges();
-        privilegeRepository.saveAll(privileges);
+        saveAllPrivilegesInRepository(null);
 
         List<PrivilegeEntity> privilegeEntities = StreamSupport.stream(
                         privilegeRepository.findAll().spliterator(),
