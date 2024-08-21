@@ -69,7 +69,29 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void UserRepository_FindAll_ReturnAllUsers() {
+    public void UserRepository_FindByEmail_ReturnAllUsers() {
+        UserEntity savedUser = saveOneUserInRepository();
+
+        Optional<UserEntity> foundUser = userRepository.findByEmail(savedUser.getEmail());
+
+        Assertions.assertNotNull(foundUser);
+        Assertions.assertTrue(foundUser.isPresent());
+        Assertions.assertNotNull(foundUser.get());
+    }
+
+    @Test
+    public void UserRepository_FindByUsername_ReturnUser() {
+        UserEntity savedUser = saveOneUserInRepository();
+
+        Optional<UserEntity> foundUser = userRepository.findByUsername(savedUser.getUsername());
+
+        Assertions.assertNotNull(foundUser);
+        Assertions.assertTrue(foundUser.isPresent());
+        Assertions.assertNotNull(foundUser.get());
+    }
+
+    @Test
+    public void UserRepository_FindAll_ReturnUser() {
         saveAllUsersInRepository(null);
 
         List<UserEntity> userEntities = StreamSupport.stream(
