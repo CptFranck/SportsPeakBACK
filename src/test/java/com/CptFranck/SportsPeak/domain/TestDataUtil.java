@@ -124,8 +124,8 @@ public class TestDataUtil {
     public static ProgExerciseEntity createTestProgExercise(UserEntity creator, ExerciseEntity exercise) {
         return new ProgExerciseEntity(
                 5L,
-                "Exercise name",
-                "Exercise note",
+                "Prog Exercise name",
+                "Prog Exercise note",
                 Visibility.PRIVATE,
                 TrustLabel.UNVERIFIED,
                 new HashSet<UserEntity>(),
@@ -138,8 +138,8 @@ public class TestDataUtil {
     public static ProgExerciseEntity createTestNewProgExercise(UserEntity creator, ExerciseEntity exercise) {
         return new ProgExerciseEntity(
                 null,
-                "Exercise name",
-                "Exercise note",
+                "Prog Exercise name",
+                "Prog Exercise note",
                 Visibility.PRIVATE,
                 TrustLabel.UNVERIFIED,
                 new HashSet<UserEntity>(),
