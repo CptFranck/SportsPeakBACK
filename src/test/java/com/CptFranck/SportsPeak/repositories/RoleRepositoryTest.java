@@ -141,7 +141,7 @@ public class RoleRepositoryTest {
     }
     
     @Test
-    public void RoleRepository_DeleteById_ReturnTrue() {
+    public void RoleRepository_DeleteById_ReturnFalse() {
         RoleEntity role = createNewTestRole(0);
         RoleEntity savedRole = roleRepository.save(role);
 
@@ -153,24 +153,24 @@ public class RoleRepositoryTest {
 
     @Test
     public void RoleRepositoryDeleteAllById_ReturnAllFalse() {
-        List<RoleEntity> userEntities = saveAllRolesInRepository(null);
+        List<RoleEntity> roleEntities = saveAllRolesInRepository(null);
 
-        roleRepository.deleteAllById(userEntities.stream().map(RoleEntity::getId).toList());
+        roleRepository.deleteAllById(roleEntities.stream().map(RoleEntity::getId).toList());
 
-        userEntities.forEach(user -> {
-            boolean foundUser = roleRepository.existsById(user.getId());
+        roleEntities.forEach(role -> {
+            boolean foundUser = roleRepository.existsById(role.getId());
             Assertions.assertFalse(foundUser);
         });
     }
 
     @Test
     public void RoleRepositoryDeleteAll_ReturnAllFalse() {
-        List<RoleEntity> userEntities = saveAllRolesInRepository(null);
+        List<RoleEntity> roleEntities = saveAllRolesInRepository(null);
 
         roleRepository.deleteAll();
 
-        userEntities.forEach(user -> {
-            boolean foundUser = roleRepository.existsById(user.getId());
+        roleEntities.forEach(role -> {
+            boolean foundUser = roleRepository.existsById(role.getId());
             Assertions.assertFalse(foundUser);
         });
     }

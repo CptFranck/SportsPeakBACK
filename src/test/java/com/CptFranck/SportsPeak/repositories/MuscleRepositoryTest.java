@@ -142,24 +142,24 @@ public class MuscleRepositoryTest {
 
     @Test
     public void MuscleRepository_DeleteAllById_ReturnAllFalse() {
-        List<MuscleEntity> userEntities = saveAllMusclesInRepository(null);
+        List<MuscleEntity> muscleEntities = saveAllMusclesInRepository(null);
 
-        muscleRepository.deleteAllById(userEntities.stream().map(MuscleEntity::getId).toList());
+        muscleRepository.deleteAllById(muscleEntities.stream().map(MuscleEntity::getId).toList());
 
-        userEntities.forEach(user -> {
-            boolean foundMuscle = muscleRepository.existsById(user.getId());
+        muscleEntities.forEach(muscle -> {
+            boolean foundMuscle = muscleRepository.existsById(muscle.getId());
             Assertions.assertFalse(foundMuscle);
         });
     }
 
     @Test
     public void MuscleRepository_DeleteAll_ReturnAllFalse() {
-        List<MuscleEntity> userEntities = saveAllMusclesInRepository(null);
+        List<MuscleEntity> muscleEntities = saveAllMusclesInRepository(null);
 
         muscleRepository.deleteAll();
 
-        userEntities.forEach(user -> {
-            boolean foundMuscle = muscleRepository.existsById(user.getId());
+        muscleEntities.forEach(muscle -> {
+            boolean foundMuscle = muscleRepository.existsById(muscle.getId());
             Assertions.assertFalse(foundMuscle);
         });
     }

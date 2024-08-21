@@ -142,25 +142,25 @@ public class PrivilegeRepositoryTest {
 
     @Test
     public void PrivilegeRepository_DeleteAllById_ReturnAllFalse() {
-        List<PrivilegeEntity> userEntities = saveAllPrivilegesInRepository(null);
+        List<PrivilegeEntity> privilegeEntities = saveAllPrivilegesInRepository(null);
 
-        privilegeRepository.deleteAllById(userEntities.stream().map(PrivilegeEntity::getId).toList());
+        privilegeRepository.deleteAllById(privilegeEntities.stream().map(PrivilegeEntity::getId).toList());
 
-        userEntities.forEach(user -> {
-            boolean foundUser = privilegeRepository.existsById(user.getId());
-            Assertions.assertFalse(foundUser);
+        privilegeEntities.forEach(privilege -> {
+            boolean foundPrivilege = privilegeRepository.existsById(privilege.getId());
+            Assertions.assertFalse(foundPrivilege);
         });
     }
 
     @Test
     public void PrivilegeRepository_DeleteAll_ReturnAllFalse() {
-        List<PrivilegeEntity> userEntities = saveAllPrivilegesInRepository(null);
+        List<PrivilegeEntity> privilegeEntities = saveAllPrivilegesInRepository(null);
 
         privilegeRepository.deleteAll();
 
-        userEntities.forEach(user -> {
-            boolean foundUser = privilegeRepository.existsById(user.getId());
-            Assertions.assertFalse(foundUser);
+        privilegeEntities.forEach(privilege -> {
+            boolean foundPrivilege = privilegeRepository.existsById(privilege.getId());
+            Assertions.assertFalse(foundPrivilege);
         });
     }
 }
