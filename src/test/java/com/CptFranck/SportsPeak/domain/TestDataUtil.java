@@ -149,6 +149,10 @@ public class TestDataUtil {
         );
     }
 
+    public static List<ProgExerciseEntity> createNewTestProgExercises(UserEntity creator, ExerciseEntity exercise) {
+        return List.of(createTestNewProgExercise(creator, exercise), createTestNewProgExercise(creator, exercise));
+    }
+
     public static TargetSetEntity createTestTargetSet(ProgExerciseEntity progExercise) {
         LocalDateTime creationDate = LocalDateTime.now();
         Duration effortTime = Duration.ofHours(0).plusMinutes(0).plusSeconds(5);
