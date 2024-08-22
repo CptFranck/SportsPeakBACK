@@ -1,5 +1,9 @@
 package com.CptFranck.SportsPeak.domain;
 
+import com.CptFranck.SportsPeak.domain.dto.ExerciseDto;
+import com.CptFranck.SportsPeak.domain.dto.ExerciseTypeDto;
+import com.CptFranck.SportsPeak.domain.dto.MuscleDto;
+import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
@@ -15,8 +19,8 @@ public class TestDataExerciseUtils {
                 "Exercise name",
                 "Exercise description",
                 "Exercise goal",
-                new HashSet<ExerciseTypeEntity>(),
                 new HashSet<MuscleEntity>(),
+                new HashSet<ExerciseTypeEntity>(),
                 new HashSet<ProgExerciseEntity>()
         );
     }
@@ -27,9 +31,21 @@ public class TestDataExerciseUtils {
                 "Exercise name",
                 "Exercise description",
                 "Exercise goal",
-                new HashSet<ExerciseTypeEntity>(),
                 new HashSet<MuscleEntity>(),
+                new HashSet<ExerciseTypeEntity>(),
                 new HashSet<ProgExerciseEntity>()
+        );
+    }
+
+    public static ExerciseDto createTestExerciseDto() {
+        return new ExerciseDto(
+                3L,
+                "Exercise name",
+                "Exercise description",
+                "Exercise goal",
+                new HashSet<MuscleDto>(),
+                new HashSet<ExerciseTypeDto>(),
+                new HashSet<ProgExerciseDto>()
         );
     }
 }
