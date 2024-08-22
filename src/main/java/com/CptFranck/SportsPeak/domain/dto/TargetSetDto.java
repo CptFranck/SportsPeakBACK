@@ -30,11 +30,11 @@ public class TargetSetDto {
 
     private LocalDateTime creationDate;
 
+    private String state;
+
     private ProgExerciseDto progExercise;
 
     private TargetSetDto targetSetUpdate;
-
-    private String state;
 
     @EqualsAndHashCode.Exclude
     private Set<PerformanceLogDto> performanceLogs;
