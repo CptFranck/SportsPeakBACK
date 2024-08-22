@@ -1,5 +1,6 @@
 package com.CptFranck.SportsPeak.mappers.impl;
 
+import com.CptFranck.SportsPeak.domain.dto.ExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.RoleDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
@@ -14,7 +15,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.TestDataUtil.*;
+import static com.CptFranck.SportsPeak.domain.TestDataExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.domain.TestDataExerciseUtils.createTestExerciseDto;
+import static com.CptFranck.SportsPeak.domain.TestDataProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.domain.TestDataProgExerciseUtils.createTestProgExerciseDto;
+import static com.CptFranck.SportsPeak.domain.TestDataUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.domain.TestDataUserUtils.createTestUserDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataRoleUtils.createTestRole;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataRoleUtils.createTestRoleDto;
 
 @ExtendWith(MockitoExtension.class)
 public class UserMapperImplTest {
@@ -26,7 +34,7 @@ public class UserMapperImplTest {
     }
 
     @Test
-    void testExerciseTypeMapperMapTo_Success() {
+    void userTypeMapper_MapTo_Success() {
         UserEntity user = createTestUser();
         RoleEntity role = createTestRole();
         user.getRoles().add(role);
@@ -56,6 +64,40 @@ public class UserMapperImplTest {
         Assertions.assertArrayEquals(
                 user.getProgExercisesCreated().stream().map(ProgExerciseEntity::getId).toArray(),
                 userDto.getProgExercisesCreated().stream().map(ProgExerciseDto::getId).toArray()
+        );
+    }
+
+    @Test
+    void userTypeMapper_MapFrom_Success() {
+        UserDto user = createTestUserDto();
+        RoleDto role = createTestRoleDto();
+        user.getRoles().add(role);
+        ExerciseDto exercise = createTestExerciseDto();
+        ProgExerciseDto progExercise = createTestProgExerciseDto(user, exercise);
+        user.getProgExercisesCreated().add(progExercise);
+        user.getSubscribedProgExercises().add(progExercise);
+
+        UserEntity userEntity = userMapper.mapFrom(user);
+
+        Assertions.assertEquals(user.getId(), userEntity.getId());
+        Assertions.assertEquals(user.getEmail(), userEntity.getEmail());
+        Assertions.assertEquals(user.getFirstName(), userEntity.getFirstName());
+        Assertions.assertEquals(user.getLastName(), userEntity.getLastName());
+        Assertions.assertEquals(user.getUsername(), userEntity.getUsername());
+        Assertions.assertEquals(user.getSubscribedProgExercises().size(), userEntity.getSubscribedProgExercises().size());
+        Assertions.assertEquals(user.getRoles().size(), userEntity.getRoles().size());
+        Assertions.assertArrayEquals(
+                user.getRoles().stream().map(RoleDto::getId).toArray(),
+                userEntity.getRoles().stream().map(RoleEntity::getId).toArray()
+        );
+        Assertions.assertArrayEquals(
+                user.getSubscribedProgExercises().stream().map(ProgExerciseDto::getId).toArray(),
+                userEntity.getSubscribedProgExercises().stream().map(ProgExerciseEntity::getId).toArray()
+        );
+        Assertions.assertEquals(user.getProgExercisesCreated().size(), userEntity.getProgExercisesCreated().size());
+        Assertions.assertArrayEquals(
+                user.getProgExercisesCreated().stream().map(ProgExerciseDto::getId).toArray(),
+                userEntity.getProgExercisesCreated().stream().map(ProgExerciseEntity::getId).toArray()
         );
     }
 }
