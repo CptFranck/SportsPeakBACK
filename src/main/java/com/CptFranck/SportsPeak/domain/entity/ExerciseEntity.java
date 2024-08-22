@@ -31,16 +31,16 @@ public class ExerciseEntity {
     private String goal;
 
     @ManyToMany
-    @JoinTable(name = "classified_exercises",
-            joinColumns = @JoinColumn(name = "exercise_id"),
-            inverseJoinColumns = @JoinColumn(name = "exercise_type_id"))
-    private Set<ExerciseTypeEntity> exerciseTypes;
-
-    @ManyToMany
     @JoinTable(name = "solicited_muscles",
             joinColumns = @JoinColumn(name = "exercise_id"),
             inverseJoinColumns = @JoinColumn(name = "muscle_id"))
     private Set<MuscleEntity> muscles;
+
+    @ManyToMany
+    @JoinTable(name = "classified_exercises",
+            joinColumns = @JoinColumn(name = "exercise_id"),
+            inverseJoinColumns = @JoinColumn(name = "exercise_type_id"))
+    private Set<ExerciseTypeEntity> exerciseTypes;
 
     @OneToMany(mappedBy = "exercise")
     private Set<ProgExerciseEntity> progExercises;

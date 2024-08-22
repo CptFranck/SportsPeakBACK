@@ -99,8 +99,8 @@ ExerciseController {
                 inputNewExercise.getName(),
                 inputNewExercise.getDescription(),
                 inputNewExercise.getGoal(),
-                exerciseTypes,
                 muscles,
+                exerciseTypes,
                 progExercises
         );
 
