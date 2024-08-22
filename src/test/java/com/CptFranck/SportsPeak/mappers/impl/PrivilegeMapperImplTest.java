@@ -26,7 +26,7 @@ public class PrivilegeMapperImplTest {
     }
 
     @Test
-    void exerciseTypeMapper_MapTo_Success() {
+    void privilegeTypeMapper_MapTo_Success() {
         PrivilegeEntity privilege = createTestPrivilege();
         RoleEntity role = createTestRole();
         privilege.getRoles().add(role);
@@ -43,7 +43,7 @@ public class PrivilegeMapperImplTest {
     }
 
     @Test
-    void exerciseTypeMapper_MapFrom_Success() {
+    void privilegeTypeMapper_MapFrom_Success() {
         PrivilegeDto privilege = createTestPrivilegeDto();
         RoleDto role = createTestRoleDto();
         privilege.getRoles().add(role);

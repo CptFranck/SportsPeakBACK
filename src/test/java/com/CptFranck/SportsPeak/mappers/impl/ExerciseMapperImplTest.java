@@ -30,7 +30,7 @@ public class ExerciseMapperImplTest {
     }
 
     @Test
-    void exerciseTypeMapper_MapTo_Success() {
+    void exerciseMapper_MapTo_Success() {
         ExerciseEntity exercise = createTestExercise();
         MuscleEntity muscle = createTestMuscle();
         ExerciseTypeEntity exerciseType = createTestExerciseType();
@@ -64,7 +64,7 @@ public class ExerciseMapperImplTest {
     }
 
     @Test
-    void exerciseTypeMapper_MapFrom_Success() {
+    void exerciseMapper_MapFrom_Success() {
         ExerciseDto exercise = createTestExerciseDto();
         MuscleDto muscle = createTestMuscleDto();
         ExerciseTypeDto exerciseType = createTestExerciseTypeDto();

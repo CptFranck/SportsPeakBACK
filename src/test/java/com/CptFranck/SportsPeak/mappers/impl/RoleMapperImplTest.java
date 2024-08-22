@@ -30,7 +30,7 @@ public class RoleMapperImplTest {
     }
 
     @Test
-    void exerciseTypeMapper_MapTo_Success() {
+    void roleTypeMapper_MapTo_Success() {
         RoleEntity role = createTestRole();
         UserEntity user = createTestUser();
         PrivilegeEntity privilege = createTestPrivilege();
@@ -54,7 +54,7 @@ public class RoleMapperImplTest {
     }
 
     @Test
-    void exerciseTypeMapper_MapFrom_Success() {
+    void roleMapper_MapFrom_Success() {
         RoleDto role = createTestRoleDto();
         UserDto user = createTestUserDto();
         PrivilegeDto privilege = createTestPrivilegeDto();
