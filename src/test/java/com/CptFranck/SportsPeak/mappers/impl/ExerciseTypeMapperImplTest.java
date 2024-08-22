@@ -11,8 +11,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.TestDataUtil.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.TestDataUtil.createTestExerciseType;
+import static com.CptFranck.SportsPeak.domain.TestDataExerciseTypeUtils.createTestExerciseType;
+import static com.CptFranck.SportsPeak.domain.TestDataExerciseTypeUtils.createTestExerciseTypeDto;
+import static com.CptFranck.SportsPeak.domain.TestDataExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.domain.TestDataExerciseUtils.createTestExerciseDto;
 
 @ExtendWith(MockitoExtension.class)
 public class ExerciseTypeMapperImplTest {
@@ -24,11 +26,11 @@ public class ExerciseTypeMapperImplTest {
     }
 
     @Test
-    void testExerciseTypeMapperMapTo_Success() {
+    void exerciseTypeMapper_MapTo_Success() {
         ExerciseTypeEntity exerciseType = createTestExerciseType();
         ExerciseEntity exercise = createTestExercise();
-
         exerciseType.getExercises().add(exercise);
+
         ExerciseTypeDto exerciseTypeDto = exerciseTypeMapper.mapTo(exerciseType);
 
         Assertions.assertEquals(exerciseType.getId(), exerciseTypeDto.getId());
@@ -41,4 +43,21 @@ public class ExerciseTypeMapperImplTest {
         );
     }
 
+    @Test
+    void exerciseTypeMapper_FromTo_Success() {
+        ExerciseTypeDto exerciseType = createTestExerciseTypeDto();
+        ExerciseDto exercise = createTestExerciseDto();
+        exerciseType.getExercises().add(exercise);
+
+        ExerciseTypeEntity exerciseTypeEntity = exerciseTypeMapper.mapFrom(exerciseType);
+
+        Assertions.assertEquals(exerciseType.getId(), exerciseTypeEntity.getId());
+        Assertions.assertEquals(exerciseType.getName(), exerciseTypeEntity.getName());
+        Assertions.assertEquals(exerciseType.getGoal(), exerciseTypeEntity.getGoal());
+        Assertions.assertEquals(exerciseType.getExercises().size(), exerciseTypeEntity.getExercises().size());
+        Assertions.assertArrayEquals(
+                exerciseType.getExercises().stream().map(ExerciseDto::getId).toArray(),
+                exerciseTypeEntity.getExercises().stream().map(ExerciseEntity::getId).toArray()
+        );
+    }
 }
