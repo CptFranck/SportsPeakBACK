@@ -41,7 +41,7 @@ public class TargetSetEntity {
     @Enumerated(EnumType.STRING)
     private WeightUnit weightUnit;
 
-    @Column(name = "physical_exertion_unit_time", nullable = false, columnDefinition = "interval")
+    @Column(name = "physical_exertion_unit_time", nullable = false)
     private Duration physicalExertionUnitTime;
 
     @Column(name = "rest_time", nullable = false)
