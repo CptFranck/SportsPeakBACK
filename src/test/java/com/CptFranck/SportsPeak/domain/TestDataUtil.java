@@ -186,6 +186,31 @@ public class TestDataUtil {
         );
     }
 
+    public static TargetSetEntity createNewTestTargetSet(ProgExerciseEntity progExercise) {
+        LocalDateTime creationDate = LocalDateTime.now();
+        Duration effortTime = Duration.ofHours(0).plusMinutes(0).plusSeconds(5);
+        Duration restTime = Duration.ofHours(0).plusMinutes(4).plusSeconds(0);
+        return new TargetSetEntity(
+                null,
+                1,
+                5,
+                10,
+                0f,
+                WeightUnit.KILOGRAMME,
+                effortTime,
+                restTime,
+                creationDate,
+                TargetSetState.USED,
+                progExercise,
+                null,
+                new HashSet<PerformanceLogEntity>()
+        );
+    }
+
+    public static List<TargetSetEntity> createNewTestTargetSets(ProgExerciseEntity progExercise) {
+        return List.of(createNewTestTargetSet(progExercise), createNewTestTargetSet(progExercise));
+    }
+
     public static TargetSetEntity createTestTargetSetUpdate(ProgExerciseEntity progExercise, TargetSetEntity update) {
         LocalDateTime creationDate = LocalDateTime.now();
         Duration effortTime = Duration.ofHours(0).plusMinutes(0).plusSeconds(5);
@@ -218,6 +243,23 @@ public class TestDataUtil {
                 creationDate,
                 targetSet
         );
+    }
+
+    public static PerformanceLogEntity createNewTestPerformanceLog(TargetSetEntity targetSet) {
+        LocalDateTime creationDate = LocalDateTime.now();
+        return new PerformanceLogEntity(
+                null,
+                1,
+                5,
+                0f,
+                WeightUnit.KILOGRAMME,
+                creationDate,
+                targetSet
+        );
+    }
+
+    public static List<PerformanceLogEntity> createNewTestPerformanceLogs(TargetSetEntity targetSet) {
+        return List.of(createNewTestPerformanceLog(targetSet), createNewTestPerformanceLog(targetSet));
     }
 
     public static PrivilegeEntity createTestPrivilege() {
