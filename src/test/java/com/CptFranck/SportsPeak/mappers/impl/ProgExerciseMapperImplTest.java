@@ -15,14 +15,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.TestDataExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.TestDataExerciseUtils.createTestExerciseDto;
-import static com.CptFranck.SportsPeak.domain.TestDataProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.TestDataProgExerciseUtils.createTestProgExerciseDto;
-import static com.CptFranck.SportsPeak.domain.TestDataUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.domain.TestDataUserUtils.createTestUserDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseUtils.createTestExerciseDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataProgExerciseUtils.createTestProgExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataTargetSetUtils.createTestTargetSet;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataTargetSetUtils.createTestTargetSetDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createTestUserDto;
 
 @ExtendWith(MockitoExtension.class)
 public class ProgExerciseMapperImplTest {

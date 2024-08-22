@@ -13,12 +13,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.TestDataUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.domain.TestDataUserUtils.createTestUserDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataPrivilegeUtils.createTestPrivilege;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataPrivilegeUtils.createTestPrivilegeDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataRoleUtils.createTestRole;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataRoleUtils.createTestRoleDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createTestUserDto;
 
 @ExtendWith(MockitoExtension.class)
 public class RoleMapperImplTest {

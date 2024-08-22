@@ -10,7 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Optional;
 
-import static com.CptFranck.SportsPeak.domain.TestDataUtil.createNewTestUser;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createNewTestUser;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
@@ -20,12 +20,12 @@ public class UserRepositoryTest {
     private UserRepository userRepository;
 
     private UserEntity saveOneUserInRepository() {
-        UserEntity user = createNewTestUser(0);
+        UserEntity user = createNewTestUser();
         return userRepository.save(user);
     }
 
     @Test
-    public void UserRepository_FindByEmail_ReturnAllUsers() {
+    public void userRepository_FindByEmail_ReturnAllUsers() {
         UserEntity savedUser = saveOneUserInRepository();
 
         Optional<UserEntity> foundUser = userRepository.findByEmail(savedUser.getEmail());
@@ -36,7 +36,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void UserRepository_FindByUsername_ReturnUser() {
+    public void userRepository_FindByUsername_ReturnUser() {
         UserEntity savedUser = saveOneUserInRepository();
 
         Optional<UserEntity> foundUser = userRepository.findByUsername(savedUser.getUsername());

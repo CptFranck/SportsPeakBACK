@@ -11,10 +11,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.TestDataExerciseTypeUtils.createTestExerciseType;
-import static com.CptFranck.SportsPeak.domain.TestDataExerciseTypeUtils.createTestExerciseTypeDto;
-import static com.CptFranck.SportsPeak.domain.TestDataExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.TestDataExerciseUtils.createTestExerciseDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseTypeUtils.createTestExerciseType;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseTypeUtils.createTestExerciseTypeDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseUtils.createTestExerciseDto;
 
 @ExtendWith(MockitoExtension.class)
 public class ExerciseTypeMapperImplTest {

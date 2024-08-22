@@ -9,16 +9,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.TestDataExerciseTypeUtils.createTestExerciseType;
-import static com.CptFranck.SportsPeak.domain.TestDataExerciseTypeUtils.createTestExerciseTypeDto;
-import static com.CptFranck.SportsPeak.domain.TestDataExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.TestDataExerciseUtils.createTestExerciseDto;
-import static com.CptFranck.SportsPeak.domain.TestDataMuscleUtils.createTestMuscle;
-import static com.CptFranck.SportsPeak.domain.TestDataMuscleUtils.createTestMuscleDto;
-import static com.CptFranck.SportsPeak.domain.TestDataProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.TestDataProgExerciseUtils.createTestProgExerciseDto;
-import static com.CptFranck.SportsPeak.domain.TestDataUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.domain.TestDataUserUtils.createTestUserDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseTypeUtils.createTestExerciseType;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseTypeUtils.createTestExerciseTypeDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseUtils.createTestExerciseDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataMuscleUtils.createTestMuscle;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataMuscleUtils.createTestMuscleDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataProgExerciseUtils.createTestProgExerciseDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createTestUserDto;
 
 @ExtendWith(MockitoExtension.class)
 public class ExerciseMapperImplTest {

@@ -15,7 +15,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.util.List;
 import java.util.Optional;
 
-import static com.CptFranck.SportsPeak.domain.TestDataUtil.*;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseUtils.createNewTestExercise;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataProgExerciseUtils.createTestNewProgExercise;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataTargetSetUtils.createNewTestTargetSets;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createNewTestUser;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
@@ -40,13 +43,13 @@ public class TargetSetRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        UserEntity creator = userRepository.save(createNewTestUser(0));
+        UserEntity creator = userRepository.save(createNewTestUser());
         ExerciseEntity exercise = exerciseRepository.save(createNewTestExercise());
         progExercise = progExerciseRepository.save(createTestNewProgExercise(creator, exercise));
     }
 
     @Test
-    public void TargetSetRepository_FindAllByProgExerciseId_ReturnTargetSet() {
+    public void targetSetRepository_FindAllByProgExerciseId_ReturnTargetSet() {
         saveAllTargetSetsInRepository();
 
         List<TargetSetEntity> foundTargetSets = targetSetRepository.findAllByProgExerciseId(progExercise.getId());
@@ -56,7 +59,7 @@ public class TargetSetRepositoryTest {
     }
 
     @Test
-    public void TargetSetRepository_FindByTargetSetUpdateId_ReturnTargetSet() {
+    public void targetSetRepository_FindByTargetSetUpdateId_ReturnTargetSet() {
         List<TargetSetEntity> targetSetEntities = saveAllTargetSetsInRepository();
         targetSetEntities.getFirst().setTargetSetUpdate(targetSetEntities.getLast());
 

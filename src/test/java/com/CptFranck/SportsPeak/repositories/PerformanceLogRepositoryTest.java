@@ -10,7 +10,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
 
-import static com.CptFranck.SportsPeak.domain.TestDataUtil.*;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseUtils.createNewTestExercise;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataPerformanceLogUtils.createNewTestPerformanceLogs;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataProgExerciseUtils.createTestNewProgExercise;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataTargetSetUtils.createNewTestTargetSet;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createNewTestUser;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
@@ -28,8 +32,8 @@ public class PerformanceLogRepositoryTest {
     private PerformanceLogRepository performanceLogRepository;
 
     @Test
-    public void PerformanceLogRepository_FindAllByTargetSetId_ReturnSavedExercise() {
-        UserEntity creator = userRepository.save(createNewTestUser(0));
+    public void performanceLogRepository_FindAllByTargetSetId_ReturnSavedExercise() {
+        UserEntity creator = userRepository.save(createNewTestUser());
         ExerciseEntity exercise = exerciseRepository.save(createNewTestExercise());
         ProgExerciseEntity progExercise = progExerciseRepository.save(createTestNewProgExercise(creator, exercise));
         TargetSetEntity targetSet = targetSetRepository.save(createNewTestTargetSet(progExercise));

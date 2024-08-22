@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.domain;
+package com.CptFranck.SportsPeak.domain.utils;
 
 import com.CptFranck.SportsPeak.domain.dto.ExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.ExerciseTypeDto;
