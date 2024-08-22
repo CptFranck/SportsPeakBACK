@@ -25,12 +25,12 @@ public class ExerciseRepositoryTest {
     private ExerciseRepository exerciseRepository;
 
     private ExerciseEntity saveOneExerciseInRepository() {
-        ExerciseEntity user = createNewTestExercise();
-        return exerciseRepository.save(user);
+        ExerciseEntity exercise = createNewTestExercise();
+        return exerciseRepository.save(exercise);
     }
 
-    private List<ExerciseEntity> saveAllExercisesInRepository(List<ExerciseEntity> users) {
-        List<ExerciseEntity> localExercises = Objects.requireNonNullElseGet(users, TestDataUtil::createNewTestExercises);
+    private List<ExerciseEntity> saveAllExercisesInRepository(List<ExerciseEntity> exercises) {
+        List<ExerciseEntity> localExercises = Objects.requireNonNullElseGet(exercises, TestDataUtil::createNewTestExercises);
         exerciseRepository.saveAll(localExercises);
         return localExercises;
     }

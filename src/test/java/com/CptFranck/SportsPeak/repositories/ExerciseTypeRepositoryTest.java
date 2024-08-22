@@ -25,8 +25,8 @@ public class ExerciseTypeRepositoryTest {
     private ExerciseTypeRepository exerciseTypeRepository;
 
     private ExerciseTypeEntity saveOneExerciseTypeInRepository() {
-        ExerciseTypeEntity user = createNewTestExerciseType();
-        return exerciseTypeRepository.save(user);
+        ExerciseTypeEntity exerciseType = createNewTestExerciseType();
+        return exerciseTypeRepository.save(exerciseType);
     }
 
     private List<ExerciseTypeEntity> saveAllExerciseTypesInRepository(List<ExerciseTypeEntity> exerciseType) {

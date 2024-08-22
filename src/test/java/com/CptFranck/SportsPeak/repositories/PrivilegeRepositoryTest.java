@@ -25,14 +25,14 @@ public class PrivilegeRepositoryTest {
     private PrivilegeRepository privilegeRepository;
 
     private PrivilegeEntity saveOnePrivilegeInRepository() {
-        PrivilegeEntity user = createNewTestPrivilege(0);
-        return privilegeRepository.save(user);
+        PrivilegeEntity privilege = createNewTestPrivilege(0);
+        return privilegeRepository.save(privilege);
     }
 
-    private List<PrivilegeEntity> saveAllPrivilegesInRepository(List<PrivilegeEntity> users) {
-        List<PrivilegeEntity> localUsers = Objects.requireNonNullElseGet(users, TestDataUtil::createNewTestPrivileges);
-        privilegeRepository.saveAll(localUsers);
-        return localUsers;
+    private List<PrivilegeEntity> saveAllPrivilegesInRepository(List<PrivilegeEntity> privileges) {
+        List<PrivilegeEntity> localPrivileges = Objects.requireNonNullElseGet(privileges, TestDataUtil::createNewTestPrivileges);
+        privilegeRepository.saveAll(localPrivileges);
+        return localPrivileges;
     }
 
     @Test
