@@ -11,8 +11,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.TestDataUtil.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.TestDataUtil.createTestMuscle;
+import static com.CptFranck.SportsPeak.domain.TestDataExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.domain.TestDataExerciseUtils.createTestExerciseDto;
+import static com.CptFranck.SportsPeak.domain.TestDataMuscleUtils.createTestMuscle;
+import static com.CptFranck.SportsPeak.domain.TestDataMuscleUtils.createTestMuscleDto;
 
 @ExtendWith(MockitoExtension.class)
 public class MuscleMapperImplTest {
@@ -24,7 +26,7 @@ public class MuscleMapperImplTest {
     }
 
     @Test
-    void testMuscleMapperMapTo_Success() {
+    void muscleMapper_MapTo_Success() {
         MuscleEntity muscle = createTestMuscle();
         ExerciseEntity exercise = createTestExercise();
 
@@ -38,6 +40,24 @@ public class MuscleMapperImplTest {
         Assertions.assertArrayEquals(
                 muscle.getExercises().stream().map(ExerciseEntity::getId).toArray(),
                 muscleDto.getExercises().stream().map(ExerciseDto::getId).toArray()
+        );
+    }
+
+    @Test
+    void muscleMapper_MapFrom_Success() {
+        MuscleDto muscle = createTestMuscleDto();
+        ExerciseDto exercise = createTestExerciseDto();
+
+        muscle.getExercises().add(exercise);
+        MuscleEntity muscleEntity = muscleMapper.mapFrom(muscle);
+
+        Assertions.assertEquals(muscle.getId(), muscleEntity.getId());
+        Assertions.assertEquals(muscle.getName(), muscleEntity.getName());
+        Assertions.assertEquals(muscle.getFunction(), muscleEntity.getFunction());
+        Assertions.assertEquals(muscle.getExercises().size(), muscleEntity.getExercises().size());
+        Assertions.assertArrayEquals(
+                muscle.getExercises().stream().map(ExerciseDto::getId).toArray(),
+                muscleEntity.getExercises().stream().map(ExerciseEntity::getId).toArray()
         );
     }
 
