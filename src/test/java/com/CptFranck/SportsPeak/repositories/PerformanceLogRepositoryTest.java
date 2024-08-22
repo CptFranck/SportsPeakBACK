@@ -2,7 +2,6 @@ package com.CptFranck.SportsPeak.repositories;
 
 import com.CptFranck.SportsPeak.domain.entity.*;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
@@ -17,8 +16,6 @@ import static com.CptFranck.SportsPeak.domain.TestDataUtil.*;
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class PerformanceLogRepositoryTest {
 
-    private TargetSetEntity targetSet;
-
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -30,16 +27,12 @@ public class PerformanceLogRepositoryTest {
     @Autowired
     private PerformanceLogRepository performanceLogRepository;
 
-    @BeforeEach
-    void setUp() {
+    @Test
+    public void PerformanceLogRepository_FindAllByTargetSetId_ReturnSavedExercise() {
         UserEntity creator = userRepository.save(createNewTestUser(0));
         ExerciseEntity exercise = exerciseRepository.save(createNewTestExercise());
         ProgExerciseEntity progExercise = progExerciseRepository.save(createTestNewProgExercise(creator, exercise));
-        targetSet = targetSetRepository.save(createNewTestTargetSet(progExercise));
-    }
-
-    @Test
-    public void PerformanceLogRepository_FindAllByTargetSetId_ReturnSavedExercise() {
+        TargetSetEntity targetSet = targetSetRepository.save(createNewTestTargetSet(progExercise));
         performanceLogRepository.saveAll(createNewTestPerformanceLogs(targetSet));
 
         List<PerformanceLogEntity> foundPerformanceLogs = performanceLogRepository.findAllByTargetSetId(targetSet.getId());
