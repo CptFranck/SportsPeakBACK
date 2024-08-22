@@ -30,7 +30,7 @@ public class ExerciseMapperImplTest {
     }
 
     @Test
-    void testExerciseTypeMapper_MapTo_Success() {
+    void exerciseTypeMapper_MapTo_Success() {
         ExerciseEntity exercise = createTestExercise();
         MuscleEntity muscle = createTestMuscle();
         ExerciseTypeEntity exerciseType = createTestExerciseType();
@@ -40,6 +40,7 @@ public class ExerciseMapperImplTest {
         exercise.getMuscles().add(muscle);
         exercise.getExerciseTypes().add(exerciseType);
         exercise.getProgExercises().add(progExercise);
+
         ExerciseDto exerciseDto = exerciseMapper.mapTo(exercise);
 
         Assertions.assertEquals(exercise.getId(), exerciseDto.getId());
@@ -63,7 +64,7 @@ public class ExerciseMapperImplTest {
     }
 
     @Test
-    void testExerciseTypeMapper_MapFrom_Success() {
+    void exerciseTypeMapper_MapFrom_Success() {
         ExerciseDto exercise = createTestExerciseDto();
         MuscleDto muscle = createTestMuscleDto();
         ExerciseTypeDto exerciseType = createTestExerciseTypeDto();
