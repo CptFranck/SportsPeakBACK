@@ -1,6 +1,5 @@
 package com.CptFranck.SportsPeak.domain.dto;
 
-import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import lombok.*;
 
 import java.util.Set;
@@ -20,7 +19,7 @@ public class ProgExerciseDto {
 
     private String trustLabel;
 
-    private UserEntity creator;
+    private UserDto creator;
 
     private ExerciseDto exercise;
 
