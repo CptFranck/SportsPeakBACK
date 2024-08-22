@@ -13,7 +13,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.TestDataUtil.*;
+import static com.CptFranck.SportsPeak.domain.TestDataUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.domain.TestDataUserUtils.createTestUserDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataPrivilegeUtils.createTestPrivilege;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataPrivilegeUtils.createTestPrivilegeDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataRoleUtils.createTestRole;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataRoleUtils.createTestRoleDto;
 
 @ExtendWith(MockitoExtension.class)
 public class RoleMapperImplTest {
@@ -25,7 +30,7 @@ public class RoleMapperImplTest {
     }
 
     @Test
-    void testExerciseTypeMapperMapTo_Success() {
+    void exerciseTypeMapper_MapTo_Success() {
         RoleEntity role = createTestRole();
         UserEntity user = createTestUser();
         PrivilegeEntity privilege = createTestPrivilege();
@@ -45,6 +50,30 @@ public class RoleMapperImplTest {
         Assertions.assertArrayEquals(
                 role.getUsers().stream().map(UserEntity::getId).toArray(),
                 roleDto.getUsers().stream().map(UserDto::getId).toArray()
+        );
+    }
+
+    @Test
+    void exerciseTypeMapper_MapFrom_Success() {
+        RoleDto role = createTestRoleDto();
+        UserDto user = createTestUserDto();
+        PrivilegeDto privilege = createTestPrivilegeDto();
+        role.getUsers().add(user);
+        role.getPrivileges().add(privilege);
+
+        RoleEntity roleEntity = roleMapper.mapFrom(role);
+
+        Assertions.assertEquals(role.getId(), roleEntity.getId());
+        Assertions.assertEquals(role.getName(), roleEntity.getName());
+        Assertions.assertEquals(role.getPrivileges().size(), roleEntity.getPrivileges().size());
+        Assertions.assertArrayEquals(
+                role.getPrivileges().stream().map(PrivilegeDto::getId).toArray(),
+                roleEntity.getPrivileges().stream().map(PrivilegeEntity::getId).toArray()
+        );
+        Assertions.assertEquals(role.getUsers().size(), roleEntity.getUsers().size());
+        Assertions.assertArrayEquals(
+                role.getUsers().stream().map(UserDto::getId).toArray(),
+                roleEntity.getUsers().stream().map(UserEntity::getId).toArray()
         );
     }
 }
