@@ -11,8 +11,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.TestDataUtil.createTestPrivilege;
-import static com.CptFranck.SportsPeak.domain.TestDataUtil.createTestRole;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataPrivilegeUtils.createTestPrivilege;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataPrivilegeUtils.createTestPrivilegeDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataRoleUtils.createTestRole;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataRoleUtils.createTestRoleDto;
 
 @ExtendWith(MockitoExtension.class)
 public class PrivilegeMapperImplTest {
@@ -24,7 +26,7 @@ public class PrivilegeMapperImplTest {
     }
 
     @Test
-    void testExerciseTypeMapperMapTo_Success() {
+    void exerciseTypeMapper_MapTo_Success() {
         PrivilegeEntity privilege = createTestPrivilege();
         RoleEntity role = createTestRole();
         privilege.getRoles().add(role);
@@ -37,6 +39,23 @@ public class PrivilegeMapperImplTest {
         Assertions.assertArrayEquals(
                 privilege.getRoles().stream().map(RoleEntity::getId).toArray(),
                 privilegeDto.getRoles().stream().map(RoleDto::getId).toArray()
+        );
+    }
+
+    @Test
+    void exerciseTypeMapper_MapFrom_Success() {
+        PrivilegeDto privilege = createTestPrivilegeDto();
+        RoleDto role = createTestRoleDto();
+        privilege.getRoles().add(role);
+
+        PrivilegeEntity privilegeEntity = privilegeMapper.mapFrom(privilege);
+
+        Assertions.assertEquals(privilege.getId(), privilegeEntity.getId());
+        Assertions.assertEquals(privilege.getName(), privilegeEntity.getName());
+        Assertions.assertEquals(privilege.getRoles().size(), privilegeEntity.getRoles().size());
+        Assertions.assertArrayEquals(
+                privilege.getRoles().stream().map(RoleDto::getId).toArray(),
+                privilegeEntity.getRoles().stream().map(RoleEntity::getId).toArray()
         );
     }
 }
