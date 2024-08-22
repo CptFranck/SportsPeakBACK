@@ -2,9 +2,12 @@ package com.CptFranck.SportsPeak.mappers.impl;
 
 import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
+import com.CptFranck.SportsPeak.domain.enumType.TrustLabel;
+import com.CptFranck.SportsPeak.domain.enumType.Visibility;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.mappers.typeConverter.TrustLabelToStringConverter;
 import com.CptFranck.SportsPeak.mappers.typeConverter.VisibilityToStringConverter;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +20,16 @@ public class ProgExerciseMapperImpl implements Mapper<ProgExerciseEntity, ProgEx
         this.modelMapper = modelMapper;
         this.modelMapper.addConverter(new VisibilityToStringConverter());
         this.modelMapper.addConverter(new TrustLabelToStringConverter());
+
+        Converter<String, Visibility> toVisibility =
+                ctx -> ctx.getSource() == null ? null : Visibility.valueOfLabel(ctx.getSource());
+        Converter<String, TrustLabel> toTrustLabel =
+                ctx -> ctx.getSource() == null ? null : TrustLabel.valueOfLabel(ctx.getSource());
+
+        this.modelMapper.createTypeMap(ProgExerciseDto.class, ProgExerciseEntity.class).addMappings(mapper -> {
+            mapper.using(toVisibility).map(ProgExerciseDto::getVisibility, ProgExerciseEntity::setVisibility);
+            mapper.using(toTrustLabel).map(ProgExerciseDto::getTrustLabel, ProgExerciseEntity::setTrustLabel);
+        });
     }
 
     @Override
