@@ -1,6 +1,6 @@
 package com.CptFranck.SportsPeak.mappers.impl;
 
-import com.CptFranck.SportsPeak.domain.dto.PerformanceLogDto;
+import com.CptFranck.SportsPeak.domain.dto.*;
 import com.CptFranck.SportsPeak.domain.entity.*;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import org.junit.jupiter.api.Assertions;
@@ -9,7 +9,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.TestDataUtil.*;
+import static com.CptFranck.SportsPeak.domain.TestDataExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.domain.TestDataExerciseUtils.createTestExerciseDto;
+import static com.CptFranck.SportsPeak.domain.TestDataProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.domain.TestDataProgExerciseUtils.createTestProgExerciseDto;
+import static com.CptFranck.SportsPeak.domain.TestDataUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.domain.TestDataUserUtils.createTestUserDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataPerformanceLogUtils.createTestPerformanceLog;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataPerformanceLogUtils.createTestPerformanceLogDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataTargetSetUtils.createTestTargetSet;
+import static com.CptFranck.SportsPeak.domain.utils.TestDataTargetSetUtils.createTestTargetSetDto;
 
 @ExtendWith(MockitoExtension.class)
 public class PerformanceLogMapperImplTest {
@@ -21,7 +30,7 @@ public class PerformanceLogMapperImplTest {
     }
 
     @Test
-    void testProgExerciseTypeMapperMapTo_WithoutUpdate_Success() {
+    void performanceLogTypeMapper_MapTo_WithoutUpdate_Success() {
         UserEntity user = createTestUser();
         ExerciseEntity exercise = createTestExercise();
         ProgExerciseEntity progExercise = createTestProgExercise(user, exercise);
@@ -37,5 +46,24 @@ public class PerformanceLogMapperImplTest {
         Assertions.assertEquals(performanceLog.getWeightUnit().label, performanceLogDto.getWeightUnit());
         Assertions.assertEquals(performanceLog.getLogDate(), performanceLogDto.getLogDate());
         Assertions.assertEquals(performanceLog.getTargetSet().getId(), performanceLogDto.getTargetSet().getId());
+    }
+
+    @Test
+    void performanceLogTypeMapper_MapFrom_WithoutUpdate_Success() {
+        UserDto user = createTestUserDto();
+        ExerciseDto exercise = createTestExerciseDto();
+        ProgExerciseDto progExercise = createTestProgExerciseDto(user, exercise);
+        TargetSetDto targetSet = createTestTargetSetDto(progExercise);
+        PerformanceLogDto performanceLog = createTestPerformanceLogDto(targetSet);
+
+        PerformanceLogEntity performanceLogEntity = performanceLogMapper.mapFrom(performanceLog);
+
+        Assertions.assertEquals(performanceLog.getId(), performanceLogEntity.getId());
+        Assertions.assertEquals(performanceLog.getSetIndex(), performanceLogEntity.getSetIndex());
+        Assertions.assertEquals(performanceLog.getRepetitionNumber(), performanceLogEntity.getRepetitionNumber());
+        Assertions.assertEquals(performanceLog.getWeight(), performanceLogEntity.getWeight());
+        Assertions.assertEquals(performanceLog.getWeightUnit(), performanceLogEntity.getWeightUnit().label);
+        Assertions.assertEquals(performanceLog.getLogDate(), performanceLogEntity.getLogDate());
+        Assertions.assertEquals(performanceLog.getTargetSet().getId(), performanceLogEntity.getTargetSet().getId());
     }
 }
