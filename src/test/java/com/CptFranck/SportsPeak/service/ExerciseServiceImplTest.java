@@ -1,6 +1,6 @@
 package com.CptFranck.SportsPeak.service;
 
-import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
+import com.CptFranck.SportsPeak.domain.entity.*;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
 import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
 import com.CptFranck.SportsPeak.service.impl.ExerciseServiceImpl;
@@ -12,14 +12,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.CptFranck.SportsPeak.domain.utils.TestExerciseTypeUtils.createTestExerciseType;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseList;
+import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.createTestMuscle;
+import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -75,39 +76,41 @@ public class ExerciseServiceImplTest {
         Assertions.assertEquals(new HashSet<>(ExerciseList), ExerciseFound);
     }
 
-//    @Test
-//    void exerciseService_UpdateExerciseTypeRelation_Success() {
-//        Set<Long> oldExerciseIds = new HashSet<>();
-//        Set<Long> newExerciseIds = new HashSet<>();
-//
-//        List<ExerciseEntity> ExerciseList = createTestExerciseList();
-//        Set<Long> ExerciseIds = ExerciseList.stream().map(ExerciseEntity::getId).collect(Collectors.toSet());
-//        when(exerciseRepository.findAllById(Mockito.anyIterable())).thenReturn(ExerciseList);
-//
-//        Set<ExerciseEntity> ExerciseFound = exerciseServiceImpl.updateExerciseTypeRelation(ExerciseIds);
-//        Assertions.assertEquals(new HashSet<>(ExerciseList), ExerciseFound);
-//    }
-//
-//    @Test
-//    void exerciseService_UpdateMuscleRelation_Success() {
-//        List<ExerciseEntity> ExerciseList = createTestExerciseList();
-//        Set<Long> ExerciseIds = ExerciseList.stream().map(ExerciseEntity::getId).collect(Collectors.toSet());
-//        when(exerciseRepository.findAllById(Mockito.anyIterable())).thenReturn(ExerciseList);
-//
-//        Set<ExerciseEntity> ExerciseFound = exerciseServiceImpl.updateMuscleRelation(ExerciseIds);
-//        Assertions.assertEquals(new HashSet<>(ExerciseList), ExerciseFound);
-//    }
-//
-//    @Test
-//    void exerciseService_UpdateProgExerciseRelation_Success() {
-//        List<ExerciseEntity> ExerciseList = createTestExerciseList();
-//        Set<Long> ExerciseIds = ExerciseList.stream().map(ExerciseEntity::getId).collect(Collectors.toSet());
-//        when(exerciseRepository.findAllById(Mockito.anyIterable())).thenReturn(ExerciseList);
-//
-//        Set<ExerciseEntity> ExerciseFound = exerciseServiceImpl.updateProgExerciseRelation(ExerciseIds);
-//        Assertions.assertEquals(new HashSet<>(ExerciseList), ExerciseFound);
-//    }
+    @Test
+    void exerciseService_UpdateExerciseTypeRelation_Success() {
+        Set<Long> oldExerciseIds = new HashSet<>();
+        Set<Long> newExerciseIds = new HashSet<>();
+        ExerciseTypeEntity exerciseType = createTestExerciseType(1L);
 
+        when(exerciseRepository.findAllById(Mockito.anyIterable())).thenReturn(Collections.emptyList());
+
+        assertAll(() -> exerciseServiceImpl.updateExerciseTypeRelation(newExerciseIds, oldExerciseIds, exerciseType));
+    }
+
+    @Test
+    void exerciseService_UpdateMuscleRelation_Success() {
+        Set<Long> oldExerciseIds = new HashSet<>();
+        Set<Long> newExerciseIds = new HashSet<>();
+        MuscleEntity muscle = createTestMuscle(1L);
+
+        when(exerciseRepository.findAllById(Mockito.anyIterable())).thenReturn(Collections.emptyList());
+
+        assertAll(() -> exerciseServiceImpl.updateMuscleRelation(newExerciseIds, oldExerciseIds, muscle));
+    }
+
+    @Test
+    void exerciseService_UpdateProgExerciseRelation_Success() {
+        UserEntity user = createTestUser(1L);
+        ExerciseEntity oldExercise = createTestExercise(1L);
+        ExerciseEntity newExercise = createTestExercise(2L);
+        ProgExerciseEntity progExercise = createTestProgExercise(1L, user, oldExercise);
+        oldExercise.getProgExercises().add(progExercise);
+
+        when(exerciseRepository.save(newExercise)).thenReturn(newExercise);
+        when(exerciseRepository.save(oldExercise)).thenReturn(oldExercise);
+
+        assertAll(() -> exerciseServiceImpl.updateProgExerciseRelation(newExercise, oldExercise, progExercise));
+    }
 
     @Test
     void exerciseService_Exists_Success() {
