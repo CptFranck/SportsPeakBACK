@@ -13,12 +13,12 @@ import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseTypeUtils.cr
 import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseTypeUtils.createTestExerciseTypeDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseUtils.createTestExerciseDto;
-import static com.CptFranck.SportsPeak.domain.utils.TestDataMuscleUtils.createTestMuscle;
-import static com.CptFranck.SportsPeak.domain.utils.TestDataMuscleUtils.createTestMuscleDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataProgExerciseUtils.createTestProgExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createTestUserDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.createTestMuscle;
+import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.createTestMuscleDto;
 
 @ExtendWith(MockitoExtension.class)
 public class ExerciseMapperImplTest {
@@ -32,7 +32,7 @@ public class ExerciseMapperImplTest {
     @Test
     void exerciseMapper_MapTo_Success() {
         ExerciseEntity exercise = createTestExercise();
-        MuscleEntity muscle = createTestMuscle();
+        MuscleEntity muscle = createTestMuscle(1L);
         ExerciseTypeEntity exerciseType = createTestExerciseType();
         UserEntity user = createTestUser();
         ProgExerciseEntity progExercise = createTestProgExercise(user, exercise);
@@ -66,7 +66,7 @@ public class ExerciseMapperImplTest {
     @Test
     void exerciseMapper_MapFrom_Success() {
         ExerciseDto exercise = createTestExerciseDto();
-        MuscleDto muscle = createTestMuscleDto();
+        MuscleDto muscle = createTestMuscleDto(1L);
         ExerciseTypeDto exerciseType = createTestExerciseTypeDto();
         UserDto user = createTestUserDto();
         ProgExerciseDto progExercise = createTestProgExerciseDto(user, exercise);

@@ -6,12 +6,13 @@ import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
 
 import java.util.HashSet;
+import java.util.List;
 
-public class TestDataMuscleUtils {
+public class TestMuscleUtils {
 
-    public static MuscleEntity createTestMuscle() {
+    public static MuscleEntity createTestMuscle(Long id) {
         return new MuscleEntity(
-                2L,
+                id,
                 "Muscle name",
                 "Muscle description",
                 "Muscle function",
@@ -19,9 +20,13 @@ public class TestDataMuscleUtils {
         );
     }
 
-    public static MuscleDto createTestMuscleDto() {
+    public static List<MuscleEntity> createTestMuscleList() {
+        return List.of(createTestMuscle(1L), createTestMuscle(2L), createTestMuscle(3L));
+    }
+
+    public static MuscleDto createTestMuscleDto(Long id) {
         return new MuscleDto(
-                2L,
+                id,
                 "Muscle name",
                 "Muscle description",
                 "Muscle function",

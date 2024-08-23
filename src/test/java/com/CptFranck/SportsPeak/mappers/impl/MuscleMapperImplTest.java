@@ -13,8 +13,8 @@ import org.modelmapper.ModelMapper;
 
 import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseUtils.createTestExerciseDto;
-import static com.CptFranck.SportsPeak.domain.utils.TestDataMuscleUtils.createTestMuscle;
-import static com.CptFranck.SportsPeak.domain.utils.TestDataMuscleUtils.createTestMuscleDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.createTestMuscle;
+import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.createTestMuscleDto;
 
 @ExtendWith(MockitoExtension.class)
 public class MuscleMapperImplTest {
@@ -27,7 +27,7 @@ public class MuscleMapperImplTest {
 
     @Test
     void muscleMapper_MapTo_Success() {
-        MuscleEntity muscle = createTestMuscle();
+        MuscleEntity muscle = createTestMuscle(2L);
         ExerciseEntity exercise = createTestExercise();
 
         muscle.getExercises().add(exercise);
@@ -45,7 +45,7 @@ public class MuscleMapperImplTest {
 
     @Test
     void muscleMapper_MapFrom_Success() {
-        MuscleDto muscle = createTestMuscleDto();
+        MuscleDto muscle = createTestMuscleDto(1L);
         ExerciseDto exercise = createTestExerciseDto();
 
         muscle.getExercises().add(exercise);
