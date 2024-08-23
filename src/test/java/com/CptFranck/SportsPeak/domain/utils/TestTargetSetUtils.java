@@ -15,35 +15,14 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 
-public class TestDataTargetSetUtils {
+public class TestTargetSetUtils {
 
-    public static TargetSetEntity createTestTargetSet(ProgExerciseEntity progExercise) {
+    public static TargetSetEntity createTestTargetSet(Long id, ProgExerciseEntity progExercise) {
         LocalDateTime creationDate = LocalDateTime.now();
         Duration effortTime = Duration.ofHours(0).plusMinutes(0).plusSeconds(5);
         Duration restTime = Duration.ofHours(0).plusMinutes(4).plusSeconds(0);
         return new TargetSetEntity(
-                6L,
-                1,
-                5,
-                10,
-                0f,
-                WeightUnit.KILOGRAMME,
-                effortTime,
-                restTime,
-                creationDate,
-                TargetSetState.USED,
-                progExercise,
-                null,
-                new HashSet<PerformanceLogEntity>()
-        );
-    }
-
-    public static TargetSetEntity createNewTestTargetSet(ProgExerciseEntity progExercise) {
-        LocalDateTime creationDate = LocalDateTime.now();
-        Duration effortTime = Duration.ofHours(0).plusMinutes(0).plusSeconds(5);
-        Duration restTime = Duration.ofHours(0).plusMinutes(4).plusSeconds(0);
-        return new TargetSetEntity(
-                null,
+                id,
                 1,
                 5,
                 10,
@@ -60,7 +39,10 @@ public class TestDataTargetSetUtils {
     }
 
     public static List<TargetSetEntity> createNewTestTargetSets(ProgExerciseEntity progExercise) {
-        return List.of(createNewTestTargetSet(progExercise), createNewTestTargetSet(progExercise));
+        return List.of(
+                createTestTargetSet(1L, progExercise),
+                createTestTargetSet(2L, progExercise)
+        );
     }
 
     public static TargetSetEntity createTestTargetSetUpdate(ProgExerciseEntity progExercise, TargetSetEntity update) {
@@ -84,28 +66,7 @@ public class TestDataTargetSetUtils {
         );
     }
 
-    public static TargetSetDto createTestTargetSetDto(ProgExerciseDto progExercise) {
-        LocalDateTime creationDate = LocalDateTime.now();
-        Duration effortTime = Duration.ofHours(0).plusMinutes(0).plusSeconds(5);
-        Duration restTime = Duration.ofHours(0).plusMinutes(4).plusSeconds(0);
-        return new TargetSetDto(
-                6L,
-                1,
-                5,
-                10,
-                0f,
-                WeightUnit.KILOGRAMME.label,
-                InputDuration.DurationToInputDuration(effortTime),
-                InputDuration.DurationToInputDuration(restTime),
-                creationDate,
-                TargetSetState.USED.label,
-                progExercise,
-                null,
-                new HashSet<PerformanceLogDto>()
-        );
-    }
-
-    public static TargetSetDto createTestTargetSetUpdateDto(ProgExerciseDto progExercise, TargetSetDto update) {
+    public static TargetSetDto createTestTargetSetDto(ProgExerciseDto progExercise, TargetSetDto update) {
         LocalDateTime creationDate = LocalDateTime.now();
         Duration effortTime = Duration.ofHours(0).plusMinutes(0).plusSeconds(5);
         Duration restTime = Duration.ofHours(0).plusMinutes(4).plusSeconds(0);

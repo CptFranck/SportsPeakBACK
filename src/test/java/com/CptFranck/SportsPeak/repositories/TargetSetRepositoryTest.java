@@ -15,9 +15,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.util.List;
 import java.util.Optional;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestDataTargetSetUtils.createNewTestTargetSets;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createNewTestTargetSets;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
 
 @DataJpaTest
@@ -62,6 +62,7 @@ public class TargetSetRepositoryTest {
     public void targetSetRepository_FindByTargetSetUpdateId_ReturnTargetSet() {
         List<TargetSetEntity> targetSetEntities = saveAllTargetSetsInRepository();
         targetSetEntities.getFirst().setTargetSetUpdate(targetSetEntities.getLast());
+        targetSetRepository.save(targetSetEntities.getFirst());
 
         Optional<TargetSetEntity> foundTargetSet = targetSetRepository.findByTargetSetUpdateId(targetSetEntities.getLast().getId());
 

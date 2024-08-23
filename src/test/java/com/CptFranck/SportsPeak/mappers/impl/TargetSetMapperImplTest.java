@@ -2,6 +2,7 @@ package com.CptFranck.SportsPeak.mappers.impl;
 
 import com.CptFranck.SportsPeak.domain.dto.*;
 import com.CptFranck.SportsPeak.domain.entity.*;
+import com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -9,13 +10,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestDataTargetSetUtils.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createTestPerformanceLog;
 import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createTestPerformanceLogDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExerciseDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
 
@@ -33,7 +34,7 @@ public class TargetSetMapperImplTest {
         UserEntity user = createTestUser(1L);
         ExerciseEntity exercise = createTestExercise(1L);
         ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
-        TargetSetEntity targetSet = createTestTargetSet(progExercise);
+        TargetSetEntity targetSet = createTestTargetSet(1L, progExercise);
 
         TargetSetDto targetSetDto = targetSetMapper.mapTo(targetSet);
 
@@ -46,7 +47,7 @@ public class TargetSetMapperImplTest {
         UserEntity user = createTestUser(1L);
         ExerciseEntity exercise = createTestExercise(1L);
         ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
-        TargetSetEntity targetSet = createTestTargetSet(progExercise);
+        TargetSetEntity targetSet = createTestTargetSet(1L, progExercise);
         PerformanceLogEntity performanceLog = createTestPerformanceLog(1L, targetSet);
         targetSet.getPerformanceLogs().add(performanceLog);
         TargetSetEntity targetSetUpdate = createTestTargetSetUpdate(progExercise, null);
@@ -63,7 +64,7 @@ public class TargetSetMapperImplTest {
         UserDto user = createTestUserDto();
         ExerciseDto exercise = createTestExerciseDto();
         ProgExerciseDto progExercise = createTestProgExerciseDto(user, exercise);
-        TargetSetDto targetSet = createTestTargetSetDto(progExercise);
+        TargetSetDto targetSet = createTestTargetSetDto(progExercise, null);
 
         TargetSetEntity targetSetEntity = targetSetMapper.mapFrom(targetSet);
 
@@ -89,10 +90,10 @@ public class TargetSetMapperImplTest {
         UserDto user = createTestUserDto();
         ExerciseDto exercise = createTestExerciseDto();
         ProgExerciseDto progExercise = createTestProgExerciseDto(user, exercise);
-        TargetSetDto targetSet = createTestTargetSetDto(progExercise);
+        TargetSetDto targetSet = createTestTargetSetDto(progExercise, null);
         PerformanceLogDto performanceLog = createTestPerformanceLogDto(targetSet);
         targetSet.getPerformanceLogs().add(performanceLog);
-        TargetSetDto targetSetUpdate = createTestTargetSetUpdateDto(progExercise, null);
+        TargetSetDto targetSetUpdate = TestTargetSetUtils.createTestTargetSetDto(progExercise, null);
         targetSet.setTargetSetUpdate(targetSetUpdate);
 
         TargetSetEntity targetSetEntity = targetSetMapper.mapFrom(targetSet);

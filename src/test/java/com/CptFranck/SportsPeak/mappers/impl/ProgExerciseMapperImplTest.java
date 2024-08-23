@@ -15,12 +15,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestDataTargetSetUtils.createTestTargetSet;
-import static com.CptFranck.SportsPeak.domain.utils.TestDataTargetSetUtils.createTestTargetSetDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExerciseDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSet;
+import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSetDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
 
@@ -38,7 +38,7 @@ public class ProgExerciseMapperImplTest {
         UserEntity user = createTestUser(1L);
         ExerciseEntity exercise = createTestExercise(1L);
         ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
-        TargetSetEntity targetSet = createTestTargetSet(progExercise);
+        TargetSetEntity targetSet = createTestTargetSet(1L, progExercise);
 
         progExercise.getTargetSets().add(targetSet);
         progExercise.getSubscribedUsers().add(user);
@@ -63,7 +63,7 @@ public class ProgExerciseMapperImplTest {
         UserDto user = createTestUserDto();
         ExerciseDto exercise = createTestExerciseDto();
         ProgExerciseDto progExercise = createTestProgExerciseDto(user, exercise);
-        TargetSetDto targetSet = createTestTargetSetDto(progExercise);
+        TargetSetDto targetSet = createTestTargetSetDto(progExercise, null);
 
         progExercise.getTargetSets().add(targetSet);
 

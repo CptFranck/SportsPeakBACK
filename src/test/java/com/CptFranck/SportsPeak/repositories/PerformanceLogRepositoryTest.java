@@ -10,10 +10,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestDataTargetSetUtils.createNewTestTargetSet;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createTestPerformanceLogList;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSet;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
 
 @DataJpaTest
@@ -36,7 +36,7 @@ public class PerformanceLogRepositoryTest {
         UserEntity creator = userRepository.save(createTestUser(1L));
         ExerciseEntity exercise = exerciseRepository.save(createTestExercise(1L));
         ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(1L, creator, exercise));
-        TargetSetEntity targetSet = targetSetRepository.save(createNewTestTargetSet(progExercise));
+        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(1L, progExercise));
         performanceLogRepository.saveAll(createTestPerformanceLogList(targetSet));
 
         List<PerformanceLogEntity> foundPerformanceLogs = performanceLogRepository.findAllByTargetSetId(targetSet.getId());
