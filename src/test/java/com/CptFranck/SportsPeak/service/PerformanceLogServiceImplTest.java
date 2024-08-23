@@ -1,6 +1,7 @@
 package com.CptFranck.SportsPeak.service;
 
-import com.CptFranck.SportsPeak.domain.entity.PerformanceLogEntity;
+import com.CptFranck.SportsPeak.domain.entity.*;
+import com.CptFranck.SportsPeak.domain.exception.performanceLog.PerformanceLogNotFoundException;
 import com.CptFranck.SportsPeak.repositories.PerformanceLogRepository;
 import com.CptFranck.SportsPeak.service.impl.PerformanceLogServiceImpl;
 import org.junit.jupiter.api.Assertions;
@@ -17,8 +18,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createNewTestPerformanceLogList;
 import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createTestPerformanceLog;
-import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createTestPerformanceLogList;
+import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSet;
+import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -32,20 +37,29 @@ public class PerformanceLogServiceImplTest {
     @InjectMocks
     PerformanceLogServiceImpl performanceLogServiceImpl;
 
+    private TargetSetEntity getTargetSetEntity() {
+        UserEntity user = createTestUser(1L);
+        ExerciseEntity exercise = createTestExercise(1L);
+        ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
+        return createTestTargetSet(1L, progExercise, null);
+    }
+
     @Test
     void performanceLogService_Save_Success() {
-        PerformanceLogEntity PerformanceLogEntity = createTestPerformanceLog(null);
-        PerformanceLogEntity PerformanceLogSavedInRepository = createTestPerformanceLog(1L);
+        TargetSetEntity targetSet = getTargetSetEntity();
+        PerformanceLogEntity PerformanceLog = createTestPerformanceLog(null, targetSet);
+        PerformanceLogEntity PerformanceLogSavedInRepository = createTestPerformanceLog(1L, targetSet);
         when(performanceLogRepository.save(Mockito.any(PerformanceLogEntity.class))).thenReturn(PerformanceLogSavedInRepository);
 
-        PerformanceLogEntity PerformanceLogSaved = performanceLogServiceImpl.save(PerformanceLogEntity);
+        PerformanceLogEntity PerformanceLogSaved = performanceLogServiceImpl.save(PerformanceLog);
 
         Assertions.assertEquals(PerformanceLogSavedInRepository, PerformanceLogSaved);
     }
 
     @Test
     void performanceLogService_FindAll_Success() {
-        List<PerformanceLogEntity> PerformanceLogList = createTestPerformanceLogList();
+        TargetSetEntity targetSet = getTargetSetEntity();
+        List<PerformanceLogEntity> PerformanceLogList = createNewTestPerformanceLogList(targetSet);
         when(performanceLogRepository.findAll()).thenReturn(PerformanceLogList);
 
         List<PerformanceLogEntity> PerformanceLogFound = performanceLogServiceImpl.findAll();
@@ -55,7 +69,8 @@ public class PerformanceLogServiceImplTest {
 
     @Test
     void performanceLogService_FindOne_Success() {
-        PerformanceLogEntity PerformanceLogEntity = createTestPerformanceLog(1L);
+        TargetSetEntity targetSet = getTargetSetEntity();
+        PerformanceLogEntity PerformanceLogEntity = createTestPerformanceLog(1L, targetSet);
         when(performanceLogRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(PerformanceLogEntity));
 
         Optional<PerformanceLogEntity> PerformanceLogFound = performanceLogServiceImpl.findOne(PerformanceLogEntity.getId());
@@ -66,7 +81,8 @@ public class PerformanceLogServiceImplTest {
 
     @Test
     void performanceLogService_FindMany_Success() {
-        List<PerformanceLogEntity> PerformanceLogList = createTestPerformanceLogList();
+        TargetSetEntity targetSet = getTargetSetEntity();
+        List<PerformanceLogEntity> PerformanceLogList = createNewTestPerformanceLogList(targetSet);
         Set<Long> PerformanceLogIds = PerformanceLogList.stream().map(PerformanceLogEntity::getId).collect(Collectors.toSet());
         when(performanceLogRepository.findAllById(Mockito.anyIterable())).thenReturn(PerformanceLogList);
 
@@ -75,8 +91,19 @@ public class PerformanceLogServiceImplTest {
     }
 
     @Test
+    void performanceLogService_FindAllByTargetSetId_Success() {
+        TargetSetEntity targetSet = getTargetSetEntity();
+        List<PerformanceLogEntity> PerformanceLogList = createNewTestPerformanceLogList(targetSet);
+        when(performanceLogRepository.findAllByTargetSetId(Mockito.any(Long.class))).thenReturn(PerformanceLogList);
+
+        List<PerformanceLogEntity> PerformanceLogFound = performanceLogServiceImpl.findAllByTargetSetId(targetSet.getId());
+        Assertions.assertEquals(PerformanceLogList, PerformanceLogFound);
+    }
+
+    @Test
     void PerformanceLogService_Exists_Success() {
-        PerformanceLogEntity PerformanceLogEntity = createTestPerformanceLog(1L);
+        TargetSetEntity targetSet = getTargetSetEntity();
+        PerformanceLogEntity PerformanceLogEntity = createTestPerformanceLog(1L, targetSet);
         when(performanceLogRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
 
         boolean PerformanceLogFound = performanceLogServiceImpl.exists(PerformanceLogEntity.getId());
@@ -86,7 +113,8 @@ public class PerformanceLogServiceImplTest {
 
     @Test
     void PerformanceLogService_Delete_Success() {
-        PerformanceLogEntity PerformanceLogEntity = createTestPerformanceLog(1L);
+        TargetSetEntity targetSet = getTargetSetEntity();
+        PerformanceLogEntity PerformanceLogEntity = createTestPerformanceLog(1L, targetSet);
         when(performanceLogRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(PerformanceLogEntity));
 
         assertAll(() -> performanceLogServiceImpl.delete(PerformanceLogEntity.getId()));
@@ -94,7 +122,8 @@ public class PerformanceLogServiceImplTest {
 
     @Test
     void PerformanceLogService_Delete_Unsuccessful() {
-        PerformanceLogEntity PerformanceLogEntity = createTestPerformanceLog(1L);
+        TargetSetEntity targetSet = getTargetSetEntity();
+        PerformanceLogEntity PerformanceLogEntity = createTestPerformanceLog(1L, targetSet);
         when(performanceLogRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
         assertThrows(PerformanceLogNotFoundException.class, () -> performanceLogServiceImpl.delete(PerformanceLogEntity.getId()));
