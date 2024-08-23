@@ -75,6 +75,40 @@ public class ExerciseServiceImplTest {
         Assertions.assertEquals(new HashSet<>(ExerciseList), ExerciseFound);
     }
 
+//    @Test
+//    void exerciseService_UpdateExerciseTypeRelation_Success() {
+//        Set<Long> oldExerciseIds = new HashSet<>();
+//        Set<Long> newExerciseIds = new HashSet<>();
+//
+//        List<ExerciseEntity> ExerciseList = createTestExerciseList();
+//        Set<Long> ExerciseIds = ExerciseList.stream().map(ExerciseEntity::getId).collect(Collectors.toSet());
+//        when(exerciseRepository.findAllById(Mockito.anyIterable())).thenReturn(ExerciseList);
+//
+//        Set<ExerciseEntity> ExerciseFound = exerciseServiceImpl.updateExerciseTypeRelation(ExerciseIds);
+//        Assertions.assertEquals(new HashSet<>(ExerciseList), ExerciseFound);
+//    }
+//
+//    @Test
+//    void exerciseService_UpdateMuscleRelation_Success() {
+//        List<ExerciseEntity> ExerciseList = createTestExerciseList();
+//        Set<Long> ExerciseIds = ExerciseList.stream().map(ExerciseEntity::getId).collect(Collectors.toSet());
+//        when(exerciseRepository.findAllById(Mockito.anyIterable())).thenReturn(ExerciseList);
+//
+//        Set<ExerciseEntity> ExerciseFound = exerciseServiceImpl.updateMuscleRelation(ExerciseIds);
+//        Assertions.assertEquals(new HashSet<>(ExerciseList), ExerciseFound);
+//    }
+//
+//    @Test
+//    void exerciseService_UpdateProgExerciseRelation_Success() {
+//        List<ExerciseEntity> ExerciseList = createTestExerciseList();
+//        Set<Long> ExerciseIds = ExerciseList.stream().map(ExerciseEntity::getId).collect(Collectors.toSet());
+//        when(exerciseRepository.findAllById(Mockito.anyIterable())).thenReturn(ExerciseList);
+//
+//        Set<ExerciseEntity> ExerciseFound = exerciseServiceImpl.updateProgExerciseRelation(ExerciseIds);
+//        Assertions.assertEquals(new HashSet<>(ExerciseList), ExerciseFound);
+//    }
+
+
     @Test
     void exerciseService_Exists_Success() {
         ExerciseEntity ExerciseEntity = createTestExercise(1L);

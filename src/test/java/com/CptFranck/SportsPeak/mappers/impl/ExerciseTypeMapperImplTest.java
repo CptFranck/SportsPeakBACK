@@ -11,8 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseTypeUtils.createTestExerciseType;
-import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseTypeUtils.createTestExerciseTypeDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestExerciseTypeUtils.createTestExerciseType;
+import static com.CptFranck.SportsPeak.domain.utils.TestExerciseTypeUtils.createTestExerciseTypeDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
 
@@ -27,7 +27,7 @@ public class ExerciseTypeMapperImplTest {
 
     @Test
     void exerciseTypeMapper_MapTo_Success() {
-        ExerciseTypeEntity exerciseType = createTestExerciseType();
+        ExerciseTypeEntity exerciseType = createTestExerciseType(1L);
         ExerciseEntity exercise = createTestExercise(1L);
         exerciseType.getExercises().add(exercise);
 

@@ -6,16 +6,21 @@ import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 
 import java.util.HashSet;
+import java.util.List;
 
-public class TestDataExerciseTypeUtils {
+public class TestExerciseTypeUtils {
 
-    public static ExerciseTypeEntity createTestExerciseType() {
+    public static ExerciseTypeEntity createTestExerciseType(Long id) {
         return new ExerciseTypeEntity(
-                1L,
+                id,
                 "Exercise type name",
                 "Exercise type goal",
                 new HashSet<ExerciseEntity>()
         );
+    }
+
+    public static List<ExerciseTypeEntity> createTestExerciseTypeList() {
+        return List.of(createTestExerciseType(1L), createTestExerciseType(2L), createTestExerciseType(3L));
     }
 
     public static ExerciseTypeDto createTestExerciseTypeDto() {
