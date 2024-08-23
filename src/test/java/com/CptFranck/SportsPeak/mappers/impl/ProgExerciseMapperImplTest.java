@@ -38,7 +38,7 @@ public class ProgExerciseMapperImplTest {
         UserEntity user = createTestUser(1L);
         ExerciseEntity exercise = createTestExercise(1L);
         ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
-        TargetSetEntity targetSet = createTestTargetSet(1L, progExercise);
+        TargetSetEntity targetSet = createTestTargetSet(1L, progExercise, null);
 
         progExercise.getTargetSets().add(targetSet);
         progExercise.getSubscribedUsers().add(user);

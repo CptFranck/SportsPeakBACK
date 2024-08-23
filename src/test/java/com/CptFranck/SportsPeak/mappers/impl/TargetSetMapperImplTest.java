@@ -16,7 +16,8 @@ import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.crea
 import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createTestPerformanceLogDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExerciseDto;
-import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.*;
+import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSet;
+import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSetDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
 
@@ -34,7 +35,7 @@ public class TargetSetMapperImplTest {
         UserEntity user = createTestUser(1L);
         ExerciseEntity exercise = createTestExercise(1L);
         ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
-        TargetSetEntity targetSet = createTestTargetSet(1L, progExercise);
+        TargetSetEntity targetSet = createTestTargetSet(1L, progExercise, null);
 
         TargetSetDto targetSetDto = targetSetMapper.mapTo(targetSet);
 
@@ -47,10 +48,10 @@ public class TargetSetMapperImplTest {
         UserEntity user = createTestUser(1L);
         ExerciseEntity exercise = createTestExercise(1L);
         ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
-        TargetSetEntity targetSet = createTestTargetSet(1L, progExercise);
+        TargetSetEntity targetSet = createTestTargetSet(1L, progExercise, null);
         PerformanceLogEntity performanceLog = createTestPerformanceLog(1L, targetSet);
         targetSet.getPerformanceLogs().add(performanceLog);
-        TargetSetEntity targetSetUpdate = createTestTargetSetUpdate(progExercise, null);
+        TargetSetEntity targetSetUpdate = TestTargetSetUtils.createTestTargetSet(1L, progExercise, null);
         targetSet.setTargetSetUpdate(targetSetUpdate);
 
         TargetSetDto targetSetDto = targetSetMapper.mapTo(targetSet);

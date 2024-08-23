@@ -17,7 +17,7 @@ import java.util.List;
 
 public class TestTargetSetUtils {
 
-    public static TargetSetEntity createTestTargetSet(Long id, ProgExerciseEntity progExercise) {
+    public static TargetSetEntity createTestTargetSet(Long id, ProgExerciseEntity progExercise, TargetSetEntity update) {
         LocalDateTime creationDate = LocalDateTime.now();
         Duration effortTime = Duration.ofHours(0).plusMinutes(0).plusSeconds(5);
         Duration restTime = Duration.ofHours(0).plusMinutes(4).plusSeconds(0);
@@ -33,36 +33,15 @@ public class TestTargetSetUtils {
                 creationDate,
                 TargetSetState.USED,
                 progExercise,
-                null,
+                update,
                 new HashSet<PerformanceLogEntity>()
         );
     }
 
     public static List<TargetSetEntity> createNewTestTargetSets(ProgExerciseEntity progExercise) {
         return List.of(
-                createTestTargetSet(1L, progExercise),
-                createTestTargetSet(2L, progExercise)
-        );
-    }
-
-    public static TargetSetEntity createTestTargetSetUpdate(ProgExerciseEntity progExercise, TargetSetEntity update) {
-        LocalDateTime creationDate = LocalDateTime.now();
-        Duration effortTime = Duration.ofHours(0).plusMinutes(0).plusSeconds(5);
-        Duration restTime = Duration.ofHours(0).plusMinutes(4).plusSeconds(0);
-        return new TargetSetEntity(
-                6L,
-                1,
-                5,
-                10,
-                0f,
-                WeightUnit.KILOGRAMME,
-                effortTime,
-                restTime,
-                creationDate,
-                TargetSetState.USED,
-                progExercise,
-                update,
-                new HashSet<PerformanceLogEntity>()
+                createTestTargetSet(null, progExercise, null),
+                createTestTargetSet(null, progExercise, null)
         );
     }
 
