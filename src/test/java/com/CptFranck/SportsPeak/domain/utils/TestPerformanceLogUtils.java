@@ -9,12 +9,12 @@ import com.CptFranck.SportsPeak.domain.enumType.WeightUnit;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class TestDataPerformanceLogUtils {
+public class TestPerformanceLogUtils {
 
-    public static PerformanceLogEntity createTestPerformanceLog(TargetSetEntity targetSet) {
+    public static PerformanceLogEntity createTestPerformanceLog(Long id, TargetSetEntity targetSet) {
         LocalDateTime creationDate = LocalDateTime.now();
         return new PerformanceLogEntity(
-                7L,
+                id,
                 1,
                 5,
                 0f,
@@ -24,21 +24,11 @@ public class TestDataPerformanceLogUtils {
         );
     }
 
-    public static PerformanceLogEntity createNewTestPerformanceLog(TargetSetEntity targetSet) {
-        LocalDateTime creationDate = LocalDateTime.now();
-        return new PerformanceLogEntity(
-                null,
-                1,
-                5,
-                0f,
-                WeightUnit.KILOGRAMME,
-                creationDate,
-                targetSet
+    public static List<PerformanceLogEntity> createTestPerformanceLogList(TargetSetEntity targetSet) {
+        return List.of(
+                createTestPerformanceLog(1L, targetSet),
+                createTestPerformanceLog(2L, targetSet)
         );
-    }
-
-    public static List<PerformanceLogEntity> createNewTestPerformanceLogs(TargetSetEntity targetSet) {
-        return List.of(createNewTestPerformanceLog(targetSet), createNewTestPerformanceLog(targetSet));
     }
 
     public static PerformanceLogDto createTestPerformanceLogDto(TargetSetDto targetSet) {

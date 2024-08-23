@@ -9,12 +9,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestDataPerformanceLogUtils.createTestPerformanceLog;
-import static com.CptFranck.SportsPeak.domain.utils.TestDataPerformanceLogUtils.createTestPerformanceLogDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataTargetSetUtils.createTestTargetSet;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataTargetSetUtils.createTestTargetSetDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createTestPerformanceLog;
+import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createTestPerformanceLogDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
@@ -35,7 +35,7 @@ public class PerformanceLogMapperImplTest {
         ExerciseEntity exercise = createTestExercise(1L);
         ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
         TargetSetEntity targetSet = createTestTargetSet(progExercise);
-        PerformanceLogEntity performanceLog = createTestPerformanceLog(targetSet);
+        PerformanceLogEntity performanceLog = createTestPerformanceLog(1L, targetSet);
 
         PerformanceLogDto performanceLogDto = performanceLogMapper.mapTo(performanceLog);
 
