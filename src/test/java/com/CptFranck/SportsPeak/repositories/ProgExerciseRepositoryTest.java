@@ -12,9 +12,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestDataProgExerciseUtils.createNewTestProgExercises;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createNewTestUser;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createNewTestProgExercises;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)

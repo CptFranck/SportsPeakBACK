@@ -11,13 +11,13 @@ import org.modelmapper.ModelMapper;
 
 import static com.CptFranck.SportsPeak.domain.utils.TestDataPerformanceLogUtils.createTestPerformanceLog;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataPerformanceLogUtils.createTestPerformanceLogDto;
-import static com.CptFranck.SportsPeak.domain.utils.TestDataProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestDataProgExerciseUtils.createTestProgExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataTargetSetUtils.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createTestUserDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExerciseDto;
 
 @ExtendWith(MockitoExtension.class)
 public class TargetSetMapperImplTest {
@@ -32,7 +32,7 @@ public class TargetSetMapperImplTest {
     void targetSetTypeMapper_MapTo_WithoutUpdate_Success() {
         UserEntity user = createTestUser();
         ExerciseEntity exercise = createTestExercise(1L);
-        ProgExerciseEntity progExercise = createTestProgExercise(user, exercise);
+        ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
         TargetSetEntity targetSet = createTestTargetSet(progExercise);
 
         TargetSetDto targetSetDto = targetSetMapper.mapTo(targetSet);
@@ -45,7 +45,7 @@ public class TargetSetMapperImplTest {
     void targetSetTypeMapper_MapTo_WithUpdate_Success() {
         UserEntity user = createTestUser();
         ExerciseEntity exercise = createTestExercise(1L);
-        ProgExerciseEntity progExercise = createTestProgExercise(user, exercise);
+        ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
         TargetSetEntity targetSet = createTestTargetSet(progExercise);
         PerformanceLogEntity performanceLog = createTestPerformanceLog(targetSet);
         targetSet.getPerformanceLogs().add(performanceLog);

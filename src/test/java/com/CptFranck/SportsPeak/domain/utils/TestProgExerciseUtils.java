@@ -14,25 +14,11 @@ import com.CptFranck.SportsPeak.domain.enumType.Visibility;
 import java.util.HashSet;
 import java.util.List;
 
-public class TestDataProgExerciseUtils {
+public class TestProgExerciseUtils {
 
-    public static ProgExerciseEntity createTestProgExercise(UserEntity creator, ExerciseEntity exercise) {
+    public static ProgExerciseEntity createTestProgExercise(Long Id, UserEntity creator, ExerciseEntity exercise) {
         return new ProgExerciseEntity(
-                5L,
-                "Prog Exercise name",
-                "Prog Exercise note",
-                Visibility.PRIVATE,
-                TrustLabel.UNVERIFIED,
-                new HashSet<UserEntity>(),
-                creator,
-                exercise,
-                new HashSet<TargetSetEntity>()
-        );
-    }
-
-    public static ProgExerciseEntity createTestNewProgExercise(UserEntity creator, ExerciseEntity exercise) {
-        return new ProgExerciseEntity(
-                null,
+                Id,
                 "Prog Exercise name",
                 "Prog Exercise note",
                 Visibility.PRIVATE,
@@ -45,7 +31,10 @@ public class TestDataProgExerciseUtils {
     }
 
     public static List<ProgExerciseEntity> createNewTestProgExercises(UserEntity creator, ExerciseEntity exercise) {
-        return List.of(createTestNewProgExercise(creator, exercise), createTestNewProgExercise(creator, exercise));
+        return List.of(
+                createTestProgExercise(1L, creator, exercise),
+                createTestProgExercise(2L, creator, exercise)
+        );
     }
 
     public static ProgExerciseDto createTestProgExerciseDto(UserDto creator, ExerciseDto exercise) {
