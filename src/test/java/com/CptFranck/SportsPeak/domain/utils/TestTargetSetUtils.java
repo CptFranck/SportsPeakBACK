@@ -38,10 +38,16 @@ public class TestTargetSetUtils {
         );
     }
 
-    public static List<TargetSetEntity> createNewTestTargetSets(ProgExerciseEntity progExercise) {
+    public static List<TargetSetEntity> createTestTargetSetList(boolean withId, ProgExerciseEntity progExercise) {
+        Long IdOne = null;
+        Long IdTwo = null;
+        if (withId) {
+            IdOne = 1L;
+            IdTwo = 1L;
+        }
         return List.of(
-                createTestTargetSet(null, progExercise, null),
-                createTestTargetSet(null, progExercise, null)
+                createTestTargetSet(IdOne, progExercise, null),
+                createTestTargetSet(IdTwo, progExercise, null)
         );
     }
 
