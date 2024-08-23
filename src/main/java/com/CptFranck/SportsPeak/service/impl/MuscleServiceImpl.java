@@ -1,6 +1,7 @@
 package com.CptFranck.SportsPeak.service.impl;
 
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
+import com.CptFranck.SportsPeak.domain.exception.muscle.MuscleNotFoundException;
 import com.CptFranck.SportsPeak.repositories.MuscleRepository;
 import com.CptFranck.SportsPeak.service.MuscleService;
 import org.springframework.stereotype.Service;
@@ -41,10 +42,10 @@ public class MuscleServiceImpl implements MuscleService {
 
     @Override
     public Set<MuscleEntity> findMany(Set<Long> ids) {
-        return ids.stream()
-                .map(this::findOne)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+        return StreamSupport.stream(muscleRepository
+                                .findAllById(ids)
+                                .spliterator(),
+                        false)
                 .collect(Collectors.toSet());
     }
 
@@ -55,6 +56,7 @@ public class MuscleServiceImpl implements MuscleService {
 
     @Override
     public void delete(Long id) {
-        muscleRepository.deleteById(id);
+        MuscleEntity muscle = muscleRepository.findById(id).orElseThrow(() -> new MuscleNotFoundException(id));
+        muscleRepository.delete(muscle);
     }
 }
