@@ -17,7 +17,7 @@ import java.util.Optional;
 
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createNewTestTargetSets;
+import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSetList;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
 
 @DataJpaTest
@@ -36,7 +36,7 @@ public class TargetSetRepositoryTest {
     private ProgExerciseRepository progExerciseRepository;
 
     private List<TargetSetEntity> saveAllTargetSetsInRepository() {
-        List<TargetSetEntity> localTargetSets = createNewTestTargetSets(progExercise);
+        List<TargetSetEntity> localTargetSets = createTestTargetSetList(false, progExercise);
         targetSetRepository.saveAll(localTargetSets);
         return localTargetSets;
     }
