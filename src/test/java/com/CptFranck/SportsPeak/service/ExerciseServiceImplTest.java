@@ -12,7 +12,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseTypeUtils.createTestExerciseType;
@@ -78,22 +81,34 @@ public class ExerciseServiceImplTest {
 
     @Test
     void exerciseService_UpdateExerciseTypeRelation_Success() {
+        ExerciseEntity exerciseOne = createTestExercise(1L);
+        ExerciseEntity exerciseTwo = createTestExercise(2L);
         Set<Long> oldExerciseIds = new HashSet<>();
         Set<Long> newExerciseIds = new HashSet<>();
+        oldExerciseIds.add(exerciseOne.getId());
+        newExerciseIds.add(exerciseTwo.getId());
+
         ExerciseTypeEntity exerciseType = createTestExerciseType(1L);
 
-        when(exerciseRepository.findAllById(Mockito.anyIterable())).thenReturn(Collections.emptyList());
+        when(exerciseRepository.findAllById(oldExerciseIds)).thenReturn(List.of(exerciseOne));
+        when(exerciseRepository.findAllById(newExerciseIds)).thenReturn(List.of(exerciseTwo));
 
         assertAll(() -> exerciseServiceImpl.updateExerciseTypeRelation(newExerciseIds, oldExerciseIds, exerciseType));
     }
 
     @Test
     void exerciseService_UpdateMuscleRelation_Success() {
+        ExerciseEntity exerciseOne = createTestExercise(1L);
+        ExerciseEntity exerciseTwo = createTestExercise(2L);
         Set<Long> oldExerciseIds = new HashSet<>();
         Set<Long> newExerciseIds = new HashSet<>();
+        oldExerciseIds.add(exerciseOne.getId());
+        newExerciseIds.add(exerciseTwo.getId());
+
         MuscleEntity muscle = createTestMuscle(1L);
 
-        when(exerciseRepository.findAllById(Mockito.anyIterable())).thenReturn(Collections.emptyList());
+        when(exerciseRepository.findAllById(oldExerciseIds)).thenReturn(List.of(exerciseOne));
+        when(exerciseRepository.findAllById(newExerciseIds)).thenReturn(List.of(exerciseTwo));
 
         assertAll(() -> exerciseServiceImpl.updateMuscleRelation(newExerciseIds, oldExerciseIds, muscle));
     }
