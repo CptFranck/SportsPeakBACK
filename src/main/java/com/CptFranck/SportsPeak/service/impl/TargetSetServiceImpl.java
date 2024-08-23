@@ -2,6 +2,7 @@ package com.CptFranck.SportsPeak.service.impl;
 
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
+import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
 import com.CptFranck.SportsPeak.repositories.TargetSetRepository;
 import com.CptFranck.SportsPeak.service.TargetSetService;
 import org.springframework.stereotype.Service;
@@ -47,10 +48,10 @@ public class TargetSetServiceImpl implements TargetSetService {
 
     @Override
     public Set<TargetSetEntity> findMany(Set<Long> ids) {
-        return ids.stream()
-                .map(this::findOne)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+        return StreamSupport.stream(targetSetRepository
+                                .findAllById(ids)
+                                .spliterator(),
+                        false)
                 .collect(Collectors.toSet());
     }
 
@@ -61,7 +62,8 @@ public class TargetSetServiceImpl implements TargetSetService {
 
     @Override
     public void delete(Long id) {
-        targetSetRepository.deleteById(id);
+        TargetSetEntity exercise = targetSetRepository.findById(id).orElseThrow(() -> new TargetSetNotFoundException(id));
+        targetSetRepository.delete(exercise);
     }
 
     @Override
