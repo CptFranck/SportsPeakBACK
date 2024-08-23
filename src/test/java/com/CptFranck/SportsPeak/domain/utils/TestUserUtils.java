@@ -9,29 +9,15 @@ import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 
 import java.util.HashSet;
 
-public class TestDataUserUtils {
+public class TestUserUtils {
 
-    public static UserEntity createTestUser() {
+    public static UserEntity createTestUser(Long id) {
         return new UserEntity(
-                4L,
+                id,
                 "test@test.test",
                 "John",
                 "Doe",
                 "John_Doe",
-                "password",
-                new HashSet<RoleEntity>(),
-                new HashSet<ProgExerciseEntity>(),
-                new HashSet<ProgExerciseEntity>()
-        );
-    }
-
-    public static UserEntity createNewTestUser() {
-        return new UserEntity(
-                null,
-                "test@test.test",
-                "firstName",
-                "lastName",
-                "userName",
                 "password",
                 new HashSet<RoleEntity>(),
                 new HashSet<ProgExerciseEntity>(),

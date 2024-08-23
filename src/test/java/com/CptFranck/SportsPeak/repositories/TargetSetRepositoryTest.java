@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.CptFranck.SportsPeak.domain.utils.TestDataTargetSetUtils.createNewTestTargetSets;
-import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createNewTestUser;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
@@ -43,7 +43,7 @@ public class TargetSetRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        UserEntity creator = userRepository.save(createNewTestUser());
+        UserEntity creator = userRepository.save(createTestUser(1L));
         ExerciseEntity exercise = exerciseRepository.save(createTestExercise(1L));
         progExercise = progExerciseRepository.save(createTestProgExercise(1L, creator, exercise));
     }

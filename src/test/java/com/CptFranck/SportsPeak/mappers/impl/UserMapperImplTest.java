@@ -17,12 +17,12 @@ import org.modelmapper.ModelMapper;
 
 import static com.CptFranck.SportsPeak.domain.utils.TestDataRoleUtils.createTestRole;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataRoleUtils.createTestRoleDto;
-import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createTestUserDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExerciseDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
 
 @ExtendWith(MockitoExtension.class)
 public class UserMapperImplTest {
@@ -35,7 +35,7 @@ public class UserMapperImplTest {
 
     @Test
     void userTypeMapper_MapTo_Success() {
-        UserEntity user = createTestUser();
+        UserEntity user = createTestUser(1L);
         RoleEntity role = createTestRole();
         user.getRoles().add(role);
         ExerciseEntity exercise = createTestExercise(1L);

@@ -17,8 +17,8 @@ import static com.CptFranck.SportsPeak.domain.utils.TestDataPrivilegeUtils.creat
 import static com.CptFranck.SportsPeak.domain.utils.TestDataPrivilegeUtils.createTestPrivilegeDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataRoleUtils.createTestRole;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataRoleUtils.createTestRoleDto;
-import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createTestUserDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
 
 @ExtendWith(MockitoExtension.class)
 public class RoleMapperImplTest {
@@ -32,7 +32,7 @@ public class RoleMapperImplTest {
     @Test
     void roleTypeMapper_MapTo_Success() {
         RoleEntity role = createTestRole();
-        UserEntity user = createTestUser();
+        UserEntity user = createTestUser(1L);
         PrivilegeEntity privilege = createTestPrivilege();
         role.getUsers().add(user);
         role.getPrivileges().add(privilege);

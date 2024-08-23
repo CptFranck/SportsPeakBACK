@@ -12,12 +12,12 @@ import org.modelmapper.ModelMapper;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataPerformanceLogUtils.createTestPerformanceLog;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataPerformanceLogUtils.createTestPerformanceLogDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataTargetSetUtils.*;
-import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createTestUserDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExerciseDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
 
 @ExtendWith(MockitoExtension.class)
 public class TargetSetMapperImplTest {
@@ -30,7 +30,7 @@ public class TargetSetMapperImplTest {
 
     @Test
     void targetSetTypeMapper_MapTo_WithoutUpdate_Success() {
-        UserEntity user = createTestUser();
+        UserEntity user = createTestUser(1L);
         ExerciseEntity exercise = createTestExercise(1L);
         ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
         TargetSetEntity targetSet = createTestTargetSet(progExercise);
@@ -43,7 +43,7 @@ public class TargetSetMapperImplTest {
 
     @Test
     void targetSetTypeMapper_MapTo_WithUpdate_Success() {
-        UserEntity user = createTestUser();
+        UserEntity user = createTestUser(1L);
         ExerciseEntity exercise = createTestExercise(1L);
         ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
         TargetSetEntity targetSet = createTestTargetSet(progExercise);

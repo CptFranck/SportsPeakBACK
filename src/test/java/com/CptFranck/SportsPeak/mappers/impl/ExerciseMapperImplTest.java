@@ -9,8 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createTestUserDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseTypeUtils.createTestExerciseType;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseTypeUtils.createTestExerciseTypeDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
@@ -19,6 +17,8 @@ import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.createTestMu
 import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.createTestMuscleDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExerciseDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
 
 @ExtendWith(MockitoExtension.class)
 public class ExerciseMapperImplTest {
@@ -34,7 +34,7 @@ public class ExerciseMapperImplTest {
         ExerciseEntity exercise = createTestExercise(1L);
         MuscleEntity muscle = createTestMuscle(1L);
         ExerciseTypeEntity exerciseType = createTestExerciseType(1L);
-        UserEntity user = createTestUser();
+        UserEntity user = createTestUser(1L);
         ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
 
         exercise.getMuscles().add(muscle);

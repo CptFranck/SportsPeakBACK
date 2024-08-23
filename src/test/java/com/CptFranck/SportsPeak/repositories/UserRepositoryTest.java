@@ -10,7 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Optional;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createNewTestUser;
+import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
@@ -20,7 +20,7 @@ public class UserRepositoryTest {
     private UserRepository userRepository;
 
     private UserEntity saveOneUserInRepository() {
-        UserEntity user = createNewTestUser();
+        UserEntity user = createTestUser(1L);
         return userRepository.save(user);
     }
 
