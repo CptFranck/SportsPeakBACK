@@ -15,10 +15,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.util.List;
 import java.util.Optional;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseUtils.createNewTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataProgExerciseUtils.createTestNewProgExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataTargetSetUtils.createNewTestTargetSets;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createNewTestUser;
+import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
@@ -44,7 +44,7 @@ public class TargetSetRepositoryTest {
     @BeforeEach
     void setUp() {
         UserEntity creator = userRepository.save(createNewTestUser());
-        ExerciseEntity exercise = exerciseRepository.save(createNewTestExercise());
+        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(1L));
         progExercise = progExerciseRepository.save(createTestNewProgExercise(creator, exercise));
     }
 

@@ -9,8 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseUtils.createTestExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataPerformanceLogUtils.createTestPerformanceLog;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataPerformanceLogUtils.createTestPerformanceLogDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataProgExerciseUtils.createTestProgExercise;
@@ -19,6 +17,8 @@ import static com.CptFranck.SportsPeak.domain.utils.TestDataTargetSetUtils.creat
 import static com.CptFranck.SportsPeak.domain.utils.TestDataTargetSetUtils.createTestTargetSetDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createTestUserDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
 
 @ExtendWith(MockitoExtension.class)
 public class PerformanceLogMapperImplTest {
@@ -32,7 +32,7 @@ public class PerformanceLogMapperImplTest {
     @Test
     void performanceLogTypeMapper_MapTo_WithoutUpdate_Success() {
         UserEntity user = createTestUser();
-        ExerciseEntity exercise = createTestExercise();
+        ExerciseEntity exercise = createTestExercise(1L);
         ProgExerciseEntity progExercise = createTestProgExercise(user, exercise);
         TargetSetEntity targetSet = createTestTargetSet(progExercise);
         PerformanceLogEntity performanceLog = createTestPerformanceLog(targetSet);

@@ -11,8 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseUtils.createTestExerciseDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.createTestMuscle;
 import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.createTestMuscleDto;
 
@@ -27,8 +27,8 @@ public class MuscleMapperImplTest {
 
     @Test
     void muscleMapper_MapTo_Success() {
-        MuscleEntity muscle = createTestMuscle(2L);
-        ExerciseEntity exercise = createTestExercise();
+        MuscleEntity muscle = createTestMuscle(1L);
+        ExerciseEntity exercise = createTestExercise(1L);
 
         muscle.getExercises().add(exercise);
         MuscleDto muscleDto = muscleMapper.mapTo(muscle);

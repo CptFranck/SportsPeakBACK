@@ -10,12 +10,13 @@ import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 
 import java.util.HashSet;
+import java.util.List;
 
-public class TestDataExerciseUtils {
+public class TestExerciseUtils {
 
-    public static ExerciseEntity createTestExercise() {
+    public static ExerciseEntity createTestExercise(Long id) {
         return new ExerciseEntity(
-                3L,
+                id,
                 "Exercise name",
                 "Exercise description",
                 "Exercise goal",
@@ -25,16 +26,8 @@ public class TestDataExerciseUtils {
         );
     }
 
-    public static ExerciseEntity createNewTestExercise() {
-        return new ExerciseEntity(
-                null,
-                "Exercise name",
-                "Exercise description",
-                "Exercise goal",
-                new HashSet<MuscleEntity>(),
-                new HashSet<ExerciseTypeEntity>(),
-                new HashSet<ProgExerciseEntity>()
-        );
+    public static List<ExerciseEntity> createTestExerciseList() {
+        return List.of(createTestExercise(1L), createTestExercise(2L), createTestExercise(3L));
     }
 
     public static ExerciseDto createTestExerciseDto() {
