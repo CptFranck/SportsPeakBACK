@@ -33,10 +33,10 @@ public class PerformanceLogRepositoryTest {
 
     @Test
     public void performanceLogRepository_FindAllByTargetSetId_ReturnSavedExercise() {
-        UserEntity creator = userRepository.save(createTestUser(1L));
-        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(1L));
-        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(1L, creator, exercise));
-        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(1L, progExercise));
+        UserEntity creator = userRepository.save(createTestUser(null));
+        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
+        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, creator, exercise));
+        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise));
         performanceLogRepository.saveAll(createTestPerformanceLogList(targetSet));
 
         List<PerformanceLogEntity> foundPerformanceLogs = performanceLogRepository.findAllByTargetSetId(targetSet.getId());

@@ -43,9 +43,9 @@ public class TargetSetRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        UserEntity creator = userRepository.save(createTestUser(1L));
-        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(1L));
-        progExercise = progExerciseRepository.save(createTestProgExercise(1L, creator, exercise));
+        UserEntity creator = userRepository.save(createTestUser(null));
+        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
+        progExercise = progExerciseRepository.save(createTestProgExercise(null, creator, exercise));
     }
 
     @Test

@@ -30,10 +30,10 @@ public class TestProgExerciseUtils {
         );
     }
 
-    public static List<ProgExerciseEntity> createNewTestProgExercises(UserEntity creator, ExerciseEntity exercise) {
+    public static List<ProgExerciseEntity> createNewTestProgExerciseList(UserEntity creator, ExerciseEntity exercise) {
         return List.of(
-                createTestProgExercise(1L, creator, exercise),
-                createTestProgExercise(2L, creator, exercise)
+                createTestProgExercise(null, creator, exercise),
+                createTestProgExercise(null, creator, exercise)
         );
     }
 

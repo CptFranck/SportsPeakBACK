@@ -13,7 +13,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.util.List;
 
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createNewTestProgExercises;
+import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createNewTestProgExerciseList;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
 
 @DataJpaTest
@@ -29,9 +29,9 @@ class ProgExerciseRepositoryTest {
 
     @Test
     public void progExerciseRepository_FindAllBySubscribedUsersId_ReturnAllProgExercisesWithCreatorId() {
-        UserEntity creator = userRepository.save(createTestUser(1L));
-        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(1L));
-        List<ProgExerciseEntity> progExercises = createNewTestProgExercises(creator, exercise);
+        UserEntity creator = userRepository.save(createTestUser(null));
+        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
+        List<ProgExerciseEntity> progExercises = createNewTestProgExerciseList(creator, exercise);
         progExerciseRepository.saveAll(progExercises);
         creator.getSubscribedProgExercises().add(progExercises.getFirst());
         userRepository.save(creator);

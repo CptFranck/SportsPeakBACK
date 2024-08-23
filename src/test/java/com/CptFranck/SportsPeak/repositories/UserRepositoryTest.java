@@ -20,7 +20,7 @@ public class UserRepositoryTest {
     private UserRepository userRepository;
 
     private UserEntity saveOneUserInRepository() {
-        UserEntity user = createTestUser(1L);
+        UserEntity user = createTestUser(null);
         return userRepository.save(user);
     }
 
