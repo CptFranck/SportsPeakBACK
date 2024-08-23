@@ -11,12 +11,12 @@ import org.modelmapper.ModelMapper;
 
 import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseTypeUtils.createTestExerciseType;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseTypeUtils.createTestExerciseTypeDto;
-import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestDataExerciseUtils.createTestExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataProgExerciseUtils.createTestProgExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataUserUtils.createTestUserDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.createTestMuscle;
 import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.createTestMuscleDto;
 
@@ -31,7 +31,7 @@ public class ExerciseMapperImplTest {
 
     @Test
     void exerciseMapper_MapTo_Success() {
-        ExerciseEntity exercise = createTestExercise();
+        ExerciseEntity exercise = createTestExercise(1L);
         MuscleEntity muscle = createTestMuscle(1L);
         ExerciseTypeEntity exerciseType = createTestExerciseType();
         UserEntity user = createTestUser();
