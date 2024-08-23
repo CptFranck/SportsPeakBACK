@@ -1,6 +1,7 @@
 package com.CptFranck.SportsPeak.service.impl;
 
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
+import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseTypeNotFoundException;
 import com.CptFranck.SportsPeak.repositories.ExerciseTypeRepository;
 import com.CptFranck.SportsPeak.service.ExerciseTypeService;
 import org.springframework.stereotype.Service;
@@ -41,10 +42,10 @@ public class ExerciseTypeServiceImpl implements ExerciseTypeService {
 
     @Override
     public Set<ExerciseTypeEntity> findMany(Set<Long> ids) {
-        return ids.stream()
-                .map(this::findOne)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+        return StreamSupport.stream(exerciseTypeRepository
+                                .findAllById(ids)
+                                .spliterator(),
+                        false)
                 .collect(Collectors.toSet());
     }
 
@@ -55,6 +56,7 @@ public class ExerciseTypeServiceImpl implements ExerciseTypeService {
 
     @Override
     public void delete(Long id) {
-        exerciseTypeRepository.deleteById(id);
+        ExerciseTypeEntity muscle = exerciseTypeRepository.findById(id).orElseThrow(() -> new ExerciseTypeNotFoundException(id));
+        exerciseTypeRepository.delete(muscle);
     }
 }
