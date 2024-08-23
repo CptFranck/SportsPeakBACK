@@ -1,6 +1,7 @@
 package com.CptFranck.SportsPeak.service.impl;
 
 import com.CptFranck.SportsPeak.domain.entity.PerformanceLogEntity;
+import com.CptFranck.SportsPeak.domain.exception.performanceLog.PerformanceLogNotFoundException;
 import com.CptFranck.SportsPeak.repositories.PerformanceLogRepository;
 import com.CptFranck.SportsPeak.service.PerformanceLogService;
 import org.springframework.stereotype.Service;
@@ -41,16 +42,16 @@ public class PerformanceLogServiceImpl implements PerformanceLogService {
 
     @Override
     public Set<PerformanceLogEntity> findMany(Set<Long> ids) {
-        return ids.stream()
-                .map(this::findOne)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+        return StreamSupport.stream(performanceLogRepository
+                                .findAllById(ids)
+                                .spliterator(),
+                        false)
                 .collect(Collectors.toSet());
     }
 
     @Override
-    public List<PerformanceLogEntity> findAllByTargetSetId(Long targetSetId) {
-        return performanceLogRepository.findAllByTargetSetId(targetSetId);
+    public List<PerformanceLogEntity> findAllByTargetSetId(Long id) {
+        return performanceLogRepository.findAllByTargetSetId(id);
     }
 
     @Override
@@ -60,6 +61,7 @@ public class PerformanceLogServiceImpl implements PerformanceLogService {
 
     @Override
     public void delete(Long id) {
-        performanceLogRepository.deleteById(id);
+        PerformanceLogEntity performanceLog = performanceLogRepository.findById(id).orElseThrow(() -> new PerformanceLogNotFoundException(id));
+        performanceLogRepository.delete(performanceLog);
     }
 }
