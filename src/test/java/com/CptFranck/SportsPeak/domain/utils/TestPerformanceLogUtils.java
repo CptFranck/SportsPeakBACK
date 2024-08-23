@@ -24,7 +24,7 @@ public class TestPerformanceLogUtils {
         );
     }
 
-    public static List<PerformanceLogEntity> createTestPerformanceLogList(TargetSetEntity targetSet) {
+    public static List<PerformanceLogEntity> createNewTestPerformanceLogList(TargetSetEntity targetSet) {
         return List.of(
                 createTestPerformanceLog(null, targetSet),
                 createTestPerformanceLog(null, targetSet)
