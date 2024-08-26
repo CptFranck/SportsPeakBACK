@@ -8,6 +8,7 @@ import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 
 import java.util.HashSet;
+import java.util.List;
 
 public class TestUserUtils {
 
@@ -23,6 +24,12 @@ public class TestUserUtils {
                 new HashSet<ProgExerciseEntity>(),
                 new HashSet<ProgExerciseEntity>()
         );
+    }
+
+    public static List<UserEntity> createTestUserList() {
+        return List.of(
+                createTestUser(1L),
+                createTestUser(2L));
     }
 
     public static UserDto createTestUserDto() {
