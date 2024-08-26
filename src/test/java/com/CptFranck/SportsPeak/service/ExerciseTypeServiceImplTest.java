@@ -28,76 +28,76 @@ import static org.mockito.Mockito.when;
 public class ExerciseTypeServiceImplTest {
 
     @Mock
-    ExerciseTypeRepository ExerciseTypeTypeRepository;
+    ExerciseTypeRepository exerciseTypeRepository;
 
     @InjectMocks
-    ExerciseTypeServiceImpl ExerciseTypeTypeServiceImpl;
+    ExerciseTypeServiceImpl exerciseTypeTypeServiceImpl;
 
     @Test
     void exerciseTypeService_Save_Success() {
-        ExerciseTypeEntity ExerciseTypeEntity = createTestExerciseType(null);
-        ExerciseTypeEntity ExerciseTypeSavedInRepository = createTestExerciseType(1L);
-        when(ExerciseTypeTypeRepository.save(Mockito.any(ExerciseTypeEntity.class))).thenReturn(ExerciseTypeSavedInRepository);
+        ExerciseTypeEntity exerciseType = createTestExerciseType(null);
+        ExerciseTypeEntity exerciseTypeSavedInRepository = createTestExerciseType(1L);
+        when(exerciseTypeRepository.save(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseTypeSavedInRepository);
 
-        ExerciseTypeEntity ExerciseTypeSaved = ExerciseTypeTypeServiceImpl.save(ExerciseTypeEntity);
+        ExerciseTypeEntity exerciseTypeSaved = exerciseTypeTypeServiceImpl.save(exerciseType);
 
-        Assertions.assertEquals(ExerciseTypeSavedInRepository, ExerciseTypeSaved);
+        Assertions.assertEquals(exerciseTypeSavedInRepository, exerciseTypeSaved);
     }
 
     @Test
     void exerciseTypeService_FindAll_Success() {
-        List<ExerciseTypeEntity> ExerciseTypeList = createTestExerciseTypeList();
-        when(ExerciseTypeTypeRepository.findAll()).thenReturn(ExerciseTypeList);
+        List<ExerciseTypeEntity> exerciseTypeList = createTestExerciseTypeList();
+        when(exerciseTypeRepository.findAll()).thenReturn(exerciseTypeList);
 
-        List<ExerciseTypeEntity> ExerciseTypeFound = ExerciseTypeTypeServiceImpl.findAll();
+        List<ExerciseTypeEntity> exerciseTypeFound = exerciseTypeTypeServiceImpl.findAll();
 
-        Assertions.assertEquals(ExerciseTypeList, ExerciseTypeFound);
+        Assertions.assertEquals(exerciseTypeList, exerciseTypeFound);
     }
 
     @Test
     void exerciseTypeService_FindOne_Success() {
-        ExerciseTypeEntity ExerciseTypeEntity = createTestExerciseType(1L);
-        when(ExerciseTypeTypeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(ExerciseTypeEntity));
+        ExerciseTypeEntity exerciseTypeEntity = createTestExerciseType(1L);
+        when(exerciseTypeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(exerciseTypeEntity));
 
-        Optional<ExerciseTypeEntity> ExerciseTypeFound = ExerciseTypeTypeServiceImpl.findOne(ExerciseTypeEntity.getId());
+        Optional<ExerciseTypeEntity> exerciseTypeFound = exerciseTypeTypeServiceImpl.findOne(exerciseTypeEntity.getId());
 
-        Assertions.assertTrue(ExerciseTypeFound.isPresent());
-        Assertions.assertEquals(ExerciseTypeEntity, ExerciseTypeFound.get());
+        Assertions.assertTrue(exerciseTypeFound.isPresent());
+        Assertions.assertEquals(exerciseTypeEntity, exerciseTypeFound.get());
     }
 
     @Test
     void exerciseTypeService_FindMany_Success() {
-        List<ExerciseTypeEntity> ExerciseTypeList = createTestExerciseTypeList();
-        Set<Long> ExerciseTypeIds = ExerciseTypeList.stream().map(ExerciseTypeEntity::getId).collect(Collectors.toSet());
-        when(ExerciseTypeTypeRepository.findAllById(Mockito.anyIterable())).thenReturn(ExerciseTypeList);
+        List<ExerciseTypeEntity> exerciseTypeList = createTestExerciseTypeList();
+        Set<Long> exerciseTypeIds = exerciseTypeList.stream().map(ExerciseTypeEntity::getId).collect(Collectors.toSet());
+        when(exerciseTypeRepository.findAllById(Mockito.anyIterable())).thenReturn(exerciseTypeList);
 
-        Set<ExerciseTypeEntity> ExerciseTypeFound = ExerciseTypeTypeServiceImpl.findMany(ExerciseTypeIds);
-        Assertions.assertEquals(new HashSet<>(ExerciseTypeList), ExerciseTypeFound);
+        Set<ExerciseTypeEntity> exerciseTypeFound = exerciseTypeTypeServiceImpl.findMany(exerciseTypeIds);
+        Assertions.assertEquals(new HashSet<>(exerciseTypeList), exerciseTypeFound);
     }
 
     @Test
     void exerciseTypeService_Exists_Success() {
-        ExerciseTypeEntity ExerciseTypeEntity = createTestExerciseType(1L);
-        when(ExerciseTypeTypeRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
+        ExerciseTypeEntity exerciseType = createTestExerciseType(1L);
+        when(exerciseTypeRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
 
-        boolean ExerciseTypeFound = ExerciseTypeTypeServiceImpl.exists(ExerciseTypeEntity.getId());
+        boolean exerciseTypeFound = exerciseTypeTypeServiceImpl.exists(exerciseType.getId());
 
-        Assertions.assertTrue(ExerciseTypeFound);
+        Assertions.assertTrue(exerciseTypeFound);
     }
 
     @Test
     void exerciseTypeService_Delete_Success() {
-        ExerciseTypeEntity ExerciseTypeEntity = createTestExerciseType(1L);
-        when(ExerciseTypeTypeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(ExerciseTypeEntity));
+        ExerciseTypeEntity exerciseType = createTestExerciseType(1L);
+        when(exerciseTypeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(exerciseType));
 
-        assertAll(() -> ExerciseTypeTypeServiceImpl.delete(ExerciseTypeEntity.getId()));
+        assertAll(() -> exerciseTypeTypeServiceImpl.delete(exerciseType.getId()));
     }
 
     @Test
     void exerciseTypeService_Delete_Unsuccessful() {
-        ExerciseTypeEntity ExerciseTypeEntity = createTestExerciseType(1L);
-        when(ExerciseTypeTypeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
+        ExerciseTypeEntity exerciseType = createTestExerciseType(1L);
+        when(exerciseTypeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        assertThrows(ExerciseTypeNotFoundException.class, () -> ExerciseTypeTypeServiceImpl.delete(ExerciseTypeEntity.getId()));
+        assertThrows(ExerciseTypeNotFoundException.class, () -> exerciseTypeTypeServiceImpl.delete(exerciseType.getId()));
     }
 }

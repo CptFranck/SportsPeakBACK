@@ -49,57 +49,57 @@ public class TargetSetServiceImplTest {
     @Test
     void TargetSetService_Save_Success() {
         ProgExerciseEntity progExercise = getProgExerciseEntity();
-        TargetSetEntity TargetSet = createTestTargetSet(null, progExercise, null);
-        TargetSetEntity TargetSetSavedInRepository = createTestTargetSet(1L, progExercise, null);
-        when(targetSetRepository.save(Mockito.any(TargetSetEntity.class))).thenReturn(TargetSetSavedInRepository);
+        TargetSetEntity targetSet = createTestTargetSet(null, progExercise, null);
+        TargetSetEntity targetSetSavedInRepository = createTestTargetSet(1L, progExercise, null);
+        when(targetSetRepository.save(Mockito.any(TargetSetEntity.class))).thenReturn(targetSetSavedInRepository);
 
-        TargetSetEntity TargetSetSaved = targetSetServiceImpl.save(TargetSet);
+        TargetSetEntity targetSetSaved = targetSetServiceImpl.save(targetSet);
 
-        Assertions.assertEquals(TargetSetSavedInRepository, TargetSetSaved);
+        Assertions.assertEquals(targetSetSavedInRepository, targetSetSaved);
     }
 
     @Test
     void TargetSetService_FindAll_Success() {
         ProgExerciseEntity progExercise = getProgExerciseEntity();
-        List<TargetSetEntity> TargetSetList = createTestTargetSetList(true, progExercise);
-        when(targetSetRepository.findAll()).thenReturn(TargetSetList);
+        List<TargetSetEntity> targetSetList = createTestTargetSetList(true, progExercise);
+        when(targetSetRepository.findAll()).thenReturn(targetSetList);
 
         List<TargetSetEntity> TargetSetFound = targetSetServiceImpl.findAll();
 
-        Assertions.assertEquals(TargetSetList, TargetSetFound);
+        Assertions.assertEquals(targetSetList, TargetSetFound);
     }
 
     @Test
     void TargetSetService_FindOne_Success() {
         ProgExerciseEntity progExercise = getProgExerciseEntity();
-        TargetSetEntity TargetSetEntity = createTestTargetSet(1L, progExercise, null);
-        when(targetSetRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(TargetSetEntity));
+        TargetSetEntity targetSetEntity = createTestTargetSet(1L, progExercise, null);
+        when(targetSetRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(targetSetEntity));
 
-        Optional<TargetSetEntity> TargetSetFound = targetSetServiceImpl.findOne(TargetSetEntity.getId());
+        Optional<TargetSetEntity> TargetSetFound = targetSetServiceImpl.findOne(targetSetEntity.getId());
 
         Assertions.assertTrue(TargetSetFound.isPresent());
-        Assertions.assertEquals(TargetSetEntity, TargetSetFound.get());
+        Assertions.assertEquals(targetSetEntity, TargetSetFound.get());
     }
 
     @Test
     void TargetSetService_FindMany_Success() {
         ProgExerciseEntity progExercise = getProgExerciseEntity();
-        List<TargetSetEntity> TargetSetList = createTestTargetSetList(true, progExercise);
-        Set<Long> TargetSetIds = TargetSetList.stream().map(TargetSetEntity::getId).collect(Collectors.toSet());
-        when(targetSetRepository.findAllById(Mockito.anyIterable())).thenReturn(TargetSetList);
+        List<TargetSetEntity> targetSetList = createTestTargetSetList(true, progExercise);
+        Set<Long> targetSetIds = targetSetList.stream().map(TargetSetEntity::getId).collect(Collectors.toSet());
+        when(targetSetRepository.findAllById(Mockito.anyIterable())).thenReturn(targetSetList);
 
-        Set<TargetSetEntity> TargetSetFound = targetSetServiceImpl.findMany(TargetSetIds);
-        Assertions.assertEquals(new HashSet<>(TargetSetList), TargetSetFound);
+        Set<TargetSetEntity> TargetSetFound = targetSetServiceImpl.findMany(targetSetIds);
+        Assertions.assertEquals(new HashSet<>(targetSetList), TargetSetFound);
     }
 
     @Test
     void TargetSetService_FindAllByProgExerciseId_Success() {
         ProgExerciseEntity progExercise = getProgExerciseEntity();
-        List<TargetSetEntity> TargetSetList = createTestTargetSetList(true, progExercise);
-        when(targetSetRepository.findAllByProgExerciseId(Mockito.any(Long.class))).thenReturn(TargetSetList);
+        List<TargetSetEntity> targetSetList = createTestTargetSetList(true, progExercise);
+        when(targetSetRepository.findAllByProgExerciseId(Mockito.any(Long.class))).thenReturn(targetSetList);
 
         List<TargetSetEntity> TargetSetFound = targetSetServiceImpl.findAllByProgExerciseId(progExercise.getId());
-        Assertions.assertEquals(TargetSetList, TargetSetFound);
+        Assertions.assertEquals(targetSetList, TargetSetFound);
     }
 
     @Test
@@ -124,10 +124,10 @@ public class TargetSetServiceImplTest {
     @Test
     void TargetSetService_Exists_Success() {
         ProgExerciseEntity progExercise = getProgExerciseEntity();
-        TargetSetEntity TargetSetEntity = createTestTargetSet(1L, progExercise, null);
+        TargetSetEntity targetSet = createTestTargetSet(1L, progExercise, null);
         when(targetSetRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
 
-        boolean TargetSetFound = targetSetServiceImpl.exists(TargetSetEntity.getId());
+        boolean TargetSetFound = targetSetServiceImpl.exists(targetSet.getId());
 
         Assertions.assertTrue(TargetSetFound);
     }
@@ -135,18 +135,18 @@ public class TargetSetServiceImplTest {
     @Test
     void TargetSetService_Delete_Success() {
         ProgExerciseEntity progExercise = getProgExerciseEntity();
-        TargetSetEntity TargetSetEntity = createTestTargetSet(1L, progExercise, null);
-        when(targetSetRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(TargetSetEntity));
+        TargetSetEntity targetSet = createTestTargetSet(1L, progExercise, null);
+        when(targetSetRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
 
-        assertAll(() -> targetSetServiceImpl.delete(TargetSetEntity.getId()));
+        assertAll(() -> targetSetServiceImpl.delete(targetSet.getId()));
     }
 
     @Test
     void TargetSetService_Delete_Unsuccessful() {
         ProgExerciseEntity progExercise = getProgExerciseEntity();
-        TargetSetEntity TargetSetEntity = createTestTargetSet(1L, progExercise, null);
+        TargetSetEntity targetSet = createTestTargetSet(1L, progExercise, null);
         when(targetSetRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        assertThrows(TargetSetNotFoundException.class, () -> targetSetServiceImpl.delete(TargetSetEntity.getId()));
+        assertThrows(TargetSetNotFoundException.class, () -> targetSetServiceImpl.delete(targetSet.getId()));
     }
 }
