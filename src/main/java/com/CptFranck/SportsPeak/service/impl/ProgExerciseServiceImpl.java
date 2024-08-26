@@ -1,6 +1,7 @@
 package com.CptFranck.SportsPeak.service.impl;
 
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
+import com.CptFranck.SportsPeak.domain.exception.progExercise.ProgExerciseNotFoundException;
 import com.CptFranck.SportsPeak.repositories.ProgExerciseRepository;
 import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import org.springframework.stereotype.Service;
@@ -41,10 +42,10 @@ public class ProgExerciseServiceImpl implements ProgExerciseService {
 
     @Override
     public Set<ProgExerciseEntity> findMany(Set<Long> ids) {
-        return ids.stream()
-                .map(this::findOne)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+        return StreamSupport.stream(progExerciseRepository
+                                .findAllById(ids)
+                                .spliterator(),
+                        false)
                 .collect(Collectors.toSet());
     }
 
@@ -55,6 +56,7 @@ public class ProgExerciseServiceImpl implements ProgExerciseService {
 
     @Override
     public void delete(Long id) {
-        progExerciseRepository.deleteById(id);
+        ProgExerciseEntity exercise = progExerciseRepository.findById(id).orElseThrow(() -> new ProgExerciseNotFoundException(id));
+        progExerciseRepository.delete(exercise);
     }
 }
