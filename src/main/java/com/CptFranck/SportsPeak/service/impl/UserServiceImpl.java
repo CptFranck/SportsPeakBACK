@@ -3,7 +3,6 @@ package com.CptFranck.SportsPeak.service.impl;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
-import com.CptFranck.SportsPeak.domain.exception.role.RoleMissingException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.*;
 import com.CptFranck.SportsPeak.repositories.UserRepository;
 import com.CptFranck.SportsPeak.service.UserService;
@@ -97,24 +96,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(EmailUnknownException::new);
 
-        List<Long> newRoleIds = roles.stream().map(RoleEntity::getId).toList();
-        List<Long> currentRoleIds = roles.stream().map(RoleEntity::getId).toList();
-
-        currentRoleIds.forEach(roleId -> {
-            if (!newRoleIds.contains(roleId)) {
-                user.getRoles().removeIf(roleEntity -> Objects.equals(roleEntity.getId(), roleId));
+        user.getRoles().forEach(role -> {
+            if (!roles.contains(role)) {
+                user.getRoles().remove(role);
             }
         });
-
-        newRoleIds.forEach(roleId -> {
-            if (!currentRoleIds.contains(roleId)) {
-                RoleEntity role = roles.stream()
-                        .filter(roleEntity -> Objects.equals(roleEntity.getId(), roleId))
-                        .findFirst()
-                        .orElseThrow(RoleMissingException::new);
-                user.getRoles().add(role);
-            }
-        });
+        user.getRoles().addAll(roles);
         return userRepository.save(user);
     }
 
