@@ -6,22 +6,23 @@ import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 
 import java.util.HashSet;
+import java.util.List;
 
-public class TestDataPrivilegeUtils {
+public class TestPrivilegeUtils {
 
-    public static PrivilegeEntity createTestPrivilege() {
+    public static PrivilegeEntity createTestPrivilege(Long id) {
         return new PrivilegeEntity(
-                8L,
+                id,
                 "Privilege name",
                 new HashSet<RoleEntity>()
         );
     }
 
-    public static PrivilegeEntity createNewTestPrivilege() {
-        return new PrivilegeEntity(
-                null,
-                "Privilege name",
-                new HashSet<RoleEntity>()
+
+    public static List<PrivilegeEntity> createNewTestPrivilegeList() {
+        return List.of(
+                createTestPrivilege(1L),
+                createTestPrivilege(2L)
         );
     }
 

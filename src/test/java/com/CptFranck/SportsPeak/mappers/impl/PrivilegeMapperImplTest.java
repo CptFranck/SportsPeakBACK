@@ -11,10 +11,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestDataPrivilegeUtils.createTestPrivilege;
-import static com.CptFranck.SportsPeak.domain.utils.TestDataPrivilegeUtils.createTestPrivilegeDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataRoleUtils.createTestRole;
 import static com.CptFranck.SportsPeak.domain.utils.TestDataRoleUtils.createTestRoleDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestPrivilegeUtils.createTestPrivilege;
+import static com.CptFranck.SportsPeak.domain.utils.TestPrivilegeUtils.createTestPrivilegeDto;
 
 @ExtendWith(MockitoExtension.class)
 public class PrivilegeMapperImplTest {
@@ -27,7 +27,7 @@ public class PrivilegeMapperImplTest {
 
     @Test
     void privilegeTypeMapper_MapTo_Success() {
-        PrivilegeEntity privilege = createTestPrivilege();
+        PrivilegeEntity privilege = createTestPrivilege(1L);
         RoleEntity role = createTestRole();
         privilege.getRoles().add(role);
 
