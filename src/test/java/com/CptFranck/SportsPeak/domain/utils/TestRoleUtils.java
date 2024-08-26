@@ -8,19 +8,11 @@ import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 
 import java.util.HashSet;
+import java.util.List;
 
-public class TestDataRoleUtils {
+public class TestRoleUtils {
 
-    public static RoleEntity createTestRole() {
-        return new RoleEntity(
-                9L,
-                "Role name",
-                new HashSet<UserEntity>(),
-                new HashSet<PrivilegeEntity>()
-        );
-    }
-
-    public static RoleEntity createNewTestRole(int option) {
+    public static RoleEntity createTestRole(Long id, int option) {
         String roleName = "Role name";
         if (option == 1) {
             roleName = "Role One";
@@ -28,10 +20,17 @@ public class TestDataRoleUtils {
             roleName = "Role Two";
         }
         return new RoleEntity(
-                null,
+                id,
                 roleName,
                 new HashSet<UserEntity>(),
                 new HashSet<PrivilegeEntity>()
+        );
+    }
+
+    public static List<RoleEntity> createNewTestRoleList() {
+        return List.of(
+                createTestRole(1L, 1),
+                createTestRole(2L, 2)
         );
     }
 

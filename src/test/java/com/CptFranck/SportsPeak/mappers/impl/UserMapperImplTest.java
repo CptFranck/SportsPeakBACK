@@ -15,12 +15,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestDataRoleUtils.createTestRole;
-import static com.CptFranck.SportsPeak.domain.utils.TestDataRoleUtils.createTestRoleDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExerciseDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestRoleUtils.createTestRole;
+import static com.CptFranck.SportsPeak.domain.utils.TestRoleUtils.createTestRoleDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
 
@@ -36,7 +36,7 @@ public class UserMapperImplTest {
     @Test
     void userTypeMapper_MapTo_Success() {
         UserEntity user = createTestUser(1L);
-        RoleEntity role = createTestRole();
+        RoleEntity role = createTestRole(1L, 0);
         user.getRoles().add(role);
         ExerciseEntity exercise = createTestExercise(1L);
         ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
