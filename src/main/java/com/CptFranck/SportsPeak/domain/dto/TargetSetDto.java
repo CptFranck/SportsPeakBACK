@@ -1,13 +1,16 @@
 package com.CptFranck.SportsPeak.domain.dto;
 
 import com.CptFranck.SportsPeak.domain.input.duration.InputDuration;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class TargetSetDto {
@@ -36,6 +39,5 @@ public class TargetSetDto {
 
     private TargetSetDto targetSetUpdate;
 
-    @EqualsAndHashCode.Exclude
     private Set<PerformanceLogDto> performanceLogs;
 }

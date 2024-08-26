@@ -1,11 +1,14 @@
 package com.CptFranck.SportsPeak.domain.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Set;
 
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProgExerciseDto {
@@ -23,6 +26,5 @@ public class ProgExerciseDto {
 
     private ExerciseDto exercise;
 
-    @EqualsAndHashCode.Exclude
     private Set<TargetSetDto> targetSets;
 }

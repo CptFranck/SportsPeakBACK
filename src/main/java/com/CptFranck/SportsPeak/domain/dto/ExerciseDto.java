@@ -1,11 +1,14 @@
 package com.CptFranck.SportsPeak.domain.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Set;
 
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExerciseDto {
@@ -18,12 +21,9 @@ public class ExerciseDto {
 
     private String goal;
 
-    @EqualsAndHashCode.Exclude
     private Set<MuscleDto> muscles;
 
-    @EqualsAndHashCode.Exclude
     private Set<ExerciseTypeDto> exerciseTypes;
 
-    @EqualsAndHashCode.Exclude
     private Set<ProgExerciseDto> progExercises;
 }

@@ -1,11 +1,14 @@
 package com.CptFranck.SportsPeak.domain.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Collection;
 
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoleDto {
@@ -16,7 +19,5 @@ public class RoleDto {
 
     private Collection<UserDto> users;
 
-    @EqualsAndHashCode.Exclude
     private Collection<PrivilegeDto> privileges;
-
 }
