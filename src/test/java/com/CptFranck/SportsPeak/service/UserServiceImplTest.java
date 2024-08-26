@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.CptFranck.SportsPeak.domain.utils.TestPrivilegeUtils.createTestPrivilege;
 import static com.CptFranck.SportsPeak.domain.utils.TestRoleUtils.createTestRole;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserList;
@@ -159,11 +160,11 @@ public class UserServiceImplTest {
     @Test
     void UserService_ChangeRoles_Successful() {
         UserEntity user = createTestUser(1L);
-        Set<RoleEntity> oldRoles = new HashSet<RoleEntity>();
+        Set<RoleEntity> userRoles = new HashSet<RoleEntity>();
         Set<RoleEntity> newRoles = new HashSet<RoleEntity>();
-        oldRoles.add(createTestRole(1L, 1));
-        newRoles.add(createTestRole(1L, 2));
-        user.getRoles().addAll(oldRoles);
+        userRoles.add(createTestRole(1L, 1));
+        newRoles.add(createTestRole(2L, 2));
+        user.getRoles().addAll(userRoles);
 
         when(userRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(user));
         when(userRepository.save(Mockito.any(UserEntity.class))).thenReturn(user);
@@ -171,6 +172,10 @@ public class UserServiceImplTest {
         UserEntity savedUser = userServiceImpl.changeRoles(user.getId(), newRoles);
 
         Assertions.assertEquals(user, savedUser);
+        Assertions.assertEquals(
+                user.getRoles().stream().map(RoleEntity::getId).collect(Collectors.toSet()),
+                newRoles.stream().map(RoleEntity::getId).collect(Collectors.toSet())
+        );
     }
 
     @Test
@@ -277,9 +282,10 @@ public class UserServiceImplTest {
         UserEntity user = createTestUser(1L);
 
         when(userRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(Mockito.any(String.class), Mockito.any(String.class))).thenReturn(true);
         when(userRepository.save(Mockito.any(UserEntity.class))).thenReturn(user);
 
-        UserEntity userSaved = userServiceImpl.changeUsername(user.getId(), "newUsername");
+        UserEntity userSaved = userServiceImpl.changePassword(user.getId(), "oldPassword", "newPassword");
 
         Assertions.assertEquals(user, userSaved);
     }
@@ -291,12 +297,15 @@ public class UserServiceImplTest {
         when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.empty());
 
         assertThrows(UsernameNotFoundException.class,
-                () -> userServiceImpl.changePassword(user.getId(), "oldPassword", "newPassword"));
+                () -> userServiceImpl.loadUserByUsername(user.getUsername()));
     }
 
     @Test
     void UserService_LoadUserByUsername_Successful() {
         UserEntity user = createTestUser(1L);
+        RoleEntity role = createTestRole(1L, 1);
+        role.getPrivileges().add(createTestPrivilege(1L));
+        user.getRoles().add(role);
 
         when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.of(user));
 
