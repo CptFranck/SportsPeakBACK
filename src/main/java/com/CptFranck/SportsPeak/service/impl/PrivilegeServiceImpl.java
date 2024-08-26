@@ -24,13 +24,13 @@ public class PrivilegeServiceImpl implements PrivilegeService {
     }
 
     @Override
-    public PrivilegeEntity save(PrivilegeEntity role) {
-        Optional<PrivilegeEntity> privilegeOptional = privilegeRepository.findByName(role.getName());
+    public PrivilegeEntity save(PrivilegeEntity privilege) {
+        Optional<PrivilegeEntity> privilegeOptional = privilegeRepository.findByName(privilege.getName());
         if (privilegeOptional.isPresent() &&
-                !Objects.equals(privilegeOptional.get().getId(), role.getId())) {
+                !Objects.equals(privilegeOptional.get().getId(), privilege.getId())) {
             throw new PrivilegeExistsException();
         }
-        return privilegeRepository.save(role);
+        return privilegeRepository.save(privilege);
     }
 
     @Override
