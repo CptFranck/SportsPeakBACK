@@ -2,6 +2,7 @@ package com.CptFranck.SportsPeak.service.impl;
 
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeExistsException;
+import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeNotFoundException;
 import com.CptFranck.SportsPeak.repositories.PrivilegeRepository;
 import com.CptFranck.SportsPeak.service.PrivilegeService;
 import org.springframework.stereotype.Service;
@@ -48,10 +49,10 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 
     @Override
     public Set<PrivilegeEntity> findMany(Set<Long> ids) {
-        return ids.stream()
-                .map(this::findOne)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+        return StreamSupport.stream(privilegeRepository
+                                .findAllById(ids)
+                                .spliterator(),
+                        false)
                 .collect(Collectors.toSet());
     }
 
@@ -62,6 +63,7 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 
     @Override
     public void delete(Long id) {
-        privilegeRepository.deleteById(id);
+        PrivilegeEntity exercise = privilegeRepository.findById(id).orElseThrow(() -> new PrivilegeNotFoundException(id));
+        privilegeRepository.delete(exercise);
     }
 }
