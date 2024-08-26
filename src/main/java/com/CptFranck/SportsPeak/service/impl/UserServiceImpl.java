@@ -47,10 +47,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public Set<UserEntity> findMany(Set<Long> ids) {
-        return ids.stream()
-                .map(this::findOne)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+        return StreamSupport.stream(userRepository
+                                .findAllById(ids)
+                                .spliterator(),
+                        false)
                 .collect(Collectors.toSet());
     }
 
@@ -79,7 +79,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void delete(Long id) {
-        userRepository.deleteById(id);
+        UserEntity exercise = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        userRepository.delete(exercise);
     }
 
     @Override
@@ -96,16 +97,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(EmailUnknownException::new);
 
-        List<Long> NewRoleIds = roles.stream().map(RoleEntity::getId).toList();
+        List<Long> newRoleIds = roles.stream().map(RoleEntity::getId).toList();
         List<Long> currentRoleIds = roles.stream().map(RoleEntity::getId).toList();
 
         currentRoleIds.forEach(roleId -> {
-            if (!NewRoleIds.contains(roleId)) {
+            if (!newRoleIds.contains(roleId)) {
                 user.getRoles().removeIf(roleEntity -> Objects.equals(roleEntity.getId(), roleId));
             }
         });
 
-        NewRoleIds.forEach(roleId -> {
+        newRoleIds.forEach(roleId -> {
             if (!currentRoleIds.contains(roleId)) {
                 RoleEntity role = roles.stream()
                         .filter(roleEntity -> Objects.equals(roleEntity.getId(), roleId))
@@ -150,17 +151,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
 
-        if (passwordEncoder.matches(oldPassword, user.getPassword())) {
-            user.setPassword(passwordEncoder.encode(newPassword));
-        } else {
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             throw new IncorrectPasswordException();
         }
+        user.setPassword(passwordEncoder.encode(newPassword));
         return userRepository.save(user);
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByEmail(username).orElseThrow(() ->
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
                 new UsernameNotFoundException("User name not found in database")
         );
         return new User(user.getEmail(), user.getPassword(), getAuthorities(user.getRoles()));
