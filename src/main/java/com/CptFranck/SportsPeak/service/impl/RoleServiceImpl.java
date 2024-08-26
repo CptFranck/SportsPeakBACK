@@ -3,6 +3,7 @@ package com.CptFranck.SportsPeak.service.impl;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.exception.role.RoleExistsException;
+import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
 import com.CptFranck.SportsPeak.repositories.RoleRepository;
 import com.CptFranck.SportsPeak.service.RoleService;
 import org.springframework.stereotype.Service;
@@ -54,10 +55,10 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Set<RoleEntity> findMany(Set<Long> ids) {
-        return ids.stream()
-                .map(this::findOne)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+        return StreamSupport.stream(roleRepository
+                                .findAllById(ids)
+                                .spliterator(),
+                        false)
                 .collect(Collectors.toSet());
     }
 
@@ -81,6 +82,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void delete(Long id) {
-        roleRepository.deleteById(id);
+        RoleEntity exercise = roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException(id.toString()));
+        roleRepository.delete(exercise);
     }
 }
