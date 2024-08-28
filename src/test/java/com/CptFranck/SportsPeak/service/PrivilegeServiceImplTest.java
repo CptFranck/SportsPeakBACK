@@ -6,6 +6,7 @@ import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeNotFoundExce
 import com.CptFranck.SportsPeak.repositories.PrivilegeRepository;
 import com.CptFranck.SportsPeak.service.impl.PrivilegeServiceImpl;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,25 +30,30 @@ import static org.mockito.Mockito.when;
 public class PrivilegeServiceImplTest {
 
     @Mock
-    PrivilegeRepository privilegeRepository;
+    private PrivilegeRepository privilegeRepository;
 
     @InjectMocks
-    PrivilegeServiceImpl privilegeServiceImpl;
+    private PrivilegeServiceImpl privilegeServiceImpl;
+
+    private PrivilegeEntity privilege;
+
+    @BeforeEach
+    void setUp() {
+        privilege = createTestPrivilege(1L);
+    }
 
     @Test
     void PrivilegeService_Save_Success() {
-        PrivilegeEntity privilege = createTestPrivilege(null);
-        PrivilegeEntity privilegeSavedInRepository = createTestPrivilege(1L);
-        when(privilegeRepository.save(Mockito.any(PrivilegeEntity.class))).thenReturn(privilegeSavedInRepository);
+        PrivilegeEntity unsavedPrivilege = createTestPrivilege(null);
+        when(privilegeRepository.save(Mockito.any(PrivilegeEntity.class))).thenReturn(privilege);
 
-        PrivilegeEntity privilegeSaved = privilegeServiceImpl.save(privilege);
+        PrivilegeEntity privilegeSaved = privilegeServiceImpl.save(unsavedPrivilege);
 
-        Assertions.assertEquals(privilegeSavedInRepository, privilegeSaved);
+        Assertions.assertEquals(privilege, privilegeSaved);
     }
 
     @Test
     void PrivilegeService_Save_UpdateSuccess() {
-        PrivilegeEntity privilege = createTestPrivilege(1L);
         when(privilegeRepository.findByName(Mockito.any(String.class))).thenReturn(Optional.of(privilege));
         when(privilegeRepository.save(Mockito.any(PrivilegeEntity.class))).thenReturn(privilege);
 
@@ -58,7 +64,6 @@ public class PrivilegeServiceImplTest {
 
     @Test
     void PrivilegeService_Save_UnSuccessful() {
-        PrivilegeEntity privilege = createTestPrivilege(1L);
         PrivilegeEntity privilegeAlreadyRegisteredWithSameName = createTestPrivilege(2L);
         when(privilegeRepository.findByName(Mockito.any(String.class))).thenReturn(Optional.of(privilegeAlreadyRegisteredWithSameName));
 
@@ -77,7 +82,6 @@ public class PrivilegeServiceImplTest {
 
     @Test
     void PrivilegeService_FindOne_Success() {
-        PrivilegeEntity privilege = createTestPrivilege(1L);
         when(privilegeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(privilege));
 
         Optional<PrivilegeEntity> privilegeFound = privilegeServiceImpl.findOne(privilege.getId());
@@ -98,27 +102,24 @@ public class PrivilegeServiceImplTest {
 
     @Test
     void PrivilegeService_Exists_Success() {
-        PrivilegeEntity privilegeEntity = createTestPrivilege(1L);
         when(privilegeRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
 
-        boolean privilegeFound = privilegeServiceImpl.exists(privilegeEntity.getId());
+        boolean privilegeFound = privilegeServiceImpl.exists(privilege.getId());
 
         Assertions.assertTrue(privilegeFound);
     }
 
     @Test
     void PrivilegeService_Delete_Success() {
-        PrivilegeEntity privilegeEntity = createTestPrivilege(1L);
-        when(privilegeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(privilegeEntity));
+        when(privilegeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(privilege));
 
-        assertAll(() -> privilegeServiceImpl.delete(privilegeEntity.getId()));
+        assertAll(() -> privilegeServiceImpl.delete(privilege.getId()));
     }
 
     @Test
     void PrivilegeService_Delete_Unsuccessful() {
-        PrivilegeEntity privilegeEntity = createTestPrivilege(1L);
         when(privilegeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        assertThrows(PrivilegeNotFoundException.class, () -> privilegeServiceImpl.delete(privilegeEntity.getId()));
+        assertThrows(PrivilegeNotFoundException.class, () -> privilegeServiceImpl.delete(privilege.getId()));
     }
 }
