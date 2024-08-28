@@ -9,6 +9,7 @@ import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.repositories.UserRepository;
 import com.CptFranck.SportsPeak.service.impl.AuthServiceImpl;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,50 +28,46 @@ import static org.mockito.Mockito.when;
 public class AuthServiceImplTest {
 
     @Mock
-    UserRepository userRepository;
-
+    private UserRepository userRepository;
     @Mock
-    PasswordEncoder passwordEncoder;
-
+    private PasswordEncoder passwordEncoder;
     @InjectMocks
-    AuthServiceImpl authServiceImpl;
+    private AuthServiceImpl authServiceImpl;
 
-    private InputCredentials createTestInputCredentials() {
-        return new InputCredentials(
-                "test@test.test",
-                "password"
-        );
+    private InputCredentials inputCredentials;
+
+
+    @BeforeEach
+    void setUp() {
+        inputCredentials = new InputCredentials("test@test.test", "password");
     }
 
     @Test
     void authService_Login_UnsuccessfulEmailUnknown() {
-        InputCredentials credentials = createTestInputCredentials();
 
         when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.empty());
 
-        assertThrows(EmailUnknownException.class, () -> authServiceImpl.login(credentials));
+        assertThrows(EmailUnknownException.class, () -> authServiceImpl.login(inputCredentials));
     }
 
     @Test
     void authService_Login_UnsuccessfulIncorrectPassword() {
-        InputCredentials credentials = createTestInputCredentials();
         UserEntity user = createTestUser(1L);
 
         when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(Mockito.any(String.class), Mockito.any(String.class))).thenReturn(false);
 
-        assertThrows(IncorrectPasswordException.class, () -> authServiceImpl.login(credentials));
+        assertThrows(IncorrectPasswordException.class, () -> authServiceImpl.login(inputCredentials));
     }
 
     @Test
     void authService_Login_Successful() {
-        InputCredentials credentials = createTestInputCredentials();
         UserEntity user = createTestUser(1L);
 
         when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(Mockito.any(String.class), Mockito.any(String.class))).thenReturn(true);
 
-        UserEntity returnedUser = authServiceImpl.login(credentials);
+        UserEntity returnedUser = authServiceImpl.login(inputCredentials);
 
         Assertions.assertEquals(user, returnedUser);
     }
