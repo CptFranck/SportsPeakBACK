@@ -5,6 +5,7 @@ import com.CptFranck.SportsPeak.domain.exception.muscle.MuscleNotFoundException;
 import com.CptFranck.SportsPeak.repositories.MuscleRepository;
 import com.CptFranck.SportsPeak.service.impl.MuscleServiceImpl;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,20 +29,26 @@ import static org.mockito.Mockito.when;
 public class MuscleServiceImplTest {
 
     @Mock
-    MuscleRepository muscleRepository;
+    private MuscleRepository muscleRepository;
 
     @InjectMocks
-    MuscleServiceImpl muscleServiceImpl;
+    private MuscleServiceImpl muscleServiceImpl;
+
+    private MuscleEntity muscle;
+
+    @BeforeEach
+    void setUp() {
+        muscle = createTestMuscle(1L);
+    }
 
     @Test
     void muscleService_Save_Success() {
-        MuscleEntity muscle = createTestMuscle(null);
-        MuscleEntity muscleSavedInRepository = createTestMuscle(1L);
-        when(muscleRepository.save(Mockito.any(MuscleEntity.class))).thenReturn(muscleSavedInRepository);
+        MuscleEntity unsavedMuscle = createTestMuscle(null);
+        when(muscleRepository.save(Mockito.any(MuscleEntity.class))).thenReturn(muscle);
 
-        MuscleEntity muscleSaved = muscleServiceImpl.save(muscle);
+        MuscleEntity muscleSaved = muscleServiceImpl.save(unsavedMuscle);
 
-        Assertions.assertEquals(muscleSavedInRepository, muscleSaved);
+        Assertions.assertEquals(muscle, muscleSaved);
     }
 
     @Test
@@ -56,7 +63,6 @@ public class MuscleServiceImplTest {
 
     @Test
     void muscleService_FindOne_Success() {
-        MuscleEntity muscle = createTestMuscle(1L);
         when(muscleRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(muscle));
 
         Optional<MuscleEntity> muscleFound = muscleServiceImpl.findOne(muscle.getId());
@@ -77,7 +83,6 @@ public class MuscleServiceImplTest {
 
     @Test
     void muscleService_Exists_Success() {
-        MuscleEntity muscle = createTestMuscle(1L);
         when(muscleRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
 
         boolean muscleFound = muscleServiceImpl.exists(muscle.getId());
@@ -87,7 +92,6 @@ public class MuscleServiceImplTest {
 
     @Test
     void muscleService_Delete_Success() {
-        MuscleEntity muscle = createTestMuscle(1L);
         when(muscleRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(muscle));
 
         assertAll(() -> muscleServiceImpl.delete(muscle.getId()));
@@ -95,7 +99,6 @@ public class MuscleServiceImplTest {
 
     @Test
     void muscleService_Delete_Unsuccessful() {
-        MuscleEntity muscle = createTestMuscle(1L);
         when(muscleRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
         assertThrows(MuscleNotFoundException.class, () -> muscleServiceImpl.delete(muscle.getId()));
