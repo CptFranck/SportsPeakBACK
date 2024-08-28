@@ -5,6 +5,7 @@ import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundExcept
 import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
 import com.CptFranck.SportsPeak.service.impl.ExerciseServiceImpl;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,20 +33,26 @@ import static org.mockito.Mockito.when;
 public class ExerciseServiceImplTest {
 
     @Mock
-    ExerciseRepository exerciseRepository;
+    private ExerciseRepository exerciseRepository;
 
     @InjectMocks
-    ExerciseServiceImpl exerciseServiceImpl;
+    private ExerciseServiceImpl exerciseServiceImpl;
+
+    private ExerciseEntity exercise;
+
+    @BeforeEach
+    void setUp() {
+        exercise = createTestExercise(1L);
+    }
 
     @Test
     void exerciseService_Save_Success() {
-        ExerciseEntity exercise = createTestExercise(null);
-        ExerciseEntity exerciseSavedInRepository = createTestExercise(1L);
-        when(exerciseRepository.save(Mockito.any(ExerciseEntity.class))).thenReturn(exerciseSavedInRepository);
+        ExerciseEntity unsavedExercise = createTestExercise(null);
+        when(exerciseRepository.save(Mockito.any(ExerciseEntity.class))).thenReturn(exercise);
 
-        ExerciseEntity exerciseSaved = exerciseServiceImpl.save(exercise);
+        ExerciseEntity exerciseSaved = exerciseServiceImpl.save(unsavedExercise);
 
-        Assertions.assertEquals(exerciseSavedInRepository, exerciseSaved);
+        Assertions.assertEquals(exerciseSaved, exercise);
     }
 
     @Test
@@ -60,7 +67,6 @@ public class ExerciseServiceImplTest {
 
     @Test
     void exerciseService_FindOne_Success() {
-        ExerciseEntity exercise = createTestExercise(1L);
         when(exerciseRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(exercise));
 
         Optional<ExerciseEntity> exerciseFound = exerciseServiceImpl.findOne(exercise.getId());
@@ -76,39 +82,36 @@ public class ExerciseServiceImplTest {
         when(exerciseRepository.findAllById(Mockito.anyIterable())).thenReturn(exerciseList);
 
         Set<ExerciseEntity> exerciseFound = exerciseServiceImpl.findMany(ExerciseIds);
+
         Assertions.assertEquals(new HashSet<>(exerciseList), exerciseFound);
     }
 
     @Test
     void exerciseService_UpdateExerciseTypeRelation_Success() {
-        ExerciseEntity exerciseOne = createTestExercise(1L);
-        ExerciseEntity exerciseTwo = createTestExercise(2L);
+        ExerciseEntity exerciseBis = createTestExercise(2L);
         Set<Long> oldExerciseIds = new HashSet<>();
         Set<Long> newExerciseIds = new HashSet<>();
-        oldExerciseIds.add(exerciseOne.getId());
-        newExerciseIds.add(exerciseTwo.getId());
-
+        oldExerciseIds.add(exercise.getId());
+        newExerciseIds.add(exerciseBis.getId());
         ExerciseTypeEntity exerciseType = createTestExerciseType(1L);
 
-        when(exerciseRepository.findAllById(oldExerciseIds)).thenReturn(List.of(exerciseOne));
-        when(exerciseRepository.findAllById(newExerciseIds)).thenReturn(List.of(exerciseTwo));
+        when(exerciseRepository.findAllById(oldExerciseIds)).thenReturn(List.of(exercise));
+        when(exerciseRepository.findAllById(newExerciseIds)).thenReturn(List.of(exerciseBis));
 
         assertAll(() -> exerciseServiceImpl.updateExerciseTypeRelation(newExerciseIds, oldExerciseIds, exerciseType));
     }
 
     @Test
     void exerciseService_UpdateMuscleRelation_Success() {
-        ExerciseEntity exerciseOne = createTestExercise(1L);
-        ExerciseEntity exerciseTwo = createTestExercise(2L);
+        ExerciseEntity exerciseBis = createTestExercise(2L);
         Set<Long> oldExerciseIds = new HashSet<>();
         Set<Long> newExerciseIds = new HashSet<>();
-        oldExerciseIds.add(exerciseOne.getId());
-        newExerciseIds.add(exerciseTwo.getId());
-
+        oldExerciseIds.add(exercise.getId());
+        newExerciseIds.add(exerciseBis.getId());
         MuscleEntity muscle = createTestMuscle(1L);
 
-        when(exerciseRepository.findAllById(oldExerciseIds)).thenReturn(List.of(exerciseOne));
-        when(exerciseRepository.findAllById(newExerciseIds)).thenReturn(List.of(exerciseTwo));
+        when(exerciseRepository.findAllById(oldExerciseIds)).thenReturn(List.of(exercise));
+        when(exerciseRepository.findAllById(newExerciseIds)).thenReturn(List.of(exerciseBis));
 
         assertAll(() -> exerciseServiceImpl.updateMuscleRelation(newExerciseIds, oldExerciseIds, muscle));
     }
@@ -116,40 +119,36 @@ public class ExerciseServiceImplTest {
     @Test
     void exerciseService_UpdateProgExerciseRelation_Success() {
         UserEntity user = createTestUser(1L);
-        ExerciseEntity oldExercise = createTestExercise(1L);
+        ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
+        exercise.getProgExercises().add(progExercise);
         ExerciseEntity newExercise = createTestExercise(2L);
-        ProgExerciseEntity progExercise = createTestProgExercise(1L, user, oldExercise);
-        oldExercise.getProgExercises().add(progExercise);
 
         when(exerciseRepository.save(newExercise)).thenReturn(newExercise);
-        when(exerciseRepository.save(oldExercise)).thenReturn(oldExercise);
+        when(exerciseRepository.save(exercise)).thenReturn(exercise);
 
-        assertAll(() -> exerciseServiceImpl.updateProgExerciseRelation(newExercise, oldExercise, progExercise));
+        assertAll(() -> exerciseServiceImpl.updateProgExerciseRelation(newExercise, exercise, progExercise));
     }
 
     @Test
     void exerciseService_Exists_Success() {
-        ExerciseEntity ExerciseEntity = createTestExercise(1L);
         when(exerciseRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
 
-        boolean ExerciseFound = exerciseServiceImpl.exists(ExerciseEntity.getId());
+        boolean ExerciseFound = exerciseServiceImpl.exists(exercise.getId());
 
         Assertions.assertTrue(ExerciseFound);
     }
 
     @Test
     void exerciseService_Delete_Success() {
-        ExerciseEntity ExerciseEntity = createTestExercise(1L);
-        when(exerciseRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(ExerciseEntity));
+        when(exerciseRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(exercise));
 
-        assertAll(() -> exerciseServiceImpl.delete(ExerciseEntity.getId()));
+        assertAll(() -> exerciseServiceImpl.delete(exercise.getId()));
     }
 
     @Test
     void exerciseService_Delete_Unsuccessful() {
-        ExerciseEntity ExerciseEntity = createTestExercise(1L);
         when(exerciseRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        assertThrows(ExerciseNotFoundException.class, () -> exerciseServiceImpl.delete(ExerciseEntity.getId()));
+        assertThrows(ExerciseNotFoundException.class, () -> exerciseServiceImpl.delete(exercise.getId()));
     }
 }
