@@ -7,6 +7,7 @@ import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
 import com.CptFranck.SportsPeak.repositories.RoleRepository;
 import com.CptFranck.SportsPeak.service.impl.RoleServiceImpl;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,37 +32,41 @@ import static org.mockito.Mockito.when;
 public class RoleServiceImplTest {
 
     @Mock
-    RoleRepository roleRepository;
+    private RoleRepository roleRepository;
 
     @InjectMocks
-    RoleServiceImpl roleServiceImpl;
+    private RoleServiceImpl roleServiceImpl;
+
+    private RoleEntity role;
+
+    @BeforeEach
+    void setUp() {
+        role = createTestRole(1L, 0);
+    }
 
     @Test
     void RoleService_Save_Success() {
-        RoleEntity role = createTestRole(null, 0);
-        RoleEntity roleSavedInRepository = createTestRole(1L, 0);
+        RoleEntity unsavedRole = createTestRole(null, 0);
         when(roleRepository.findByName(Mockito.any(String.class))).thenReturn(Optional.empty());
-        when(roleRepository.save(Mockito.any(RoleEntity.class))).thenReturn(roleSavedInRepository);
+        when(roleRepository.save(Mockito.any(RoleEntity.class))).thenReturn(role);
 
-        RoleEntity RoleSaved = roleServiceImpl.save(role);
+        RoleEntity roleSaved = roleServiceImpl.save(unsavedRole);
 
-        Assertions.assertEquals(roleSavedInRepository, RoleSaved);
+        Assertions.assertEquals(role, roleSaved);
     }
 
     @Test
     void RoleService_Save_UpdateSuccess() {
-        RoleEntity role = createTestRole(1L, 0);
         when(roleRepository.findByName(Mockito.any(String.class))).thenReturn(Optional.of(role));
         when(roleRepository.save(Mockito.any(RoleEntity.class))).thenReturn(role);
 
-        RoleEntity RoleSaved = roleServiceImpl.save(role);
+        RoleEntity roleSaved = roleServiceImpl.save(role);
 
-        Assertions.assertEquals(role, RoleSaved);
+        Assertions.assertEquals(role, roleSaved);
     }
 
     @Test
     void RoleService_Save_UnSuccessful() {
-        RoleEntity role = createTestRole(1L, 0);
         RoleEntity roleAlreadyRegisteredWithSameName = createTestRole(2L, 0);
         when(roleRepository.findByName(Mockito.any(String.class))).thenReturn(Optional.of(roleAlreadyRegisteredWithSameName));
 
@@ -80,7 +85,6 @@ public class RoleServiceImplTest {
 
     @Test
     void RoleService_FindOne_Success() {
-        RoleEntity role = createTestRole(1L, 0);
         when(roleRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(role));
 
         Optional<RoleEntity> roleFound = roleServiceImpl.findOne(role.getId());
@@ -91,7 +95,6 @@ public class RoleServiceImplTest {
 
     @Test
     void RoleService_findByName_Success() {
-        RoleEntity role = createTestRole(1L, 0);
         when(roleRepository.findByName(Mockito.any(String.class))).thenReturn(Optional.of(role));
 
         Optional<RoleEntity> roleFound = roleServiceImpl.findByName(role.getName());
@@ -129,17 +132,15 @@ public class RoleServiceImplTest {
 
     @Test
     void RoleService_Exists_Success() {
-        RoleEntity roleEntity = createTestRole(1L, 0);
         when(roleRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
 
-        boolean roleFound = roleServiceImpl.exists(roleEntity.getId());
+        boolean roleFound = roleServiceImpl.exists(role.getId());
 
         Assertions.assertTrue(roleFound);
     }
 
     @Test
     void RoleService_Delete_Success() {
-        RoleEntity role = createTestRole(1L, 0);
         when(roleRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(role));
 
         assertAll(() -> roleServiceImpl.delete(role.getId()));
@@ -147,7 +148,6 @@ public class RoleServiceImplTest {
 
     @Test
     void RoleService_Delete_Unsuccessful() {
-        RoleEntity role = createTestRole(1L, 0);
         when(roleRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
         assertThrows(RoleNotFoundException.class, () -> roleServiceImpl.delete(role.getId()));
