@@ -25,8 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @DgsComponent
-public class
-ExerciseController {
+public class ExerciseController {
 
     private final MuscleService muscleService;
     private final ExerciseService exerciseService;
@@ -42,6 +41,7 @@ ExerciseController {
         this.exerciseTypeService = exerciseTypeService;
         this.exerciseMapper = exerciseMapper;
     }
+
     @DgsQuery
     public List<ExerciseDto> getExercises() {
         return exerciseService.findAll().stream().map(exerciseMapper::mapTo).toList();
