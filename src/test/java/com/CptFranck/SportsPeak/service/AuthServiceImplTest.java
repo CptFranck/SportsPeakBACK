@@ -36,15 +36,16 @@ public class AuthServiceImplTest {
 
     private InputCredentials inputCredentials;
 
+    private UserEntity user;
 
     @BeforeEach
     void setUp() {
         inputCredentials = new InputCredentials("test@test.test", "password");
+        user = createTestUser(1L);
     }
 
     @Test
     void authService_Login_UnsuccessfulEmailUnknown() {
-
         when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.empty());
 
         assertThrows(EmailUnknownException.class, () -> authServiceImpl.login(inputCredentials));
@@ -52,8 +53,6 @@ public class AuthServiceImplTest {
 
     @Test
     void authService_Login_UnsuccessfulIncorrectPassword() {
-        UserEntity user = createTestUser(1L);
-
         when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(Mockito.any(String.class), Mockito.any(String.class))).thenReturn(false);
 
@@ -62,8 +61,6 @@ public class AuthServiceImplTest {
 
     @Test
     void authService_Login_Successful() {
-        UserEntity user = createTestUser(1L);
-
         when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(Mockito.any(String.class), Mockito.any(String.class))).thenReturn(true);
 
@@ -74,8 +71,6 @@ public class AuthServiceImplTest {
 
     @Test
     void authService_Register_UnsuccessfulEmailAlreadyUsed() {
-        UserEntity user = createTestUser(1L);
-
         when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.of(user));
 
         Assertions.assertThrows(EmailExistsException.class, () -> authServiceImpl.register(user));
@@ -83,8 +78,6 @@ public class AuthServiceImplTest {
 
     @Test
     void authService_Register_UnsuccessfulUsernameAlreadyUsed() {
-        UserEntity user = createTestUser(1L);
-
         when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.empty());
         when(userRepository.findByUsername(Mockito.any(String.class))).thenReturn(Optional.of(user));
 
@@ -93,8 +86,6 @@ public class AuthServiceImplTest {
 
     @Test
     void authService_Register_Success() {
-        UserEntity user = createTestUser(1L);
-
         when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.empty());
         when(userRepository.findByUsername(Mockito.any(String.class))).thenReturn(Optional.empty());
         when(userRepository.save(Mockito.any(UserEntity.class))).thenReturn(user);
