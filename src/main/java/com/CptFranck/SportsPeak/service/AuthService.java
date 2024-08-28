@@ -6,7 +6,7 @@ import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 
 public interface AuthService {
 
-    UserEntity login(InputCredentials credentials) throws Exception;
+    UserEntity login(InputCredentials credentials);
 
     UserEntity register(UserEntity user);
 
