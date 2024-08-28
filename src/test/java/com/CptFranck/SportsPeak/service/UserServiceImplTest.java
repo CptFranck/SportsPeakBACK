@@ -6,6 +6,7 @@ import com.CptFranck.SportsPeak.domain.exception.userAuth.*;
 import com.CptFranck.SportsPeak.repositories.UserRepository;
 import com.CptFranck.SportsPeak.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,17 +35,23 @@ import static org.mockito.Mockito.when;
 public class UserServiceImplTest {
 
     @Mock
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Mock
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
-    UserServiceImpl userServiceImpl;
+    private UserServiceImpl userServiceImpl;
+
+    private UserEntity user;
+
+    @BeforeEach
+    void setUp() {
+        user = createTestUser(1L);
+    }
 
     @Test
     void UserService_Save_Success() {
-        UserEntity user = createTestUser(null);
         UserEntity userSavedInRepository = createTestUser(1L);
         when(userRepository.save(Mockito.any(UserEntity.class))).thenReturn(userSavedInRepository);
 
@@ -65,7 +72,6 @@ public class UserServiceImplTest {
 
     @Test
     void UserService_FindOne_Success() {
-        UserEntity user = createTestUser(1L);
         when(userRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(user));
 
         Optional<UserEntity> userFound = userServiceImpl.findOne(user.getId());
@@ -104,7 +110,6 @@ public class UserServiceImplTest {
 
     @Test
     void UserService_Exists_Success() {
-        UserEntity user = createTestUser(1L);
         when(userRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
 
         boolean userFound = userServiceImpl.exists(user.getId());
@@ -114,7 +119,6 @@ public class UserServiceImplTest {
 
     @Test
     void UserService_Delete_Success() {
-        UserEntity user = createTestUser(1L);
         when(userRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(user));
 
         assertAll(() -> userServiceImpl.delete(user.getId()));
@@ -122,7 +126,6 @@ public class UserServiceImplTest {
 
     @Test
     void UserService_Delete_Unsuccessful() {
-        UserEntity user = createTestUser(1L);
         when(userRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class, () -> userServiceImpl.delete(user.getId()));
@@ -130,7 +133,6 @@ public class UserServiceImplTest {
 
     @Test
     void UserService_ChangeIdentity_Unsuccessful() {
-        UserEntity user = createTestUser(1L);
         when(userRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
         assertThrows(EmailUnknownException.class,
@@ -139,7 +141,6 @@ public class UserServiceImplTest {
 
     @Test
     void UserService_ChangeIdentity_Successful() {
-        UserEntity user = createTestUser(1L);
         when(userRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(user));
         when(userRepository.save(Mockito.any(UserEntity.class))).thenReturn(user);
 
@@ -150,7 +151,6 @@ public class UserServiceImplTest {
 
     @Test
     void UserService_ChangeRoles_Unsuccessful() {
-        UserEntity user = createTestUser(1L);
         when(userRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
         assertThrows(EmailUnknownException.class,
@@ -159,7 +159,6 @@ public class UserServiceImplTest {
 
     @Test
     void UserService_ChangeRoles_Successful() {
-        UserEntity user = createTestUser(1L);
         Set<RoleEntity> userRoles = new HashSet<RoleEntity>();
         Set<RoleEntity> newRoles = new HashSet<RoleEntity>();
         userRoles.add(createTestRole(1L, 1));
@@ -180,8 +179,6 @@ public class UserServiceImplTest {
 
     @Test
     void UserService_ChangeEmail_UnsuccessfulUserNotFound() {
-        UserEntity user = createTestUser(1L);
-
         when(userRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class,
@@ -190,8 +187,6 @@ public class UserServiceImplTest {
 
     @Test
     void UserService_ChangeEmail_UnsuccessfulEmailAlreadyUsed() {
-        UserEntity user = createTestUser(1L);
-
         when(userRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(Mockito.any(String.class), Mockito.any(String.class))).thenReturn(true);
         when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.of(user));
@@ -202,8 +197,6 @@ public class UserServiceImplTest {
 
     @Test
     void UserService_ChangeEmail_UnsuccessfulIncorrectPassword() {
-        UserEntity user = createTestUser(1L);
-
         when(userRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(Mockito.any(String.class), Mockito.any(String.class))).thenReturn(false);
 
@@ -213,8 +206,6 @@ public class UserServiceImplTest {
 
     @Test
     void UserService_ChangeEmail_Successful() {
-        UserEntity user = createTestUser(1L);
-
         when(userRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(Mockito.any(String.class), Mockito.any(String.class))).thenReturn(true);
         when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.empty());
@@ -226,8 +217,6 @@ public class UserServiceImplTest {
 
     @Test
     void UserService_ChangeUsername_UnsuccessfulUserNotFound() {
-        UserEntity user = createTestUser(1L);
-
         when(userRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class,
@@ -236,8 +225,6 @@ public class UserServiceImplTest {
 
     @Test
     void UserService_ChangeUsername_UnsuccessfulUsernameAlreadyUsed() {
-        UserEntity user = createTestUser(1L);
-
         when(userRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(user));
         when(userRepository.findByUsername(Mockito.any(String.class))).thenReturn(Optional.of(user));
 
@@ -247,8 +234,6 @@ public class UserServiceImplTest {
 
     @Test
     void UserService_ChangeUsername_Successful() {
-        UserEntity user = createTestUser(1L);
-
         when(userRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(user));
         when(userRepository.findByUsername(Mockito.any(String.class))).thenReturn(Optional.empty());
         when(userRepository.save(Mockito.any(UserEntity.class))).thenReturn(user);
@@ -259,8 +244,6 @@ public class UserServiceImplTest {
 
     @Test
     void UserService_ChangePassword_UnsuccessfulUserNotFound() {
-        UserEntity user = createTestUser(1L);
-
         when(userRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class,
@@ -269,7 +252,6 @@ public class UserServiceImplTest {
 
     @Test
     void UserService_ChangePassword_UnsuccessfulIncorrectPassword() {
-        UserEntity user = createTestUser(1L);
         when(userRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(Mockito.any(String.class), Mockito.any(String.class))).thenReturn(false);
 
@@ -279,8 +261,6 @@ public class UserServiceImplTest {
 
     @Test
     void UserService_ChangePassword_Successful() {
-        UserEntity user = createTestUser(1L);
-
         when(userRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(Mockito.any(String.class), Mockito.any(String.class))).thenReturn(true);
         when(userRepository.save(Mockito.any(UserEntity.class))).thenReturn(user);
@@ -292,8 +272,6 @@ public class UserServiceImplTest {
 
     @Test
     void UserService_LoadUserByUsername_UnsuccessfulUsernameNotFound() {
-        UserEntity user = createTestUser(1L);
-
         when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.empty());
 
         assertThrows(UsernameNotFoundException.class,
@@ -302,7 +280,6 @@ public class UserServiceImplTest {
 
     @Test
     void UserService_LoadUserByUsername_Successful() {
-        UserEntity user = createTestUser(1L);
         RoleEntity role = createTestRole(1L, 1);
         role.getPrivileges().add(createTestPrivilege(1L));
         user.getRoles().add(role);
