@@ -46,7 +46,7 @@ public class ExerciseTypeMapperImplTest {
     @Test
     void exerciseTypeMapper_FromTo_Success() {
         ExerciseTypeDto exerciseType = createTestExerciseTypeDto();
-        ExerciseDto exercise = createTestExerciseDto();
+        ExerciseDto exercise = createTestExerciseDto(1L);
         exerciseType.getExercises().add(exercise);
 
         ExerciseTypeEntity exerciseTypeEntity = exerciseTypeMapper.mapFrom(exerciseType);

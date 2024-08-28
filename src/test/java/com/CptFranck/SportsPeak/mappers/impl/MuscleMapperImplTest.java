@@ -46,7 +46,7 @@ public class MuscleMapperImplTest {
     @Test
     void muscleMapper_MapFrom_Success() {
         MuscleDto muscle = createTestMuscleDto(1L);
-        ExerciseDto exercise = createTestExerciseDto();
+        ExerciseDto exercise = createTestExerciseDto(1L);
 
         muscle.getExercises().add(exercise);
         MuscleEntity muscleEntity = muscleMapper.mapFrom(muscle);

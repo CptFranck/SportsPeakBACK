@@ -30,9 +30,9 @@ public class TestExerciseUtils {
         return List.of(createTestExercise(1L), createTestExercise(2L), createTestExercise(3L));
     }
 
-    public static ExerciseDto createTestExerciseDto() {
+    public static ExerciseDto createTestExerciseDto(Long id) {
         return new ExerciseDto(
-                3L,
+                id,
                 "Exercise name",
                 "Exercise description",
                 "Exercise goal",

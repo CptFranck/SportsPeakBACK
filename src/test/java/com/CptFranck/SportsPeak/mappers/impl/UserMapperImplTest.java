@@ -72,7 +72,7 @@ public class UserMapperImplTest {
         UserDto user = createTestUserDto();
         RoleDto role = createTestRoleDto();
         user.getRoles().add(role);
-        ExerciseDto exercise = createTestExerciseDto();
+        ExerciseDto exercise = createTestExerciseDto(1L);
         ProgExerciseDto progExercise = createTestProgExerciseDto(user, exercise);
         user.getProgExercisesCreated().add(progExercise);
         user.getSubscribedProgExercises().add(progExercise);
