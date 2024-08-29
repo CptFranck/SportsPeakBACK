@@ -8,7 +8,9 @@ import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
+import com.CptFranck.SportsPeak.domain.input.exercise.InputNewExercise;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -39,6 +41,16 @@ public class TestExerciseUtils {
                 new HashSet<MuscleDto>(),
                 new HashSet<ExerciseTypeDto>(),
                 new HashSet<ProgExerciseDto>()
+        );
+    }
+
+    public static InputNewExercise createTestInputNewExercise() {
+        return new InputNewExercise(
+                "name",
+                "description",
+                "goal",
+                new ArrayList<Long>(),
+                new ArrayList<Long>()
         );
     }
 }
