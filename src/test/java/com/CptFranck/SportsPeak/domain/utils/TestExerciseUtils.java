@@ -8,6 +8,7 @@ import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
+import com.CptFranck.SportsPeak.domain.input.exercise.InputExercise;
 import com.CptFranck.SportsPeak.domain.input.exercise.InputNewExercise;
 
 import java.util.ArrayList;
@@ -46,6 +47,17 @@ public class TestExerciseUtils {
 
     public static InputNewExercise createTestInputNewExercise() {
         return new InputNewExercise(
+                "name",
+                "description",
+                "goal",
+                new ArrayList<Long>(),
+                new ArrayList<Long>()
+        );
+    }
+
+    public static InputExercise createTestInputExercise() {
+        return new InputExercise(
+                1L,
                 "name",
                 "description",
                 "goal",
