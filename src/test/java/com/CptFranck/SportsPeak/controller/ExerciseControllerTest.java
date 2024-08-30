@@ -40,7 +40,7 @@ class ExerciseControllerTest {
     @Autowired
     private DgsQueryExecutor dgsQueryExecutor;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @MockBean
     private Mapper<ExerciseEntity, ExerciseDto> exerciseMapper;
@@ -60,11 +60,14 @@ class ExerciseControllerTest {
 
     private ExerciseDto exerciseDto;
 
+    private LinkedHashMap<String, Object> variables;
+
     @BeforeEach
     void init() {
         exercise = createTestExercise(1L);
         exercises = List.of(exercise);
         exerciseDto = createTestExerciseDto(1L);
+        variables = new LinkedHashMap<>();
     }
 
     @Test
@@ -108,11 +111,12 @@ class ExerciseControllerTest {
 
     @Test
     void ExerciseController_GetExerciseById_Unsuccessful() {
+        variables.put("id", 1);
         when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
         @Language("GraphQL")
         String query = """
                  query ($id : Int!){
-                     getExerciseById(id: 1) {
+                     getExerciseById(id: $id) {
                          id
                          exerciseTypes {
                              id
@@ -138,20 +142,21 @@ class ExerciseControllerTest {
                  }
                 """;
         LinkedHashMap<String, Object> exerciseDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getExerciseById");
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getExerciseById", variables);
 
         Assertions.assertNull(exerciseDto);
     }
 
     @Test
     void ExerciseController_GetExerciseById_Success() {
+        variables.put("id", 1);
         when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(exercise));
         when(exerciseMapper.mapTo(Mockito.any(ExerciseEntity.class))).thenReturn(exerciseDto);
 
         @Language("GraphQL")
         String query = """
                  query ($id : Int!){
-                     getExerciseById(id: 1) {
+                     getExerciseById(id: $id) {
                          id
                          exerciseTypes {
                              id
@@ -177,14 +182,13 @@ class ExerciseControllerTest {
                  }
                 """;
         LinkedHashMap<String, Object> exerciseDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getExerciseById");
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getExerciseById", variables);
 
         Assertions.assertNotNull(exerciseDto);
     }
 
     @Test
     void ExerciseController_AddExercise_Success() {
-        LinkedHashMap<String, Object> variables = new LinkedHashMap<>();
         variables.put("inputNewExercise", objectMapper.convertValue(
                 createTestInputNewExercise(),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -231,21 +235,13 @@ class ExerciseControllerTest {
     }
 
     @Test
-    void ExerciseController_ModifyExercise_Success() {
-        LinkedHashMap<String, Object> variables = new LinkedHashMap<>();
+    void ExerciseController_ModifyExercise_Unsuccessful() {
         variables.put("inputExercise", objectMapper.convertValue(
                 createTestInputExercise(),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 })
         );
-        Set<MuscleEntity> muscles = new HashSet<>();
-        Set<ExerciseTypeEntity> exerciseType = new HashSet<>();
-        when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(true);
-        when(muscleService.findMany(Mockito.anySet())).thenReturn(muscles);
-        when(exerciseTypeService.findMany(Mockito.anySet())).thenReturn(exerciseType);
-        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(exercise));
-        when(exerciseService.save(Mockito.any(ExerciseEntity.class))).thenReturn(exercise);
-        when(exerciseMapper.mapTo(Mockito.any(ExerciseEntity.class))).thenReturn(exerciseDto);
+        when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(false);
 
         @Language("GraphQL")
         String query = """
@@ -277,9 +273,6 @@ class ExerciseControllerTest {
         LinkedHashMap<String, Object> exerciseDto =
                 dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyExercise", variables);
 
-        Assertions.assertNotNull(exerciseDto);
+        Assertions.assertNull(exerciseDto);
     }
-//    @Test
-//    void deleteExercise() {
-//    }
 }
