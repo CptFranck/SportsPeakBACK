@@ -1,16 +1,16 @@
 package com.CptFranck.SportsPeak.domain.input.credentials;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Data
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class InputCredentials {
 
     private String email;
 
     private String password;
 
-    public InputCredentials(String mail, String password) {
-        this.email = mail;
-        this.password = password;
-    }
 }
