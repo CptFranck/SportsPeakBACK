@@ -275,4 +275,53 @@ class ExerciseControllerTest {
 
         Assertions.assertNull(exerciseDto);
     }
+
+    @Test
+    void ExerciseController_ModifyExercise_Success() {
+        variables.put("inputExercise", objectMapper.convertValue(
+                createTestInputExercise(),
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                })
+        );
+        Set<MuscleEntity> muscles = new HashSet<>();
+        Set<ExerciseTypeEntity> exerciseType = new HashSet<>();
+        when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(true);
+        when(muscleService.findMany(Mockito.anySet())).thenReturn(muscles);
+        when(exerciseTypeService.findMany(Mockito.anySet())).thenReturn(exerciseType);
+        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(exercise));
+        when(exerciseService.save(Mockito.any(ExerciseEntity.class))).thenReturn(exercise);
+        when(exerciseMapper.mapTo(Mockito.any(ExerciseEntity.class))).thenReturn(exerciseDto);
+
+        @Language("GraphQL")
+        String query = """
+                 mutation ($inputExercise : InputExercise!){
+                      modifyExercise(inputExercise: $inputExercise) {
+                          id
+                          name
+                          goal
+                          muscles {
+                              id
+                              name
+                              function
+                          }
+                          exerciseTypes {
+                              id
+                              name
+                              goal
+                          }
+                          progExercises {
+                              id
+                              name
+                              note
+                              trustLabel
+                              visibility
+                          }
+                      }
+                  }
+                """;
+        LinkedHashMap<String, Object> exerciseDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyExercise", variables);
+
+        Assertions.assertNotNull(exerciseDto);
+    }
 }
