@@ -64,8 +64,8 @@ type Mutation {
     deletePerformanceLog(performanceLogId: Int!): Int!
 
     addExercise(inputNewExercise: InputNewExercise!): Exercise!
-    modifyExercise(inputExercise: InputExercise!): Exercise!
-    deleteExercise(exerciseId: Int!): Int!
+    modifyExercise(inputExercise: InputExercise!): Exercise
+    deleteExercise(exerciseId: Int!): Int
 
     addExerciseType(inputNewExerciseType: InputNewExerciseType!): ExerciseType!
     modifyExerciseType(inputExerciseType: InputExerciseType!): ExerciseType!
