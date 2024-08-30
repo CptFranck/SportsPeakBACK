@@ -333,6 +333,24 @@ class ExerciseControllerTest {
     }
 
     @Test
+    void ExerciseController_DeleteExercise_Unsuccessful() {
+        variables.put("exerciseId", 1);
+        when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(false);
+
+        @Language("GraphQL")
+        String query = """
+                 mutation ($exerciseId : Int!){
+                       deleteExercise(exerciseId: $exerciseId)
+                   }
+                """;
+
+        Integer id =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.deleteExercise", variables);
+
+        Assertions.assertNull(id);
+    }
+
+    @Test
     void ExerciseController_DeleteExercise_Success() {
         variables.put("exerciseId", 1);
         when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(true);
@@ -344,9 +362,9 @@ class ExerciseControllerTest {
                    }
                 """;
 
-        Integer exerciseDto =
+        Integer id =
                 dgsQueryExecutor.executeAndExtractJsonPath(query, "data.deleteExercise", variables);
 
-        Assertions.assertNotNull(exerciseDto);
+        Assertions.assertNotNull(id);
     }
 }
