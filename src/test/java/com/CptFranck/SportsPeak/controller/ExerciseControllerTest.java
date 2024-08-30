@@ -103,6 +103,7 @@ class ExerciseControllerTest {
                     }
                 }
                 """;
+
         List<LinkedHashMap<String, Object>> exerciseDtos =
                 dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getExercises");
 
@@ -113,6 +114,7 @@ class ExerciseControllerTest {
     void ExerciseController_GetExerciseById_Unsuccessful() {
         variables.put("id", 1);
         when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+
         @Language("GraphQL")
         String query = """
                  query ($id : Int!){
@@ -141,6 +143,7 @@ class ExerciseControllerTest {
                      }
                  }
                 """;
+
         LinkedHashMap<String, Object> exerciseDto =
                 dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getExerciseById", variables);
 
@@ -181,6 +184,7 @@ class ExerciseControllerTest {
                      }
                  }
                 """;
+
         LinkedHashMap<String, Object> exerciseDto =
                 dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getExerciseById", variables);
 
@@ -228,6 +232,7 @@ class ExerciseControllerTest {
                      }
                  }
                 """;
+
         LinkedHashMap<String, Object> exerciseDto =
                 dgsQueryExecutor.executeAndExtractJsonPath(query, "data.addExercise", variables);
 
@@ -270,6 +275,7 @@ class ExerciseControllerTest {
                       }
                   }
                 """;
+
         LinkedHashMap<String, Object> exerciseDto =
                 dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyExercise", variables);
 
@@ -319,6 +325,7 @@ class ExerciseControllerTest {
                       }
                   }
                 """;
+
         LinkedHashMap<String, Object> exerciseDto =
                 dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyExercise", variables);
 
@@ -336,6 +343,7 @@ class ExerciseControllerTest {
                        deleteExercise(exerciseId: $exerciseId)
                    }
                 """;
+
         Integer exerciseDto =
                 dgsQueryExecutor.executeAndExtractJsonPath(query, "data.deleteExercise", variables);
 
