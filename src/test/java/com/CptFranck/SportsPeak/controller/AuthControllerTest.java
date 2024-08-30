@@ -3,6 +3,7 @@ package com.CptFranck.SportsPeak.controller;
 import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
 import com.CptFranck.SportsPeak.config.security.JwtProvider;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
+import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
@@ -29,6 +30,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 
@@ -177,5 +179,58 @@ public class AuthControllerTest {
                 """;
 
         Assertions.assertThrows(QueryException.class, () -> dgsQueryExecutor.executeAndExtractJsonPath(query, "data.register", variables));
+    }
+
+    @Test
+    public void AuthController_Register_ReturnAuthDto() {
+        variables.put("inputRegisterNewUser", objectMapper.convertValue(
+                        new InputRegisterNewUser(
+                                user.getEmail(),
+                                user.getFirstName(),
+                                user.getLastName(),
+                                user.getLastName(),
+                                user.getPassword()
+                        ),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        RoleEntity role = new RoleEntity(1L, "Role", new HashSet<>(), new HashSet<>());
+        when(roleService.findByName(Mockito.any(String.class))).thenReturn(Optional.of(role));
+        when(authService.register(Mockito.any(UserEntity.class))).thenReturn(user);
+        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
+        when(authenticationManager.authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class))).thenReturn(null);
+        when(userAuthProvider.generateToken(Mockito.any())).thenReturn(jwToken);
+
+        @Language("GraphQL")
+        String query = """
+                 mutation ($inputRegisterNewUser : InputRegisterNewUser!) {
+                      register(inputRegisterNewUser: $inputRegisterNewUser){
+                          tokenType
+                          accessToken
+                          expiration
+                          user {
+                              id
+                              email
+                              firstName
+                              lastName
+                              username
+                              roles {
+                                  id
+                                  name
+                                  privileges {
+                                      id
+                                      name
+                                  }
+                              }
+                          }
+                      }
+                  }
+                """;
+
+        LinkedHashMap<String, Object> authDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.register", variables);
+
+        Assertions.assertNotNull(authDto);
     }
 }
