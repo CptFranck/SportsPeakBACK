@@ -5,6 +5,7 @@ import com.CptFranck.SportsPeak.config.security.JwtProvider;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
+import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
 import com.CptFranck.SportsPeak.domain.model.JWToken;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.AuthService;
@@ -13,6 +14,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.graphql.dgs.DgsQueryExecutor;
 import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
+import com.netflix.graphql.dgs.exceptions.QueryException;
 import org.intellij.lang.annotations.Language;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +30,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
+import java.util.Optional;
 
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
@@ -81,9 +84,9 @@ public class AuthControllerTest {
     @Test
     public void AuthController_Login_ReturnAuthDto() {
         variables.put("inputCredentials", objectMapper.convertValue(
-                        new InputCredentials(user.getEmail(), user.getPassword()),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
+                new InputCredentials(user.getEmail(), user.getPassword()),
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }
                 )
         );
         when(authService.login(Mockito.any(InputCredentials.class))).thenReturn(user);
@@ -129,5 +132,50 @@ public class AuthControllerTest {
                 dgsQueryExecutor.executeAndExtractJsonPath(query, "data.login", variables);
 
         Assertions.assertNotNull(authDto);
+    }
+
+    @Test
+    public void AuthController_Register_Unsuccessful() {
+        variables.put("inputRegisterNewUser", objectMapper.convertValue(
+                        new InputRegisterNewUser(
+                                user.getEmail(),
+                                user.getFirstName(),
+                                user.getLastName(),
+                                user.getLastName(),
+                                user.getPassword()
+                        ),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(roleService.findByName(Mockito.any(String.class))).thenReturn(Optional.empty());
+
+        @Language("GraphQL")
+        String query = """
+                 mutation ($inputRegisterNewUser : InputRegisterNewUser!) {
+                      register(inputRegisterNewUser: $inputRegisterNewUser){
+                          tokenType
+                          accessToken
+                          expiration
+                          user {
+                              id
+                              email
+                              firstName
+                              lastName
+                              username
+                              roles {
+                                  id
+                                  name
+                                  privileges {
+                                      id
+                                      name
+                                  }
+                              }
+                          }
+                      }
+                  }
+                """;
+
+        Assertions.assertThrows(QueryException.class, () -> dgsQueryExecutor.executeAndExtractJsonPath(query, "data.register", variables));
     }
 }
