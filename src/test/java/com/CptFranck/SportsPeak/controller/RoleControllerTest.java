@@ -2,12 +2,15 @@ package com.CptFranck.SportsPeak.controller;
 
 import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
 import com.CptFranck.SportsPeak.domain.dto.RoleDto;
+import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
+import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.ExerciseTypeService;
 import com.CptFranck.SportsPeak.service.PrivilegeService;
 import com.CptFranck.SportsPeak.service.RoleService;
 import com.CptFranck.SportsPeak.service.UserService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.graphql.dgs.DgsQueryExecutor;
 import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
@@ -22,12 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestRoleUtils.createTestRole;
-import static com.CptFranck.SportsPeak.domain.utils.TestRoleUtils.createTestRoleDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestRoleUtils.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -165,77 +165,85 @@ class RoleControllerTest {
         Assertions.assertNotNull(roleDto);
     }
 
-//    @Test
-//    void RoleController_AddRole_Success() {
-//        variables.put("inputNewRole", objectMapper.convertValue(
-//                        createTestInputNewRole(),
-//                        new TypeReference<LinkedHashMap<String, Object>>() {
-//                        }
-//                )
-//        );
-//        Set<RoleEntity> roles = new HashSet<>();
-//        when(roleService.findMany(Mockito.anySet())).thenReturn(roles);
-//        when(privilegeService.save(Mockito.any(RoleEntity.class))).thenReturn(roleEntity);
-//        when(privilegeMapper.mapTo(Mockito.any(RoleEntity.class))).thenReturn(roleDto);
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 mutation ($inputNewRole : InputNewRole!){
-//                      addRole(inputNewRole: $inputNewRole) {
-//                          id
-//                          name
-//                          roles {
-//                              id
-//                              name
-//                              privileges {
-//                                  id
-//                                  name
-//                              }
-//                          }
-//                      }
-//                  }
-//                """;
-//
-//        LinkedHashMap<String, Object> roleDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.addRole", variables);
-//
-//        Assertions.assertNotNull(roleDto);
-//    }
-//
-//    @Test
-//    void RoleController_ModifyRole_Unsuccessful() {
-//        variables.put("inputRole", objectMapper.convertValue(
-//                        createTestInputRole(1L),
-//                        new TypeReference<LinkedHashMap<String, Object>>() {
-//                        }
-//                )
-//        );
-//        when(privilegeService.exists(Mockito.any(Long.class))).thenReturn(false);
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 mutation ($inputRole : InputRole!){
-//                     modifyRole(inputRole: $inputRole) {
-//                         id
-//                         name
-//                         roles {
-//                             id
-//                             name
-//                             privileges {
-//                                 id
-//                                 name
-//                             }
-//                         }
-//                     }
-//                 }
-//                """;
-//
-//        LinkedHashMap<String, Object> roleDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyRole", variables);
-//
-//        Assertions.assertNull(roleDto);
-//    }
-//
+    @Test
+    void RoleController_AddRole_Success() {
+        variables.put("inputNewRole", objectMapper.convertValue(
+                        createTestInputNewRole(),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        Set<UserEntity> users = new HashSet<>();
+        Set<PrivilegeEntity> privileges = new HashSet<>();
+        when(userService.findMany(Mockito.anySet())).thenReturn(users);
+        when(privilegeService.findMany(Mockito.anySet())).thenReturn(privileges);
+        when(roleService.save(Mockito.any(RoleEntity.class))).thenReturn(roleEntity);
+        when(roleMapper.mapTo(Mockito.any(RoleEntity.class))).thenReturn(roleDto);
+
+        @Language("GraphQL")
+        String query = """
+                 mutation ($inputNewRole : InputNewRole!){
+                     addRole(inputNewRole: $inputNewRole) {
+                         id
+                         name
+                         users {
+                             id
+                             email
+                             firstName
+                             lastName
+                             username
+                         }
+                         privileges {
+                             id
+                             name
+                         }
+                     }
+                 }
+                """;
+
+        LinkedHashMap<String, Object> roleDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.addRole", variables);
+
+        Assertions.assertNotNull(roleDto);
+    }
+
+    @Test
+    void RoleController_ModifyRole_Unsuccessful() {
+        variables.put("inputRole", objectMapper.convertValue(
+                        createTestInputRole(1L),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(roleService.exists(Mockito.any(Long.class))).thenReturn(false);
+
+        @Language("GraphQL")
+        String query = """
+                 mutation ($inputRole : InputRole!){
+                     modifyRole(inputRole: $inputRole) {
+                         id
+                         name
+                         users {
+                             id
+                             email
+                             firstName
+                             lastName
+                             username
+                         }
+                         privileges {
+                             id
+                             name
+                         }
+                     }
+                 }
+                """;
+
+        LinkedHashMap<String, Object> roleDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyRole", variables);
+
+        Assertions.assertNull(roleDto);
+    }
+
 //    @Test
 //    void RoleController_ModifyRole_Success() {
 //        variables.put("inputRole", objectMapper.convertValue(
@@ -245,11 +253,11 @@ class RoleControllerTest {
 //                )
 //        );
 //        Set<RoleEntity> roles = new HashSet<>();
-//        when(privilegeService.exists(Mockito.any(Long.class))).thenReturn(true);
+//        when(roleService.exists(Mockito.any(Long.class))).thenReturn(true);
 //        when(roleService.findMany(Mockito.anySet())).thenReturn(roles);
-//        when(privilegeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(roleEntity));
-//        when(privilegeService.save(Mockito.any(RoleEntity.class))).thenReturn(roleEntity);
-//        when(privilegeMapper.mapTo(Mockito.any(RoleEntity.class))).thenReturn(roleDto);
+//        when(roleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(roleEntity));
+//        when(roleService.save(Mockito.any(RoleEntity.class))).thenReturn(roleEntity);
+//        when(roleMapper.mapTo(Mockito.any(RoleEntity.class))).thenReturn(roleDto);
 //
 //        @Language("GraphQL")
 //        String query = """
@@ -257,13 +265,16 @@ class RoleControllerTest {
 //                     modifyRole(inputRole: $inputRole) {
 //                         id
 //                         name
-//                         roles {
+//                         users {
+//                             id
+//                             email
+//                             firstName
+//                             lastName
+//                             username
+//                         }
+//                         privileges {
 //                             id
 //                             name
-//                             privileges {
-//                                 id
-//                                 name
-//                             }
 //                         }
 //                     }
 //                 }
@@ -274,7 +285,7 @@ class RoleControllerTest {
 //
 //        Assertions.assertNotNull(roleDto);
 //    }
-//
+
 //    @Test
 //    void RoleController_DeleteRole_Unsuccessful() {
 //        variables.put("privilegeId", 1);
