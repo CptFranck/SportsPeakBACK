@@ -1,10 +1,14 @@
 package com.CptFranck.SportsPeak.domain.input.performanceLog;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class InputNewPerformanceLog {
 
     private Integer setIndex;
