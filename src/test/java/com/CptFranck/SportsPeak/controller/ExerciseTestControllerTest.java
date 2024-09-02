@@ -22,6 +22,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseTypeUtils.createTestExerciseType;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseTypeUtils.createTestExerciseTypeDto;
@@ -85,5 +86,30 @@ class ExerciseTestControllerTest {
         Assertions.assertNotNull(exerciseTypeDtos);
     }
 
+    @Test
+    void ExerciseTypeController_GetExerciseTypeById_Unsuccessful() {
+        variables.put("id", 1);
+        when(exerciseTypeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
+        @Language("GraphQL")
+        String query = """
+                 query ($id : Int!){
+                     getExerciseTypeById (id : $id){
+                         id
+                         exercises {
+                             id
+                             name
+                             goal
+                         }
+                         name
+                         goal
+                     }
+                 }
+                """;
+
+        LinkedHashMap<String, Object> exerciseTypeDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getExerciseTypeById", variables);
+
+        Assertions.assertNull(exerciseTypeDto);
+    }
 }
