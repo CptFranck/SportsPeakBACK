@@ -76,7 +76,7 @@ class PerformanceLogControllerTest {
         ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
         ProgExerciseDto progExerciseDto = createTestProgExerciseDto(userDto, exerciseDto);
         targetSet = createTestTargetSet(1L, progExercise, null);
-        targetSetDto = createTestTargetSetDto(progExerciseDto, null);
+        targetSetDto = createTestTargetSetDto(1L, progExerciseDto, null);
         performanceLog = createTestPerformanceLog(1L, targetSet);
         performanceLogDto = createTestPerformanceLogDto(1L, targetSetDto);
         variables = new LinkedHashMap<>();

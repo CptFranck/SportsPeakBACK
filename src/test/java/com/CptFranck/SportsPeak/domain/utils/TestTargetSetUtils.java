@@ -51,12 +51,12 @@ public class TestTargetSetUtils {
         );
     }
 
-    public static TargetSetDto createTestTargetSetDto(ProgExerciseDto progExercise, TargetSetDto update) {
+    public static TargetSetDto createTestTargetSetDto(Long id, ProgExerciseDto progExercise, TargetSetDto update) {
         LocalDateTime creationDate = LocalDateTime.now();
         Duration effortTime = Duration.ofHours(0).plusMinutes(0).plusSeconds(5);
         Duration restTime = Duration.ofHours(0).plusMinutes(4).plusSeconds(0);
         return new TargetSetDto(
-                6L,
+                id,
                 1,
                 5,
                 10,
