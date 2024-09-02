@@ -173,4 +173,35 @@ class ExerciseTestControllerTest {
 
         Assertions.assertNotNull(exerciseTypeDto);
     }
+
+    @Test
+    void ExerciseTypeController_ModifyExerciseType_Unsuccessful() {
+        variables.put("inputExerciseType", objectMapper.convertValue(
+                createTestInputExerciseType(),
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                })
+        );
+        when(exerciseTypeService.exists(Mockito.any(Long.class))).thenReturn(false);
+
+        @Language("GraphQL")
+        String query = """
+                 mutation ($inputExerciseType : InputExerciseType!){
+                       modifyExerciseType(inputExerciseType: $inputExerciseType) {
+                           id
+                           name
+                           goal
+                           exercises {
+                               id
+                               name
+                               goal
+                           }
+                       }
+                   }
+                """;
+
+        LinkedHashMap<String, Object> exerciseTypeDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyExerciseType", variables);
+
+        Assertions.assertNull(exerciseTypeDto);
+    }
 }
