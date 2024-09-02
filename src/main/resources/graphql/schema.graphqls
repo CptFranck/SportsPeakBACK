@@ -55,9 +55,9 @@ type Mutation {
     deleteProgExercise(progExerciseId: Int!): Int!
 
     addTargetSet(inputNewTargetSet: InputNewTargetSet!): TargetSet!
-    modifyTargetSet(inputTargetSet: InputTargetSet!): TargetSet!
-    modifyTargetSetState(inputTargetSetState: InputTargetSetState!): TargetSet!
-    deleteTargetSet(targetSetId: Int!): Int!
+    modifyTargetSet(inputTargetSet: InputTargetSet!): TargetSet
+    modifyTargetSetState(inputTargetSetState: InputTargetSetState!): TargetSet
+    deleteTargetSet(targetSetId: Int!): Int
 
     addPerformanceLog(inputNewPerformanceLog: InputNewPerformanceLog!): PerformanceLog!
     modifyPerformanceLog(inputPerformanceLog: InputPerformanceLog!): PerformanceLog
