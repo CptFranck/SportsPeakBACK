@@ -31,10 +31,10 @@ public class TestPerformanceLogUtils {
         );
     }
 
-    public static PerformanceLogDto createTestPerformanceLogDto(TargetSetDto targetSet) {
+    public static PerformanceLogDto createTestPerformanceLogDto(Long id, TargetSetDto targetSet) {
         LocalDateTime creationDate = LocalDateTime.now();
         return new PerformanceLogDto(
-                7L,
+                id,
                 1,
                 5,
                 0f,

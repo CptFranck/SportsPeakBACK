@@ -54,7 +54,7 @@ public class PerformanceLogMapperImplTest {
         ExerciseDto exercise = createTestExerciseDto(1L);
         ProgExerciseDto progExercise = createTestProgExerciseDto(user, exercise);
         TargetSetDto targetSet = createTestTargetSetDto(progExercise, null);
-        PerformanceLogDto performanceLog = createTestPerformanceLogDto(targetSet);
+        PerformanceLogDto performanceLog = createTestPerformanceLogDto(1L, targetSet);
 
         PerformanceLogEntity performanceLogEntity = performanceLogMapper.mapFrom(performanceLog);
 
