@@ -146,8 +146,8 @@ class MuscleControllerTest {
     void MuscleController_AddMuscle_Success() {
         variables.put("inputNewMuscle", objectMapper.convertValue(
                         createTestInputNewMuscle(),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }
                 )
         );
         Set<ExerciseEntity> exercises = new HashSet<>();
@@ -176,50 +176,38 @@ class MuscleControllerTest {
 
         Assertions.assertNotNull(muscleDto);
     }
-//
-//    @Test
-//    void MuscleController_ModifyExercise_Unsuccessful() {
-//        variables.put("inputExercise", objectMapper.convertValue(
-//                        createTestInputExercise(),
-//                        new TypeReference<LinkedHashMap<String, Object>>() {
-//                        }
-//                )
-//        );
-//        when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(false);
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 mutation ($inputExercise : InputExercise!){
-//                      modifyExercise(inputExercise: $inputExercise) {
-//                          id
-//                          name
-//                          goal
-//                          muscles {
-//                              id
-//                              name
-//                              function
-//                          }
-//                          exerciseTypes {
-//                              id
-//                              name
-//                              goal
-//                          }
-//                          progExercises {
-//                              id
-//                              name
-//                              note
-//                              trustLabel
-//                              visibility
-//                          }
-//                      }
-//                  }
-//                """;
-//
-//        LinkedHashMap<String, Object> muscleDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyExercise", variables);
-//
-//        Assertions.assertNull(muscleDto);
-//    }
+
+    @Test
+    void MuscleController_ModifyMuscle_Unsuccessful() {
+        variables.put("inputMuscle", objectMapper.convertValue(
+                        createTestInputMuscle(1L),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(muscleService.exists(Mockito.any(Long.class))).thenReturn(false);
+
+        @Language("GraphQL")
+        String query = """
+                 mutation ($inputMuscle : InputMuscle!){
+                       modifyMuscle(inputMuscle: $inputMuscle) {
+                           id
+                           name
+                           function
+                           exercises {
+                               id
+                               name
+                               goal
+                           }
+                       }
+                   }
+                """;
+
+        LinkedHashMap<String, Object> muscleDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyMuscle", variables);
+
+        Assertions.assertNull(muscleDto);
+    }
 //
 //    @Test
 //    void MuscleController_ModifyExercise_Success() {
