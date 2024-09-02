@@ -72,6 +72,6 @@ type Mutation {
     deleteExerciseType(exerciseTypeId: Int!): Int
 
     addMuscle(inputNewMuscle: InputNewMuscle!): Muscle!
-    modifyMuscle(inputMuscle: InputMuscle!): Muscle!
-    deleteMuscle(muscleId: Int!): Int!
+    modifyMuscle(inputMuscle: InputMuscle!): Muscle
+    deleteMuscle(muscleId: Int!): Int
 }
