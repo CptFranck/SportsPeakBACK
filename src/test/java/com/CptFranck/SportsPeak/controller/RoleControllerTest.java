@@ -24,6 +24,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 
 import static com.CptFranck.SportsPeak.domain.utils.TestRoleUtils.createTestRole;
 import static com.CptFranck.SportsPeak.domain.utils.TestRoleUtils.createTestRoleDto;
@@ -99,34 +100,37 @@ class RoleControllerTest {
         Assertions.assertNotNull(roleDtos);
     }
 
-//    @Test
-//    void RoleController_GetRoleById_Unsuccessful() {
-//        variables.put("id", 1);
-//        when(privilegeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 query ($id : Int!) {
-//                      getRoleById (id: $id) {
-//                          id
-//                          name
-//                          roles {
-//                              id
-//                              name
-//                              privileges {
-//                                  id
-//                                  name
-//                              }
-//                          }
-//                      }
-//                  }
-//                """;
-//
-//        LinkedHashMap<String, Object> roleDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getRoleById", variables);
-//
-//        Assertions.assertNull(roleDto);
-//    }
+    @Test
+    void RoleController_GetRoleById_Unsuccessful() {
+        variables.put("id", 1);
+        when(roleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+
+        @Language("GraphQL")
+        String query = """
+                 query ($id : Int!) {
+                     getRoleById (id: $id) {
+                         id
+                         name
+                         users {
+                             id
+                             email
+                             firstName
+                             lastName
+                             username
+                         }
+                         privileges {
+                             id
+                             name
+                         }
+                     }
+                 }
+                """;
+
+        LinkedHashMap<String, Object> roleDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getRoleById", variables);
+
+        Assertions.assertNull(roleDto);
+    }
 //
 //    @Test
 //    void RoleController_GetRoleById_Success() {
