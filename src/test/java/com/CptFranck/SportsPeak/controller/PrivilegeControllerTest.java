@@ -23,6 +23,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 
 import static com.CptFranck.SportsPeak.domain.utils.TestPrivilegeUtils.createTestPrivilege;
 import static com.CptFranck.SportsPeak.domain.utils.TestPrivilegeUtils.createTestPrivilegeDto;
@@ -91,83 +92,61 @@ class PrivilegeControllerTest {
         Assertions.assertNotNull(exerciseDtos);
     }
 
-//    @Test
-//    void PrivilegeController_GetExerciseById_Unsuccessful() {
-//        variables.put("id", 1);
-//        when(roleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 query ($id : Int!){
-//                     getExerciseById(id: $id) {
-//                         id
-//                         exerciseTypes {
-//                             id
-//                             name
-//                             goal
-//                         }
-//                         muscles {
-//                             id
-//                             name
-//                             function
-//                         }
-//                         progExercises {
-//                             id
-//                             name
-//                             note
-//                             trustLabel
-//                             visibility
-//                         }
-//                         name
-//                         description
-//                         goal
-//                     }
-//                 }
-//                """;
-//
-//        LinkedHashMap<String, Object> exerciseDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getExerciseById", variables);
-//
-//        Assertions.assertNull(exerciseDto);
-//    }
-//
+    @Test
+    void PrivilegeController_GetPrivilegeById_Unsuccessful() {
+        variables.put("id", 1);
+        when(privilegeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+
+        @Language("GraphQL")
+        String query = """
+                 query ($id : Int!) {
+                      getPrivilegeById (id: $id) {
+                          id
+                          name
+                          roles {
+                              id
+                              name
+                              privileges {
+                                  id
+                                  name
+                              }
+                          }
+                      }
+                  }
+                """;
+
+        LinkedHashMap<String, Object> exerciseDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getPrivilegeById", variables);
+
+        Assertions.assertNull(exerciseDto);
+    }
+
 //    @Test
 //    void PrivilegeController_GetExerciseById_Success() {
 //        variables.put("id", 1);
-//        when(roleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(privilegeEntity));
-//        when(privilegeMapper.mapTo(Mockito.any(ExerciseEntity.class))).thenReturn(privilegeDto);
+//        when(privilegeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(privilegeEntity));
+//        when(privilegeMapper.mapTo(Mockito.any(PrivilegeEntity.class))).thenReturn(privilegeDto);
 //
 //        @Language("GraphQL")
 //        String query = """
-//                 query ($id : Int!){
-//                     getExerciseById(id: $id) {
-//                         id
-//                         exerciseTypes {
-//                             id
-//                             name
-//                             goal
-//                         }
-//                         muscles {
-//                             id
-//                             name
-//                             function
-//                         }
-//                         progExercises {
-//                             id
-//                             name
-//                             note
-//                             trustLabel
-//                             visibility
-//                         }
-//                         name
-//                         description
-//                         goal
-//                     }
-//                 }
+//                 query ($id : Int!) {
+//                      getPrivilegeById (id: $id) {
+//                          id
+//                          name
+//                          roles {
+//                              id
+//                              name
+//                              privileges {
+//                                  id
+//                                  name
+//                              }
+//                          }
+//                      }
+//                  }
 //                """;
 //
 //        LinkedHashMap<String, Object> exerciseDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getExerciseById", variables);
+//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getPrivilegeById", variables);
 //
 //        Assertions.assertNotNull(exerciseDto);
 //    }
