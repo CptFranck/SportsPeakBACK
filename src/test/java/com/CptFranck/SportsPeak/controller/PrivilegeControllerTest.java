@@ -220,58 +220,46 @@ class PrivilegeControllerTest {
 
         Assertions.assertNull(privilegeDto);
     }
-//
-//    @Test
-//    void PrivilegeController_ModifyExercise_Success() {
-//        variables.put("inputExercise", objectMapper.convertValue(
-//                        createTestInputExercise(),
-//                new TypeReference<LinkedHashMap<String, Object>>() {
-//                }
-//                )
-//        );
-//        Set<MuscleEntity> muscles = new HashSet<>();
-//        Set<ExerciseTypeEntity> exerciseType = new HashSet<>();
-//        when(roleService.exists(Mockito.any(Long.class))).thenReturn(true);
-//        when(privilegeService.findMany(Mockito.anySet())).thenReturn(muscles);
-//        when(exerciseTypeService.findMany(Mockito.anySet())).thenReturn(exerciseType);
-//        when(roleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(privilegeEntity));
-//        when(roleService.save(Mockito.any(ExerciseEntity.class))).thenReturn(privilegeEntity);
-//        when(privilegeMapper.mapTo(Mockito.any(ExerciseEntity.class))).thenReturn(privilegeDto);
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 mutation ($inputExercise : InputExercise!){
-//                      modifyExercise(inputExercise: $inputExercise) {
-//                          id
-//                          name
-//                          goal
-//                          muscles {
-//                              id
-//                              name
-//                              function
-//                          }
-//                          exerciseTypes {
-//                              id
-//                              name
-//                              goal
-//                          }
-//                          progExercises {
-//                              id
-//                              name
-//                              note
-//                              trustLabel
-//                              visibility
-//                          }
-//                      }
-//                  }
-//                """;
-//
-//        LinkedHashMap<String, Object> privilegeDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyExercise", variables);
-//
-//        Assertions.assertNotNull(privilegeDto);
-//    }
-//
+
+    @Test
+    void PrivilegeController_ModifyPrivilege_Success() {
+        variables.put("inputPrivilege", objectMapper.convertValue(
+                        createTestInputPrivilege(1L),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        Set<RoleEntity> roles = new HashSet<>();
+        when(privilegeService.exists(Mockito.any(Long.class))).thenReturn(true);
+        when(roleService.findMany(Mockito.anySet())).thenReturn(roles);
+        when(privilegeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(privilegeEntity));
+        when(privilegeService.save(Mockito.any(PrivilegeEntity.class))).thenReturn(privilegeEntity);
+        when(privilegeMapper.mapTo(Mockito.any(PrivilegeEntity.class))).thenReturn(privilegeDto);
+
+        @Language("GraphQL")
+        String query = """
+                 mutation ($inputPrivilege : InputPrivilege!){
+                     modifyPrivilege(inputPrivilege: $inputPrivilege) {
+                         id
+                         name
+                         roles {
+                             id
+                             name
+                             privileges {
+                                 id
+                                 name
+                             }
+                         }
+                     }
+                 }
+                """;
+
+        LinkedHashMap<String, Object> privilegeDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyPrivilege", variables);
+
+        Assertions.assertNotNull(privilegeDto);
+    }
+
 //    @Test
 //    void PrivilegeController_DeleteExercise_Unsuccessful() {
 //        variables.put("exerciseId", 1);
