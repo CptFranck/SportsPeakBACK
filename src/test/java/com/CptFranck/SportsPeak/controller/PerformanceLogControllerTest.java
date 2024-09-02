@@ -22,6 +22,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
@@ -102,61 +103,63 @@ class PerformanceLogControllerTest {
         Assertions.assertNotNull(PerformanceLogDtos);
     }
 
-//    @Test
-//    void PerformanceLogController_GetPerformanceLogById_Unsuccessful() {
-//        variables.put("id", 1);
-//        when(performanceLogService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 query ($id : Int!) {
-//                      getPerformanceLogById (id : $id) {
-//                          id
-//                          exercises {
-//                              id
-//                              name
-//                              goal
-//                          }
-//                          name
-//                          function
-//                      }
-//                  }
-//                """;
-//
-//        LinkedHashMap<String, Object> PerformanceLogDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getPerformanceLogById", variables);
-//
-//        Assertions.assertNull(PerformanceLogDto);
-//    }
-//
-//    @Test
-//    void PerformanceLogController_GetPerformanceLogById_Success() {
-//        variables.put("id", 1);
-//        when(performanceLogService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(performanceLog));
-//        when(performanceLogMapper.mapTo(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLogDto);
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 query ($id : Int!) {
-//                     getPerformanceLogById (id : $id) {
-//                         id
-//                         exercises {
-//                             id
-//                             name
-//                             goal
-//                         }
-//                         name
-//                         function
-//                     }
-//                 }
-//                """;
-//
-//        LinkedHashMap<String, Object> PerformanceLogDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getPerformanceLogById", variables);
-//
-//        Assertions.assertNotNull(PerformanceLogDto);
-//    }
-//
+    @Test
+    void PerformanceLogController_GetPerformanceLogById_Unsuccessful() {
+        variables.put("id", 1);
+        when(performanceLogService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+
+        @Language("GraphQL")
+        String query = """
+                 query ($id : Int!){
+                       getPerformanceLogById(id: $id) {
+                           id
+                           setIndex
+                           repetitionNumber
+                           weight
+                           weightUnit
+                           logDate
+                           targetSet {
+                               id
+                           }
+                       }
+                   }
+                """;
+
+        LinkedHashMap<String, Object> PerformanceLogDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getPerformanceLogById", variables);
+
+        Assertions.assertNull(PerformanceLogDto);
+    }
+
+    @Test
+    void PerformanceLogController_GetPerformanceLogById_Success() {
+        variables.put("id", 1);
+        when(performanceLogService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(performanceLog));
+        when(performanceLogMapper.mapTo(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLogDto);
+
+        @Language("GraphQL")
+        String query = """
+                 query ($id : Int!){
+                     getPerformanceLogById(id: $id) {
+                         id
+                         setIndex
+                         repetitionNumber
+                         weight
+                         weightUnit
+                         logDate
+                         targetSet {
+                             id
+                         }
+                     }
+                 }
+                """;
+
+        LinkedHashMap<String, Object> PerformanceLogDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getPerformanceLogById", variables);
+
+        Assertions.assertNotNull(PerformanceLogDto);
+    }
+
 //    @Test
 //    void PerformanceLogController_AddPerformanceLog_Success() {
 //        variables.put("inputNewPerformanceLog", objectMapper.convertValue(
