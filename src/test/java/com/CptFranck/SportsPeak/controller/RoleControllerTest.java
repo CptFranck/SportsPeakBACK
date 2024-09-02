@@ -42,7 +42,7 @@ class RoleControllerTest {
     @Autowired
     private DgsQueryExecutor dgsQueryExecutor;
     @MockBean
-    private Mapper<RoleEntity, RoleDto> privilegeMapper;
+    private Mapper<RoleEntity, RoleDto> roleMapper;
 
     @MockBean
     private RoleService roleService;
@@ -71,7 +71,7 @@ class RoleControllerTest {
     @Test
     void RoleController_GetRoles_Success() {
         when(roleService.findAll()).thenReturn(List.of(roleEntity));
-        when(privilegeMapper.mapTo(Mockito.any(RoleEntity.class))).thenReturn(roleDto);
+        when(roleMapper.mapTo(Mockito.any(RoleEntity.class))).thenReturn(roleDto);
 
         @Language("GraphQL")
         String query = """
@@ -131,37 +131,40 @@ class RoleControllerTest {
 
         Assertions.assertNull(roleDto);
     }
-//
-//    @Test
-//    void RoleController_GetRoleById_Success() {
-//        variables.put("id", 1);
-//        when(privilegeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(roleEntity));
-//        when(privilegeMapper.mapTo(Mockito.any(RoleEntity.class))).thenReturn(roleDto);
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 query ($id : Int!) {
-//                      getRoleById (id: $id) {
-//                          id
-//                          name
-//                          roles {
-//                              id
-//                              name
-//                              privileges {
-//                                  id
-//                                  name
-//                              }
-//                          }
-//                      }
-//                  }
-//                """;
-//
-//        LinkedHashMap<String, Object> roleDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getRoleById", variables);
-//
-//        Assertions.assertNotNull(roleDto);
-//    }
-//
+
+    @Test
+    void RoleController_GetRoleById_Success() {
+        variables.put("id", 1);
+        when(roleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(roleEntity));
+        when(roleMapper.mapTo(Mockito.any(RoleEntity.class))).thenReturn(roleDto);
+
+        @Language("GraphQL")
+        String query = """
+                 query ($id : Int!) {
+                       getRoleById (id: $id) {
+                           id
+                           name
+                           users {
+                               id
+                               email
+                               firstName
+                               lastName
+                               username
+                           }
+                           privileges {
+                               id
+                               name
+                           }
+                       }
+                   }
+                """;
+
+        LinkedHashMap<String, Object> roleDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getRoleById", variables);
+
+        Assertions.assertNotNull(roleDto);
+    }
+
 //    @Test
 //    void RoleController_AddRole_Success() {
 //        variables.put("inputNewRole", objectMapper.convertValue(
