@@ -46,8 +46,8 @@ type Mutation {
     deleteRole(roleId: Int!): Int!
 
     addPrivilege(inputNewPrivilege: InputNewPrivilege!): Privilege!
-    modifyPrivilege(inputPrivilege: InputPrivilege!): Privilege!
-    deletePrivilege(privilegeId: Int!): Int!
+    modifyPrivilege(inputPrivilege: InputPrivilege!): Privilege
+    deletePrivilege(privilegeId: Int!): Int
 
     addProgExercise(inputNewProgExercise: InputNewProgExercise!): ProgExercise!
     modifyProgExercise(inputProgExercise: InputProgExercise!): ProgExercise!
