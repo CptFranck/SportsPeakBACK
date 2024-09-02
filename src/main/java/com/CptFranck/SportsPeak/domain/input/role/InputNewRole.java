@@ -1,10 +1,14 @@
 package com.CptFranck.SportsPeak.domain.input.role;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Data
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class InputNewRole {
 
     private String name;
