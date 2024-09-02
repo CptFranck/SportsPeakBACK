@@ -13,7 +13,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.netflix.graphql.dgs.DgsQueryExecutor;
 import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
 import com.netflix.graphql.dgs.exceptions.QueryException;
-import org.intellij.lang.annotations.Language;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
+import static com.CptFranck.SportsPeak.controller.graphqlQuery.PerformanceLogQuery.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.*;
@@ -50,7 +50,9 @@ class PerformanceLogControllerTest {
     @Autowired
     private DgsQueryExecutor dgsQueryExecutor;
 
-    private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    private final ObjectMapper objectMapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     @MockBean
     private Mapper<PerformanceLogEntity, PerformanceLogDto> performanceLogMapper;
@@ -64,7 +66,6 @@ class PerformanceLogControllerTest {
     private PerformanceLogEntity performanceLog;
     private PerformanceLogDto performanceLogDto;
     private TargetSetEntity targetSet;
-    private TargetSetDto targetSetDto;
     private LinkedHashMap<String, Object> variables;
 
     @BeforeEach
@@ -76,7 +77,7 @@ class PerformanceLogControllerTest {
         ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
         ProgExerciseDto progExerciseDto = createTestProgExerciseDto(userDto, exerciseDto);
         targetSet = createTestTargetSet(1L, progExercise, null);
-        targetSetDto = createTestTargetSetDto(1L, progExerciseDto, null);
+        TargetSetDto targetSetDto = createTestTargetSetDto(1L, progExerciseDto, null);
         performanceLog = createTestPerformanceLog(1L, targetSet);
         performanceLogDto = createTestPerformanceLogDto(1L, targetSetDto);
         variables = new LinkedHashMap<>();
@@ -87,25 +88,8 @@ class PerformanceLogControllerTest {
         when(performanceLogService.findAll()).thenReturn(List.of(performanceLog));
         when(performanceLogMapper.mapTo(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLogDto);
 
-        @Language("GraphQL")
-        String query = """
-                 query {
-                      getPerformanceLogs {
-                          id
-                          setIndex
-                          repetitionNumber
-                          weight
-                          weightUnit
-                          logDate
-                          targetSet {
-                              id
-                          }
-                      }
-                  }
-                """;
-
         List<LinkedHashMap<String, Object>> PerformanceLogDtos =
-                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getPerformanceLogs");
+                dgsQueryExecutor.executeAndExtractJsonPath(getPerformanceLogsQuery, "data.getPerformanceLogs");
 
         Assertions.assertNotNull(PerformanceLogDtos);
     }
@@ -115,25 +99,8 @@ class PerformanceLogControllerTest {
         variables.put("id", 1);
         when(performanceLogService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        @Language("GraphQL")
-        String query = """
-                 query ($id : Int!){
-                       getPerformanceLogById(id: $id) {
-                           id
-                           setIndex
-                           repetitionNumber
-                           weight
-                           weightUnit
-                           logDate
-                           targetSet {
-                               id
-                           }
-                       }
-                   }
-                """;
-
         LinkedHashMap<String, Object> PerformanceLogDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getPerformanceLogById", variables);
+                dgsQueryExecutor.executeAndExtractJsonPath(getPerformanceLogByIdQuery, "data.getPerformanceLogById", variables);
 
         Assertions.assertNull(PerformanceLogDto);
     }
@@ -144,25 +111,8 @@ class PerformanceLogControllerTest {
         when(performanceLogService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(performanceLog));
         when(performanceLogMapper.mapTo(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLogDto);
 
-        @Language("GraphQL")
-        String query = """
-                 query ($id : Int!){
-                     getPerformanceLogById(id: $id) {
-                         id
-                         setIndex
-                         repetitionNumber
-                         weight
-                         weightUnit
-                         logDate
-                         targetSet {
-                             id
-                         }
-                     }
-                 }
-                """;
-
         LinkedHashMap<String, Object> PerformanceLogDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getPerformanceLogById", variables);
+                dgsQueryExecutor.executeAndExtractJsonPath(getPerformanceLogByIdQuery, "data.getPerformanceLogById", variables);
 
         Assertions.assertNotNull(PerformanceLogDto);
     }
@@ -173,31 +123,14 @@ class PerformanceLogControllerTest {
         when(performanceLogService.findAllByTargetSetId(Mockito.any(Long.class))).thenReturn(List.of(performanceLog));
         when(performanceLogMapper.mapTo(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLogDto);
 
-        @Language("GraphQL")
-        String query = """
-                 query ($targetSetId : Int!){
-                       getPerformanceLogsByTargetSetsId(targetSetId: $targetSetId) {
-                           id
-                           setIndex
-                           repetitionNumber
-                           weight
-                           weightUnit
-                           logDate
-                           targetSet {
-                               id
-                           }
-                       }
-                   }
-                """;
-
         List<LinkedHashMap<String, Object>> PerformanceLogDtos =
-                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getPerformanceLogsByTargetSetsId", variables);
+                dgsQueryExecutor.executeAndExtractJsonPath(getPerformanceLogsByTargetSetsIdQuery, "data.getPerformanceLogsByTargetSetsId", variables);
 
         Assertions.assertNotNull(PerformanceLogDtos);
     }
 
     @Test
-    void PerformanceLogController_AddPerformanceLog_Unsuccessful() {
+    void PerformanceLogController_AddPerformanceLog_UnsuccessfulTargetSetNotFound() {
         variables.put("inputNewPerformanceLog", objectMapper.convertValue(
                         createTestInputNewPerformanceLog(1L),
                         new TypeReference<LinkedHashMap<String, Object>>() {
@@ -206,25 +139,8 @@ class PerformanceLogControllerTest {
         );
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        @Language("GraphQL")
-        String query = """
-                 mutation ($inputNewPerformanceLog: InputNewPerformanceLog!){
-                       addPerformanceLog(inputNewPerformanceLog: $inputNewPerformanceLog) {
-                           id
-                           setIndex
-                           repetitionNumber
-                           weight
-                           weightUnit
-                           logDate
-                           targetSet {
-                               id
-                           }
-                       }
-                   }
-                """;
-
         Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(query, "data.addPerformanceLog", variables));
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(addPerformanceLogQuery, "data.addPerformanceLog", variables));
     }
 
     @Test
@@ -239,31 +155,14 @@ class PerformanceLogControllerTest {
         when(performanceLogService.save(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLog);
         when(performanceLogMapper.mapTo(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLogDto);
 
-        @Language("GraphQL")
-        String query = """
-                 mutation ($inputNewPerformanceLog: InputNewPerformanceLog!){
-                       addPerformanceLog(inputNewPerformanceLog: $inputNewPerformanceLog) {
-                           id
-                           setIndex
-                           repetitionNumber
-                           weight
-                           weightUnit
-                           logDate
-                           targetSet {
-                               id
-                           }
-                       }
-                   }
-                """;
-
         LinkedHashMap<String, Object> PerformanceLogDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.addPerformanceLog", variables);
+                dgsQueryExecutor.executeAndExtractJsonPath(addPerformanceLogQuery, "data.addPerformanceLog", variables);
 
         Assertions.assertNotNull(PerformanceLogDto);
     }
 
     @Test
-    void PerformanceLogController_ModifyPerformanceLog_Unsuccessful() {
+    void PerformanceLogController_ModifyPerformanceLog_UnsuccessfulDoesNotExist() {
         variables.put("inputPerformanceLog", objectMapper.convertValue(
                         createTestInputPerformanceLog(1L, 1L),
                         new TypeReference<LinkedHashMap<String, Object>>() {
@@ -272,25 +171,8 @@ class PerformanceLogControllerTest {
         );
         when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(false);
 
-        @Language("GraphQL")
-        String query = """
-                 mutation ($inputPerformanceLog: InputPerformanceLog!){
-                     modifyPerformanceLog(inputPerformanceLog: $inputPerformanceLog) {
-                         id
-                         setIndex
-                         repetitionNumber
-                         weight
-                         weightUnit
-                         logDate
-                         targetSet {
-                             id
-                         }
-                     }
-                 }
-                """;
-
         LinkedHashMap<String, Object> PerformanceLogDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyPerformanceLog", variables);
+                dgsQueryExecutor.executeAndExtractJsonPath(modifyPerformanceLogQuery, "data.modifyPerformanceLog", variables);
 
         Assertions.assertNull(PerformanceLogDto);
     }
@@ -308,43 +190,19 @@ class PerformanceLogControllerTest {
         when(performanceLogService.save(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLog);
         when(performanceLogMapper.mapTo(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLogDto);
 
-        @Language("GraphQL")
-        String query = """
-                 mutation ($inputPerformanceLog: InputPerformanceLog!){
-                     modifyPerformanceLog(inputPerformanceLog: $inputPerformanceLog) {
-                         id
-                         setIndex
-                         repetitionNumber
-                         weight
-                         weightUnit
-                         logDate
-                         targetSet {
-                             id
-                         }
-                     }
-                 }
-                """;
-
         LinkedHashMap<String, Object> PerformanceLogDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyPerformanceLog", variables);
+                dgsQueryExecutor.executeAndExtractJsonPath(modifyPerformanceLogQuery, "data.modifyPerformanceLog", variables);
 
         Assertions.assertNotNull(PerformanceLogDto);
     }
 
     @Test
-    void PerformanceLogController_DeletePerformanceLog_Unsuccessful() {
+    void PerformanceLogController_DeletePerformanceLog_UnsuccessfulDoesNotExist() {
         variables.put("performanceLogId", 1);
         when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(false);
 
-        @Language("GraphQL")
-        String query = """
-                 mutation ($performanceLogId : Int!){
-                     deletePerformanceLog(performanceLogId: $performanceLogId)
-                 }
-                """;
-
         Integer id =
-                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.deletePerformanceLog", variables);
+                dgsQueryExecutor.executeAndExtractJsonPath(deletePerformanceLogQuery, "data.deletePerformanceLog", variables);
 
         Assertions.assertNull(id);
     }
@@ -354,15 +212,8 @@ class PerformanceLogControllerTest {
         variables.put("performanceLogId", 1);
         when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(true);
 
-        @Language("GraphQL")
-        String query = """
-                 mutation ($performanceLogId : Int!){
-                     deletePerformanceLog(performanceLogId: $performanceLogId)
-                 }
-                """;
-
         Integer id =
-                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.deletePerformanceLog", variables);
+                dgsQueryExecutor.executeAndExtractJsonPath(deletePerformanceLogQuery, "data.deletePerformanceLog", variables);
 
         Assertions.assertNotNull(id);
     }
