@@ -260,38 +260,38 @@ class PrivilegeControllerTest {
         Assertions.assertNotNull(privilegeDto);
     }
 
+    @Test
+    void PrivilegeController_DeletePrivilege_Unsuccessful() {
+        variables.put("privilegeId", 1);
+        when(privilegeService.exists(Mockito.any(Long.class))).thenReturn(false);
+
+        @Language("GraphQL")
+        String query = """
+                 mutation ($privilegeId : Int!){
+                     deletePrivilege(privilegeId: $privilegeId)
+                 }
+                """;
+
+        Integer id =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.deletePrivilege", variables);
+
+        Assertions.assertNull(id);
+    }
+
 //    @Test
-//    void PrivilegeController_DeleteExercise_Unsuccessful() {
-//        variables.put("exerciseId", 1);
-//        when(roleService.exists(Mockito.any(Long.class))).thenReturn(false);
+//    void PrivilegeController_DeletePrivilege_Success() {
+//        variables.put("privilegeId", 1);
+//        when(privilegeService.exists(Mockito.any(Long.class))).thenReturn(true);
 //
 //        @Language("GraphQL")
 //        String query = """
-//                 mutation ($exerciseId : Int!){
-//                       deleteExercise(exerciseId: $exerciseId)
-//                   }
+//                 mutation ($privilegeId : Int!){
+//                     deletePrivilege(privilegeId: $privilegeId)
+//                 }
 //                """;
 //
 //        Integer id =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.deleteExercise", variables);
-//
-//        Assertions.assertNull(id);
-//    }
-//
-//    @Test
-//    void PrivilegeController_DeleteExercise_Success() {
-//        variables.put("exerciseId", 1);
-//        when(roleService.exists(Mockito.any(Long.class))).thenReturn(true);
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 mutation ($exerciseId : Int!){
-//                       deleteExercise(exerciseId: $exerciseId)
-//                   }
-//                """;
-//
-//        Integer id =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.deleteExercise", variables);
+//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.deletePrivilege", variables);
 //
 //        Assertions.assertNotNull(id);
 //    }
