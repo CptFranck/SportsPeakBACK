@@ -1,17 +1,37 @@
 package com.CptFranck.SportsPeak.domain.input.targetSet;
 
-import lombok.Data;
+import com.CptFranck.SportsPeak.domain.input.duration.InputDuration;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
 @EqualsAndHashCode(callSuper = true)
-public class InputNewTargetSet extends AbstractInputNewTargetSet {
+public class InputNewTargetSet extends TargetSetInputBase {
 
-    private LocalDateTime creationDate;
+    private final LocalDateTime creationDate;
 
-    private Long progExerciseId;
+    private final Long progExerciseId;
 
-    private Long targetSetUpdateId;
+    private final Long targetSetUpdateId;
+
+
+    public InputNewTargetSet(
+            Integer index,
+            Integer setNumber,
+            Integer repetitionNumber,
+            Float weight,
+            String weightUnit,
+            InputDuration physicalExertionUnitTime,
+            InputDuration restTime,
+            LocalDateTime creationDate,
+            Long progExerciseId,
+            Long targetSetUpdateId
+    ) {
+        super(index, setNumber, repetitionNumber, weight, weightUnit, physicalExertionUnitTime, restTime);
+        this.creationDate = creationDate;
+        this.progExerciseId = progExerciseId;
+        this.targetSetUpdateId = targetSetUpdateId;
+    }
 }

@@ -1,11 +1,16 @@
 package com.CptFranck.SportsPeak.domain.input.targetSet;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class InputTargetSetState {
 
-    private Long id;
+    private final Long id;
 
-    private String state;
+    private final String state;
+
+    public InputTargetSetState(Long id, String label) {
+        this.id = id;
+        this.state = label;
+    }
 }

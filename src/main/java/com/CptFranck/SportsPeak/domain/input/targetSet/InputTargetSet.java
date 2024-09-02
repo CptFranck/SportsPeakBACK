@@ -1,12 +1,27 @@
 package com.CptFranck.SportsPeak.domain.input.targetSet;
 
-import lombok.Data;
+import com.CptFranck.SportsPeak.domain.input.duration.InputDuration;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
-@Data
+
+@Getter
 @EqualsAndHashCode(callSuper = true)
-public class InputTargetSet extends AbstractInputNewTargetSet {
+public class InputTargetSet extends TargetSetInputBase {
 
-    private Long id;
+    private final Long id;
 
+    public InputTargetSet(
+            Long id,
+            Integer index,
+            Integer setNumber,
+            Integer repetitionNumber,
+            Float weight,
+            String weightUnit,
+            InputDuration physicalExertionUnitTime,
+            InputDuration restTime
+    ) {
+        super(index, setNumber, repetitionNumber, weight, weightUnit, physicalExertionUnitTime, restTime);
+        this.id = id;
+    }
 }

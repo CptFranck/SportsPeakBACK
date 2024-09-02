@@ -1,10 +1,14 @@
 package com.CptFranck.SportsPeak.domain.input.targetSet;
 
 import com.CptFranck.SportsPeak.domain.input.duration.InputDuration;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Data
-public abstract class AbstractInputNewTargetSet {
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+public class TargetSetInputBase {
 
     private Integer index;
 

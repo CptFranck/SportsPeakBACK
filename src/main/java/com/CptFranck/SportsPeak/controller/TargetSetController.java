@@ -8,10 +8,10 @@ import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
 import com.CptFranck.SportsPeak.domain.enumType.WeightUnit;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
-import com.CptFranck.SportsPeak.domain.input.targetSet.AbstractInputNewTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputNewTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSetState;
+import com.CptFranck.SportsPeak.domain.input.targetSet.TargetSetInputBase;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import com.CptFranck.SportsPeak.service.TargetSetService;
@@ -91,7 +91,7 @@ public class TargetSetController {
         return targetSetId;
     }
 
-    private TargetSetEntity inputToEntity(AbstractInputNewTargetSet targetSetInput) {
+    private TargetSetEntity inputToEntity(TargetSetInputBase targetSetInput) {
         Long id;
         LocalDateTime creationDate;
         TargetSetEntity targetSetUpdate;
