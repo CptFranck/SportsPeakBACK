@@ -195,5 +195,84 @@ public class TargetSetQuery {
                 }
             }
             """;
+
+    @Language("GraphQL")
+    public static String modifyTargetSetQuery = """
+            mutation ($inputTargetSet: InputTargetSet!){
+                 modifyTargetSet(inputTargetSet: $inputTargetSet) {
+                     id
+                     setNumber
+                     repetitionNumber
+                     weight
+                     weightUnit
+                     physicalExertionUnitTime{
+                         hours
+                         minutes
+                         seconds
+                     }
+                     restTime{
+                         hours
+                         minutes
+                         seconds
+                     }
+                     creationDate
+                     state
+                     targetSetUpdate {
+                         id
+                     }
+                     performanceLogs {
+                         id
+                         setIndex
+                         repetitionNumber
+                         weight
+                         weightUnit
+                         logDate
+                     }
+                 }
+             }
+            """;
+
+    @Language("GraphQL")
+    public static String modifyTargetSetStateQuery = """
+            mutation ($inputTargetSetState: InputTargetSetState!){
+                modifyTargetSetState(inputTargetSetState: $inputTargetSetState) {
+                    id
+                    setNumber
+                    repetitionNumber
+                    weight
+                    weightUnit
+                    physicalExertionUnitTime{
+                        hours
+                        minutes
+                        seconds
+                    }
+                    restTime{
+                        hours
+                        minutes
+                        seconds
+                    }
+                    creationDate
+                    state
+                    targetSetUpdate {
+                        id
+                    }
+                    performanceLogs {
+                        id
+                        setIndex
+                        repetitionNumber
+                        weight
+                        weightUnit
+                        logDate
+                    }
+                }
+            }
+            """;
+
+    @Language("GraphQL")
+    public static String deleteTargetSetQuery = """
+            mutation ($targetSetId : Int!){
+                  deleteTargetSet(targetSetId: $targetSetId)
+              }
+            """;
 }
 
