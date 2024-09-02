@@ -26,9 +26,9 @@ public class TestPrivilegeUtils {
         );
     }
 
-    public static PrivilegeDto createTestPrivilegeDto() {
+    public static PrivilegeDto createTestPrivilegeDto(Long id) {
         return new PrivilegeDto(
-                8L,
+                id,
                 "Privilege name",
                 new HashSet<RoleDto>()
         );
