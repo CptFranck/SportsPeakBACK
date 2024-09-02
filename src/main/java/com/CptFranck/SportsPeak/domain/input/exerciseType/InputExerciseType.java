@@ -16,8 +16,8 @@ public class InputExerciseType extends InputNewExerciseType {
 
     private Long id;
 
-    public InputExerciseType(Long id, String name, String goal, ArrayList<Long> longs) {
-        super(name, goal, longs);
+    public InputExerciseType(Long id, String name, String goal, ArrayList<Long> exerciseIds) {
+        super(name, goal, exerciseIds);
         this.id = id;
     }
 }
