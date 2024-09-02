@@ -278,21 +278,21 @@ class PrivilegeControllerTest {
         Assertions.assertNull(id);
     }
 
-//    @Test
-//    void PrivilegeController_DeletePrivilege_Success() {
-//        variables.put("privilegeId", 1);
-//        when(privilegeService.exists(Mockito.any(Long.class))).thenReturn(true);
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 mutation ($privilegeId : Int!){
-//                     deletePrivilege(privilegeId: $privilegeId)
-//                 }
-//                """;
-//
-//        Integer id =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.deletePrivilege", variables);
-//
-//        Assertions.assertNotNull(id);
-//    }
+    @Test
+    void PrivilegeController_DeletePrivilege_Success() {
+        variables.put("privilegeId", 1);
+        when(privilegeService.exists(Mockito.any(Long.class))).thenReturn(true);
+
+        @Language("GraphQL")
+        String query = """
+                 mutation ($privilegeId : Int!){
+                     deletePrivilege(privilegeId: $privilegeId)
+                 }
+                """;
+
+        Integer id =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.deletePrivilege", variables);
+
+        Assertions.assertNotNull(id);
+    }
 }
