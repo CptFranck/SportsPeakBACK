@@ -121,35 +121,35 @@ class PrivilegeControllerTest {
         Assertions.assertNull(exerciseDto);
     }
 
-//    @Test
-//    void PrivilegeController_GetExerciseById_Success() {
-//        variables.put("id", 1);
-//        when(privilegeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(privilegeEntity));
-//        when(privilegeMapper.mapTo(Mockito.any(PrivilegeEntity.class))).thenReturn(privilegeDto);
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 query ($id : Int!) {
-//                      getPrivilegeById (id: $id) {
-//                          id
-//                          name
-//                          roles {
-//                              id
-//                              name
-//                              privileges {
-//                                  id
-//                                  name
-//                              }
-//                          }
-//                      }
-//                  }
-//                """;
-//
-//        LinkedHashMap<String, Object> exerciseDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getPrivilegeById", variables);
-//
-//        Assertions.assertNotNull(exerciseDto);
-//    }
+    @Test
+    void PrivilegeController_GetPrivilegeById_Success() {
+        variables.put("id", 1);
+        when(privilegeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(privilegeEntity));
+        when(privilegeMapper.mapTo(Mockito.any(PrivilegeEntity.class))).thenReturn(privilegeDto);
+
+        @Language("GraphQL")
+        String query = """
+                 query ($id : Int!) {
+                      getPrivilegeById (id: $id) {
+                          id
+                          name
+                          roles {
+                              id
+                              name
+                              privileges {
+                                  id
+                                  name
+                              }
+                          }
+                      }
+                  }
+                """;
+
+        LinkedHashMap<String, Object> exerciseDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getPrivilegeById", variables);
+
+        Assertions.assertNotNull(exerciseDto);
+    }
 
 //    @Test
 //    void PrivilegeController_AddExercise_Success() {
