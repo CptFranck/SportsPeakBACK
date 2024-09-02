@@ -9,6 +9,9 @@ import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
 import com.CptFranck.SportsPeak.domain.enumType.WeightUnit;
 import com.CptFranck.SportsPeak.domain.input.duration.InputDuration;
+import com.CptFranck.SportsPeak.domain.input.targetSet.InputNewTargetSet;
+import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSet;
+import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSetState;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -69,6 +72,48 @@ public class TestTargetSetUtils {
                 progExercise,
                 update,
                 new HashSet<PerformanceLogDto>()
+        );
+    }
+
+    public static InputNewTargetSet createTestInputNewTargetSet(Long progExerciseId, Long targetSetUpdateId) {
+        LocalDateTime creationDate = LocalDateTime.now();
+        Duration effortTime = Duration.ofHours(0).plusMinutes(0).plusSeconds(5);
+        Duration restTime = Duration.ofHours(0).plusMinutes(4).plusSeconds(0);
+        return new InputNewTargetSet(
+                1,
+                5,
+                10,
+                0f,
+                WeightUnit.KILOGRAMME.label,
+                InputDuration.DurationToInputDuration(effortTime),
+                InputDuration.DurationToInputDuration(restTime),
+                creationDate,
+                progExerciseId,
+                targetSetUpdateId
+        );
+    }
+
+    public static InputTargetSet createTestInputTargetSet(Long id) {
+        LocalDateTime creationDate = LocalDateTime.now();
+        Duration effortTime = Duration.ofHours(0).plusMinutes(0).plusSeconds(5);
+        Duration restTime = Duration.ofHours(0).plusMinutes(4).plusSeconds(0);
+
+        return new InputTargetSet(
+                1L,
+                1,
+                5,
+                10,
+                0f,
+                WeightUnit.KILOGRAMME.label,
+                InputDuration.DurationToInputDuration(effortTime),
+                InputDuration.DurationToInputDuration(restTime)
+        );
+    }
+
+    public static InputTargetSetState createTestInputInputTargetSetState(Long id) {
+        return new InputTargetSetState(
+                id,
+                TargetSetState.USED.label
         );
     }
 }
