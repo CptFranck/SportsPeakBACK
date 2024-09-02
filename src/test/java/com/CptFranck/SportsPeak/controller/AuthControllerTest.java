@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.graphql.dgs.DgsQueryExecutor;
 import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
 import com.netflix.graphql.dgs.exceptions.QueryException;
-import org.intellij.lang.annotations.Language;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +33,8 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 
+import static com.CptFranck.SportsPeak.controller.graphqlQuery.AuthQuery.loginQuery;
+import static com.CptFranck.SportsPeak.controller.graphqlQuery.AuthQuery.registerQuery;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
 import static org.mockito.Mockito.when;
@@ -92,42 +93,8 @@ public class AuthControllerTest {
         when(authenticationManager.authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class))).thenReturn(null);
         when(userAuthProvider.generateToken(Mockito.any())).thenReturn(jwToken);
 
-        @Language("GraphQL")
-        String query = """
-                 mutation ($inputCredentials: InputCredentials!){
-                     login(inputCredentials: $inputCredentials){
-                         tokenType
-                         accessToken
-                         expiration
-                         user {
-                             id
-                             email
-                             firstName
-                             lastName
-                             username
-                             roles {
-                                 id
-                                 name
-                                 privileges {
-                                     id
-                                     name
-                                 }
-                             }
-                             progExercisesCreated {
-                                 id
-                                 name
-                             }
-                             subscribedProgExercises {
-                                 id
-                                 name
-                             }
-                         }
-                     }
-                 }
-                """;
-
         LinkedHashMap<String, Object> authDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.login", variables);
+                dgsQueryExecutor.executeAndExtractJsonPath(loginQuery, "data.login", variables);
 
         Assertions.assertNotNull(authDto);
     }
@@ -148,34 +115,8 @@ public class AuthControllerTest {
         );
         when(roleService.findByName(Mockito.any(String.class))).thenReturn(Optional.empty());
 
-        @Language("GraphQL")
-        String query = """
-                 mutation ($inputRegisterNewUser : InputRegisterNewUser!) {
-                      register(inputRegisterNewUser: $inputRegisterNewUser){
-                          tokenType
-                          accessToken
-                          expiration
-                          user {
-                              id
-                              email
-                              firstName
-                              lastName
-                              username
-                              roles {
-                                  id
-                                  name
-                                  privileges {
-                                      id
-                                      name
-                                  }
-                              }
-                          }
-                      }
-                  }
-                """;
-
         Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(query, "data.register", variables));
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(registerQuery, "data.register", variables));
     }
 
     @Test
@@ -199,34 +140,8 @@ public class AuthControllerTest {
         when(authenticationManager.authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class))).thenReturn(null);
         when(userAuthProvider.generateToken(Mockito.any())).thenReturn(jwToken);
 
-        @Language("GraphQL")
-        String query = """
-                 mutation ($inputRegisterNewUser : InputRegisterNewUser!) {
-                      register(inputRegisterNewUser: $inputRegisterNewUser){
-                          tokenType
-                          accessToken
-                          expiration
-                          user {
-                              id
-                              email
-                              firstName
-                              lastName
-                              username
-                              roles {
-                                  id
-                                  name
-                                  privileges {
-                                      id
-                                      name
-                                  }
-                              }
-                          }
-                      }
-                  }
-                """;
-
         LinkedHashMap<String, Object> authDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.register", variables);
+                dgsQueryExecutor.executeAndExtractJsonPath(registerQuery, "data.register", variables);
 
         Assertions.assertNotNull(authDto);
     }
