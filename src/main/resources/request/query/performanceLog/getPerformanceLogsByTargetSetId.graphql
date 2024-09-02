@@ -1,7 +1,6 @@
 query ($targetSetId : Int!){
     getPerformanceLogsByTargetSetsId(targetSetId: $targetSetId) {
         id
-        id
         setIndex
         repetitionNumber
         weight
