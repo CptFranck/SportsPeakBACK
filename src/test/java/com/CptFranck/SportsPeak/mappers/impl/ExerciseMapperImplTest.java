@@ -67,7 +67,7 @@ public class ExerciseMapperImplTest {
     void exerciseMapper_MapFrom_Success() {
         ExerciseDto exercise = createTestExerciseDto(1L);
         MuscleDto muscle = createTestMuscleDto(1L);
-        ExerciseTypeDto exerciseType = createTestExerciseTypeDto();
+        ExerciseTypeDto exerciseType = createTestExerciseTypeDto(1L);
         UserDto user = createTestUserDto();
         ProgExerciseDto progExercise = createTestProgExerciseDto(user, exercise);
 

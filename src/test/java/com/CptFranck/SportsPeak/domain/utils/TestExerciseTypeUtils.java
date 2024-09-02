@@ -23,9 +23,9 @@ public class TestExerciseTypeUtils {
         return List.of(createTestExerciseType(1L), createTestExerciseType(2L), createTestExerciseType(3L));
     }
 
-    public static ExerciseTypeDto createTestExerciseTypeDto() {
+    public static ExerciseTypeDto createTestExerciseTypeDto(Long id) {
         return new ExerciseTypeDto(
-                1L,
+                id,
                 "Exercise type name",
                 "Exercise type goal",
                 new HashSet<ExerciseDto>()
