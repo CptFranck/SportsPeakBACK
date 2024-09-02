@@ -1,14 +1,12 @@
 package com.CptFranck.SportsPeak.domain.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class JWToken {
     String token;
     LocalDateTime expiration;
