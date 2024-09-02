@@ -67,13 +67,9 @@ public class AuthControllerTest {
     private AuthenticationManager authenticationManager;
 
     private UserEntity user;
-
     private UserDto userDto;
-
     private JWToken jwToken;
-
     private LinkedHashMap<String, Object> variables;
-
 
     @BeforeEach
     void setUp() {
@@ -146,8 +142,8 @@ public class AuthControllerTest {
                                 user.getLastName(),
                                 user.getPassword()
                         ),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }
                 )
         );
         when(roleService.findByName(Mockito.any(String.class))).thenReturn(Optional.empty());
@@ -191,8 +187,8 @@ public class AuthControllerTest {
                                 user.getLastName(),
                                 user.getPassword()
                         ),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }
                 )
         );
         RoleEntity role = new RoleEntity(1L, "Role", new HashSet<>(), new HashSet<>());

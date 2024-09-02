@@ -55,24 +55,19 @@ class ExerciseControllerTest {
     private ExerciseTypeService exerciseTypeService;
 
     private ExerciseEntity exercise;
-
-    private List<ExerciseEntity> exercises;
-
     private ExerciseDto exerciseDto;
-
     private LinkedHashMap<String, Object> variables;
 
     @BeforeEach
     void init() {
         exercise = createTestExercise(1L);
-        exercises = List.of(exercise);
         exerciseDto = createTestExerciseDto(1L);
         variables = new LinkedHashMap<>();
     }
 
     @Test
     void ExerciseController_GetExercises_Success() {
-        when(exerciseService.findAll()).thenReturn(exercises);
+        when(exerciseService.findAll()).thenReturn(List.of(exercise));
         when(exerciseMapper.mapTo(Mockito.any(ExerciseEntity.class))).thenReturn(exerciseDto);
 
         @Language("GraphQL")
@@ -194,9 +189,10 @@ class ExerciseControllerTest {
     @Test
     void ExerciseController_AddExercise_Success() {
         variables.put("inputNewExercise", objectMapper.convertValue(
-                createTestInputNewExercise(),
-                new TypeReference<LinkedHashMap<String, Object>>() {
-                })
+                        createTestInputNewExercise(),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
         );
         Set<MuscleEntity> muscles = new HashSet<>();
         Set<ExerciseTypeEntity> exerciseType = new HashSet<>();
@@ -242,9 +238,10 @@ class ExerciseControllerTest {
     @Test
     void ExerciseController_ModifyExercise_Unsuccessful() {
         variables.put("inputExercise", objectMapper.convertValue(
-                createTestInputExercise(),
-                new TypeReference<LinkedHashMap<String, Object>>() {
-                })
+                        createTestInputExercise(),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
         );
         when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(false);
 
@@ -285,9 +282,10 @@ class ExerciseControllerTest {
     @Test
     void ExerciseController_ModifyExercise_Success() {
         variables.put("inputExercise", objectMapper.convertValue(
-                createTestInputExercise(),
-                new TypeReference<LinkedHashMap<String, Object>>() {
-                })
+                        createTestInputExercise(),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
         );
         Set<MuscleEntity> muscles = new HashSet<>();
         Set<ExerciseTypeEntity> exerciseType = new HashSet<>();
