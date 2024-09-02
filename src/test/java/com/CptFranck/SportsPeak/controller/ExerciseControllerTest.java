@@ -13,7 +13,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.graphql.dgs.DgsQueryExecutor;
 import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
-import org.intellij.lang.annotations.Language;
+import com.netflix.graphql.dgs.exceptions.QueryException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +26,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.*;
 
+import static com.CptFranck.SportsPeak.controller.graphqlQuery.ExerciseQuery.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.*;
 import static org.mockito.Mockito.when;
 
@@ -70,37 +71,8 @@ class ExerciseControllerTest {
         when(exerciseService.findAll()).thenReturn(List.of(exercise));
         when(exerciseMapper.mapTo(Mockito.any(ExerciseEntity.class))).thenReturn(exerciseDto);
 
-        @Language("GraphQL")
-        String query = """
-                 query {
-                    getExercises {
-                        id
-                        exerciseTypes {
-                            id
-                            name
-                            goal
-                        }
-                        muscles {
-                            id
-                            name
-                            function
-                        }
-                        progExercises {
-                            id
-                            name
-                            note
-                            trustLabel
-                            visibility
-                        }
-                        name
-                        description
-                        goal
-                    }
-                }
-                """;
-
         List<LinkedHashMap<String, Object>> exerciseDtos =
-                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getExercises");
+                dgsQueryExecutor.executeAndExtractJsonPath(getExercisesQuery, "data.getExercises");
 
         Assertions.assertNotNull(exerciseDtos);
     }
@@ -110,37 +82,8 @@ class ExerciseControllerTest {
         variables.put("id", 1);
         when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        @Language("GraphQL")
-        String query = """
-                 query ($id : Int!){
-                     getExerciseById(id: $id) {
-                         id
-                         exerciseTypes {
-                             id
-                             name
-                             goal
-                         }
-                         muscles {
-                             id
-                             name
-                             function
-                         }
-                         progExercises {
-                             id
-                             name
-                             note
-                             trustLabel
-                             visibility
-                         }
-                         name
-                         description
-                         goal
-                     }
-                 }
-                """;
-
         LinkedHashMap<String, Object> exerciseDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getExerciseById", variables);
+                dgsQueryExecutor.executeAndExtractJsonPath(getExerciseByIdQuery, "data.getExerciseById", variables);
 
         Assertions.assertNull(exerciseDto);
     }
@@ -151,37 +94,8 @@ class ExerciseControllerTest {
         when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(exercise));
         when(exerciseMapper.mapTo(Mockito.any(ExerciseEntity.class))).thenReturn(exerciseDto);
 
-        @Language("GraphQL")
-        String query = """
-                 query ($id : Int!){
-                     getExerciseById(id: $id) {
-                         id
-                         exerciseTypes {
-                             id
-                             name
-                             goal
-                         }
-                         muscles {
-                             id
-                             name
-                             function
-                         }
-                         progExercises {
-                             id
-                             name
-                             note
-                             trustLabel
-                             visibility
-                         }
-                         name
-                         description
-                         goal
-                     }
-                 }
-                """;
-
         LinkedHashMap<String, Object> exerciseDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getExerciseById", variables);
+                dgsQueryExecutor.executeAndExtractJsonPath(getExerciseByIdQuery, "data.getExerciseById", variables);
 
         Assertions.assertNotNull(exerciseDto);
     }
@@ -189,7 +103,7 @@ class ExerciseControllerTest {
     @Test
     void ExerciseController_AddExercise_Success() {
         variables.put("inputNewExercise", objectMapper.convertValue(
-                        createTestInputNewExercise(),
+                createTestInputNewExercise(),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }
                 )
@@ -201,42 +115,14 @@ class ExerciseControllerTest {
         when(exerciseService.save(Mockito.any(ExerciseEntity.class))).thenReturn(exercise);
         when(exerciseMapper.mapTo(Mockito.any(ExerciseEntity.class))).thenReturn(exerciseDto);
 
-        @Language("GraphQL")
-        String query = """
-                 mutation ($inputNewExercise : InputNewExercise!){
-                     addExercise(inputNewExercise: $inputNewExercise) {
-                         id
-                         name
-                         goal
-                         muscles {
-                             id
-                             name
-                             function
-                         }
-                         exerciseTypes {
-                             id
-                             name
-                             goal
-                         }
-                         progExercises {
-                             id
-                             name
-                             note
-                             trustLabel
-                             visibility
-                         }
-                     }
-                 }
-                """;
-
         LinkedHashMap<String, Object> exerciseDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.addExercise", variables);
+                dgsQueryExecutor.executeAndExtractJsonPath(addExerciseQuery, "data.addExercise", variables);
 
         Assertions.assertNotNull(exerciseDto);
     }
 
     @Test
-    void ExerciseController_ModifyExercise_Unsuccessful() {
+    void ExerciseController_ModifyExercise_UnsuccessfulDoesNotExist() {
         variables.put("inputExercise", objectMapper.convertValue(
                         createTestInputExercise(),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -245,44 +131,34 @@ class ExerciseControllerTest {
         );
         when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(false);
 
-        @Language("GraphQL")
-        String query = """
-                 mutation ($inputExercise : InputExercise!){
-                      modifyExercise(inputExercise: $inputExercise) {
-                          id
-                          name
-                          goal
-                          muscles {
-                              id
-                              name
-                              function
-                          }
-                          exerciseTypes {
-                              id
-                              name
-                              goal
-                          }
-                          progExercises {
-                              id
-                              name
-                              note
-                              trustLabel
-                              visibility
-                          }
-                      }
-                  }
-                """;
-
         LinkedHashMap<String, Object> exerciseDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyExercise", variables);
+                dgsQueryExecutor.executeAndExtractJsonPath(modifyExerciseQuery, "data.modifyExercise", variables);
 
         Assertions.assertNull(exerciseDto);
     }
 
     @Test
-    void ExerciseController_ModifyExercise_Success() {
+    void ExerciseController_ModifyExercise_UnsuccessfulExerciseNotFound() {
         variables.put("inputExercise", objectMapper.convertValue(
                         createTestInputExercise(),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        Set<MuscleEntity> muscles = new HashSet<>();
+        Set<ExerciseTypeEntity> exerciseType = new HashSet<>();
+        when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(true);
+        when(muscleService.findMany(Mockito.anySet())).thenReturn(muscles);
+        when(exerciseTypeService.findMany(Mockito.anySet())).thenReturn(exerciseType);
+        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyExerciseQuery, "data.modifyExercise", variables));
+    }
+
+    @Test
+    void ExerciseController_ModifyExercise_Success() {
+        variables.put("inputExercise", objectMapper.convertValue(
+                createTestInputExercise(),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }
                 )
@@ -296,36 +172,8 @@ class ExerciseControllerTest {
         when(exerciseService.save(Mockito.any(ExerciseEntity.class))).thenReturn(exercise);
         when(exerciseMapper.mapTo(Mockito.any(ExerciseEntity.class))).thenReturn(exerciseDto);
 
-        @Language("GraphQL")
-        String query = """
-                 mutation ($inputExercise : InputExercise!){
-                      modifyExercise(inputExercise: $inputExercise) {
-                          id
-                          name
-                          goal
-                          muscles {
-                              id
-                              name
-                              function
-                          }
-                          exerciseTypes {
-                              id
-                              name
-                              goal
-                          }
-                          progExercises {
-                              id
-                              name
-                              note
-                              trustLabel
-                              visibility
-                          }
-                      }
-                  }
-                """;
-
         LinkedHashMap<String, Object> exerciseDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyExercise", variables);
+                dgsQueryExecutor.executeAndExtractJsonPath(modifyExerciseQuery, "data.modifyExercise", variables);
 
         Assertions.assertNotNull(exerciseDto);
     }
@@ -335,15 +183,8 @@ class ExerciseControllerTest {
         variables.put("exerciseId", 1);
         when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(false);
 
-        @Language("GraphQL")
-        String query = """
-                 mutation ($exerciseId : Int!){
-                       deleteExercise(exerciseId: $exerciseId)
-                   }
-                """;
-
         Integer id =
-                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.deleteExercise", variables);
+                dgsQueryExecutor.executeAndExtractJsonPath(deleteExerciseQuery, "data.deleteExercise", variables);
 
         Assertions.assertNull(id);
     }
@@ -353,15 +194,8 @@ class ExerciseControllerTest {
         variables.put("exerciseId", 1);
         when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(true);
 
-        @Language("GraphQL")
-        String query = """
-                 mutation ($exerciseId : Int!){
-                       deleteExercise(exerciseId: $exerciseId)
-                   }
-                """;
-
         Integer id =
-                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.deleteExercise", variables);
+                dgsQueryExecutor.executeAndExtractJsonPath(deleteExerciseQuery, "data.deleteExercise", variables);
 
         Assertions.assertNotNull(id);
     }
