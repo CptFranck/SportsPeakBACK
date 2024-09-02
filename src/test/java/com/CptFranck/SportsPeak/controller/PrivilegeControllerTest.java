@@ -186,50 +186,40 @@ class PrivilegeControllerTest {
 
         Assertions.assertNotNull(privilegeDto);
     }
-//
-//    @Test
-//    void PrivilegeController_ModifyExercise_Unsuccessful() {
-//        variables.put("inputExercise", objectMapper.convertValue(
-//                        createTestInputExercise(),
-//                new TypeReference<LinkedHashMap<String, Object>>() {
-//                }
-//                )
-//        );
-//        when(roleService.exists(Mockito.any(Long.class))).thenReturn(false);
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 mutation ($inputExercise : InputExercise!){
-//                      modifyExercise(inputExercise: $inputExercise) {
-//                          id
-//                          name
-//                          goal
-//                          muscles {
-//                              id
-//                              name
-//                              function
-//                          }
-//                          exerciseTypes {
-//                              id
-//                              name
-//                              goal
-//                          }
-//                          progExercises {
-//                              id
-//                              name
-//                              note
-//                              trustLabel
-//                              visibility
-//                          }
-//                      }
-//                  }
-//                """;
-//
-//        LinkedHashMap<String, Object> privilegeDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyExercise", variables);
-//
-//        Assertions.assertNull(privilegeDto);
-//    }
+
+    @Test
+    void PrivilegeController_ModifyPrivilege_Unsuccessful() {
+        variables.put("inputPrivilege", objectMapper.convertValue(
+                        createTestInputPrivilege(1L),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(privilegeService.exists(Mockito.any(Long.class))).thenReturn(false);
+
+        @Language("GraphQL")
+        String query = """
+                 mutation ($inputPrivilege : InputPrivilege!){
+                     modifyPrivilege(inputPrivilege: $inputPrivilege) {
+                         id
+                         name
+                         roles {
+                             id
+                             name
+                             privileges {
+                                 id
+                                 name
+                             }
+                         }
+                     }
+                 }
+                """;
+
+        LinkedHashMap<String, Object> privilegeDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyPrivilege", variables);
+
+        Assertions.assertNull(privilegeDto);
+    }
 //
 //    @Test
 //    void PrivilegeController_ModifyExercise_Success() {
