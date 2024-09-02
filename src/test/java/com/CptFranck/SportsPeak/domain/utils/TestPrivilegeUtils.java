@@ -4,7 +4,10 @@ import com.CptFranck.SportsPeak.domain.dto.PrivilegeDto;
 import com.CptFranck.SportsPeak.domain.dto.RoleDto;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
+import com.CptFranck.SportsPeak.domain.input.privilege.InputNewPrivilege;
+import com.CptFranck.SportsPeak.domain.input.privilege.InputPrivilege;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -31,6 +34,21 @@ public class TestPrivilegeUtils {
                 id,
                 "Privilege name",
                 new HashSet<RoleDto>()
+        );
+    }
+
+    public static InputNewPrivilege createTestInputNewPrivilege() {
+        return new InputNewPrivilege(
+                "name",
+                new ArrayList<Long>()
+        );
+    }
+
+    public static InputPrivilege createTestInputPrivilege(Long id) {
+        return new InputPrivilege(
+                id,
+                "name",
+                new ArrayList<Long>()
         );
     }
 }
