@@ -54,7 +54,9 @@ class TargetSetControllerTest {
     @Autowired
     private DgsQueryExecutor dgsQueryExecutor;
 
-    private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    private final ObjectMapper objectMapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     @MockBean
     private Mapper<TargetSetEntity, TargetSetDto> TargetSetMapper;
@@ -195,108 +197,126 @@ class TargetSetControllerTest {
         Assertions.assertNotNull(TargetSetDto);
     }
 
-//    @Test
-//    void TargetSetController_ModifyTargetSet_Unsuccessful() {
-//        variables.put("inputTargetSet", objectMapper.convertValue(
-//                        createTestInputTargetSet(1L, 1L),
-//                        new TypeReference<LinkedHashMap<String, Object>>() {
-//                        }
-//                )
-//        );
-//        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(false);
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 mutation ($inputTargetSet: InputTargetSet!){
-//                     modifyTargetSet(inputTargetSet: $inputTargetSet) {
-//                         id
-//                         setIndex
-//                         repetitionNumber
-//                         weight
-//                         weightUnit
-//                         logDate
-//                         targetSet {
-//                             id
-//                         }
-//                     }
-//                 }
-//                """;
-//
-//        LinkedHashMap<String, Object> TargetSetDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyTargetSet", variables);
-//
-//        Assertions.assertNull(TargetSetDto);
-//    }
-//
-//    @Test
-//    void TargetSetController_ModifyTargetSet_Success() {
-//        variables.put("inputTargetSet", objectMapper.convertValue(
-//                        createTestInputTargetSet(1L, 1L),
-//                        new TypeReference<LinkedHashMap<String, Object>>() {
-//                        }
-//                )
-//        );
-//        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(true);
-//        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
-//        when(targetSetService.save(Mockito.any(TargetSetEntity.class))).thenReturn(performanceLog);
-//        when(TargetSetMapper.mapTo(Mockito.any(TargetSetEntity.class))).thenReturn(performanceLogDto);
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 mutation ($inputTargetSet: InputTargetSet!){
-//                     modifyTargetSet(inputTargetSet: $inputTargetSet) {
-//                         id
-//                         setIndex
-//                         repetitionNumber
-//                         weight
-//                         weightUnit
-//                         logDate
-//                         targetSet {
-//                             id
-//                         }
-//                     }
-//                 }
-//                """;
-//
-//        LinkedHashMap<String, Object> TargetSetDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyTargetSet", variables);
-//
-//        Assertions.assertNotNull(TargetSetDto);
-//    }
-//
-//    @Test
-//    void TargetSetController_DeleteTargetSet_Unsuccessful() {
-//        variables.put("performanceLogId", 1);
-//        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(false);
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 mutation ($performanceLogId : Int!){
-//                     deleteTargetSet(performanceLogId: $performanceLogId)
-//                 }
-//                """;
-//
-//        Integer id =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.deleteTargetSet", variables);
-//
-//        Assertions.assertNull(id);
-//    }
-//
-//    @Test
-//    void TargetSetController_DeleteTargetSet_Success() {
-//        variables.put("performanceLogId", 1);
-//        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(true);
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 mutation ($performanceLogId : Int!){
-//                     deleteTargetSet(performanceLogId: $performanceLogId)
-//                 }
-//                """;
-//
-//        Integer id =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.deleteTargetSet", variables);
-//
-//        Assertions.assertNotNull(id);
-//    }
+    @Test
+    void TargetSetController_ModifyTargetSet_Unsuccessful() {
+        variables.put("inputTargetSet", objectMapper.convertValue(
+                        createTestInputTargetSet(1L),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+
+        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(false);
+
+        LinkedHashMap<String, Object> TargetSetDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(modifyTargetSetQuery, "data.modifyTargetSet", variables);
+
+        Assertions.assertNull(TargetSetDto);
+    }
+
+    @Test
+    void TargetSetController_ModifyTargetSet_UnsuccessfulNotFound() {
+        variables.put("inputTargetSet", objectMapper.convertValue(
+                        createTestInputTargetSet(1L),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(true);
+        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyTargetSetQuery, "data.modifyTargetSet", variables));
+    }
+
+    @Test
+    void TargetSetController_ModifyTargetSet_Success() {
+        variables.put("inputTargetSet", objectMapper.convertValue(
+                        createTestInputTargetSet(1L),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(true);
+        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
+        when(targetSetService.save(Mockito.any(TargetSetEntity.class))).thenReturn(targetSet);
+        when(TargetSetMapper.mapTo(Mockito.any(TargetSetEntity.class))).thenReturn(targetSetDto);
+
+        LinkedHashMap<String, Object> TargetSetDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(modifyTargetSetQuery, "data.modifyTargetSet", variables);
+
+        Assertions.assertNotNull(TargetSetDto);
+    }
+
+    @Test
+    void TargetSetController_ModifyTargetSetState_UnsuccessfulDoesNotExist() {
+        variables.put("inputTargetSetState", objectMapper.convertValue(
+                        createTestInputInputTargetSetState(1L),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(false);
+
+        LinkedHashMap<String, Object> TargetSetDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(modifyTargetSetStateQuery, "data.modifyTargetSetState", variables);
+
+        Assertions.assertNull(TargetSetDto);
+    }
+
+    @Test
+    void TargetSetController_ModifyTargetSetState_UnsuccessfulNotFound() {
+        variables.put("inputTargetSetState", objectMapper.convertValue(
+                        createTestInputInputTargetSetState(1L),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(true);
+        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyTargetSetStateQuery, "data.modifyTargetSetState", variables));
+    }
+
+    @Test
+    void TargetSetController_ModifyTargetSetState_Success() {
+        variables.put("inputTargetSetState", objectMapper.convertValue(
+                        createTestInputInputTargetSetState(1L),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(true);
+        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
+        when(targetSetService.save(Mockito.any(TargetSetEntity.class))).thenReturn(targetSet);
+        when(TargetSetMapper.mapTo(Mockito.any(TargetSetEntity.class))).thenReturn(targetSetDto);
+
+        LinkedHashMap<String, Object> TargetSetDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(modifyTargetSetStateQuery, "data.modifyTargetSetState", variables);
+
+        Assertions.assertNotNull(TargetSetDto);
+    }
+
+    @Test
+    void TargetSetController_DeleteTargetSet_Unsuccessful() {
+        variables.put("targetSetId", 1);
+        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(false);
+
+        Integer id =
+                dgsQueryExecutor.executeAndExtractJsonPath(deleteTargetSetQuery, "data.deleteTargetSet", variables);
+
+        Assertions.assertNull(id);
+    }
+
+    @Test
+    void TargetSetController_DeleteTargetSet_Success() {
+        variables.put("targetSetId", 1);
+        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(true);
+
+        Integer id =
+                dgsQueryExecutor.executeAndExtractJsonPath(deleteTargetSetQuery, "data.deleteTargetSet", variables);
+
+        Assertions.assertNotNull(id);
+    }
 }
