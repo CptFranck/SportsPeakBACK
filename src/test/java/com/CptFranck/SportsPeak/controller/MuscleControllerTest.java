@@ -22,6 +22,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 
 import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.createTestMuscle;
 import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.createTestMuscleDto;
@@ -35,9 +36,11 @@ import static org.mockito.Mockito.when;
 })
 class MuscleControllerTest {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     private DgsQueryExecutor dgsQueryExecutor;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @MockBean
     private Mapper<MuscleEntity, MuscleDto> muscleMapper;
 
@@ -79,51 +82,38 @@ class MuscleControllerTest {
                  }
                 """;
 
-        List<LinkedHashMap<String, Object>> exerciseDtos =
+        List<LinkedHashMap<String, Object>> muscleDtos =
                 dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getMuscles");
 
-        Assertions.assertNotNull(exerciseDtos);
+        Assertions.assertNotNull(muscleDtos);
     }
 
-//    @Test
-//    void MuscleController_GetExerciseById_Unsuccessful() {
-//        variables.put("id", 1);
-//        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 query ($id : Int!){
-//                     getExerciseById(id: $id) {
-//                         id
-//                         exerciseTypes {
-//                             id
-//                             name
-//                             goal
-//                         }
-//                         muscles {
-//                             id
-//                             name
-//                             function
-//                         }
-//                         progExercises {
-//                             id
-//                             name
-//                             note
-//                             trustLabel
-//                             visibility
-//                         }
-//                         name
-//                         description
-//                         goal
-//                     }
-//                 }
-//                """;
-//
-//        LinkedHashMap<String, Object> exerciseDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getExerciseById", variables);
-//
-//        Assertions.assertNull(exerciseDto);
-//    }
+    @Test
+    void MuscleController_GetExerciseById_Unsuccessful() {
+        variables.put("id", 1);
+        when(muscleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+
+        @Language("GraphQL")
+        String query = """
+                 query ($id : Int!) {
+                      getMuscleById (id : $id) {
+                          id
+                          exercises {
+                              id
+                              name
+                              goal
+                          }
+                          name
+                          function
+                      }
+                  }
+                """;
+
+        LinkedHashMap<String, Object> muscleDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getMuscleById", variables);
+
+        Assertions.assertNull(muscleDto);
+    }
 //
 //    @Test
 //    void MuscleController_GetExerciseById_Success() {
@@ -160,10 +150,10 @@ class MuscleControllerTest {
 //                 }
 //                """;
 //
-//        LinkedHashMap<String, Object> exerciseDto =
+//        LinkedHashMap<String, Object> muscleDto =
 //                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getExerciseById", variables);
 //
-//        Assertions.assertNotNull(exerciseDto);
+//        Assertions.assertNotNull(muscleDto);
 //    }
 //
 //    @Test
@@ -209,10 +199,10 @@ class MuscleControllerTest {
 //                 }
 //                """;
 //
-//        LinkedHashMap<String, Object> exerciseDto =
+//        LinkedHashMap<String, Object> muscleDto =
 //                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.addExercise", variables);
 //
-//        Assertions.assertNotNull(exerciseDto);
+//        Assertions.assertNotNull(muscleDto);
 //    }
 //
 //    @Test
@@ -253,10 +243,10 @@ class MuscleControllerTest {
 //                  }
 //                """;
 //
-//        LinkedHashMap<String, Object> exerciseDto =
+//        LinkedHashMap<String, Object> muscleDto =
 //                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyExercise", variables);
 //
-//        Assertions.assertNull(exerciseDto);
+//        Assertions.assertNull(muscleDto);
 //    }
 //
 //    @Test
@@ -304,10 +294,10 @@ class MuscleControllerTest {
 //                  }
 //                """;
 //
-//        LinkedHashMap<String, Object> exerciseDto =
+//        LinkedHashMap<String, Object> muscleDto =
 //                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyExercise", variables);
 //
-//        Assertions.assertNotNull(exerciseDto);
+//        Assertions.assertNotNull(muscleDto);
 //    }
 //
 //    @Test
