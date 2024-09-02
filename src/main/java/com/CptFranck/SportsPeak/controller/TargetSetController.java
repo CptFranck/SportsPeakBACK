@@ -66,18 +66,12 @@ public class TargetSetController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
     public TargetSetDto modifyTargetSet(@InputArgument InputTargetSet inputTargetSet) {
-        if (!targetSetService.exists(inputTargetSet.getId())) {
-            return null;
-        }
         return targetSetMapper.mapTo(inputToEntity(inputTargetSet));
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
     public TargetSetDto modifyTargetSetState(@InputArgument InputTargetSetState inputTargetSetState) {
-        if (!targetSetService.exists(inputTargetSetState.getId())) {
-            return null;
-        }
         return targetSetMapper.mapTo(inputTrustLabelToEntity(inputTargetSetState));
     }
 

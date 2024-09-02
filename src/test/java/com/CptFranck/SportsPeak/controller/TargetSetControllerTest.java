@@ -97,7 +97,7 @@ class TargetSetControllerTest {
     }
 
     @Test
-    void TargetSetController_GetTargetSetById_Unsuccessful() {
+    void TargetSetController_GetTargetSetById_UnsuccessfulDoesNotExist() {
         variables.put("id", 1);
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
@@ -132,7 +132,7 @@ class TargetSetControllerTest {
     }
 
     @Test
-    void TargetSetController_AddTargetSet_Unsuccessful() {
+    void TargetSetController_AddTargetSet_UnsuccessfulProgExerciseNotFound() {
         variables.put("inputNewTargetSet", objectMapper.convertValue(
                         createTestInputNewTargetSet(1L, null),
                         new TypeReference<LinkedHashMap<String, Object>>() {
@@ -164,11 +164,11 @@ class TargetSetControllerTest {
     }
 
     @Test
-    void TargetSetController_AddTargetSetWithUpdate_Unsuccessful() {
+    void TargetSetController_AddTargetSetWithUpdate_UnsuccessfulTargetSetNotFound() {
         variables.put("inputNewTargetSet", objectMapper.convertValue(
-                        createTestInputNewTargetSet(1L, 1L),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
+                createTestInputNewTargetSet(1L, 1L),
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }
                 )
         );
         when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
@@ -198,24 +198,7 @@ class TargetSetControllerTest {
     }
 
     @Test
-    void TargetSetController_ModifyTargetSet_Unsuccessful() {
-        variables.put("inputTargetSet", objectMapper.convertValue(
-                        createTestInputTargetSet(1L),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-
-        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(false);
-
-        LinkedHashMap<String, Object> TargetSetDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(modifyTargetSetQuery, "data.modifyTargetSet", variables);
-
-        Assertions.assertNull(TargetSetDto);
-    }
-
-    @Test
-    void TargetSetController_ModifyTargetSet_UnsuccessfulNotFound() {
+    void TargetSetController_ModifyTargetSet_UnsuccessfulTargetSetNotFound() {
         variables.put("inputTargetSet", objectMapper.convertValue(
                         createTestInputTargetSet(1L),
                         new TypeReference<LinkedHashMap<String, Object>>() {
@@ -246,22 +229,6 @@ class TargetSetControllerTest {
                 dgsQueryExecutor.executeAndExtractJsonPath(modifyTargetSetQuery, "data.modifyTargetSet", variables);
 
         Assertions.assertNotNull(TargetSetDto);
-    }
-
-    @Test
-    void TargetSetController_ModifyTargetSetState_UnsuccessfulDoesNotExist() {
-        variables.put("inputTargetSetState", objectMapper.convertValue(
-                        createTestInputInputTargetSetState(1L),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(false);
-
-        LinkedHashMap<String, Object> TargetSetDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(modifyTargetSetStateQuery, "data.modifyTargetSetState", variables);
-
-        Assertions.assertNull(TargetSetDto);
     }
 
     @Test
@@ -299,7 +266,7 @@ class TargetSetControllerTest {
     }
 
     @Test
-    void TargetSetController_DeleteTargetSet_Unsuccessful() {
+    void TargetSetController_DeleteTargetSet_UnsuccessfulDoesNotExist() {
         variables.put("targetSetId", 1);
         when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(false);
 
