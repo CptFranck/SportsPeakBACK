@@ -5,7 +5,6 @@ import com.CptFranck.SportsPeak.domain.dto.PrivilegeDto;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.mappers.Mapper;
-import com.CptFranck.SportsPeak.service.ExerciseTypeService;
 import com.CptFranck.SportsPeak.service.PrivilegeService;
 import com.CptFranck.SportsPeak.service.RoleService;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -47,9 +46,6 @@ class PrivilegeControllerTest {
 
     @MockBean
     private RoleService roleService;
-
-    @MockBean
-    private ExerciseTypeService exerciseTypeService;
 
     private PrivilegeEntity privilegeEntity;
     private PrivilegeDto privilegeDto;
