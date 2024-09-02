@@ -114,47 +114,34 @@ class MuscleControllerTest {
 
         Assertions.assertNull(muscleDto);
     }
-//
-//    @Test
-//    void MuscleController_GetExerciseById_Success() {
-//        variables.put("id", 1);
-//        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(muscle));
-//        when(muscleMapper.mapTo(Mockito.any(ExerciseEntity.class))).thenReturn(muscleDto);
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 query ($id : Int!){
-//                     getExerciseById(id: $id) {
-//                         id
-//                         exerciseTypes {
-//                             id
-//                             name
-//                             goal
-//                         }
-//                         muscles {
-//                             id
-//                             name
-//                             function
-//                         }
-//                         progExercises {
-//                             id
-//                             name
-//                             note
-//                             trustLabel
-//                             visibility
-//                         }
-//                         name
-//                         description
-//                         goal
-//                     }
-//                 }
-//                """;
-//
-//        LinkedHashMap<String, Object> muscleDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getExerciseById", variables);
-//
-//        Assertions.assertNotNull(muscleDto);
-//    }
+
+    @Test
+    void MuscleController_GetExerciseById_Success() {
+        variables.put("id", 1);
+        when(muscleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(muscle));
+        when(muscleMapper.mapTo(Mockito.any(MuscleEntity.class))).thenReturn(muscleDto);
+
+        @Language("GraphQL")
+        String query = """
+                 query ($id : Int!) {
+                     getMuscleById (id : $id) {
+                         id
+                         exercises {
+                             id
+                             name
+                             goal
+                         }
+                         name
+                         function
+                     }
+                 }
+                """;
+
+        LinkedHashMap<String, Object> muscleDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getMuscleById", variables);
+
+        Assertions.assertNotNull(muscleDto);
+    }
 //
 //    @Test
 //    void MuscleController_AddExercise_Success() {
