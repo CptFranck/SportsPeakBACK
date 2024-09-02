@@ -4,7 +4,10 @@ import com.CptFranck.SportsPeak.domain.dto.ExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.MuscleDto;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
+import com.CptFranck.SportsPeak.domain.input.muscle.InputMuscle;
+import com.CptFranck.SportsPeak.domain.input.muscle.InputNewMuscle;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -31,6 +34,25 @@ public class TestMuscleUtils {
                 "Muscle description",
                 "Muscle function",
                 new HashSet<ExerciseDto>()
+        );
+    }
+
+    public static InputNewMuscle createTestInputNewMuscle() {
+        return new InputNewMuscle(
+                "name",
+                "function",
+                "description",
+                new ArrayList<Long>()
+        );
+    }
+
+    public static InputMuscle createTestInputMuscle(Long id) {
+        return new InputMuscle(
+                id,
+                "name",
+                "function",
+                "description",
+                new ArrayList<Long>()
         );
     }
 }
