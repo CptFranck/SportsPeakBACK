@@ -233,74 +233,74 @@ class PerformanceLogControllerTest {
         Assertions.assertNotNull(PerformanceLogDto);
     }
 
-//    @Test
-//    void PerformanceLogController_ModifyPerformanceLog_Unsuccessful() {
-//        variables.put("inputPerformanceLog", objectMapper.convertValue(
-//                        createTestInputPerformanceLog(1L),
-//                        new TypeReference<LinkedHashMap<String, Object>>() {
-//                        }
-//                )
-//        );
-//        when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(false);
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 mutation ($inputPerformanceLog : InputPerformanceLog!){
-//                       modifyPerformanceLog(inputPerformanceLog: $inputPerformanceLog) {
-//                           id
-//                           name
-//                           function
-//                           exercises {
-//                               id
-//                               name
-//                               goal
-//                           }
-//                       }
-//                   }
-//                """;
-//
-//        LinkedHashMap<String, Object> PerformanceLogDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyPerformanceLog", variables);
-//
-//        Assertions.assertNull(PerformanceLogDto);
-//    }
-//
-//    @Test
-//    void PerformanceLogController_ModifyPerformanceLog_Success() {
-//        variables.put("inputPerformanceLog", objectMapper.convertValue(
-//                        createTestInputPerformanceLog(1L),
-//                        new TypeReference<LinkedHashMap<String, Object>>() {
-//                        }
-//                )
-//        );
-//        Set<ExerciseEntity> exercises = new HashSet<>();
-//        when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(true);
-//        when(targetSetService.findMany(Mockito.anySet())).thenReturn(exercises);
-//        when(performanceLogService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(performanceLog));
-//        when(performanceLogService.save(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLog);
-//        when(performanceLogMapper.mapTo(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLogDto);
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 mutation ($inputPerformanceLog : InputPerformanceLog!){
-//                       modifyPerformanceLog(inputPerformanceLog: $inputPerformanceLog) {
-//                           id
-//                           name
-//                           function
-//                           exercises {
-//                               id
-//                               name
-//                               goal
-//                           }
-//                       }
-//                   }
-//                """;
-//
-//        LinkedHashMap<String, Object> PerformanceLogDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyPerformanceLog", variables);
-//
-//        Assertions.assertNotNull(PerformanceLogDto);
-//    }
+    @Test
+    void PerformanceLogController_ModifyPerformanceLog_Unsuccessful() {
+        variables.put("inputPerformanceLog", objectMapper.convertValue(
+                        createTestInputPerformanceLog(1L, 1L),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(false);
+
+        @Language("GraphQL")
+        String query = """
+                 mutation ($inputPerformanceLog: InputPerformanceLog!){
+                     modifyPerformanceLog(inputPerformanceLog: $inputPerformanceLog) {
+                         id
+                         setIndex
+                         repetitionNumber
+                         weight
+                         weightUnit
+                         logDate
+                         targetSet {
+                             id
+                         }
+                     }
+                 }
+                """;
+
+        LinkedHashMap<String, Object> PerformanceLogDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyPerformanceLog", variables);
+
+        Assertions.assertNull(PerformanceLogDto);
+    }
+
+    @Test
+    void PerformanceLogController_ModifyPerformanceLog_Success() {
+        variables.put("inputPerformanceLog", objectMapper.convertValue(
+                        createTestInputPerformanceLog(1L, 1L),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(true);
+        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
+        when(performanceLogService.save(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLog);
+        when(performanceLogMapper.mapTo(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLogDto);
+
+        @Language("GraphQL")
+        String query = """
+                 mutation ($inputPerformanceLog: InputPerformanceLog!){
+                     modifyPerformanceLog(inputPerformanceLog: $inputPerformanceLog) {
+                         id
+                         setIndex
+                         repetitionNumber
+                         weight
+                         weightUnit
+                         logDate
+                         targetSet {
+                             id
+                         }
+                     }
+                 }
+                """;
+
+        LinkedHashMap<String, Object> PerformanceLogDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyPerformanceLog", variables);
+
+        Assertions.assertNotNull(PerformanceLogDto);
+    }
 //
 //    @Test
 //    void PerformanceLogController_DeletePerformanceLog_Unsuccessful() {
