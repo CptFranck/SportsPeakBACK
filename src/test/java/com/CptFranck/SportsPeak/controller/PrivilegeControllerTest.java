@@ -3,10 +3,12 @@ package com.CptFranck.SportsPeak.controller;
 import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
 import com.CptFranck.SportsPeak.domain.dto.PrivilegeDto;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
+import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.ExerciseTypeService;
 import com.CptFranck.SportsPeak.service.PrivilegeService;
 import com.CptFranck.SportsPeak.service.RoleService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.graphql.dgs.DgsQueryExecutor;
 import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
@@ -21,12 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestPrivilegeUtils.createTestPrivilege;
-import static com.CptFranck.SportsPeak.domain.utils.TestPrivilegeUtils.createTestPrivilegeDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestPrivilegeUtils.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -86,10 +85,10 @@ class PrivilegeControllerTest {
                  }
                 """;
 
-        List<LinkedHashMap<String, Object>> exerciseDtos =
+        List<LinkedHashMap<String, Object>> privilegeDtos =
                 dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getPrivileges");
 
-        Assertions.assertNotNull(exerciseDtos);
+        Assertions.assertNotNull(privilegeDtos);
     }
 
     @Test
@@ -115,10 +114,10 @@ class PrivilegeControllerTest {
                   }
                 """;
 
-        LinkedHashMap<String, Object> exerciseDto =
+        LinkedHashMap<String, Object> privilegeDto =
                 dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getPrivilegeById", variables);
 
-        Assertions.assertNull(exerciseDto);
+        Assertions.assertNull(privilegeDto);
     }
 
     @Test
@@ -145,60 +144,48 @@ class PrivilegeControllerTest {
                   }
                 """;
 
-        LinkedHashMap<String, Object> exerciseDto =
+        LinkedHashMap<String, Object> privilegeDto =
                 dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getPrivilegeById", variables);
 
-        Assertions.assertNotNull(exerciseDto);
+        Assertions.assertNotNull(privilegeDto);
     }
 
-//    @Test
-//    void PrivilegeController_AddExercise_Success() {
-//        variables.put("inputNewExercise", objectMapper.convertValue(
-//                        createTestInputNewExercise(),
-//                new TypeReference<LinkedHashMap<String, Object>>() {
-//                }
-//                )
-//        );
-//        Set<MuscleEntity> muscles = new HashSet<>();
-//        Set<ExerciseTypeEntity> exerciseType = new HashSet<>();
-//        when(privilegeService.findMany(Mockito.anySet())).thenReturn(muscles);
-//        when(exerciseTypeService.findMany(Mockito.anySet())).thenReturn(exerciseType);
-//        when(roleService.save(Mockito.any(ExerciseEntity.class))).thenReturn(privilegeEntity);
-//        when(privilegeMapper.mapTo(Mockito.any(ExerciseEntity.class))).thenReturn(privilegeDto);
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 mutation ($inputNewExercise : InputNewExercise!){
-//                     addExercise(inputNewExercise: $inputNewExercise) {
-//                         id
-//                         name
-//                         goal
-//                         muscles {
-//                             id
-//                             name
-//                             function
-//                         }
-//                         exerciseTypes {
-//                             id
-//                             name
-//                             goal
-//                         }
-//                         progExercises {
-//                             id
-//                             name
-//                             note
-//                             trustLabel
-//                             visibility
-//                         }
-//                     }
-//                 }
-//                """;
-//
-//        LinkedHashMap<String, Object> exerciseDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.addExercise", variables);
-//
-//        Assertions.assertNotNull(exerciseDto);
-//    }
+    @Test
+    void PrivilegeController_AddPrivilege_Success() {
+        variables.put("inputNewPrivilege", objectMapper.convertValue(
+                        createTestInputNewPrivilege(),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        Set<RoleEntity> roles = new HashSet<>();
+        when(roleService.findMany(Mockito.anySet())).thenReturn(roles);
+        when(privilegeService.save(Mockito.any(PrivilegeEntity.class))).thenReturn(privilegeEntity);
+        when(privilegeMapper.mapTo(Mockito.any(PrivilegeEntity.class))).thenReturn(privilegeDto);
+
+        @Language("GraphQL")
+        String query = """
+                 mutation ($inputNewPrivilege : InputNewPrivilege!){
+                      addPrivilege(inputNewPrivilege: $inputNewPrivilege) {
+                          id
+                          name
+                          roles {
+                              id
+                              name
+                              privileges {
+                                  id
+                                  name
+                              }
+                          }
+                      }
+                  }
+                """;
+
+        LinkedHashMap<String, Object> privilegeDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.addPrivilege", variables);
+
+        Assertions.assertNotNull(privilegeDto);
+    }
 //
 //    @Test
 //    void PrivilegeController_ModifyExercise_Unsuccessful() {
@@ -238,10 +225,10 @@ class PrivilegeControllerTest {
 //                  }
 //                """;
 //
-//        LinkedHashMap<String, Object> exerciseDto =
+//        LinkedHashMap<String, Object> privilegeDto =
 //                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyExercise", variables);
 //
-//        Assertions.assertNull(exerciseDto);
+//        Assertions.assertNull(privilegeDto);
 //    }
 //
 //    @Test
@@ -289,10 +276,10 @@ class PrivilegeControllerTest {
 //                  }
 //                """;
 //
-//        LinkedHashMap<String, Object> exerciseDto =
+//        LinkedHashMap<String, Object> privilegeDto =
 //                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyExercise", variables);
 //
-//        Assertions.assertNotNull(exerciseDto);
+//        Assertions.assertNotNull(privilegeDto);
 //    }
 //
 //    @Test
