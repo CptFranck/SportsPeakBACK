@@ -70,7 +70,7 @@ public class UserMapperImplTest {
     @Test
     void userTypeMapper_MapFrom_Success() {
         UserDto user = createTestUserDto();
-        RoleDto role = createTestRoleDto();
+        RoleDto role = createTestRoleDto(1L);
         user.getRoles().add(role);
         ExerciseDto exercise = createTestExerciseDto(1L);
         ProgExerciseDto progExercise = createTestProgExerciseDto(user, exercise);

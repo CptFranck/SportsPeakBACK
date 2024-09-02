@@ -34,9 +34,9 @@ public class TestRoleUtils {
         );
     }
 
-    public static RoleDto createTestRoleDto() {
+    public static RoleDto createTestRoleDto(Long id) {
         return new RoleDto(
-                9L,
+                id,
                 "Role name",
                 new HashSet<UserDto>(),
                 new HashSet<PrivilegeDto>()
