@@ -112,4 +112,32 @@ class ExerciseTestControllerTest {
 
         Assertions.assertNull(exerciseTypeDto);
     }
+
+    @Test
+    void ExerciseTypeController_GetExerciseTypeById_Success() {
+        variables.put("id", 1);
+        when(exerciseTypeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(exerciseType));
+        when(exerciseTypeMapper.mapTo(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseTypeDto);
+
+        @Language("GraphQL")
+        String query = """
+                 query ($id : Int!){
+                     getExerciseTypeById (id : $id){
+                         id
+                         exercises {
+                             id
+                             name
+                             goal
+                         }
+                         name
+                         goal
+                     }
+                 }
+                """;
+
+        LinkedHashMap<String, Object> exerciseTypeDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getExerciseTypeById", variables);
+
+        Assertions.assertNotNull(exerciseTypeDto);
+    }
 }
