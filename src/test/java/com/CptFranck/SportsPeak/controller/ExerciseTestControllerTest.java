@@ -2,10 +2,12 @@ package com.CptFranck.SportsPeak.controller;
 
 import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
 import com.CptFranck.SportsPeak.domain.dto.ExerciseTypeDto;
+import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import com.CptFranck.SportsPeak.service.ExerciseTypeService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.graphql.dgs.DgsQueryExecutor;
 import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
@@ -20,12 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseTypeUtils.createTestExerciseType;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseTypeUtils.createTestExerciseTypeDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestExerciseTypeUtils.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -137,6 +136,40 @@ class ExerciseTestControllerTest {
 
         LinkedHashMap<String, Object> exerciseTypeDto =
                 dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getExerciseTypeById", variables);
+
+        Assertions.assertNotNull(exerciseTypeDto);
+    }
+
+    @Test
+    void ExerciseTypeController_AddExerciseType_Success() {
+        variables.put("inputNewExerciseType", objectMapper.convertValue(
+                createTestInputNewExerciseType(),
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                })
+        );
+        Set<ExerciseEntity> exercises = new HashSet<>();
+        when(exerciseService.findMany(Mockito.anySet())).thenReturn(exercises);
+        when(exerciseTypeService.save(Mockito.any(ExerciseTypeEntity.class))).thenReturn(this.exerciseType);
+        when(exerciseTypeMapper.mapTo(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseTypeDto);
+
+        @Language("GraphQL")
+        String query = """
+                 mutation ($inputNewExerciseType : InputNewExerciseType!){
+                      addExerciseType(inputNewExerciseType: $inputNewExerciseType) {
+                          id
+                          name
+                          goal
+                          exercises {
+                              id
+                              name
+                              goal
+                          }
+                      }
+                  }
+                """;
+
+        LinkedHashMap<String, Object> exerciseTypeDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.addExerciseType", variables);
 
         Assertions.assertNotNull(exerciseTypeDto);
     }
