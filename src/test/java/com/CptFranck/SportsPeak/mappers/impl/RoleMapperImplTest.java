@@ -55,7 +55,7 @@ public class RoleMapperImplTest {
 
     @Test
     void roleMapper_MapFrom_Success() {
-        RoleDto role = createTestRoleDto();
+        RoleDto role = createTestRoleDto(1L);
         UserDto user = createTestUserDto();
         PrivilegeDto privilege = createTestPrivilegeDto(1L);
         role.getUsers().add(user);
