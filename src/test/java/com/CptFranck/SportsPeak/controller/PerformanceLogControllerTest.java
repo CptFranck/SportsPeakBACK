@@ -301,40 +301,40 @@ class PerformanceLogControllerTest {
 
         Assertions.assertNotNull(PerformanceLogDto);
     }
-//
-//    @Test
-//    void PerformanceLogController_DeletePerformanceLog_Unsuccessful() {
-//        variables.put("muscleId", 1);
-//        when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(false);
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 mutation ($muscleId : Int!){
-//                        deletePerformanceLog(muscleId: $muscleId)
-//                    }
-//                """;
-//
-//        Integer id =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.deletePerformanceLog", variables);
-//
-//        Assertions.assertNull(id);
-//    }
-//
-//    @Test
-//    void PerformanceLogController_DeletePerformanceLog_Success() {
-//        variables.put("muscleId", 1);
-//        when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(true);
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 mutation ($muscleId : Int!){
-//                        deletePerformanceLog(muscleId: $muscleId)
-//                    }
-//                """;
-//
-//        Integer id =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.deletePerformanceLog", variables);
-//
-//        Assertions.assertNotNull(id);
-//    }
+
+    @Test
+    void PerformanceLogController_DeletePerformanceLog_Unsuccessful() {
+        variables.put("performanceLogId", 1);
+        when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(false);
+
+        @Language("GraphQL")
+        String query = """
+                 mutation ($performanceLogId : Int!){
+                     deletePerformanceLog(performanceLogId: $performanceLogId)
+                 }
+                """;
+
+        Integer id =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.deletePerformanceLog", variables);
+
+        Assertions.assertNull(id);
+    }
+
+    @Test
+    void PerformanceLogController_DeletePerformanceLog_Success() {
+        variables.put("performanceLogId", 1);
+        when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(true);
+
+        @Language("GraphQL")
+        String query = """
+                 mutation ($performanceLogId : Int!){
+                     deletePerformanceLog(performanceLogId: $performanceLogId)
+                 }
+                """;
+
+        Integer id =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.deletePerformanceLog", variables);
+
+        Assertions.assertNotNull(id);
+    }
 }
