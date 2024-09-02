@@ -42,8 +42,8 @@ type Mutation {
     deleteUser(userId: Int!): Int!
 
     addRole(inputNewRole: InputNewRole!): Role!
-    modifyRole(inputRole: InputRole!): Role!
-    deleteRole(roleId: Int!): Int!
+    modifyRole(inputRole: InputRole!): Role
+    deleteRole(roleId: Int!): Int
 
     addPrivilege(inputNewPrivilege: InputNewPrivilege!): Privilege!
     modifyPrivilege(inputPrivilege: InputPrivilege!): Privilege
