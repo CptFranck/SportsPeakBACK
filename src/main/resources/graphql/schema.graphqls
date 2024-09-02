@@ -1,33 +1,33 @@
 type Query {
     getUsers: [User]!
-    getUserById(id: Int): User
+    getUserById(id: Int!): User
 
     getRoles: [Role]!
-    getRoleById(id: Int): Role
+    getRoleById(id: Int!): Role
 
     getPrivileges: [Privilege]!
-    getPrivilegeById(id: Int): Privilege
+    getPrivilegeById(id: Int!): Privilege
 
     getProgExercises: [ProgExercise]!
-    getProgExerciseById(id: Int): ProgExercise
-    getUserProgExercises(userId: Int): [ProgExercise]!
+    getProgExerciseById(id: Int!): ProgExercise
+    getUserProgExercises(userId: Int!): [ProgExercise]!
 
     getTargetSets: [TargetSet]!
-    getTargetSetById(id: Int): TargetSet
-    getTargetSetsByProgExerciseId(progExerciseId: Int): [TargetSet]!
+    getTargetSetById(id: Int!): TargetSet
+    getTargetSetsByProgExerciseId(progExerciseId: Int!): [TargetSet]!
 
     getPerformanceLogs: [PerformanceLog]!
-    getPerformanceLogById(id: Int): PerformanceLog
-    getPerformanceLogsByTargetSetsId(targetSetId: Int): [PerformanceLog]!
+    getPerformanceLogById(id: Int!): PerformanceLog
+    getPerformanceLogsByTargetSetsId(targetSetId: Int!): [PerformanceLog]!
 
     getExercises: [Exercise]!
-    getExerciseById(id: Int): Exercise
+    getExerciseById(id: Int!): Exercise
 
     getExerciseTypes: [ExerciseType]!
-    getExerciseTypeById(id: Int): ExerciseType
+    getExerciseTypeById(id: Int!): ExerciseType
 
     getMuscles: [Muscle]!
-    getMuscleById(id: Int): Muscle
+    getMuscleById(id: Int!): Muscle
 }
 
 type Mutation {
@@ -60,8 +60,8 @@ type Mutation {
     deleteTargetSet(targetSetId: Int!): Int!
 
     addPerformanceLog(inputNewPerformanceLog: InputNewPerformanceLog!): PerformanceLog!
-    modifyPerformanceLog(inputPerformanceLog: InputPerformanceLog!): PerformanceLog!
-    deletePerformanceLog(performanceLogId: Int!): Int!
+    modifyPerformanceLog(inputPerformanceLog: InputPerformanceLog!): PerformanceLog
+    deletePerformanceLog(performanceLogId: Int!): Int
 
     addExercise(inputNewExercise: InputNewExercise!): Exercise!
     modifyExercise(inputExercise: InputExercise!): Exercise
