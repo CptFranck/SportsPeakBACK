@@ -306,21 +306,21 @@ class RoleControllerTest {
         Assertions.assertNull(id);
     }
 
-//    @Test
-//    void RoleController_DeleteRole_Success() {
-//        variables.put("roleId", 1);
-//        when(roleService.exists(Mockito.any(Long.class))).thenReturn(true);
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 mutation ($roleId : Int!){
-//                     deleteRole(roleId: $roleId)
-//                 }
-//                """;
-//
-//        Integer id =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.deleteRole", variables);
-//
-//        Assertions.assertNotNull(id);
-//    }
+    @Test
+    void RoleController_DeleteRole_Success() {
+        variables.put("roleId", 1);
+        when(roleService.exists(Mockito.any(Long.class))).thenReturn(true);
+
+        @Language("GraphQL")
+        String query = """
+                 mutation ($roleId : Int!){
+                     deleteRole(roleId: $roleId)
+                 }
+                """;
+
+        Integer id =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.deleteRole", variables);
+
+        Assertions.assertNotNull(id);
+    }
 }
