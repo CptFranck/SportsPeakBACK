@@ -94,12 +94,10 @@ public class TestTargetSetUtils {
     }
 
     public static InputTargetSet createTestInputTargetSet(Long id) {
-        LocalDateTime creationDate = LocalDateTime.now();
         Duration effortTime = Duration.ofHours(0).plusMinutes(0).plusSeconds(5);
         Duration restTime = Duration.ofHours(0).plusMinutes(4).plusSeconds(0);
-
         return new InputTargetSet(
-                1L,
+                id,
                 1,
                 5,
                 10,
