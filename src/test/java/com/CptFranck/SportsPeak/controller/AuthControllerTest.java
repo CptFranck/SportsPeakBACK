@@ -135,7 +135,7 @@ public class AuthControllerTest {
     @Test
     public void AuthController_Register_Unsuccessful() {
         variables.put("inputRegisterNewUser", objectMapper.convertValue(
-                        new InputRegisterNewUser(
+                new InputRegisterNewUser(
                                 user.getEmail(),
                                 user.getFirstName(),
                                 user.getLastName(),
@@ -180,13 +180,13 @@ public class AuthControllerTest {
     @Test
     public void AuthController_Register_ReturnAuthDto() {
         variables.put("inputRegisterNewUser", objectMapper.convertValue(
-                        new InputRegisterNewUser(
-                                user.getEmail(),
-                                user.getFirstName(),
-                                user.getLastName(),
-                                user.getLastName(),
-                                user.getPassword()
-                        ),
+                new InputRegisterNewUser(
+                        user.getEmail(),
+                        user.getFirstName(),
+                        user.getLastName(),
+                        user.getLastName(),
+                        user.getPassword()
+                ),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }
                 )

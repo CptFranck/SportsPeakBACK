@@ -190,8 +190,8 @@ class ExerciseControllerTest {
     void ExerciseController_AddExercise_Success() {
         variables.put("inputNewExercise", objectMapper.convertValue(
                         createTestInputNewExercise(),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }
                 )
         );
         Set<MuscleEntity> muscles = new HashSet<>();
@@ -239,8 +239,8 @@ class ExerciseControllerTest {
     void ExerciseController_ModifyExercise_Unsuccessful() {
         variables.put("inputExercise", objectMapper.convertValue(
                         createTestInputExercise(),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }
                 )
         );
         when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(false);
@@ -283,8 +283,8 @@ class ExerciseControllerTest {
     void ExerciseController_ModifyExercise_Success() {
         variables.put("inputExercise", objectMapper.convertValue(
                         createTestInputExercise(),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }
                 )
         );
         Set<MuscleEntity> muscles = new HashSet<>();
