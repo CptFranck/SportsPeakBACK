@@ -174,7 +174,8 @@ public class AuthControllerTest {
                   }
                 """;
 
-        Assertions.assertThrows(QueryException.class, () -> dgsQueryExecutor.executeAndExtractJsonPath(query, "data.register", variables));
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(query, "data.register", variables));
     }
 
     @Test
