@@ -204,4 +204,42 @@ class ExerciseTestControllerTest {
 
         Assertions.assertNull(exerciseTypeDto);
     }
+
+    @Test
+    void ExerciseTypeController_ModifyExerciseType_Success() {
+        variables.put("inputExerciseType", objectMapper.convertValue(
+                        createTestInputExerciseType(),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        Set<ExerciseEntity> exercises = new HashSet<>();
+        when(exerciseTypeService.exists(Mockito.any(Long.class))).thenReturn(true);
+        when(exerciseService.findMany(Mockito.anySet())).thenReturn(exercises);
+        when(exerciseTypeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(exerciseType));
+        when(exerciseTypeService.save(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseType);
+        when(exerciseTypeMapper.mapTo(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseTypeDto);
+
+        @Language("GraphQL")
+        String query = """
+                 mutation ($inputExerciseType : InputExerciseType!){
+                       modifyExerciseType(inputExerciseType: $inputExerciseType) {
+                           id
+                           name
+                           goal
+                           exercises {
+                               id
+                               name
+                               goal
+                           }
+                       }
+                   }
+                """;
+
+        LinkedHashMap<String, Object> exerciseTypeDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.modifyExerciseType", variables);
+
+        Assertions.assertNotNull(exerciseTypeDto);
+    }
+
 }
