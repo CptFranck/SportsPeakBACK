@@ -168,6 +168,35 @@ class PerformanceLogControllerTest {
     }
 
     @Test
+    void PerformanceLogController_GetPerformanceLogsByTargetId_Success() {
+        variables.put("targetSetId", 1);
+        when(performanceLogService.findAllByTargetSetId(Mockito.any(Long.class))).thenReturn(List.of(performanceLog));
+        when(performanceLogMapper.mapTo(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLogDto);
+
+        @Language("GraphQL")
+        String query = """
+                 query ($targetSetId : Int!){
+                       getPerformanceLogsByTargetSetsId(targetSetId: $targetSetId) {
+                           id
+                           setIndex
+                           repetitionNumber
+                           weight
+                           weightUnit
+                           logDate
+                           targetSet {
+                               id
+                           }
+                       }
+                   }
+                """;
+
+        List<LinkedHashMap<String, Object>> PerformanceLogDtos =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.getPerformanceLogsByTargetSetsId", variables);
+
+        Assertions.assertNotNull(PerformanceLogDtos);
+    }
+
+    @Test
     void PerformanceLogController_AddPerformanceLog_Unsuccessful() {
         variables.put("inputNewPerformanceLog", objectMapper.convertValue(
                         createTestInputNewPerformanceLog(1L),
