@@ -3,13 +3,15 @@ package com.CptFranck.SportsPeak.domain.input.targetSet;
 import com.CptFranck.SportsPeak.domain.input.duration.InputDuration;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 
 @Getter
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class InputTargetSet extends TargetSetInputBase {
+public class InputTargetSet extends AbstractTargetSetInput {
 
-    private final Long id;
+    private Long id;
 
     public InputTargetSet(
             Long id,

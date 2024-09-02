@@ -3,19 +3,20 @@ package com.CptFranck.SportsPeak.domain.input.targetSet;
 import com.CptFranck.SportsPeak.domain.input.duration.InputDuration;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class InputNewTargetSet extends TargetSetInputBase {
+public class InputNewTargetSet extends AbstractTargetSetInput {
 
-    private final LocalDateTime creationDate;
+    private LocalDateTime creationDate;
 
-    private final Long progExerciseId;
+    private Long progExerciseId;
 
-    private final Long targetSetUpdateId;
-
+    private Long targetSetUpdateId;
 
     public InputNewTargetSet(
             Integer index,

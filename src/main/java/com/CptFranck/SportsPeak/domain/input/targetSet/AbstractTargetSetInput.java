@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TargetSetInputBase {
+public abstract class AbstractTargetSetInput {
 
     private Integer index;
 
