@@ -6,12 +6,12 @@ import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
 import com.CptFranck.SportsPeak.domain.enumType.WeightUnit;
-import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.progExercise.ProgExerciseNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
+import com.CptFranck.SportsPeak.domain.input.targetSet.AbstractTargetSetInput;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputNewTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSetState;
-import com.CptFranck.SportsPeak.domain.input.targetSet.TargetSetInputBase;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import com.CptFranck.SportsPeak.service.TargetSetService;
@@ -91,11 +91,11 @@ public class TargetSetController {
         return targetSetId;
     }
 
-    private TargetSetEntity inputToEntity(TargetSetInputBase targetSetInput) {
+    private TargetSetEntity inputToEntity(AbstractTargetSetInput targetSetInput) {
         Long id;
-        LocalDateTime creationDate;
-        TargetSetEntity targetSetUpdate;
-        ProgExerciseEntity progExercise;
+        LocalDateTime creationDate = null;
+        ProgExerciseEntity progExercise = null;
+        TargetSetEntity targetSetUpdate = null;
         TargetSetEntity targetSetUpdated = null;
         TargetSetState targetSetState = TargetSetState.USED;
         Set<PerformanceLogEntity> performanceLogs = new HashSet<>();
@@ -109,18 +109,17 @@ public class TargetSetController {
             targetSetState = targetSet.getState();
             targetSetUpdate = targetSet.getTargetSetUpdate();
             performanceLogs.addAll(targetSet.getPerformanceLogs());
-        } else if (targetSetInput instanceof InputNewTargetSet inputNewTargetSet) {
-            id = null;
-            targetSetUpdate = null;
-            creationDate = inputNewTargetSet.getCreationDate();
-            progExercise = progExerciseService.findOne(inputNewTargetSet.getProgExerciseId()).orElseThrow(
-                    () -> new ExerciseNotFoundException(inputNewTargetSet.getProgExerciseId()));
-            if (inputNewTargetSet.getTargetSetUpdateId() != null) {
-                targetSetUpdated = targetSetService.findOne(inputNewTargetSet.getTargetSetUpdateId()).orElseThrow(
-                        () -> new TargetSetNotFoundException(inputNewTargetSet.getTargetSetUpdateId()));
-            }
         } else {
-            throw new RuntimeException("Unsupported input type " + targetSetInput.getClass().getSimpleName());
+            id = null;
+            if (targetSetInput instanceof InputNewTargetSet inputNewTargetSet) {
+                creationDate = inputNewTargetSet.getCreationDate();
+                progExercise = progExerciseService.findOne(inputNewTargetSet.getProgExerciseId()).orElseThrow(
+                        () -> new ProgExerciseNotFoundException(inputNewTargetSet.getProgExerciseId()));
+                if (inputNewTargetSet.getTargetSetUpdateId() != null) {
+                    targetSetUpdated = targetSetService.findOne(inputNewTargetSet.getTargetSetUpdateId()).orElseThrow(
+                            () -> new TargetSetNotFoundException(inputNewTargetSet.getTargetSetUpdateId()));
+                }
+            }
         }
 
         TargetSetEntity targetSet = new TargetSetEntity(
@@ -140,7 +139,7 @@ public class TargetSetController {
         );
 
         targetSet = targetSetService.save(targetSet);
-        if (id == null) {
+        if (id == null && progExercise != null) {
             progExercise.getTargetSets().add(targetSet);
             progExerciseService.save(progExercise);
         }
