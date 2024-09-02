@@ -245,25 +245,25 @@ class MuscleControllerTest {
 
         Assertions.assertNotNull(muscleDto);
     }
-//
-//    @Test
-//    void MuscleController_DeleteExercise_Unsuccessful() {
-//        variables.put("exerciseId", 1);
-//        when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(false);
-//
-//        @Language("GraphQL")
-//        String query = """
-//                 mutation ($exerciseId : Int!){
-//                       deleteExercise(exerciseId: $exerciseId)
-//                   }
-//                """;
-//
-//        Integer id =
-//                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.deleteExercise", variables);
-//
-//        Assertions.assertNull(id);
-//    }
-//
+
+    @Test
+    void MuscleController_DeleteMuscle_Unsuccessful() {
+        variables.put("muscleId", 1);
+        when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(false);
+
+        @Language("GraphQL")
+        String query = """
+                 mutation ($muscleId : Int!){
+                        deleteMuscle(muscleId: $muscleId)
+                    }
+                """;
+
+        Integer id =
+                dgsQueryExecutor.executeAndExtractJsonPath(query, "data.deleteMuscle", variables);
+
+        Assertions.assertNull(id);
+    }
+
 //    @Test
 //    void MuscleController_DeleteExercise_Success() {
 //        variables.put("exerciseId", 1);
