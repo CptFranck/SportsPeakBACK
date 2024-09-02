@@ -6,7 +6,10 @@ import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.input.role.InputNewRole;
+import com.CptFranck.SportsPeak.domain.input.role.InputRole;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -40,6 +43,23 @@ public class TestRoleUtils {
                 "Role name",
                 new HashSet<UserDto>(),
                 new HashSet<PrivilegeDto>()
+        );
+    }
+
+    public static InputNewRole createTestInputNewRole() {
+        return new InputNewRole(
+                "name",
+                new ArrayList<Long>(),
+                new ArrayList<Long>()
+        );
+    }
+
+    public static InputRole createTestInputRole(Long id) {
+        return new InputRole(
+                id,
+                "name",
+                new ArrayList<Long>(),
+                new ArrayList<Long>()
         );
     }
 }
