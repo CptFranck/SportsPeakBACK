@@ -4,6 +4,7 @@ import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
 import com.CptFranck.SportsPeak.config.security.JwtProvider;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.model.JWToken;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.RoleService;
 import com.CptFranck.SportsPeak.service.UserService;
@@ -21,7 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
@@ -212,6 +215,43 @@ class UserControllerTest {
 //        Assertions.assertThrows(QueryException.class,
 //                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyUserTrustLabelQuery, "data.modifyUserTrustLabel", variables));
 //    }
+
+    @Test
+    void UserController_modifyUserEmailQuery_Success() {
+        variables.put("inputUserEmail", objectMapper.convertValue(
+                        createTestInputUserEmail(1L),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        JWToken jwToken = new JWToken("token", LocalDateTime.now());
+        when(userService.changeEmail(Mockito.any(Long.class), Mockito.any(String.class), Mockito.any(String.class))).thenReturn(user);
+        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
+        when(authenticationManager.authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class))).thenReturn(null);
+        when(userAuthProvider.generateToken(Mockito.any())).thenReturn(jwToken);
+
+        LinkedHashMap<String, Object> userDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(modifyUserEmailQuery, "data.modifyUserEmail", variables);
+
+        Assertions.assertNotNull(userDto);
+    }
+
+    @Test
+    void UserController_ModifyUserUsername_Success() {
+        variables.put("inputUserUsername", objectMapper.convertValue(
+                        createTestInputUserUsername(1L),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(userService.changeUsername(Mockito.any(Long.class), Mockito.any(String.class))).thenReturn(user);
+        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
+
+        LinkedHashMap<String, Object> userDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(modifyUserUsernameQuery, "data.modifyUserUsername", variables);
+
+        Assertions.assertNotNull(userDto);
+    }
 
     @Test
     void UserController_ModifyUserPassword_Success() {
