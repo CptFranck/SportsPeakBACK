@@ -26,7 +26,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 
+import static com.CptFranck.SportsPeak.controller.graphqlQuery.ProgExerciseQuery.getProgExerciseByIdQuery;
 import static com.CptFranck.SportsPeak.controller.graphqlQuery.ProgExerciseQuery.getProgExercisesQuery;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
@@ -85,28 +87,28 @@ class ProgExerciseControllerTest {
         Assertions.assertNotNull(progExerciseDtos);
     }
 
-//    @Test
-//    void ProgExerciseController_GetProgExerciseById_Unsuccessful() {
-//        variables.put("id", 1);
-//        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-//
-//        LinkedHashMap<String, Object> progExerciseDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(getProgExerciseByIdQuery, "data.getProgExerciseById", variables);
-//
-//        Assertions.assertNull(progExerciseDto);
-//    }
-//
-//    @Test
-//    void ProgExerciseController_GetProgExerciseById_Success() {
-//        variables.put("id", 1);
-//        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
-//        when(progProgExerciseMapper.mapTo(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExerciseDto);
-//
-//        LinkedHashMap<String, Object> progExerciseDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(getProgExerciseByIdQuery, "data.getProgExerciseById", variables);
-//
-//        Assertions.assertNotNull(progExerciseDto);
-//    }
+    @Test
+    void ProgExerciseController_GetProgExerciseById_Unsuccessful() {
+        variables.put("id", 1);
+        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+
+        LinkedHashMap<String, Object> progExerciseDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(getProgExerciseByIdQuery, "data.getProgExerciseById", variables);
+
+        Assertions.assertNull(progExerciseDto);
+    }
+
+    @Test
+    void ProgExerciseController_GetProgExerciseById_Success() {
+        variables.put("id", 1);
+        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
+        when(progExerciseMapper.mapTo(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExerciseDto);
+
+        LinkedHashMap<String, Object> progExerciseDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(getProgExerciseByIdQuery, "data.getProgExerciseById", variables);
+
+        Assertions.assertNotNull(progExerciseDto);
+    }
 //
 //    @Test
 //    void ProgExerciseController_AddProgExercise_Success() {
@@ -121,7 +123,7 @@ class ProgExerciseControllerTest {
 //        when(progExerciseService.findMany(Mockito.anySet())).thenReturn(muscles);
 //        when(userService.findMany(Mockito.anySet())).thenReturn(exerciseType);
 //        when(exerciseService.save(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExercise);
-//        when(progProgExerciseMapper.mapTo(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExerciseDto);
+//        when(progExerciseMapper.mapTo(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExerciseDto);
 //
 //        LinkedHashMap<String, Object> progExerciseDto =
 //                dgsQueryExecutor.executeAndExtractJsonPath(addProgExerciseQuery, "data.addProgExercise", variables);
@@ -178,7 +180,7 @@ class ProgExerciseControllerTest {
 //        when(userService.findMany(Mockito.anySet())).thenReturn(exerciseType);
 //        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
 //        when(exerciseService.save(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExercise);
-//        when(progProgExerciseMapper.mapTo(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExerciseDto);
+//        when(progExerciseMapper.mapTo(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExerciseDto);
 //
 //        LinkedHashMap<String, Object> progExerciseDto =
 //                dgsQueryExecutor.executeAndExtractJsonPath(modifyProgExerciseQuery, "data.modifyProgExercise", variables);
