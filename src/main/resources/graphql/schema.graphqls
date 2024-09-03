@@ -52,7 +52,7 @@ type Mutation {
     addProgExercise(inputNewProgExercise: InputNewProgExercise!): ProgExercise!
     modifyProgExercise(inputProgExercise: InputProgExercise!): ProgExercise!
     modifyProgExerciseTrustLabel(inputProgExerciseTrustLabel: InputProgExerciseTrustLabel!): ProgExercise!
-    deleteProgExercise(progExerciseId: Int!): Int!
+    deleteProgExercise(progExerciseId: Int!): Int
 
     addTargetSet(inputNewTargetSet: InputNewTargetSet!): TargetSet!
     modifyTargetSet(inputTargetSet: InputTargetSet!): TargetSet

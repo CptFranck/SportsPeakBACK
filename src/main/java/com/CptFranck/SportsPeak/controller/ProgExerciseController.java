@@ -8,6 +8,7 @@ import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.enumType.TrustLabel;
 import com.CptFranck.SportsPeak.domain.enumType.Visibility;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.progExercise.ProgExerciseNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.progExercise.InputNewProgExercise;
 import com.CptFranck.SportsPeak.domain.input.progExercise.InputProgExercise;
@@ -64,18 +65,12 @@ public class ProgExerciseController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
     public ProgExerciseDto modifyProgExercise(@InputArgument InputProgExercise inputProgExercise) {
-        if (!progExerciseService.exists(inputProgExercise.getId())) {
-            return null;
-        }
         return progExerciseMapper.mapTo(inputToEntity(inputProgExercise));
     }
 
     @PreAuthorize("hasRole('ROLE_STAFF')")
     @DgsMutation
     public ProgExerciseDto modifyProgExerciseTrustLabel(@InputArgument InputProgExerciseTrustLabel inputProgExerciseTrustLabel) {
-        if (!progExerciseService.exists(inputProgExerciseTrustLabel.getId())) {
-            return null;
-        }
         return progExerciseMapper.mapTo(inputTrustLabelToEntity(inputProgExerciseTrustLabel));
     }
 
@@ -95,12 +90,11 @@ public class ProgExerciseController {
         ExerciseEntity exercise = exerciseService.findOne(inputNewProgExercise.getExerciseId()).orElseThrow(
                 () -> new ExerciseNotFoundException(inputNewProgExercise.getExerciseId()));
 
-        Long id = null;
         Set<TargetSetEntity> targetSets = new HashSet<>();
         Set<UserEntity> subscribedUsers = new HashSet<>();
 
         ProgExerciseEntity progExerciseEntity = new ProgExerciseEntity(
-                id,
+                null,
                 inputNewProgExercise.getName(),
                 inputNewProgExercise.getNote(),
                 valueOfLabel(inputNewProgExercise.getVisibility()),
@@ -122,7 +116,7 @@ public class ProgExerciseController {
     private ProgExerciseEntity inputToEntity(InputProgExercise inputProgExercise) {
 
         ProgExerciseEntity progExercise = progExerciseService.findOne(inputProgExercise.getId()).orElseThrow(
-                () -> new ExerciseNotFoundException(inputProgExercise.getId()));
+                () -> new ProgExerciseNotFoundException(inputProgExercise.getId()));
         ExerciseEntity newExercise = exerciseService.findOne(inputProgExercise.getExerciseId()).orElseThrow(
                 () -> new ExerciseNotFoundException(inputProgExercise.getExerciseId()));
         ExerciseEntity oldExercise = progExercise.getExercise();
