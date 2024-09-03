@@ -3,6 +3,7 @@ package com.CptFranck.SportsPeak.controller;
 import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
 import com.CptFranck.SportsPeak.config.security.JwtProvider;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
+import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.model.JWToken;
 import com.CptFranck.SportsPeak.mappers.Mapper;
@@ -25,9 +26,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.CptFranck.SportsPeak.controller.graphqlQuery.UserQuery.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.*;
@@ -215,6 +214,25 @@ class UserControllerTest {
 //        Assertions.assertThrows(QueryException.class,
 //                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyUserTrustLabelQuery, "data.modifyUserTrustLabel", variables));
 //    }
+
+    @Test
+    void UserController_ModifyUserRoles_Success() {
+        variables.put("inputUserRoles", objectMapper.convertValue(
+                        createTestInputUserRoles(1L),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        Set<RoleEntity> roles = new HashSet<RoleEntity>();
+        when(roleService.findMany(Mockito.anySet())).thenReturn(roles);
+        when(userService.changeRoles(Mockito.any(Long.class), Mockito.anySet())).thenReturn(user);
+        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
+
+        LinkedHashMap<String, Object> userDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(modifyUserRolesQuery, "data.modifyUserRoles", variables);
+
+        Assertions.assertNotNull(userDto);
+    }
 
     @Test
     void UserController_modifyUserEmailQuery_Success() {
