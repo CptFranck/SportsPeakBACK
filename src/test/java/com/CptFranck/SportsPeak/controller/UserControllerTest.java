@@ -105,115 +105,22 @@ class UserControllerTest {
         Assertions.assertNotNull(userDto);
     }
 
-//    @Test
-//    void UserController_AddUser_UnsuccessfulUserNotFound() {
-//        variables.put("inputNewUser", objectMapper.convertValue(
-//                        createTestInputNewUser(1L, 1L),
-//                        new TypeReference<LinkedHashMap<String, Object>>() {
-//                        }
-//                )
-//        );
-//        when(userService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-//
-//        Assertions.assertThrows(QueryException.class,
-//                () -> dgsQueryExecutor.executeAndExtractJsonPath(addUserQuery, "data.addUser", variables));
-//    }
-//
-//    @Test
-//    void UserController_AddUser_UnsuccessfulExerciseNotFound() {
-//        variables.put("inputNewUser", objectMapper.convertValue(
-//                        createTestInputNewUser(1L, 1L),
-//                        new TypeReference<LinkedHashMap<String, Object>>() {
-//                        }
-//                )
-//        );
-//        when(userService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(user));
-//        when(roleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-//
-//        Assertions.assertThrows(QueryException.class,
-//                () -> dgsQueryExecutor.executeAndExtractJsonPath(addUserQuery, "data.addUser", variables));
-//    }
-//
-//    @Test
-//    void UserController_AddUser_Success() {
-//        variables.put("inputNewUser", objectMapper.convertValue(
-//                        createTestInputNewUser(1L, 1L),
-//                        new TypeReference<LinkedHashMap<String, Object>>() {
-//                        }
-//                )
-//        );
-//        when(userService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(user));
-//        when(roleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(exercise));
-//        when(userAuthProvider.save(Mockito.any(UserEntity.class))).thenReturn(progExercise);
-//        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
-//
-//        LinkedHashMap<String, Object> userDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(addUserQuery, "data.addUser", variables);
-//
-//        Assertions.assertNotNull(userDto);
-//    }
-//
-//    @Test
-//    void UserController_ModifyUser_UnsuccessfulUserNotFound() {
-//        variables.put("inputUser", objectMapper.convertValue(
-//                        createTestInputUser(1L, 1L),
-//                        new TypeReference<LinkedHashMap<String, Object>>() {
-//                        }
-//                )
-//        );
-//        when(userAuthProvider.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-//
-//        Assertions.assertThrows(QueryException.class,
-//                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyUserQuery, "data.modifyUser", variables));
-//    }
-//
-//    @Test
-//    void UserController_ModifyUser_Unsuccessful() {
-//        variables.put("inputUser", objectMapper.convertValue(
-//                        createTestInputUser(1L, 1L),
-//                        new TypeReference<LinkedHashMap<String, Object>>() {
-//                        }
-//                )
-//        );
-//        when(userAuthProvider.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
-//        when(roleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-//
-//        Assertions.assertThrows(QueryException.class,
-//                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyUserQuery, "data.modifyUser", variables));
-//    }
-//
-//    @Test
-//    void UserController_ModifyUser_Success() {
-//        variables.put("inputUser", objectMapper.convertValue(
-//                        createTestInputUser(1L, 1L),
-//                        new TypeReference<LinkedHashMap<String, Object>>() {
-//                        }
-//                )
-//        );
-//        when(userAuthProvider.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
-//        when(roleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(exercise));
-//        when(userAuthProvider.save(Mockito.any(UserEntity.class))).thenReturn(progExercise);
-//        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
-//
-//        LinkedHashMap<String, Object> userDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(modifyUserQuery, "data.modifyUser", variables);
-//
-//        Assertions.assertNotNull(userDto);
-//    }
-//
-//    @Test
-//    void UserController_ModifyUserTrustLabel_UnsuccessfulUserNotFound() {
-//        variables.put("inputUserTrustLabel", objectMapper.convertValue(
-//                        createTestInputUserTrustLabel(1L),
-//                        new TypeReference<LinkedHashMap<String, Object>>() {
-//                        }
-//                )
-//        );
-//        when(userAuthProvider.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-//
-//        Assertions.assertThrows(QueryException.class,
-//                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyUserTrustLabelQuery, "data.modifyUserTrustLabel", variables));
-//    }
+    @Test
+    void UserController_ModifyUserIdentity_Success() {
+        variables.put("inputUserIdentity", objectMapper.convertValue(
+                        createTestInputUserIdentity(1L),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(userService.changeIdentity(Mockito.any(Long.class), Mockito.any(String.class), Mockito.any(String.class))).thenReturn(user);
+        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
+
+        LinkedHashMap<String, Object> userDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(modifyUserIdentityQuery, "data.modifyUserIdentity", variables);
+
+        Assertions.assertNotNull(userDto);
+    }
 
     @Test
     void UserController_ModifyUserRoles_Success() {
