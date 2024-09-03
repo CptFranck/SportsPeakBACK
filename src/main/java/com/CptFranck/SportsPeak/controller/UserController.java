@@ -6,6 +6,7 @@ import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.user.*;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.RoleService;
@@ -21,7 +22,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -59,12 +59,9 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsQuery
     public List<ProgExerciseDto> getUserProgExercises(@InputArgument Long userId) {
-        Optional<UserEntity> userEntity = userService.findOne(userId);
-        UserDto user = userEntity.map(userMapper::mapTo).orElse(null);
-        if (user != null) {
-            return user.getSubscribedProgExercises().stream().toList();
-        }
-        return new LinkedList<>();
+        UserEntity userEntity = userService.findOne(userId).orElseThrow(
+                () -> new UserNotFoundException(userId));
+        return userMapper.mapTo(userEntity).getSubscribedProgExercises().stream().toList();
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
