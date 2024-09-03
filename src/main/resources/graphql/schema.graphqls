@@ -1,6 +1,7 @@
 type Query {
     getUsers: [User]!
     getUserById(id: Int!): User
+    getUserProgExercises(userId: Int!): [ProgExercise]!
 
     getRoles: [Role]!
     getRoleById(id: Int!): Role
@@ -10,7 +11,6 @@ type Query {
 
     getProgExercises: [ProgExercise]!
     getProgExerciseById(id: Int!): ProgExercise
-    getUserProgExercises(userId: Int!): [ProgExercise]!
 
     getTargetSets: [TargetSet]!
     getTargetSetById(id: Int!): TargetSet
@@ -39,7 +39,7 @@ type Mutation {
     modifyUserEmail(inputUserEmail: InputUserEmail!): Auth!
     modifyUserUsername(inputUserUsername: InputUserUsername!): User!
     modifyUserPassword(inputUserPassword: InputUserPassword!): User!
-    deleteUser(userId: Int!): Int!
+    deleteUser(userId: Int!): Int
 
     addRole(inputNewRole: InputNewRole!): Role!
     modifyRole(inputRole: InputRole!): Role
