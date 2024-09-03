@@ -10,6 +10,8 @@ import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.enumType.TrustLabel;
 import com.CptFranck.SportsPeak.domain.enumType.Visibility;
+import com.CptFranck.SportsPeak.domain.input.progExercise.InputNewProgExercise;
+import com.CptFranck.SportsPeak.domain.input.progExercise.InputProgExercise;
 
 import java.util.HashSet;
 import java.util.List;
@@ -47,6 +49,26 @@ public class TestProgExerciseUtils {
                 creator,
                 exercise,
                 new HashSet<TargetSetDto>()
+        );
+    }
+
+    public static InputNewProgExercise createTestInputNewProgExercise(Long creatorId, Long exerciseId) {
+        return new InputNewProgExercise(
+                "Prog Exercise name",
+                "Prog Exercise note",
+                Visibility.PRIVATE.label,
+                creatorId,
+                exerciseId
+        );
+    }
+
+    public static InputProgExercise createTestInputProgExercise(Long id, Long exerciseId) {
+        return new InputProgExercise(
+                id,
+                "Prog Exercise name",
+                "Prog Exercise note",
+                Visibility.PRIVATE.label,
+                exerciseId
         );
     }
 }
