@@ -1,8 +1,12 @@
 package com.CptFranck.SportsPeak.domain.input.progExercise;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Data
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class InputProgExercise {
 
     private Long id;
@@ -11,7 +15,7 @@ public class InputProgExercise {
 
     private String note;
 
-    private Long exerciseId;
-
     private String visibility;
+
+    private Long exerciseId;
 }

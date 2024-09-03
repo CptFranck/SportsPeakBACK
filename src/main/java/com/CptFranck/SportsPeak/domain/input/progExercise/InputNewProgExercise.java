@@ -1,8 +1,12 @@
 package com.CptFranck.SportsPeak.domain.input.progExercise;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Data
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class InputNewProgExercise {
 
     private String name;
