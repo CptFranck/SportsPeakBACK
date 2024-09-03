@@ -7,6 +7,7 @@ import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.RoleService;
 import com.CptFranck.SportsPeak.service.UserService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.graphql.dgs.DgsQueryExecutor;
 import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
@@ -26,8 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.CptFranck.SportsPeak.controller.graphqlQuery.UserQuery.*;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -212,35 +212,34 @@ class UserControllerTest {
 //        Assertions.assertThrows(QueryException.class,
 //                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyUserTrustLabelQuery, "data.modifyUserTrustLabel", variables));
 //    }
-//
-//    @Test
-//    void UserController_ModifyUserTrustLabel_Success() {
-//        variables.put("inputUserTrustLabel", objectMapper.convertValue(
-//                        createTestInputUserTrustLabel(1L),
-//                        new TypeReference<LinkedHashMap<String, Object>>() {
-//                        }
-//                )
-//        );
-//        when(userAuthProvider.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
-//        when(userAuthProvider.save(Mockito.any(UserEntity.class))).thenReturn(progExercise);
-//        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
-//
-//        LinkedHashMap<String, Object> userDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(modifyUserTrustLabelQuery, "data.modifyUserTrustLabel", variables);
-//
-//        Assertions.assertNotNull(userDto);
-//    }
-//
-@Test
-void UserController_DeleteUser_Unsuccessful() {
-    variables.put("userId", 1);
-    when(userService.exists(Mockito.any(Long.class))).thenReturn(false);
 
-    Integer id =
-            dgsQueryExecutor.executeAndExtractJsonPath(deleteUserQuery, "data.deleteUser", variables);
+    @Test
+    void UserController_ModifyUserPassword_Success() {
+        variables.put("inputUserPassword", objectMapper.convertValue(
+                        createTestInputUserPassword(1L),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(userService.changePassword(Mockito.any(Long.class), Mockito.any(String.class), Mockito.any(String.class))).thenReturn(user);
+        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
 
-    Assertions.assertNull(id);
-}
+        LinkedHashMap<String, Object> userDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(modifyUserPasswordQuery, "data.modifyUserPassword", variables);
+
+        Assertions.assertNotNull(userDto);
+    }
+
+    @Test
+    void UserController_DeleteUser_Unsuccessful() {
+        variables.put("userId", 1);
+        when(userService.exists(Mockito.any(Long.class))).thenReturn(false);
+
+        Integer id =
+                dgsQueryExecutor.executeAndExtractJsonPath(deleteUserQuery, "data.deleteUser", variables);
+
+        Assertions.assertNull(id);
+    }
 
     @Test
     void UserController_DeleteUser_Success() {
