@@ -25,8 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
-import static com.CptFranck.SportsPeak.controller.graphqlQuery.UserQuery.getUserByIdQuery;
-import static com.CptFranck.SportsPeak.controller.graphqlQuery.UserQuery.getUsersQuery;
+import static com.CptFranck.SportsPeak.controller.graphqlQuery.UserQuery.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
 import static org.mockito.Mockito.when;
@@ -232,25 +231,25 @@ class UserControllerTest {
 //        Assertions.assertNotNull(userDto);
 //    }
 //
-//    @Test
-//    void UserController_DeleteUser_Unsuccessful() {
-//        variables.put("progExerciseId", 1);
-//        when(userAuthProvider.exists(Mockito.any(Long.class))).thenReturn(false);
-//
-//        Integer id =
-//                dgsQueryExecutor.executeAndExtractJsonPath(deleteUserQuery, "data.deleteUser", variables);
-//
-//        Assertions.assertNull(id);
-//    }
-//
-//    @Test
-//    void UserController_DeleteUser_Success() {
-//        variables.put("progExerciseId", 1);
-//        when(userAuthProvider.exists(Mockito.any(Long.class))).thenReturn(true);
-//
-//        Integer id =
-//                dgsQueryExecutor.executeAndExtractJsonPath(deleteUserQuery, "data.deleteUser", variables);
-//
-//        Assertions.assertNotNull(id);
-//    }
+@Test
+void UserController_DeleteUser_Unsuccessful() {
+    variables.put("userId", 1);
+    when(userService.exists(Mockito.any(Long.class))).thenReturn(false);
+
+    Integer id =
+            dgsQueryExecutor.executeAndExtractJsonPath(deleteUserQuery, "data.deleteUser", variables);
+
+    Assertions.assertNull(id);
+}
+
+    @Test
+    void UserController_DeleteUser_Success() {
+        variables.put("userId", 1);
+        when(userService.exists(Mockito.any(Long.class))).thenReturn(true);
+
+        Integer id =
+                dgsQueryExecutor.executeAndExtractJsonPath(deleteUserQuery, "data.deleteUser", variables);
+
+        Assertions.assertNotNull(id);
+    }
 }
