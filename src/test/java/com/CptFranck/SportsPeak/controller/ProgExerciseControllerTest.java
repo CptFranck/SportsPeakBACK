@@ -208,25 +208,25 @@ class ProgExerciseControllerTest {
         Assertions.assertNotNull(progExerciseDto);
     }
 
-//    @Test
-//    void ProgExerciseController_DeleteProgExercise_Unsuccessful() {
-//        variables.put("exerciseId", 1);
-//        when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(false);
-//
-//        Integer id =
-//                dgsQueryExecutor.executeAndExtractJsonPath(deleteProgExerciseQuery, "data.deleteProgExercise", variables);
-//
-//        Assertions.assertNull(id);
-//    }
-//
-//    @Test
-//    void ProgExerciseController_DeleteProgExercise_Success() {
-//        variables.put("exerciseId", 1);
-//        when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(true);
-//
-//        Integer id =
-//                dgsQueryExecutor.executeAndExtractJsonPath(deleteProgExerciseQuery, "data.deleteProgExercise", variables);
-//
-//        Assertions.assertNotNull(id);
-//    }
+    @Test
+    void ProgExerciseController_DeleteProgExercise_Unsuccessful() {
+        variables.put("progExerciseId", 1);
+        when(progExerciseService.exists(Mockito.any(Long.class))).thenReturn(false);
+
+        Integer id =
+                dgsQueryExecutor.executeAndExtractJsonPath(deleteProgExerciseQuery, "data.deleteProgExercise", variables);
+
+        Assertions.assertNull(id);
+    }
+
+    @Test
+    void ProgExerciseController_DeleteProgExercise_Success() {
+        variables.put("progExerciseId", 1);
+        when(progExerciseService.exists(Mockito.any(Long.class))).thenReturn(true);
+
+        Integer id =
+                dgsQueryExecutor.executeAndExtractJsonPath(deleteProgExerciseQuery, "data.deleteProgExercise", variables);
+
+        Assertions.assertNotNull(id);
+    }
 }
