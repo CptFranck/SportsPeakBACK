@@ -75,7 +75,7 @@ public class AuthControllerTest {
     @BeforeEach
     void setUp() {
         user = createTestUser(1L);
-        userDto = createTestUserDto();
+        userDto = createTestUserDto(1L);
         jwToken = new JWToken("token", LocalDateTime.now());
         variables = new LinkedHashMap<>();
     }

@@ -16,9 +16,9 @@ import java.util.List;
 
 public class TestProgExerciseUtils {
 
-    public static ProgExerciseEntity createTestProgExercise(Long Id, UserEntity creator, ExerciseEntity exercise) {
+    public static ProgExerciseEntity createTestProgExercise(Long id, UserEntity creator, ExerciseEntity exercise) {
         return new ProgExerciseEntity(
-                Id,
+                id,
                 "Prog Exercise name",
                 "Prog Exercise note",
                 Visibility.PRIVATE,
@@ -37,9 +37,9 @@ public class TestProgExerciseUtils {
         );
     }
 
-    public static ProgExerciseDto createTestProgExerciseDto(UserDto creator, ExerciseDto exercise) {
+    public static ProgExerciseDto createTestProgExerciseDto(Long id, UserDto creator, ExerciseDto exercise) {
         return new ProgExerciseDto(
-                5L,
+                id,
                 "Prog Exercise name",
                 "Prog Exercise note",
                 Visibility.PRIVATE.label,

@@ -71,11 +71,11 @@ class PerformanceLogControllerTest {
     @BeforeEach
     void init() {
         UserEntity user = createTestUser(1L);
-        UserDto userDto = createTestUserDto();
+        UserDto userDto = createTestUserDto(1L);
         ExerciseEntity exercise = createTestExercise(1L);
         ExerciseDto exerciseDto = createTestExerciseDto(1L);
         ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
-        ProgExerciseDto progExerciseDto = createTestProgExerciseDto(userDto, exerciseDto);
+        ProgExerciseDto progExerciseDto = createTestProgExerciseDto(1L, userDto, exerciseDto);
         targetSet = createTestTargetSet(1L, progExercise, null);
         TargetSetDto targetSetDto = createTestTargetSetDto(1L, progExerciseDto, null);
         performanceLog = createTestPerformanceLog(1L, targetSet);

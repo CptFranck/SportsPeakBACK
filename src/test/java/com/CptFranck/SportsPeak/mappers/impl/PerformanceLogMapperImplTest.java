@@ -50,9 +50,9 @@ public class PerformanceLogMapperImplTest {
 
     @Test
     void performanceLogTypeMapper_MapFrom_WithoutUpdate_Success() {
-        UserDto user = createTestUserDto();
+        UserDto user = createTestUserDto(1L);
         ExerciseDto exercise = createTestExerciseDto(1L);
-        ProgExerciseDto progExercise = createTestProgExerciseDto(user, exercise);
+        ProgExerciseDto progExercise = createTestProgExerciseDto(1L, user, exercise);
         TargetSetDto targetSet = createTestTargetSetDto(1L, progExercise, null);
         PerformanceLogDto performanceLog = createTestPerformanceLogDto(1L, targetSet);
 

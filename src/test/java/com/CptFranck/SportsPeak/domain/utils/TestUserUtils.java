@@ -32,9 +32,9 @@ public class TestUserUtils {
                 createTestUser(2L));
     }
 
-    public static UserDto createTestUserDto() {
+    public static UserDto createTestUserDto(Long id) {
         return new UserDto(
-                4L,
+                id,
                 "test@test.test",
                 "John",
                 "Doe",

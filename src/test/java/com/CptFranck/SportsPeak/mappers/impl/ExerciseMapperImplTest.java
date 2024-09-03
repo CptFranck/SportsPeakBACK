@@ -68,8 +68,8 @@ public class ExerciseMapperImplTest {
         ExerciseDto exercise = createTestExerciseDto(1L);
         MuscleDto muscle = createTestMuscleDto(1L);
         ExerciseTypeDto exerciseType = createTestExerciseTypeDto(1L);
-        UserDto user = createTestUserDto();
-        ProgExerciseDto progExercise = createTestProgExerciseDto(user, exercise);
+        UserDto user = createTestUserDto(1L);
+        ProgExerciseDto progExercise = createTestProgExerciseDto(1L, user, exercise);
 
         exercise.getMuscles().add(muscle);
         exercise.getExerciseTypes().add(exerciseType);

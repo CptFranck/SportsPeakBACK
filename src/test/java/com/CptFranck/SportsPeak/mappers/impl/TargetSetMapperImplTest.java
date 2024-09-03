@@ -62,9 +62,9 @@ public class TargetSetMapperImplTest {
 
     @Test
     void targetSetTypeMapper_MapFrom_WithoutUpdate_Success() {
-        UserDto user = createTestUserDto();
+        UserDto user = createTestUserDto(1L);
         ExerciseDto exercise = createTestExerciseDto(1L);
-        ProgExerciseDto progExercise = createTestProgExerciseDto(user, exercise);
+        ProgExerciseDto progExercise = createTestProgExerciseDto(1L, user, exercise);
         TargetSetDto targetSet = createTestTargetSetDto(1L, progExercise, null);
 
         TargetSetEntity targetSetEntity = targetSetMapper.mapFrom(targetSet);
@@ -88,9 +88,9 @@ public class TargetSetMapperImplTest {
 
     @Test
     void targetSetTypeMapper_MapFrom_WithUpdate_Success() {
-        UserDto user = createTestUserDto();
+        UserDto user = createTestUserDto(1L);
         ExerciseDto exercise = createTestExerciseDto(1L);
-        ProgExerciseDto progExercise = createTestProgExerciseDto(user, exercise);
+        ProgExerciseDto progExercise = createTestProgExerciseDto(1L, user, exercise);
         TargetSetDto targetSet = createTestTargetSetDto(1L, progExercise, null);
         PerformanceLogDto performanceLog = createTestPerformanceLogDto(1L, targetSet);
         targetSet.getPerformanceLogs().add(performanceLog);

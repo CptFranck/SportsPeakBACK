@@ -60,9 +60,9 @@ public class ProgExerciseMapperImplTest {
 
     @Test
     void progExerciseTypeMapper_MapFrom_Success() {
-        UserDto user = createTestUserDto();
+        UserDto user = createTestUserDto(1L);
         ExerciseDto exercise = createTestExerciseDto(1L);
-        ProgExerciseDto progExercise = createTestProgExerciseDto(user, exercise);
+        ProgExerciseDto progExercise = createTestProgExerciseDto(1L, user, exercise);
         TargetSetDto targetSet = createTestTargetSetDto(1L, progExercise, null);
 
         progExercise.getTargetSets().add(targetSet);
