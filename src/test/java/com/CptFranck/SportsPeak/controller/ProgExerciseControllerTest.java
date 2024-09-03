@@ -11,9 +11,11 @@ import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import com.CptFranck.SportsPeak.service.UserService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.graphql.dgs.DgsQueryExecutor;
 import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
+import com.netflix.graphql.dgs.exceptions.QueryException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,12 +30,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
-import static com.CptFranck.SportsPeak.controller.graphqlQuery.ProgExerciseQuery.getProgExerciseByIdQuery;
-import static com.CptFranck.SportsPeak.controller.graphqlQuery.ProgExerciseQuery.getProgExercisesQuery;
+import static com.CptFranck.SportsPeak.controller.graphqlQuery.ProgExerciseQuery.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExerciseDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
 import static org.mockito.Mockito.when;
@@ -61,14 +61,16 @@ class ProgExerciseControllerTest {
     @MockBean
     private ProgExerciseService progExerciseService;
 
+    private UserEntity user;
+    private ExerciseEntity exercise;
     private ProgExerciseEntity progExercise;
     private ProgExerciseDto progExerciseDto;
     private LinkedHashMap<String, Object> variables;
 
     @BeforeEach
     void init() {
-        UserEntity user = createTestUser(1L);
-        ExerciseEntity exercise = createTestExercise(1L);
+        user = createTestUser(1L);
+        exercise = createTestExercise(1L);
         UserDto userDto = createTestUserDto(1L);
         ExerciseDto exerciseDto = createTestExerciseDto(1L);
         progExercise = createTestProgExercise(1L, user, exercise);
@@ -109,28 +111,55 @@ class ProgExerciseControllerTest {
 
         Assertions.assertNotNull(progExerciseDto);
     }
-//
-//    @Test
-//    void ProgExerciseController_AddProgExercise_Success() {
-//        variables.put("inputNewProgExercise", objectMapper.convertValue(
-//                createTestInputNewProgExercise(),
-//                new TypeReference<LinkedHashMap<String, Object>>() {
-//                }
-//                )
-//        );
-//        Set<MuscleEntity> muscles = new HashSet<>();
-//        Set<ProgExerciseTypeEntity> exerciseType = new HashSet<>();
-//        when(progExerciseService.findMany(Mockito.anySet())).thenReturn(muscles);
-//        when(userService.findMany(Mockito.anySet())).thenReturn(exerciseType);
-//        when(exerciseService.save(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExercise);
-//        when(progExerciseMapper.mapTo(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExerciseDto);
-//
-//        LinkedHashMap<String, Object> progExerciseDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(addProgExerciseQuery, "data.addProgExercise", variables);
-//
-//        Assertions.assertNotNull(progExerciseDto);
-//    }
-//
+
+    @Test
+    void ProgExerciseController_AddProgExercise_UnsuccessfulUserNotFound() {
+        variables.put("inputNewProgExercise", objectMapper.convertValue(
+                        createTestInputNewProgExercise(1L, 1L),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(userService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(addProgExerciseQuery, "data.addProgExercise", variables));
+    }
+
+    @Test
+    void ProgExerciseController_AddProgExercise_UnsuccessfulExerciseNotFound() {
+        variables.put("inputNewProgExercise", objectMapper.convertValue(
+                        createTestInputNewProgExercise(1L, 1L),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(userService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(user));
+        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(addProgExerciseQuery, "data.addProgExercise", variables));
+    }
+
+    @Test
+    void ProgExerciseController_AddProgExercise_Success() {
+        variables.put("inputNewProgExercise", objectMapper.convertValue(
+                        createTestInputNewProgExercise(1L, 1L),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(userService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(user));
+        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(exercise));
+        when(progExerciseService.save(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExercise);
+        when(progExerciseMapper.mapTo(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExerciseDto);
+
+        LinkedHashMap<String, Object> progExerciseDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(addProgExerciseQuery, "data.addProgExercise", variables);
+
+        Assertions.assertNotNull(progExerciseDto);
+    }
+
 //    @Test
 //    void ProgExerciseController_ModifyProgExercise_UnsuccessfulDoesNotExist() {
 //        variables.put("inputProgExercise", objectMapper.convertValue(
