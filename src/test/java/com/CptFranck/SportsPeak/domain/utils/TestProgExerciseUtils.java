@@ -12,6 +12,7 @@ import com.CptFranck.SportsPeak.domain.enumType.TrustLabel;
 import com.CptFranck.SportsPeak.domain.enumType.Visibility;
 import com.CptFranck.SportsPeak.domain.input.progExercise.InputNewProgExercise;
 import com.CptFranck.SportsPeak.domain.input.progExercise.InputProgExercise;
+import com.CptFranck.SportsPeak.domain.input.progExercise.InputProgExerciseTrustLabel;
 
 import java.util.HashSet;
 import java.util.List;
@@ -69,6 +70,13 @@ public class TestProgExerciseUtils {
                 "Prog Exercise note",
                 Visibility.PRIVATE.label,
                 exerciseId
+        );
+    }
+
+    public static InputProgExerciseTrustLabel createTestInputProgExerciseTrustLabel(Long id) {
+        return new InputProgExerciseTrustLabel(
+                id,
+                Visibility.PRIVATE.label
         );
     }
 }
