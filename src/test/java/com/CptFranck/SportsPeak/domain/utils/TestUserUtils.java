@@ -6,7 +6,9 @@ import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.input.user.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -42,6 +44,45 @@ public class TestUserUtils {
                 new HashSet<RoleDto>(),
                 new HashSet<ProgExerciseDto>(),
                 new HashSet<ProgExerciseDto>()
+        );
+    }
+
+    public static InputUserIdentity createTestInputUserIdentity(Long id) {
+        return new InputUserIdentity(
+                id,
+                "FirstName",
+                "LastName"
+        );
+    }
+
+    public static InputUserRoles createTestInputUserRoles(Long id) {
+        return new InputUserRoles(
+                id,
+                new ArrayList<Long>()
+
+        );
+    }
+
+    public static InputUserEmail createTestInputUserEmail(Long id) {
+        return new InputUserEmail(
+                id,
+                "Password",
+                "newemail@test.com"
+        );
+    }
+
+    public static InputUserUsername createTestInputUserUsername(Long id) {
+        return new InputUserUsername(
+                id,
+                "newUsername"
+        );
+    }
+
+    public static InputUserPassword createTestInputUserPassword(Long id) {
+        return new InputUserPassword(
+                id,
+                "OldPassword",
+                "NewPassword"
         );
     }
 }
