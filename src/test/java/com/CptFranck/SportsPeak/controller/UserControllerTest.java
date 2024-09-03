@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.graphql.dgs.DgsQueryExecutor;
 import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
+import com.netflix.graphql.dgs.exceptions.QueryException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -101,6 +102,28 @@ class UserControllerTest {
 
         LinkedHashMap<String, Object> userDto =
                 dgsQueryExecutor.executeAndExtractJsonPath(getUserByIdQuery, "data.getUserById", variables);
+
+        Assertions.assertNotNull(userDto);
+    }
+
+    @Test
+    void UserController_GetUserProgExercises_UnsuccessfulUserNotFound() {
+        variables.put("userId", 1);
+        when(userService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+
+
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(getUserProgExercisesQuery, "data.getUserProgExercises", variables));
+    }
+
+    @Test
+    void UserController_GetUserProgExercises_Success() {
+        variables.put("userId", 1);
+        when(userService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(user));
+        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
+
+        List<LinkedHashMap<String, Object>> userDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(getUserProgExercisesQuery, "data.getUserProgExercises", variables);
 
         Assertions.assertNotNull(userDto);
     }
