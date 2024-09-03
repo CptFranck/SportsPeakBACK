@@ -160,63 +160,54 @@ class ProgExerciseControllerTest {
         Assertions.assertNotNull(progExerciseDto);
     }
 
-//    @Test
-//    void ProgExerciseController_ModifyProgExercise_UnsuccessfulDoesNotExist() {
-//        variables.put("inputProgExercise", objectMapper.convertValue(
-//                        createTestInputProgExercise(),
-//                new TypeReference<LinkedHashMap<String, Object>>() {
-//                }
-//                )
-//        );
-//        when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(false);
-//
-//        LinkedHashMap<String, Object> progExerciseDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(modifyProgExerciseQuery, "data.modifyProgExercise", variables);
-//
-//        Assertions.assertNull(progExerciseDto);
-//    }
-//
-//    @Test
-//    void ProgExerciseController_ModifyProgExercise_UnsuccessfulProgExerciseNotFound() {
-//        variables.put("inputProgExercise", objectMapper.convertValue(
-//                        createTestInputProgExercise(),
-//                        new TypeReference<LinkedHashMap<String, Object>>() {
-//                        }
-//                )
-//        );
-//        Set<MuscleEntity> muscles = new HashSet<>();
-//        Set<ProgExerciseTypeEntity> exerciseType = new HashSet<>();
-//        when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(true);
-//        when(progExerciseService.findMany(Mockito.anySet())).thenReturn(muscles);
-//        when(userService.findMany(Mockito.anySet())).thenReturn(exerciseType);
-//        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-//        Assertions.assertThrows(QueryException.class,
-//                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyProgExerciseQuery, "data.modifyProgExercise", variables));
-//    }
-//
-//    @Test
-//    void ProgExerciseController_ModifyProgExercise_Success() {
-//        variables.put("inputProgExercise", objectMapper.convertValue(
-//                createTestInputProgExercise(),
-//                new TypeReference<LinkedHashMap<String, Object>>() {
-//                }
-//                )
-//        );
-//        Set<MuscleEntity> muscles = new HashSet<>();
-//        Set<ProgExerciseTypeEntity> exerciseType = new HashSet<>();
-//        when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(true);
-//        when(progExerciseService.findMany(Mockito.anySet())).thenReturn(muscles);
-//        when(userService.findMany(Mockito.anySet())).thenReturn(exerciseType);
-//        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
-//        when(exerciseService.save(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExercise);
-//        when(progExerciseMapper.mapTo(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExerciseDto);
-//
-//        LinkedHashMap<String, Object> progExerciseDto =
-//                dgsQueryExecutor.executeAndExtractJsonPath(modifyProgExerciseQuery, "data.modifyProgExercise", variables);
-//
-//        Assertions.assertNotNull(progExerciseDto);
-//    }
-//
+    @Test
+    void ProgExerciseController_ModifyProgExercise_UnsuccessfulProgExerciseNotFound() {
+        variables.put("inputProgExercise", objectMapper.convertValue(
+                        createTestInputProgExercise(1L, 1L),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyProgExerciseQuery, "data.modifyProgExercise", variables));
+    }
+
+    @Test
+    void ProgExerciseController_ModifyProgExercise_Unsuccessful() {
+        variables.put("inputProgExercise", objectMapper.convertValue(
+                        createTestInputProgExercise(1L, 1L),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
+        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyProgExerciseQuery, "data.modifyProgExercise", variables));
+    }
+
+    @Test
+    void ProgExerciseController_ModifyProgExercise_Success() {
+        variables.put("inputProgExercise", objectMapper.convertValue(
+                        createTestInputProgExercise(1L, 1L),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
+        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(exercise));
+        when(progExerciseService.save(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExercise);
+        when(progExerciseMapper.mapTo(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExerciseDto);
+
+        LinkedHashMap<String, Object> progExerciseDto =
+                dgsQueryExecutor.executeAndExtractJsonPath(modifyProgExerciseQuery, "data.modifyProgExercise", variables);
+
+        Assertions.assertNotNull(progExerciseDto);
+    }
+
 //    @Test
 //    void ProgExerciseController_DeleteProgExercise_Unsuccessful() {
 //        variables.put("exerciseId", 1);
