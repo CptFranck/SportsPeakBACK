@@ -1,14 +1,12 @@
 package com.CptFranck.SportsPeak.domain.input.targetSet;
 
 import com.CptFranck.SportsPeak.domain.input.duration.InputDuration;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 
 @Getter
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 public class InputTargetSet extends AbstractTargetSetInput {
 
     private Long id;
