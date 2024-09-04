@@ -274,7 +274,7 @@ class TargetSetControllerTest {
         when(targetSetService.save(Mockito.any(TargetSetEntity.class))).thenReturn(targetSet);
         when(TargetSetMapper.mapTo(Mockito.any(TargetSetEntity.class))).thenReturn(targetSetDto);
 
-        LinkedHashMap<String, Object> TargetSetDto =
+        List<LinkedHashMap<String, Object>> TargetSetDto =
                 dgsQueryExecutor.executeAndExtractJsonPath(modifyTargetSetStateQuery, "data.modifyTargetSetState", variables);
 
         Assertions.assertNotNull(TargetSetDto);

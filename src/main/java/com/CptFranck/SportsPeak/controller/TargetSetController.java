@@ -71,8 +71,9 @@ public class TargetSetController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
-    public TargetSetDto modifyTargetSetState(@InputArgument InputTargetSetState inputTargetSetState) {
-        return targetSetMapper.mapTo(inputTrustLabelToEntity(inputTargetSetState));
+    public List<TargetSetDto> modifyTargetSetState(@InputArgument InputTargetSetState inputTargetSetState) {
+        TargetSetEntity targetSet = inputTrustLabelToEntity(inputTargetSetState);
+        return targetSet.getProgExercise().getTargetSets().stream().map(targetSetMapper::mapTo).toList();
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
