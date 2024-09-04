@@ -163,7 +163,7 @@ class ProgExerciseControllerTest {
     @Test
     void ProgExerciseController_ModifyProgExercise_UnsuccessfulProgExerciseNotFound() {
         variables.put("inputProgExercise", objectMapper.convertValue(
-                        createTestInputProgExercise(1L, 1L),
+                createTestInputProgExercise(1L, 1L, false),
                         new TypeReference<LinkedHashMap<String, Object>>() {
                         }
                 )
@@ -177,7 +177,7 @@ class ProgExerciseControllerTest {
     @Test
     void ProgExerciseController_ModifyProgExercise_Unsuccessful() {
         variables.put("inputProgExercise", objectMapper.convertValue(
-                        createTestInputProgExercise(1L, 1L),
+                createTestInputProgExercise(1L, 1L, false),
                         new TypeReference<LinkedHashMap<String, Object>>() {
                         }
                 )
@@ -190,9 +190,24 @@ class ProgExerciseControllerTest {
     }
 
     @Test
+    void ProgExerciseController_ModifyProgExercise_UnsuccessfulWrongLabel() {
+        variables.put("inputProgExercise", objectMapper.convertValue(
+                        createTestInputProgExercise(1L, 1L, true),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
+        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(exercise));
+
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyProgExerciseQuery, "data.modifyProgExercise", variables));
+    }
+
+    @Test
     void ProgExerciseController_ModifyProgExercise_Success() {
         variables.put("inputProgExercise", objectMapper.convertValue(
-                        createTestInputProgExercise(1L, 1L),
+                createTestInputProgExercise(1L, 1L, false),
                         new TypeReference<LinkedHashMap<String, Object>>() {
                         }
                 )
@@ -211,7 +226,7 @@ class ProgExerciseControllerTest {
     @Test
     void ProgExerciseController_ModifyProgExerciseTrustLabel_UnsuccessfulProgExerciseNotFound() {
         variables.put("inputProgExerciseTrustLabel", objectMapper.convertValue(
-                        createTestInputProgExerciseTrustLabel(1L),
+                createTestInputProgExerciseTrustLabel(1L, false),
                         new TypeReference<LinkedHashMap<String, Object>>() {
                         }
                 )
@@ -223,9 +238,23 @@ class ProgExerciseControllerTest {
     }
 
     @Test
+    void ProgExerciseController_ModifyProgExerciseTrustLabel_UnsuccessfulWrongLabel() {
+        variables.put("inputProgExerciseTrustLabel", objectMapper.convertValue(
+                        createTestInputProgExerciseTrustLabel(1L, true),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
+
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyProgExerciseTrustLabelQuery, "data.modifyProgExerciseTrustLabel", variables));
+    }
+
+    @Test
     void ProgExerciseController_ModifyProgExerciseTrustLabel_Success() {
         variables.put("inputProgExerciseTrustLabel", objectMapper.convertValue(
-                        createTestInputProgExerciseTrustLabel(1L),
+                createTestInputProgExerciseTrustLabel(1L, false),
                         new TypeReference<LinkedHashMap<String, Object>>() {
                         }
                 )

@@ -234,7 +234,7 @@ class TargetSetControllerTest {
     @Test
     void TargetSetController_ModifyTargetSetState_UnsuccessfulNotFound() {
         variables.put("inputTargetSetState", objectMapper.convertValue(
-                        createTestInputInputTargetSetState(1L),
+                createTestInputInputTargetSetState(1L, false),
                         new TypeReference<LinkedHashMap<String, Object>>() {
                         }
                 )
@@ -247,9 +247,24 @@ class TargetSetControllerTest {
     }
 
     @Test
+    void TargetSetController_ModifyTargetSetState_UnsuccessfulWrongLabel() {
+        variables.put("inputTargetSetState", objectMapper.convertValue(
+                        createTestInputInputTargetSetState(1L, true),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(true);
+        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
+
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyTargetSetStateQuery, "data.modifyTargetSetState", variables));
+    }
+
+    @Test
     void TargetSetController_ModifyTargetSetState_Success() {
         variables.put("inputTargetSetState", objectMapper.convertValue(
-                        createTestInputInputTargetSetState(1L),
+                createTestInputInputTargetSetState(1L, false),
                         new TypeReference<LinkedHashMap<String, Object>>() {
                         }
                 )

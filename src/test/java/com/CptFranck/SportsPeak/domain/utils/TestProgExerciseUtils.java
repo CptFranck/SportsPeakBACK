@@ -63,20 +63,22 @@ public class TestProgExerciseUtils {
         );
     }
 
-    public static InputProgExercise createTestInputProgExercise(Long id, Long exerciseId) {
+    public static InputProgExercise createTestInputProgExercise(Long id, Long exerciseId, boolean wrongLabel) {
+        String label = wrongLabel ? TrustLabel.TRUSTED.label : VisibilityLabel.PRIVATE.label;
         return new InputProgExercise(
                 id,
                 "Prog Exercise name",
                 "Prog Exercise note",
-                VisibilityLabel.PRIVATE.label,
+                label,
                 exerciseId
         );
     }
 
-    public static InputProgExerciseTrustLabel createTestInputProgExerciseTrustLabel(Long id) {
+    public static InputProgExerciseTrustLabel createTestInputProgExerciseTrustLabel(Long id, boolean wrongLabel) {
+        String label = wrongLabel ? VisibilityLabel.PRIVATE.label : TrustLabel.TRUSTED.label;
         return new InputProgExerciseTrustLabel(
                 id,
-                VisibilityLabel.PRIVATE.label
+                label
         );
     }
 }

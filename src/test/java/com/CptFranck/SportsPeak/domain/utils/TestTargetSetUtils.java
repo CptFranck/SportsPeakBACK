@@ -7,6 +7,7 @@ import com.CptFranck.SportsPeak.domain.entity.PerformanceLogEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
+import com.CptFranck.SportsPeak.domain.enumType.VisibilityLabel;
 import com.CptFranck.SportsPeak.domain.enumType.WeightUnit;
 import com.CptFranck.SportsPeak.domain.input.duration.InputDuration;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputNewTargetSet;
@@ -108,10 +109,11 @@ public class TestTargetSetUtils {
         );
     }
 
-    public static InputTargetSetState createTestInputInputTargetSetState(Long id) {
+    public static InputTargetSetState createTestInputInputTargetSetState(Long id, boolean wrongLabel) {
+        String label = wrongLabel ? VisibilityLabel.PRIVATE.label : TargetSetState.USED.label;
         return new InputTargetSetState(
                 id,
-                TargetSetState.USED.label
+                label
         );
     }
 }

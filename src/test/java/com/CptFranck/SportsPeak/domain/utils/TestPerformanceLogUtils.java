@@ -4,6 +4,7 @@ import com.CptFranck.SportsPeak.domain.dto.PerformanceLogDto;
 import com.CptFranck.SportsPeak.domain.dto.TargetSetDto;
 import com.CptFranck.SportsPeak.domain.entity.PerformanceLogEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
+import com.CptFranck.SportsPeak.domain.enumType.VisibilityLabel;
 import com.CptFranck.SportsPeak.domain.enumType.WeightUnit;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputNewPerformanceLog;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputPerformanceLog;
@@ -46,26 +47,28 @@ public class TestPerformanceLogUtils {
         );
     }
 
-    public static InputNewPerformanceLog createTestInputNewPerformanceLog(Long targetSetId) {
+    public static InputNewPerformanceLog createTestInputNewPerformanceLog(Long targetSetId, boolean wrongLabel) {
         LocalDateTime logDate = LocalDateTime.now();
+        String label = wrongLabel ? VisibilityLabel.PRIVATE.label : WeightUnit.KILOGRAMME.label;
         return new InputNewPerformanceLog(
                 1,
                 5,
                 0f,
-                WeightUnit.KILOGRAMME.label,
+                label,
                 logDate,
                 targetSetId
         );
     }
 
-    public static InputPerformanceLog createTestInputPerformanceLog(Long id, Long targetSetId) {
+    public static InputPerformanceLog createTestInputPerformanceLog(Long id, Long targetSetId, boolean wrongLabel) {
         LocalDateTime logDate = LocalDateTime.now();
+        String label = wrongLabel ? VisibilityLabel.PRIVATE.label : WeightUnit.KILOGRAMME.label;
         return new InputPerformanceLog(
                 id,
                 1,
                 5,
                 0f,
-                WeightUnit.KILOGRAMME.label,
+                label,
                 logDate,
                 targetSetId
         );

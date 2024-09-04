@@ -132,7 +132,7 @@ class PerformanceLogControllerTest {
     @Test
     void PerformanceLogController_AddPerformanceLog_UnsuccessfulTargetSetNotFound() {
         variables.put("inputNewPerformanceLog", objectMapper.convertValue(
-                        createTestInputNewPerformanceLog(1L),
+                createTestInputNewPerformanceLog(1L, false),
                         new TypeReference<LinkedHashMap<String, Object>>() {
                         }
                 )
@@ -144,9 +144,23 @@ class PerformanceLogControllerTest {
     }
 
     @Test
+    void PerformanceLogController_AddPerformanceLog_UnsuccessfulWrongLabel() {
+        variables.put("inputNewPerformanceLog", objectMapper.convertValue(
+                        createTestInputNewPerformanceLog(1L, true),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
+
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(addPerformanceLogQuery, "data.addPerformanceLog", variables));
+    }
+
+    @Test
     void PerformanceLogController_AddPerformanceLog_Success() {
         variables.put("inputNewPerformanceLog", objectMapper.convertValue(
-                        createTestInputNewPerformanceLog(1L),
+                createTestInputNewPerformanceLog(1L, false),
                         new TypeReference<LinkedHashMap<String, Object>>() {
                         }
                 )
@@ -164,7 +178,7 @@ class PerformanceLogControllerTest {
     @Test
     void PerformanceLogController_ModifyPerformanceLog_UnsuccessfulDoesNotExist() {
         variables.put("inputPerformanceLog", objectMapper.convertValue(
-                        createTestInputPerformanceLog(1L, 1L),
+                createTestInputPerformanceLog(1L, 1L, false),
                         new TypeReference<LinkedHashMap<String, Object>>() {
                         }
                 )
@@ -178,9 +192,24 @@ class PerformanceLogControllerTest {
     }
 
     @Test
+    void PerformanceLogController_ModifyPerformanceLog_UnsuccessfulWrongLabel() {
+        variables.put("inputNewPerformanceLog", objectMapper.convertValue(
+                createTestInputPerformanceLog(1L, 1L, true),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
+                        }
+                )
+        );
+        when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(true);
+        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
+
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyPerformanceLogQuery, "data.modifyPerformanceLog", variables));
+    }
+
+    @Test
     void PerformanceLogController_ModifyPerformanceLog_Success() {
         variables.put("inputPerformanceLog", objectMapper.convertValue(
-                        createTestInputPerformanceLog(1L, 1L),
+                        createTestInputPerformanceLog(1L, 1L, false),
                         new TypeReference<LinkedHashMap<String, Object>>() {
                         }
                 )
