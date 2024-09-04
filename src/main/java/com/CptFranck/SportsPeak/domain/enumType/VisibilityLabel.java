@@ -1,17 +1,17 @@
 package com.CptFranck.SportsPeak.domain.enumType;
 
-public enum Visibility {
+public enum VisibilityLabel {
     PRIVATE("Private"),
     PUBLIC("Public");
 
     public final String label;
 
-    Visibility(String label) {
+    VisibilityLabel(String label) {
         this.label = label;
     }
 
-    public static Visibility valueOfLabel(String label) {
-        for (Visibility e : values()) {
+    public static VisibilityLabel valueOfLabel(String label) {
+        for (VisibilityLabel e : values()) {
             if (e.label.equals(label)) {
                 return e;
             }

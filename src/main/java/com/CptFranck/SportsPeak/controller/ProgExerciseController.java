@@ -6,7 +6,7 @@ import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.enumType.TrustLabel;
-import com.CptFranck.SportsPeak.domain.enumType.Visibility;
+import com.CptFranck.SportsPeak.domain.enumType.VisibilityLabel;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.progExercise.ProgExerciseNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.CptFranck.SportsPeak.domain.enumType.Visibility.valueOfLabel;
+import static com.CptFranck.SportsPeak.domain.enumType.VisibilityLabel.valueOfLabel;
 
 @DgsComponent
 public class ProgExerciseController {
@@ -123,7 +123,7 @@ public class ProgExerciseController {
 
         progExercise.setNote(inputProgExercise.getNote());
         progExercise.setName(inputProgExercise.getName());
-        progExercise.setVisibility(Visibility.valueOfLabel(inputProgExercise.getVisibility()));
+        progExercise.setVisibility(VisibilityLabel.valueOfLabel(inputProgExercise.getVisibility()));
         progExercise.setExercise(newExercise);
 
         exerciseService.updateProgExerciseRelation(newExercise, oldExercise, progExercise);

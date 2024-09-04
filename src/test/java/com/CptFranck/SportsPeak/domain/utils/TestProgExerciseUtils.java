@@ -9,7 +9,7 @@ import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.enumType.TrustLabel;
-import com.CptFranck.SportsPeak.domain.enumType.Visibility;
+import com.CptFranck.SportsPeak.domain.enumType.VisibilityLabel;
 import com.CptFranck.SportsPeak.domain.input.progExercise.InputNewProgExercise;
 import com.CptFranck.SportsPeak.domain.input.progExercise.InputProgExercise;
 import com.CptFranck.SportsPeak.domain.input.progExercise.InputProgExerciseTrustLabel;
@@ -24,7 +24,7 @@ public class TestProgExerciseUtils {
                 id,
                 "Prog Exercise name",
                 "Prog Exercise note",
-                Visibility.PRIVATE,
+                VisibilityLabel.PRIVATE,
                 TrustLabel.UNVERIFIED,
                 new HashSet<UserEntity>(),
                 creator,
@@ -45,7 +45,7 @@ public class TestProgExerciseUtils {
                 id,
                 "Prog Exercise name",
                 "Prog Exercise note",
-                Visibility.PRIVATE.label,
+                VisibilityLabel.PRIVATE.label,
                 TrustLabel.UNVERIFIED.label,
                 creator,
                 exercise,
@@ -57,7 +57,7 @@ public class TestProgExerciseUtils {
         return new InputNewProgExercise(
                 "Prog Exercise name",
                 "Prog Exercise note",
-                Visibility.PRIVATE.label,
+                VisibilityLabel.PRIVATE.label,
                 creatorId,
                 exerciseId
         );
@@ -68,7 +68,7 @@ public class TestProgExerciseUtils {
                 id,
                 "Prog Exercise name",
                 "Prog Exercise note",
-                Visibility.PRIVATE.label,
+                VisibilityLabel.PRIVATE.label,
                 exerciseId
         );
     }
@@ -76,7 +76,7 @@ public class TestProgExerciseUtils {
     public static InputProgExerciseTrustLabel createTestInputProgExerciseTrustLabel(Long id) {
         return new InputProgExerciseTrustLabel(
                 id,
-                Visibility.PRIVATE.label
+                VisibilityLabel.PRIVATE.label
         );
     }
 }

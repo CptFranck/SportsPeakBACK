@@ -1,7 +1,7 @@
 package com.CptFranck.SportsPeak.domain.entity;
 
 import com.CptFranck.SportsPeak.domain.enumType.TrustLabel;
-import com.CptFranck.SportsPeak.domain.enumType.Visibility;
+import com.CptFranck.SportsPeak.domain.enumType.VisibilityLabel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,7 +31,7 @@ public class ProgExerciseEntity {
 
     @Column(name = "visibility", length = 50, nullable = false)
     @Enumerated(EnumType.STRING)
-    private Visibility visibility;
+    private VisibilityLabel visibility;
 
     @Column(name = "trust_label", length = 50, nullable = false)
     @Enumerated(EnumType.STRING)

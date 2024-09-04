@@ -1,11 +1,11 @@
 package com.CptFranck.SportsPeak.mappers.typeConverter;
 
-import com.CptFranck.SportsPeak.domain.enumType.Visibility;
+import com.CptFranck.SportsPeak.domain.enumType.VisibilityLabel;
 import org.modelmapper.AbstractConverter;
 
-public class VisibilityToStringConverter extends AbstractConverter<Visibility, String> {
+public class VisibilityToStringConverter extends AbstractConverter<VisibilityLabel, String> {
     @Override
-    protected String convert(Visibility visibility) {
+    protected String convert(VisibilityLabel visibility) {
         return visibility.label;
     }
 }
