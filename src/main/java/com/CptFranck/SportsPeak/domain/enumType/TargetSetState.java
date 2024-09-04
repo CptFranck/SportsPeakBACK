@@ -1,5 +1,7 @@
 package com.CptFranck.SportsPeak.domain.enumType;
 
+import com.CptFranck.SportsPeak.domain.exception.LabelMatchNotFoundException;
+
 public enum TargetSetState {
     USED("Used"),
     UNUSED("Unused"),
@@ -17,6 +19,6 @@ public enum TargetSetState {
                 return e;
             }
         }
-        return null;
+        throw new LabelMatchNotFoundException("VisibilityLabel", label);
     }
 }

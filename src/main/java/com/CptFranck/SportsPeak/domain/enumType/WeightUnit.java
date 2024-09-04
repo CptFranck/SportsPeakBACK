@@ -1,5 +1,7 @@
 package com.CptFranck.SportsPeak.domain.enumType;
 
+import com.CptFranck.SportsPeak.domain.exception.LabelMatchNotFoundException;
+
 public enum WeightUnit {
     KILOGRAMME("kgs"),
     POUND("lbs");
@@ -16,6 +18,6 @@ public enum WeightUnit {
                 return e;
             }
         }
-        return null;
+        throw new LabelMatchNotFoundException("WeightUnit", label);
     }
 }

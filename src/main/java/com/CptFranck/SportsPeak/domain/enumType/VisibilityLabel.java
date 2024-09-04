@@ -1,5 +1,7 @@
 package com.CptFranck.SportsPeak.domain.enumType;
 
+import com.CptFranck.SportsPeak.domain.exception.LabelMatchNotFoundException;
+
 public enum VisibilityLabel {
     PRIVATE("Private"),
     PUBLIC("Public");
@@ -16,6 +18,6 @@ public enum VisibilityLabel {
                 return e;
             }
         }
-        return null;
+        throw new LabelMatchNotFoundException("VisibilityLabel", label);
     }
 }
