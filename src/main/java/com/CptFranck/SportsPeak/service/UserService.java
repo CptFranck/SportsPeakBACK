@@ -1,6 +1,7 @@
 package com.CptFranck.SportsPeak.service;
 
 
+import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 
@@ -15,6 +16,8 @@ public interface UserService {
     Optional<UserEntity> findOne(Long id);
 
     Set<UserEntity> findMany(Set<Long> ids);
+
+    Set<UserEntity> findUserBySubscribedProgExercises(ProgExerciseEntity progExercise);
 
     void updateRoleRelation(Set<Long> newIds, Set<Long> oldIds, RoleEntity roleEntity);
 
