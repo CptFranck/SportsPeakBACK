@@ -56,7 +56,8 @@ public class ProgExerciseServiceImpl implements ProgExerciseService {
 
     @Override
     public void delete(Long id) {
-        ProgExerciseEntity exercise = progExerciseRepository.findById(id).orElseThrow(() -> new ProgExerciseNotFoundException(id));
-        progExerciseRepository.delete(exercise);
+        ProgExerciseEntity progExercise = progExerciseRepository.findById(id)
+                .orElseThrow(() -> new ProgExerciseNotFoundException(id));
+        progExerciseRepository.delete(progExercise);
     }
 }
