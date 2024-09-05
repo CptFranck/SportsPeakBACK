@@ -29,6 +29,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.CptFranck.SportsPeak.controller.graphqlQuery.ProgExerciseQuery.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
@@ -241,8 +242,8 @@ class ProgExerciseControllerTest {
     void ProgExerciseController_ModifyProgExerciseTrustLabel_UnsuccessfulWrongLabel() {
         variables.put("inputProgExerciseTrustLabel", objectMapper.convertValue(
                         createTestInputProgExerciseTrustLabel(1L, true),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }
                 )
         );
         when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
@@ -270,20 +271,42 @@ class ProgExerciseControllerTest {
     }
 
     @Test
-    void ProgExerciseController_DeleteProgExercise_Unsuccessful() {
+    void ProgExerciseController_DeleteProgExercise_UnsuccessfulNotFound() {
         variables.put("progExerciseId", 1);
-        when(progExerciseService.exists(Mockito.any(Long.class))).thenReturn(false);
+        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        Integer id =
-                dgsQueryExecutor.executeAndExtractJsonPath(deleteProgExerciseQuery, "data.deleteProgExercise", variables);
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(deleteProgExerciseQuery, "data.deleteProgExercise", variables));
+    }
 
-        Assertions.assertNull(id);
+    @Test
+    void ProgExerciseController_DeleteProgExercise_UnsuccessfulProgExerciseStillUsed() {
+        UserEntity userBis = createTestUser(2L);
+        variables.put("progExerciseId", 1);
+        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
+        when(userService.findUserBySubscribedProgExercises(Mockito.any(ProgExerciseEntity.class))).thenReturn(Set.of(user, userBis));
+
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(deleteProgExerciseQuery, "data.deleteProgExercise", variables));
     }
 
     @Test
     void ProgExerciseController_DeleteProgExercise_Success() {
         variables.put("progExerciseId", 1);
-        when(progExerciseService.exists(Mockito.any(Long.class))).thenReturn(true);
+        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
+        when(userService.findUserBySubscribedProgExercises(Mockito.any(ProgExerciseEntity.class))).thenReturn(Set.of(user));
+
+        Integer id =
+                dgsQueryExecutor.executeAndExtractJsonPath(deleteProgExerciseQuery, "data.deleteProgExercise", variables);
+
+        Assertions.assertNotNull(id);
+    }
+
+    @Test
+    void ProgExerciseController_DeleteProgExercise_SuccessWithNoSubscriber() {
+        variables.put("progExerciseId", 1);
+        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
+        when(userService.findUserBySubscribedProgExercises(Mockito.any(ProgExerciseEntity.class))).thenReturn(Set.of());
 
         Integer id =
                 dgsQueryExecutor.executeAndExtractJsonPath(deleteProgExerciseQuery, "data.deleteProgExercise", variables);
