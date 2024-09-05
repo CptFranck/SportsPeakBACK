@@ -1,5 +1,7 @@
 package com.CptFranck.SportsPeak.service;
 
+import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
+import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.*;
@@ -23,7 +25,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestPrivilegeUtils.createTestPrivilege;
+import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestRoleUtils.createTestRole;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserList;
@@ -87,6 +91,19 @@ public class UserServiceImplTest {
         when(userRepository.findAllById(Mockito.anyIterable())).thenReturn(userList);
 
         Set<UserEntity> userFound = userServiceImpl.findMany(userIds);
+
+        Assertions.assertEquals(new HashSet<>(userList), userFound);
+    }
+
+    @Test
+    void UserService_FindUserBySubscribedProgExercises_Success() {
+        ExerciseEntity exercise = createTestExercise(1L);
+        ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
+        List<UserEntity> userList = createTestUserList();
+        userList.forEach(user -> user.getSubscribedProgExercises().add(progExercise));
+        when(userRepository.findAllBySubscribedProgExercisesContaining(Mockito.any(ProgExerciseEntity.class))).thenReturn(userList);
+
+        Set<UserEntity> userFound = userServiceImpl.findUserBySubscribedProgExercises(progExercise);
 
         Assertions.assertEquals(new HashSet<>(userList), userFound);
     }
