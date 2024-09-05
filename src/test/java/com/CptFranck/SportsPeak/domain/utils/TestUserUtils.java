@@ -17,7 +17,7 @@ public class TestUserUtils {
     public static UserEntity createTestUser(Long id) {
         return new UserEntity(
                 id,
-                "test@test.test",
+                "john.doe@email.test",
                 "John",
                 "Doe",
                 "John_Doe",
@@ -28,10 +28,25 @@ public class TestUserUtils {
         );
     }
 
+    public static UserEntity createTestUserBis(Long id) {
+        return new UserEntity(
+                id,
+                "jane.doe@email.test",
+                "Jane",
+                "Doe",
+                "Jane_Doe",
+                "password",
+                new HashSet<RoleEntity>(),
+                new HashSet<ProgExerciseEntity>(),
+                new HashSet<ProgExerciseEntity>()
+        );
+    }
+
     public static List<UserEntity> createTestUserList() {
         return List.of(
                 createTestUser(1L),
-                createTestUser(2L));
+                createTestUser(2L)
+        );
     }
 
     public static UserDto createTestUserDto(Long id) {
