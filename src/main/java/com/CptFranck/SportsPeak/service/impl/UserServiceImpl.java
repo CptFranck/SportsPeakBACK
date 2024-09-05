@@ -1,6 +1,7 @@
 package com.CptFranck.SportsPeak.service.impl;
 
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
+import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.*;
@@ -53,6 +54,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .collect(Collectors.toSet());
     }
 
+    @Override
+    public Set<UserEntity> findUserBySubscribedProgExercises(ProgExerciseEntity progExercise) {
+        return new HashSet<>(userRepository.findAllBySubscribedProgExercisesContaining(progExercise));
+    }
+    
     @Override
     public void updateRoleRelation(Set<Long> newIds, Set<Long> oldIds, RoleEntity roleEntity) {
         this.findMany(oldIds).forEach(p -> {
