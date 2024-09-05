@@ -9,6 +9,7 @@ import com.CptFranck.SportsPeak.domain.enumType.TrustLabel;
 import com.CptFranck.SportsPeak.domain.enumType.VisibilityLabel;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.progExercise.ProgExerciseNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.progExercise.ProgExerciseStillUsedException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.progExercise.InputNewProgExercise;
 import com.CptFranck.SportsPeak.domain.input.progExercise.InputProgExercise;
@@ -77,10 +78,14 @@ public class ProgExerciseController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
     public Long deleteProgExercise(@InputArgument Long progExerciseId) {
-        if (!progExerciseService.exists(progExerciseId)) {
-            return null;
+        ProgExerciseEntity progExercise = progExerciseService.findOne(progExerciseId)
+                .orElseThrow(() -> new ProgExerciseNotFoundException(progExerciseId));
+        Set<UserEntity> users = userService.findUserBySubscribedProgExercises(progExercise);
+        if (users.isEmpty() || users.size() == 1 && users.contains(progExercise.getCreator())) {
+            progExerciseService.delete(progExerciseId);
+        } else {
+            throw new ProgExerciseStillUsedException(progExerciseId);
         }
-        progExerciseService.delete(progExerciseId);
         return progExerciseId;
     }
 
@@ -106,7 +111,6 @@ public class ProgExerciseController {
         );
 
         progExerciseEntity = progExerciseService.save(progExerciseEntity);
-        creator.getSubscribedProgExercises().add(progExerciseEntity);
         userService.save(creator);
         exercise.getProgExercises().add(progExerciseEntity);
         exerciseService.save(exercise);
