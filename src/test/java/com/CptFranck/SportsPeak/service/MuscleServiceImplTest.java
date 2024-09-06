@@ -2,6 +2,7 @@ package com.CptFranck.SportsPeak.service;
 
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
 import com.CptFranck.SportsPeak.domain.exception.muscle.MuscleNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.muscle.MuscleStillUsedInExerciseException;
 import com.CptFranck.SportsPeak.repositories.MuscleRepository;
 import com.CptFranck.SportsPeak.service.impl.MuscleServiceImpl;
 import org.junit.jupiter.api.Assertions;
@@ -19,6 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.createTestMuscle;
 import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.createTestMuscleList;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -91,16 +93,24 @@ public class MuscleServiceImplTest {
     }
 
     @Test
-    void muscleService_Delete_Success() {
-        when(muscleRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(muscle));
-
-        assertAll(() -> muscleServiceImpl.delete(muscle.getId()));
-    }
-
-    @Test
     void muscleService_Delete_Unsuccessful() {
         when(muscleRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
         assertThrows(MuscleNotFoundException.class, () -> muscleServiceImpl.delete(muscle.getId()));
+    }
+
+    @Test
+    void muscleService_Delete_Unsuccessful_Exception() {
+        muscle.getExercises().add(createTestExercise(1L));
+        when(muscleRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(muscle));
+
+        assertThrows(MuscleStillUsedInExerciseException.class, () -> muscleServiceImpl.delete(muscle.getId()));
+    }
+
+    @Test
+    void muscleService_Delete_Success() {
+        when(muscleRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(muscle));
+
+        assertAll(() -> muscleServiceImpl.delete(muscle.getId()));
     }
 }
