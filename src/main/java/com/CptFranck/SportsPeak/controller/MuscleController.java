@@ -62,9 +62,6 @@ public class MuscleController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsMutation
     public Long deleteMuscle(@InputArgument Long muscleId) {
-        if (!muscleService.exists(muscleId)) {
-            return null;
-        }
         muscleService.delete(muscleId);
         return muscleId;
     }
