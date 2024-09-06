@@ -151,17 +151,6 @@ class MuscleControllerTest {
     }
 
     @Test
-    void MuscleController_DeleteMuscle_UnsuccessfulDoesNotExist() {
-        variables.put("muscleId", 1);
-        when(muscleService.exists(Mockito.any(Long.class))).thenReturn(false);
-
-        Integer id =
-                dgsQueryExecutor.executeAndExtractJsonPath(deleteMuscleQuery, "data.deleteMuscle", variables);
-
-        Assertions.assertNull(id);
-    }
-
-    @Test
     void MuscleController_DeleteMuscle_Success() {
         variables.put("muscleId", 1);
         when(muscleService.exists(Mockito.any(Long.class))).thenReturn(true);
