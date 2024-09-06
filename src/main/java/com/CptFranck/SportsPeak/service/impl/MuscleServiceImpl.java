@@ -2,6 +2,7 @@ package com.CptFranck.SportsPeak.service.impl;
 
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
 import com.CptFranck.SportsPeak.domain.exception.muscle.MuscleNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.muscle.MuscleStillUsedInExerciseException;
 import com.CptFranck.SportsPeak.repositories.MuscleRepository;
 import com.CptFranck.SportsPeak.service.MuscleService;
 import org.springframework.stereotype.Service;
@@ -57,6 +58,10 @@ public class MuscleServiceImpl implements MuscleService {
     @Override
     public void delete(Long id) {
         MuscleEntity muscle = muscleRepository.findById(id).orElseThrow(() -> new MuscleNotFoundException(id));
-        muscleRepository.delete(muscle);
+        if (muscle.getExercises().isEmpty()) {
+            muscleRepository.delete(muscle);
+        } else {
+            throw new MuscleStillUsedInExerciseException(id, (long) muscle.getExercises().size());
+        }
     }
 }
