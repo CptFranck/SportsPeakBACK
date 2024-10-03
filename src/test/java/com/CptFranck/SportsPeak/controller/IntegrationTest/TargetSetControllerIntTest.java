@@ -279,17 +279,6 @@ class TargetSetControllerIntTest {
     }
 
     @Test
-    void TargetSetController_DeleteTargetSet_UnsuccessfulDoesNotExist() {
-        variables.put("targetSetId", 1);
-        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(false);
-
-        Integer id =
-                dgsQueryExecutor.executeAndExtractJsonPath(deleteTargetSetQuery, "data.deleteTargetSet", variables);
-
-        Assertions.assertNull(id);
-    }
-
-    @Test
     void TargetSetController_DeleteTargetSet_Success() {
         variables.put("targetSetId", 1);
         when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(true);

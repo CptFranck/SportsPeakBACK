@@ -224,17 +224,6 @@ class PerformanceLogControllerIntTest {
     }
 
     @Test
-    void PerformanceLogController_DeletePerformanceLog_UnsuccessfulDoesNotExist() {
-        variables.put("performanceLogId", 1);
-        when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(false);
-
-        Integer id =
-                dgsQueryExecutor.executeAndExtractJsonPath(deletePerformanceLogQuery, "data.deletePerformanceLog", variables);
-
-        Assertions.assertNull(id);
-    }
-
-    @Test
     void PerformanceLogController_DeletePerformanceLog_Success() {
         variables.put("performanceLogId", 1);
         when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(true);

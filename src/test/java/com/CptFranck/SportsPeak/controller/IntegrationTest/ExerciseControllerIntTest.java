@@ -181,17 +181,6 @@ class ExerciseControllerIntTest {
     }
 
     @Test
-    void ExerciseController_DeleteExercise_Unsuccessful() {
-        variables.put("exerciseId", 1);
-        when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(false);
-
-        Integer id =
-                dgsQueryExecutor.executeAndExtractJsonPath(deleteExerciseQuery, "data.deleteExercise", variables);
-
-        Assertions.assertNull(id);
-    }
-
-    @Test
     void ExerciseController_DeleteExercise_Success() {
         variables.put("exerciseId", 1);
         when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(true);

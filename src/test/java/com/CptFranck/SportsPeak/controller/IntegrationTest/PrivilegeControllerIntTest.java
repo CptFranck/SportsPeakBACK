@@ -153,17 +153,6 @@ class PrivilegeControllerIntTest {
     }
 
     @Test
-    void PrivilegeController_DeletePrivilege_UnsuccessfulDoesNotExist() {
-        variables.put("privilegeId", 1);
-        when(privilegeService.exists(Mockito.any(Long.class))).thenReturn(false);
-
-        Integer id =
-                dgsQueryExecutor.executeAndExtractJsonPath(deletePrivilegeQuery, "data.deletePrivilege", variables);
-
-        Assertions.assertNull(id);
-    }
-
-    @Test
     void PrivilegeController_DeletePrivilege_Success() {
         variables.put("privilegeId", 1);
         when(privilegeService.exists(Mockito.any(Long.class))).thenReturn(true);

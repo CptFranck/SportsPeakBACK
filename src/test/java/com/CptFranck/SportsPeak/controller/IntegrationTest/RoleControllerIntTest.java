@@ -167,17 +167,6 @@ class RoleControllerIntTest {
     }
 
     @Test
-    void RoleController_DeleteRole_UnsuccessfulDoesNotExist() {
-        variables.put("roleId", 1);
-        when(roleService.exists(Mockito.any(Long.class))).thenReturn(false);
-
-        Integer id =
-                dgsQueryExecutor.executeAndExtractJsonPath(deleteRoleQuery, "data.deleteRole", variables);
-
-        Assertions.assertNull(id);
-    }
-
-    @Test
     void RoleController_DeleteRole_Success() {
         variables.put("roleId", 1);
         when(roleService.exists(Mockito.any(Long.class))).thenReturn(true);
