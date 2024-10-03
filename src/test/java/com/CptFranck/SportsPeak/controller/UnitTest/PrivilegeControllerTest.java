@@ -112,8 +112,6 @@ class PrivilegeControllerTest {
 
     @Test
     void PrivilegeController_DeletePrivilege_Success() {
-        when(privilegeService.exists(Mockito.any(Long.class))).thenReturn(true);
-
         Long id = privilegeController.deletePrivilege(1L);
 
         Assertions.assertNotNull(id);
