@@ -64,24 +64,26 @@ public class MuscleController {
     }
 
     private MuscleEntity inputToEntity(InputNewMuscle inputNewMuscle) {
-        MuscleEntity muscle = null;
         Set<Long> oldExerciseIds = new HashSet<>();
         Set<Long> newExerciseIds = Sets.newHashSet(inputNewMuscle.getExerciseIds());
         Set<ExerciseEntity> exercises = exerciseService.findMany(newExerciseIds);
 
+        Long id;
         if (inputNewMuscle instanceof InputMuscle) {
-            muscle = muscleService.findOne(((InputMuscle) inputNewMuscle).getId())
-                    .orElseThrow(() -> new MuscleNotFoundException(((InputMuscle) inputNewMuscle).getId()));
-            muscle.getExercises().forEach(e -> oldExerciseIds.add(e.getId()));
+            id = ((InputMuscle) inputNewMuscle).getId();
+            MuscleEntity muscleEntity = muscleService.findOne(id)
+                    .orElseThrow(() -> new MuscleNotFoundException(id));
+            muscleEntity.getExercises().forEach(e -> oldExerciseIds.add(e.getId()));
         } else {
-            muscle = new MuscleEntity(
-                    null,
-                    inputNewMuscle.getName(),
-                    inputNewMuscle.getDescription(),
-                    inputNewMuscle.getFunction(),
-                    exercises
-            );
+            id = null;
         }
+        MuscleEntity muscle = new MuscleEntity(
+                id,
+                inputNewMuscle.getName(),
+                inputNewMuscle.getDescription(),
+                inputNewMuscle.getFunction(),
+                exercises
+        );
 
         muscle = muscleService.save(muscle);
         exerciseService.updateMuscleRelation(newExerciseIds, oldExerciseIds, muscle);
