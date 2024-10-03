@@ -26,7 +26,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import static com.CptFranck.SportsPeak.domain.enumType.VisibilityLabel.valueOfLabel;
@@ -53,8 +52,9 @@ public class ProgExerciseController {
 
     @DgsQuery
     public ProgExerciseDto getProgExerciseById(@InputArgument Long id) {
-        Optional<ProgExerciseEntity> progExercise = progExerciseService.findOne(id);
-        return progExercise.map(progExerciseMapper::mapTo).orElse(null);
+        ProgExerciseEntity progExercise = progExerciseService.findOne(id)
+                .orElseThrow(() -> new ProgExerciseNotFoundException(id));
+        return progExerciseMapper.mapTo(progExercise);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")

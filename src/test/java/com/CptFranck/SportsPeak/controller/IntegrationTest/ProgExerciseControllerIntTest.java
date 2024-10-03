@@ -99,10 +99,9 @@ class ProgExerciseControllerIntTest {
         variables.put("id", 1);
         when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        LinkedHashMap<String, Object> progExerciseDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(getProgExerciseByIdQuery, "data.getProgExerciseById", variables);
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(getProgExerciseByIdQuery, "data.getProgExerciseById", variables));
 
-        Assertions.assertNull(progExerciseDto);
     }
 
     @Test

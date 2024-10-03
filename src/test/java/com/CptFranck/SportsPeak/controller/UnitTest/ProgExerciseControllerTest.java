@@ -76,16 +76,16 @@ class ProgExerciseControllerTest {
 
         List<ProgExerciseDto> progExerciseDtos = progExerciseController.getProgExercises();
 
-        Assertions.assertNotNull(progExerciseDtos);
+        Assertions.assertEquals(List.of(this.progExerciseDto), progExerciseDtos);
     }
 
     @Test
     void ProgExerciseController_GetProgExerciseById_Unsuccessful() {
         when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        ProgExerciseDto progExerciseDto = progExerciseController.getProgExerciseById(1L);
-
-        Assertions.assertNull(progExerciseDto);
+        Assertions.assertThrows(ProgExerciseNotFoundException.class,
+                () -> progExerciseController.getProgExerciseById(1L)
+        );
     }
 
     @Test
@@ -95,7 +95,7 @@ class ProgExerciseControllerTest {
 
         ProgExerciseDto progExerciseDto = progExerciseController.getProgExerciseById(1L);
 
-        Assertions.assertNotNull(progExerciseDto);
+        Assertions.assertEquals(this.progExerciseDto, progExerciseDto);
     }
 
     @Test
@@ -132,7 +132,7 @@ class ProgExerciseControllerTest {
                 createTestInputNewProgExercise(1L, 1L)
         );
 
-        Assertions.assertNotNull(progExerciseDto);
+        Assertions.assertEquals(this.progExerciseDto, progExerciseDto);
     }
 
     @Test
@@ -181,7 +181,7 @@ class ProgExerciseControllerTest {
                 createTestInputProgExercise(1L, 1L, false)
         );
 
-        Assertions.assertNotNull(progExerciseDto);
+        Assertions.assertEquals(this.progExerciseDto, progExerciseDto);
     }
 
     @Test
@@ -215,7 +215,7 @@ class ProgExerciseControllerTest {
         ProgExerciseDto progExerciseDto = progExerciseController.modifyProgExerciseTrustLabel(
                 createTestInputProgExerciseTrustLabel(1L, false)
         );
-        Assertions.assertNotNull(progExerciseDto);
+        Assertions.assertEquals(this.progExerciseDto, progExerciseDto);
     }
 
     @Test
@@ -243,7 +243,7 @@ class ProgExerciseControllerTest {
 
         Long id = progExerciseController.deleteProgExercise(1L);
 
-        Assertions.assertNotNull(id);
+        Assertions.assertEquals(1L, id);
     }
 
     @Test
@@ -252,6 +252,7 @@ class ProgExerciseControllerTest {
         when(userService.findUserBySubscribedProgExercises(Mockito.any(ProgExerciseEntity.class))).thenReturn(Set.of());
 
         Long id = progExerciseController.deleteProgExercise(1L);
-        Assertions.assertNotNull(id);
+
+        Assertions.assertEquals(1L, id);
     }
 }
