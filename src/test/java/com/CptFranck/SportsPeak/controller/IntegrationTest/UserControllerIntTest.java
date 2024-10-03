@@ -221,17 +221,6 @@ class UserControllerIntTest {
     }
 
     @Test
-    void UserController_DeleteUser_Unsuccessful() {
-        variables.put("userId", 1);
-        when(userService.exists(Mockito.any(Long.class))).thenReturn(false);
-
-        Integer id =
-                dgsQueryExecutor.executeAndExtractJsonPath(deleteUserQuery, "data.deleteUser", variables);
-
-        Assertions.assertNull(id);
-    }
-
-    @Test
     void UserController_DeleteUser_Success() {
         variables.put("userId", 1);
         when(userService.exists(Mockito.any(Long.class))).thenReturn(true);

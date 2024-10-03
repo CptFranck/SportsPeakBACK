@@ -69,16 +69,16 @@ class UserControllerTest {
 
         List<UserDto> userDtos = userController.getUsers();
 
-        Assertions.assertNotNull(userDtos);
+        Assertions.assertEquals(List.of(this.userDto), userDtos);
     }
 
     @Test
     void UserController_GetUserById_Unsuccessful() {
         when(userService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        UserDto userDto = userController.getUserById(1L);
-
-        Assertions.assertNull(userDto);
+        Assertions.assertThrows(UserNotFoundException.class,
+                () -> userController.getUserById(1L)
+        );
     }
 
     @Test
@@ -88,7 +88,7 @@ class UserControllerTest {
 
         UserDto userDto = userController.getUserById(1L);
 
-        Assertions.assertNotNull(userDto);
+        Assertions.assertEquals(this.userDto, userDto);
     }
 
     @Test
@@ -105,7 +105,7 @@ class UserControllerTest {
 
         List<ProgExerciseDto> userProgExercises = userController.getUserProgExercises(1L);
 
-        Assertions.assertNotNull(userProgExercises);
+        Assertions.assertEquals(this.userDto.getSubscribedProgExercises().stream().toList(), userProgExercises);
     }
 
     @Test
@@ -115,7 +115,7 @@ class UserControllerTest {
 
         UserDto userDto = userController.modifyUserIdentity(createTestInputUserIdentity(1L));
 
-        Assertions.assertNotNull(userDto);
+        Assertions.assertEquals(this.userDto, userDto);
     }
 
     @Test
@@ -127,20 +127,23 @@ class UserControllerTest {
 
         UserDto userDto = userController.modifyUserRoles(createTestInputUserRoles(1L));
 
-        Assertions.assertNotNull(userDto);
+        Assertions.assertEquals(this.userDto, userDto);
     }
 
     @Test
     void UserController_modifyUserEmailQuery_Success() {
         JWToken jwToken = new JWToken("token", LocalDateTime.now());
+        AuthDto returnValue = new AuthDto(jwToken, userDto);
+
         when(userService.changeEmail(Mockito.any(Long.class), Mockito.any(String.class), Mockito.any(String.class))).thenReturn(user);
         when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
         when(authenticationManager.authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class))).thenReturn(null);
         when(userAuthProvider.generateToken(Mockito.any())).thenReturn(jwToken);
 
         AuthDto authDto = userController.modifyUserEmail(createTestInputUserEmail(1L));
-
-        Assertions.assertNotNull(authDto);
+        Assertions.assertEquals(returnValue.getAccessToken(), authDto.getAccessToken());
+        Assertions.assertEquals(returnValue.getUser(), authDto.getUser());
+        Assertions.assertEquals(returnValue.getExpiration(), authDto.getExpiration());
     }
 
     @Test
@@ -150,7 +153,7 @@ class UserControllerTest {
 
         UserDto userDto = userController.modifyUserUsername(createTestInputUserUsername(1L));
 
-        Assertions.assertNotNull(userDto);
+        Assertions.assertEquals(this.userDto, userDto);
     }
 
     @Test
@@ -160,13 +163,13 @@ class UserControllerTest {
 
         UserDto userDto = userController.modifyUserPassword(createTestInputUserPassword(1L));
 
-        Assertions.assertNotNull(userDto);
+        Assertions.assertEquals(this.userDto, userDto);
     }
 
     @Test
     void UserController_DeleteUser_Success() {
         Long id = userController.deleteUser(1L);
 
-        Assertions.assertNotNull(id);
+        Assertions.assertEquals(1L, id);
     }
 }

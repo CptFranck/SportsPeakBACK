@@ -23,7 +23,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @DgsComponent
@@ -52,8 +51,8 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsQuery
     public UserDto getUserById(@InputArgument Long id) {
-        Optional<UserEntity> userEntity = userService.findOne(id);
-        return userEntity.map(userMapper::mapTo).orElse(null);
+        UserEntity userEntity = userService.findOne(id).orElseThrow(() -> new UserNotFoundException(id));
+        return userMapper.mapTo(userEntity);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
