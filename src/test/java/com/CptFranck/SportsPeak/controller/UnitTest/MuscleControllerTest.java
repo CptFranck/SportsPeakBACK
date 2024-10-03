@@ -4,6 +4,7 @@ import com.CptFranck.SportsPeak.controller.MuscleController;
 import com.CptFranck.SportsPeak.domain.dto.MuscleDto;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
+import com.CptFranck.SportsPeak.domain.exception.muscle.MuscleNotFoundException;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import com.CptFranck.SportsPeak.service.MuscleService;
@@ -55,16 +56,17 @@ class MuscleControllerTest {
 
         List<MuscleDto> muscleDtos = muscleController.getMuscles();
 
-        Assertions.assertNotNull(muscleDtos);
+        Assertions.assertEquals(List.of(muscleDto), muscleDtos);
     }
 
     @Test
     void MuscleController_GetMuscleById_Unsuccessful() {
         when(muscleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        MuscleDto muscleDto = muscleController.getMuscleById(1L);
-
-        Assertions.assertNull(muscleDto);
+        Assertions.assertThrows(MuscleNotFoundException.class,
+                () -> muscleController.modifyMuscle(createTestInputMuscle(1L)
+                )
+        );
     }
 
     @Test
@@ -86,20 +88,20 @@ class MuscleControllerTest {
 
         MuscleDto muscleDto = muscleController.addMuscle(createTestInputNewMuscle());
 
-        Assertions.assertNotNull(muscleDto);
+        Assertions.assertEquals(this.muscleDto, muscleDto);
     }
 
     @Test
     void MuscleController_ModifyMuscle_UnsuccessfulDoesNotExist() {
-        MuscleDto muscleDto = muscleController.modifyMuscle(createTestInputMuscle(1L));
-
-        Assertions.assertNull(muscleDto);
+        Assertions.assertThrows(MuscleNotFoundException.class,
+                () -> muscleController.modifyMuscle(createTestInputMuscle(1L)
+                )
+        );
     }
 
     @Test
     void MuscleController_ModifyMuscle_Success() {
         Set<ExerciseEntity> exercises = new HashSet<>();
-        when(muscleService.exists(Mockito.any(Long.class))).thenReturn(true);
         when(exerciseService.findMany(Mockito.anySet())).thenReturn(exercises);
         when(muscleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(muscle));
         when(muscleService.save(Mockito.any(MuscleEntity.class))).thenReturn(muscle);
@@ -107,13 +109,13 @@ class MuscleControllerTest {
 
         MuscleDto muscleDto = muscleController.modifyMuscle(createTestInputMuscle(1L));
 
-        Assertions.assertNotNull(muscleDto);
+        Assertions.assertEquals(this.muscleDto, muscleDto);
     }
 
     @Test
     void MuscleController_DeleteMuscle_Success() {
         Long id = muscleController.deleteMuscle(1L);
 
-        Assertions.assertNotNull(id);
+        Assertions.assertEquals(1L, id);
     }
 }
