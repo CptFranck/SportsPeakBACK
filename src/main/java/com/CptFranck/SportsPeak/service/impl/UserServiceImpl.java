@@ -90,8 +90,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserEntity changeIdentity(Long id, String firstName, String lastName) {
-        UserEntity user = userRepository.findById(id)
-                .orElseThrow(EmailUnknownException::new);
+        UserEntity user = userRepository.findById(id).orElseThrow(EmailUnknownException::new);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         return userRepository.save(user);
@@ -99,8 +98,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserEntity changeRoles(Long id, Set<RoleEntity> roles) {
-        UserEntity user = userRepository.findById(id)
-                .orElseThrow(EmailUnknownException::new);
+        UserEntity user = userRepository.findById(id).orElseThrow(EmailUnknownException::new);
 
         user.getRoles().forEach(role -> {
             if (!roles.contains(role)) {
@@ -113,8 +111,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserEntity changeEmail(Long id, String password, String newEmail) {
-        UserEntity user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
+        UserEntity user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         if (passwordEncoder.matches(password, user.getPassword())) {
             Optional<UserEntity> userOptionalEmail = userRepository.findByEmail(newEmail);
             if (userOptionalEmail.isPresent()) {
@@ -129,8 +126,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserEntity changeUsername(Long id, String newUsername) {
-        UserEntity user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
+        UserEntity user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         Optional<UserEntity> userOptionalUsername = userRepository.findByUsername(newUsername);
         if (userOptionalUsername.isPresent()) {
             throw new UsernameExistsException();
@@ -141,9 +137,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserEntity changePassword(Long id, String oldPassword, String newPassword) {
-        UserEntity user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
-
+        UserEntity user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             throw new IncorrectPasswordException();
         }

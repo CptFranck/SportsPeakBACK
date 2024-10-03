@@ -115,9 +115,6 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
     public Long deleteUser(@InputArgument Long userId) {
-        if (!userService.exists(userId)) {
-            return null;
-        }
         userService.delete(userId);
         return userId;
     }
