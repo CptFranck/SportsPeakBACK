@@ -24,7 +24,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @DgsComponent
@@ -47,8 +46,8 @@ public class TargetSetController {
 
     @DgsQuery
     public TargetSetDto getTargetSetById(@InputArgument Long id) {
-        Optional<TargetSetEntity> targetSet = targetSetService.findOne(id);
-        return targetSet.map(targetSetMapper::mapTo).orElse(null);
+        TargetSetEntity targetSet = targetSetService.findOne(id).orElseThrow(() -> new TargetSetNotFoundException(id));
+        return targetSetMapper.mapTo(targetSet);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")

@@ -54,6 +54,7 @@ class TargetSetControllerTest {
     private TargetSetEntity targetSet;
     private TargetSetDto targetSetDto;
     private ProgExerciseEntity progExercise;
+    private ProgExerciseDto progExerciseDto;
 
     @BeforeEach
     void init() {
@@ -62,7 +63,7 @@ class TargetSetControllerTest {
         ExerciseEntity exercise = createTestExercise(1L);
         ExerciseDto exerciseDto = createTestExerciseDto(1L);
         progExercise = createTestProgExercise(1L, user, exercise);
-        ProgExerciseDto progExerciseDto = createTestProgExerciseDto(1L, userDto, exerciseDto);
+        progExerciseDto = createTestProgExerciseDto(1L, userDto, exerciseDto);
         targetSet = createTestTargetSet(1L, progExercise, null);
         targetSetDto = createTestTargetSetDto(1L, progExerciseDto, null);
     }
@@ -74,16 +75,16 @@ class TargetSetControllerTest {
 
         List<TargetSetDto> targetSetDtos = targetSetController.getTargetSets();
 
-        Assertions.assertNotNull(targetSetDtos);
+        Assertions.assertEquals(List.of(targetSetDto), targetSetDtos);
     }
 
     @Test
     void TargetSetController_GetTargetSetById_UnsuccessfulDoesNotExist() {
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        TargetSetDto targetSetDto = targetSetController.getTargetSetById(1L);
-
-        Assertions.assertNull(targetSetDto);
+        Assertions.assertThrows(TargetSetNotFoundException.class,
+                () -> targetSetController.getTargetSetById(1L)
+        );
     }
 
     @Test
@@ -93,7 +94,7 @@ class TargetSetControllerTest {
 
         TargetSetDto targetSetDto = targetSetController.getTargetSetById(1L);
 
-        Assertions.assertNotNull(targetSetDto);
+        Assertions.assertEquals(this.targetSetDto, targetSetDto);
     }
 
     @Test
@@ -127,7 +128,7 @@ class TargetSetControllerTest {
                 createTestInputNewTargetSet(1L, null)
         );
 
-        Assertions.assertNotNull(targetSetDto);
+        Assertions.assertEquals(this.targetSetDto, targetSetDto);
     }
 
     @Test
@@ -153,7 +154,7 @@ class TargetSetControllerTest {
                 createTestInputNewTargetSet(1L, 1L)
         );
 
-        Assertions.assertNotNull(targetSetDto);
+        Assertions.assertEquals(this.targetSetDto, targetSetDto);
     }
 
     @Test
@@ -177,7 +178,7 @@ class TargetSetControllerTest {
                 createTestInputTargetSet(1L)
         );
 
-        Assertions.assertNotNull(targetSetDto);
+        Assertions.assertEquals(this.targetSetDto, targetSetDto);
     }
 
     @Test
@@ -205,17 +206,17 @@ class TargetSetControllerTest {
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
         when(targetSetService.save(Mockito.any(TargetSetEntity.class))).thenReturn(targetSet);
 
-        List<TargetSetDto> targetSetDto = targetSetController.modifyTargetSetState(
+        List<TargetSetDto> targetSetDtos = targetSetController.modifyTargetSetState(
                 createTestInputInputTargetSetState(1L, false)
         );
 
-        Assertions.assertNotNull(targetSetDto);
+        Assertions.assertEquals(this.targetSetDto.getProgExercise().getTargetSets().stream().toList(), targetSetDtos);
     }
 
     @Test
     void TargetSetController_DeleteTargetSet_Success() {
         Long id = targetSetController.deleteTargetSet(1L);
 
-        Assertions.assertNotNull(id);
+        Assertions.assertEquals(1L, id);
     }
 }

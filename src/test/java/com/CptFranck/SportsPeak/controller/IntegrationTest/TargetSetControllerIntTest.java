@@ -99,10 +99,9 @@ class TargetSetControllerIntTest {
         variables.put("id", 1);
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        LinkedHashMap<String, Object> TargetSetDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(getTargetSetByIdQuery, "data.getTargetSetById", variables);
-
-        Assertions.assertNull(TargetSetDto);
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(getTargetSetByIdQuery, "data.getTargetSetById", variables)
+        );
     }
 
     @Test
