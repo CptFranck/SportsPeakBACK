@@ -90,10 +90,9 @@ class UserControllerIntTest {
         variables.put("id", 1);
         when(userService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        LinkedHashMap<String, Object> userDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(getUserByIdQuery, "data.getUserById", variables);
-
-        Assertions.assertNull(userDto);
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(getUserByIdQuery, "data.getUserById", variables)
+        );
     }
 
     @Test
