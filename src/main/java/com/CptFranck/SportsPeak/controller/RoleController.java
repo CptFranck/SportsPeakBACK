@@ -68,9 +68,6 @@ public class RoleController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsMutation
     public Long deleteRole(@InputArgument Long roleId) {
-        if (!roleService.exists(roleId)) {
-            return null;
-        }
         roleService.delete(roleId);
         return roleId;
     }
