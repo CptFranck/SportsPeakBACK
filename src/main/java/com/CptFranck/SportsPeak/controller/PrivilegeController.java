@@ -64,9 +64,6 @@ public class PrivilegeController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsMutation
     public Long deletePrivilege(@InputArgument Long privilegeId) {
-        if (!privilegeService.exists(privilegeId)) {
-            return null;
-        }
         privilegeService.delete(privilegeId);
         return privilegeId;
     }
