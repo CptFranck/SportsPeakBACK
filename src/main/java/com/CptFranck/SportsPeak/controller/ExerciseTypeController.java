@@ -62,9 +62,6 @@ public class ExerciseTypeController {
     @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
     public Long deleteExerciseType(@InputArgument Long exerciseTypeId) {
-        if (!exerciseTypeService.exists(exerciseTypeId)) {
-            return null;
-        }
         exerciseTypeService.delete(exerciseTypeId);
         return exerciseTypeId;
     }
