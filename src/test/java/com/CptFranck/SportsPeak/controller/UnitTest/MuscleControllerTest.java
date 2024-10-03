@@ -101,6 +101,7 @@ class MuscleControllerTest {
         Set<ExerciseEntity> exercises = new HashSet<>();
         when(muscleService.exists(Mockito.any(Long.class))).thenReturn(true);
         when(exerciseService.findMany(Mockito.anySet())).thenReturn(exercises);
+        when(muscleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(muscle));
         when(muscleService.save(Mockito.any(MuscleEntity.class))).thenReturn(muscle);
         when(muscleMapper.mapTo(Mockito.any(MuscleEntity.class))).thenReturn(muscleDto);
 

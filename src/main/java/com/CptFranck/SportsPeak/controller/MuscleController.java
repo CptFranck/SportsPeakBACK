@@ -75,9 +75,9 @@ public class MuscleController {
         Long id = null;
         if (inputNewMuscle instanceof InputMuscle) {
             id = ((InputMuscle) inputNewMuscle).getId();
-            Optional<MuscleEntity> exerciseType = muscleService.findOne(id);
-            exerciseType.ifPresent(exerciseTypeEntity ->
-                    exerciseTypeEntity.getExercises().forEach(e -> oldExerciseIds.add(e.getId())));
+            Optional<MuscleEntity> muscleEntity = muscleService.findOne(id);
+            muscleEntity.ifPresent(muscle ->
+                    muscle.getExercises().forEach(e -> oldExerciseIds.add(e.getId())));
         }
         MuscleEntity muscle = new MuscleEntity(
                 id,
