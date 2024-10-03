@@ -68,9 +68,6 @@ public class PerformanceLogController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
     public Long deletePerformanceLog(@InputArgument Long performanceLogId) {
-        if (!performanceLogService.exists(performanceLogId)) {
-            return null;
-        }
         performanceLogService.delete(performanceLogId);
         return performanceLogId;
     }

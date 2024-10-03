@@ -61,7 +61,7 @@ type Mutation {
 
     addPerformanceLog(inputNewPerformanceLog: InputNewPerformanceLog!): PerformanceLog!
     modifyPerformanceLog(inputPerformanceLog: InputPerformanceLog!): PerformanceLog
-    deletePerformanceLog(performanceLogId: Int!): Int
+    deletePerformanceLog(performanceLogId: Int!): Int!
 
     addExercise(inputNewExercise: InputNewExercise!): Exercise!
     modifyExercise(inputExercise: InputExercise!): Exercise
