@@ -56,7 +56,7 @@ class ExerciseTypeControllerTest {
 
         List<ExerciseTypeDto> exerciseTypeDtos = exerciseTypeController.getExerciseTypes();
 
-        Assertions.assertNotNull(exerciseTypeDtos);
+        Assertions.assertEquals(List.of(exerciseTypeDto), exerciseTypeDtos);
     }
 
     @Test
@@ -75,7 +75,7 @@ class ExerciseTypeControllerTest {
 
         ExerciseTypeDto exerciseTypeDto = exerciseTypeController.getExerciseTypeById(1L);
 
-        Assertions.assertNotNull(exerciseTypeDto);
+        Assertions.assertEquals(this.exerciseTypeDto, exerciseTypeDto);
     }
 
     @Test
@@ -87,7 +87,7 @@ class ExerciseTypeControllerTest {
 
         ExerciseTypeDto exerciseTypeDto = exerciseTypeController.addExerciseType(createTestInputNewExerciseType());
 
-        Assertions.assertNotNull(exerciseTypeDto);
+        Assertions.assertEquals(this.exerciseTypeDto, exerciseTypeDto);
     }
 
     @Test
@@ -107,13 +107,13 @@ class ExerciseTypeControllerTest {
 
         ExerciseTypeDto exerciseTypeDto = exerciseTypeController.modifyExerciseType(createTestInputExerciseType());
 
-        Assertions.assertNotNull(exerciseTypeDto);
+        Assertions.assertEquals(this.exerciseTypeDto, exerciseTypeDto);
     }
 
     @Test
     void ExerciseTypeController_DeleteExercise_Success() {
         Long id = exerciseTypeController.deleteExerciseType(1L);
 
-        Assertions.assertNotNull(id);
+        Assertions.assertEquals(1L, id);
     }
 }

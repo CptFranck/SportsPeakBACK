@@ -59,7 +59,7 @@ class ExerciseControllerTest {
 
         List<ExerciseDto> exerciseDtos = exerciseController.getExercises();
 
-        Assertions.assertNotNull(exerciseDtos);
+        Assertions.assertEquals(List.of(exerciseDto), exerciseDtos);
     }
 
     @Test
@@ -78,7 +78,7 @@ class ExerciseControllerTest {
 
         ExerciseDto exerciseDto = exerciseController.getExerciseById(1L);
 
-        Assertions.assertNotNull(exerciseDto);
+        Assertions.assertEquals(this.exerciseDto, exerciseDto);
     }
 
     @Test
@@ -92,7 +92,7 @@ class ExerciseControllerTest {
 
         ExerciseDto exerciseDto = exerciseController.addExercise(createTestInputNewExercise());
 
-        Assertions.assertNotNull(exerciseDto);
+        Assertions.assertEquals(this.exerciseDto, exerciseDto);
     }
 
     @Test
@@ -126,13 +126,13 @@ class ExerciseControllerTest {
 
         ExerciseDto exerciseDto = exerciseController.modifyExercise(createTestInputExercise());
 
-        Assertions.assertNotNull(exerciseDto);
+        Assertions.assertEquals(this.exerciseDto, exerciseDto);
     }
 
     @Test
     void ExerciseController_DeleteExercise_Success() {
         Long id = exerciseController.deleteExercise(1L);
 
-        Assertions.assertNotNull(id);
+        Assertions.assertEquals(1L, id);
     }
 }

@@ -56,12 +56,14 @@ public class AuthControllerTest {
     private UserEntity user;
     private UserDto userDto;
     private JWToken jwToken;
+    private AuthDto authDto;
 
     @BeforeEach
     void setUp() {
         user = createTestUser(1L);
         userDto = createTestUserDto(1L);
         jwToken = new JWToken("token", LocalDateTime.now());
+        authDto = new AuthDto(jwToken, userDto);
     }
 
     @Test
@@ -72,8 +74,9 @@ public class AuthControllerTest {
         when(userAuthProvider.generateToken(Mockito.any())).thenReturn(jwToken);
 
         AuthDto authDto = authController.login(new InputCredentials(user.getEmail(), user.getPassword()));
-
-        Assertions.assertNotNull(authDto);
+        Assertions.assertEquals(this.authDto.getUser(), authDto.getUser());
+        Assertions.assertEquals(this.authDto.getExpiration(), authDto.getExpiration());
+        Assertions.assertEquals(this.authDto.getAccessToken(), authDto.getAccessToken());
     }
 
     @Test
@@ -110,6 +113,8 @@ public class AuthControllerTest {
                 )
         );
 
-        Assertions.assertNotNull(authDto);
+        Assertions.assertEquals(this.authDto.getUser(), authDto.getUser());
+        Assertions.assertEquals(this.authDto.getExpiration(), authDto.getExpiration());
+        Assertions.assertEquals(this.authDto.getAccessToken(), authDto.getAccessToken());
     }
 }

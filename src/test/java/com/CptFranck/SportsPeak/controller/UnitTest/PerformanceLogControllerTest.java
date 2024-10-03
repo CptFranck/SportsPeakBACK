@@ -72,7 +72,7 @@ class PerformanceLogControllerTest {
 
         List<PerformanceLogDto> performanceLogDtos = performanceLogController.getPerformanceLogs();
 
-        Assertions.assertNotNull(performanceLogDtos);
+        Assertions.assertEquals(List.of(this.performanceLogDto), performanceLogDtos);
     }
 
     @Test
@@ -91,7 +91,8 @@ class PerformanceLogControllerTest {
 
         PerformanceLogDto performanceLogDto = performanceLogController.getPerformanceLogById(1L);
 
-        Assertions.assertNotNull(performanceLogDto);
+        Assertions.assertEquals(this.performanceLogDto, performanceLogDto);
+
     }
 
     @Test
@@ -101,7 +102,7 @@ class PerformanceLogControllerTest {
 
         List<PerformanceLogDto> performanceLogDtos = performanceLogController.getPerformanceLogsByTargetSetsId(1L);
 
-        Assertions.assertNotNull(performanceLogDtos);
+        Assertions.assertEquals(List.of(this.performanceLogDto), performanceLogDtos);
     }
 
     @Test
@@ -134,7 +135,7 @@ class PerformanceLogControllerTest {
                 createTestInputNewPerformanceLog(1L, false)
         );
 
-        Assertions.assertNotNull(performanceLogDto);
+        Assertions.assertEquals(this.performanceLogDto, performanceLogDto);
     }
 
     @Test
@@ -181,13 +182,13 @@ class PerformanceLogControllerTest {
                 createTestInputPerformanceLog(1L, 1L, false)
         );
 
-        Assertions.assertNotNull(performanceLogDto);
+        Assertions.assertEquals(this.performanceLogDto, performanceLogDto);
     }
 
     @Test
     void PerformanceLogController_DeletePerformanceLog_Success() {
         Long id = performanceLogController.deletePerformanceLog(1L);
 
-        Assertions.assertNotNull(id);
+        Assertions.assertEquals(1L, id);
     }
 }

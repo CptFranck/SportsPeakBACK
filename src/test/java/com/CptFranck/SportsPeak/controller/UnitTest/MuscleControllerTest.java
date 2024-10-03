@@ -76,7 +76,7 @@ class MuscleControllerTest {
 
         MuscleDto muscleDto = muscleController.getMuscleById(1L);
 
-        Assertions.assertNotNull(muscleDto);
+        Assertions.assertEquals(this.muscleDto, muscleDto);
     }
 
     @Test
