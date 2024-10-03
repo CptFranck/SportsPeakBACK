@@ -31,7 +31,7 @@ type Query {
 }
 
 type Mutation {
-    login(inputCredentials: InputCredentials!): Auth
+    login(inputCredentials: InputCredentials!): Auth!
     register(inputRegisterNewUser: InputRegisterNewUser!): Auth!
 
     modifyUserIdentity(inputUserIdentity: InputUserIdentity!): User!

@@ -45,7 +45,7 @@ public class AuthController {
     }
 
     @DgsMutation
-    public AuthDto login(@InputArgument InputCredentials inputCredentials) throws Exception {
+    public AuthDto login(@InputArgument InputCredentials inputCredentials) {
         UserDto user = userMapper.mapTo(authService.login(inputCredentials));
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(inputCredentials.getEmail(), inputCredentials.getPassword()));
