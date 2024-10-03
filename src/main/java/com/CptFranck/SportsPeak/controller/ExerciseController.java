@@ -21,7 +21,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @DgsComponent
@@ -49,8 +48,8 @@ public class ExerciseController {
 
     @DgsQuery
     public ExerciseDto getExerciseById(@InputArgument Long id) {
-        Optional<ExerciseEntity> exerciseEntity = exerciseService.findOne(id);
-        return exerciseEntity.map(exerciseMapper::mapTo).orElse(null);
+        ExerciseEntity exerciseEntity = exerciseService.findOne(id).orElseThrow(() -> new ExerciseNotFoundException(id));
+        return exerciseMapper.mapTo(exerciseEntity);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -62,9 +61,6 @@ public class ExerciseController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsMutation
     public ExerciseDto modifyExercise(@InputArgument InputExercise inputExercise) {
-        if (!exerciseService.exists(inputExercise.getId())) {
-            return null;
-        }
         return exerciseMapper.mapTo(inputToEntity(inputExercise));
     }
 

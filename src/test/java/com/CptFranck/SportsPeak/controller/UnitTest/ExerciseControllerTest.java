@@ -66,9 +66,9 @@ class ExerciseControllerTest {
     void ExerciseController_GetExerciseById_Unsuccessful() {
         when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        ExerciseDto exerciseDto = exerciseController.getExerciseById(1L);
-
-        Assertions.assertNull(exerciseDto);
+        Assertions.assertThrows(ExerciseNotFoundException.class,
+                () -> exerciseController.getExerciseById(1L)
+        );
     }
 
     @Test
@@ -97,18 +97,15 @@ class ExerciseControllerTest {
 
     @Test
     void ExerciseController_ModifyExercise_UnsuccessfulDoesNotExist() {
-        when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(false);
-
-        ExerciseDto exerciseDto = exerciseController.modifyExercise(createTestInputExercise());
-
-        Assertions.assertNull(exerciseDto);
+        Assertions.assertThrows(ExerciseNotFoundException.class,
+                () -> exerciseController.modifyExercise(createTestInputExercise())
+        );
     }
 
     @Test
     void ExerciseController_ModifyExercise_UnsuccessfulExerciseNotFound() {
         Set<MuscleEntity> muscles = new HashSet<>();
         Set<ExerciseTypeEntity> exerciseType = new HashSet<>();
-        when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(true);
         when(muscleService.findMany(Mockito.anySet())).thenReturn(muscles);
         when(exerciseTypeService.findMany(Mockito.anySet())).thenReturn(exerciseType);
         when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
@@ -121,7 +118,6 @@ class ExerciseControllerTest {
     void ExerciseController_ModifyExercise_Success() {
         Set<MuscleEntity> muscles = new HashSet<>();
         Set<ExerciseTypeEntity> exerciseType = new HashSet<>();
-        when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(true);
         when(muscleService.findMany(Mockito.anySet())).thenReturn(muscles);
         when(exerciseTypeService.findMany(Mockito.anySet())).thenReturn(exerciseType);
         when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(exercise));

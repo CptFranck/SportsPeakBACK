@@ -84,10 +84,9 @@ class ExerciseControllerIntTest {
         variables.put("id", 1);
         when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        LinkedHashMap<String, Object> exerciseDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(getExerciseByIdQuery, "data.getExerciseById", variables);
-
-        Assertions.assertNull(exerciseDto);
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(getExerciseByIdQuery, "data.getExerciseById", variables)
+        );
     }
 
     @Test
@@ -105,8 +104,8 @@ class ExerciseControllerIntTest {
     @Test
     void ExerciseController_AddExercise_Success() {
         variables.put("inputNewExercise", objectMapper.convertValue(
-                createTestInputNewExercise(),
-                new TypeReference<LinkedHashMap<String, Object>>() {
+                        createTestInputNewExercise(),
+                        new TypeReference<LinkedHashMap<String, Object>>() {
                 }
                 )
         );
@@ -127,16 +126,14 @@ class ExerciseControllerIntTest {
     void ExerciseController_ModifyExercise_UnsuccessfulDoesNotExist() {
         variables.put("inputExercise", objectMapper.convertValue(
                         createTestInputExercise(),
-                new TypeReference<LinkedHashMap<String, Object>>() {
+                        new TypeReference<LinkedHashMap<String, Object>>() {
                 }
                 )
         );
-        when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(false);
 
-        LinkedHashMap<String, Object> exerciseDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(modifyExerciseQuery, "data.modifyExercise", variables);
-
-        Assertions.assertNull(exerciseDto);
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyExerciseQuery, "data.modifyExercise", variables)
+        );
     }
 
     @Test
@@ -149,12 +146,14 @@ class ExerciseControllerIntTest {
         );
         Set<MuscleEntity> muscles = new HashSet<>();
         Set<ExerciseTypeEntity> exerciseType = new HashSet<>();
-        when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(true);
+
         when(muscleService.findMany(Mockito.anySet())).thenReturn(muscles);
         when(exerciseTypeService.findMany(Mockito.anySet())).thenReturn(exerciseType);
         when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+
         Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyExerciseQuery, "data.modifyExercise", variables));
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyExerciseQuery, "data.modifyExercise", variables)
+        );
     }
 
     @Test
@@ -167,7 +166,6 @@ class ExerciseControllerIntTest {
         );
         Set<MuscleEntity> muscles = new HashSet<>();
         Set<ExerciseTypeEntity> exerciseType = new HashSet<>();
-        when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(true);
         when(muscleService.findMany(Mockito.anySet())).thenReturn(muscles);
         when(exerciseTypeService.findMany(Mockito.anySet())).thenReturn(exerciseType);
         when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(exercise));
@@ -183,7 +181,6 @@ class ExerciseControllerIntTest {
     @Test
     void ExerciseController_DeleteExercise_Success() {
         variables.put("exerciseId", 1);
-        when(exerciseService.exists(Mockito.any(Long.class))).thenReturn(true);
 
         Integer id =
                 dgsQueryExecutor.executeAndExtractJsonPath(deleteExerciseQuery, "data.deleteExercise", variables);
