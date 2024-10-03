@@ -1,7 +1,8 @@
-package com.CptFranck.SportsPeak.controller;
+package com.CptFranck.SportsPeak.controller.IntegrationTest;
 
 import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
 import com.CptFranck.SportsPeak.config.security.JwtProvider;
+import com.CptFranck.SportsPeak.controller.UserController;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
@@ -29,7 +30,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static com.CptFranck.SportsPeak.controller.graphqlQuery.UserQuery.*;
+import static com.CptFranck.SportsPeak.controller.IntegrationTest.graphqlQuery.UserQuery.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.*;
 import static org.mockito.Mockito.when;
 

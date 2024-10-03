@@ -1,6 +1,7 @@
-package com.CptFranck.SportsPeak.controller;
+package com.CptFranck.SportsPeak.controller.IntegrationTest;
 
 import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
+import com.CptFranck.SportsPeak.controller.PrivilegeController;
 import com.CptFranck.SportsPeak.domain.dto.PrivilegeDto;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
@@ -23,7 +24,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.*;
 
-import static com.CptFranck.SportsPeak.controller.graphqlQuery.PrivilegeQuery.*;
+import static com.CptFranck.SportsPeak.controller.IntegrationTest.graphqlQuery.PrivilegeQuery.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestPrivilegeUtils.*;
 import static org.mockito.Mockito.when;
 

@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.controller.graphqlQuery;
+package com.CptFranck.SportsPeak.controller.IntegrationTest.graphqlQuery;
 
 import org.intellij.lang.annotations.Language;
 

@@ -1,6 +1,7 @@
-package com.CptFranck.SportsPeak.controller;
+package com.CptFranck.SportsPeak.controller.IntegrationTest;
 
 import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
+import com.CptFranck.SportsPeak.controller.PerformanceLogController;
 import com.CptFranck.SportsPeak.domain.dto.*;
 import com.CptFranck.SportsPeak.domain.entity.*;
 import com.CptFranck.SportsPeak.mappers.Mapper;
@@ -25,7 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
-import static com.CptFranck.SportsPeak.controller.graphqlQuery.PerformanceLogQuery.*;
+import static com.CptFranck.SportsPeak.controller.IntegrationTest.graphqlQuery.PerformanceLogQuery.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.*;

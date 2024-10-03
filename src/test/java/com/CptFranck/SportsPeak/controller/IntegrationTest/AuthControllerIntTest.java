@@ -1,7 +1,8 @@
-package com.CptFranck.SportsPeak.controller;
+package com.CptFranck.SportsPeak.controller.IntegrationTest;
 
 import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
 import com.CptFranck.SportsPeak.config.security.JwtProvider;
+import com.CptFranck.SportsPeak.controller.AuthController;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
@@ -33,8 +34,8 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 
-import static com.CptFranck.SportsPeak.controller.graphqlQuery.AuthQuery.loginQuery;
-import static com.CptFranck.SportsPeak.controller.graphqlQuery.AuthQuery.registerQuery;
+import static com.CptFranck.SportsPeak.controller.IntegrationTest.graphqlQuery.AuthQuery.loginQuery;
+import static com.CptFranck.SportsPeak.controller.IntegrationTest.graphqlQuery.AuthQuery.registerQuery;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
 import static org.mockito.Mockito.when;

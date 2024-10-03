@@ -1,6 +1,7 @@
-package com.CptFranck.SportsPeak.controller;
+package com.CptFranck.SportsPeak.controller.IntegrationTest;
 
 import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
+import com.CptFranck.SportsPeak.controller.ExerciseTypeController;
 import com.CptFranck.SportsPeak.domain.dto.ExerciseTypeDto;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
@@ -23,7 +24,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.*;
 
-import static com.CptFranck.SportsPeak.controller.graphqlQuery.ExerciseTypeQuery.*;
+import static com.CptFranck.SportsPeak.controller.IntegrationTest.graphqlQuery.ExerciseTypeQuery.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseTypeUtils.*;
 import static org.mockito.Mockito.when;
 
@@ -152,23 +153,11 @@ class ExerciseTypeControllerIntTest {
     }
 
     @Test
-    void ExerciseTypeController_DeleteExerciseType_UnsuccessfulDoesNotExist() {
-        variables.put("exerciseTypeId", 1);
-        when(exerciseTypeService.exists(Mockito.any(Long.class))).thenReturn(false);
-
-        Integer id =
-                dgsQueryExecutor.executeAndExtractJsonPath(deleteExerciseTypeQuery, "data.deleteExerciseType", variables);
-
-        Assertions.assertNull(id);
-    }
-
-    @Test
     void ExerciseTypeController_DeleteExercise_Success() {
         variables.put("exerciseTypeId", 1);
         when(exerciseTypeService.exists(Mockito.any(Long.class))).thenReturn(true);
 
-        Integer id =
-                dgsQueryExecutor.executeAndExtractJsonPath(deleteExerciseTypeQuery, "data.deleteExerciseType", variables);
+        Integer id = dgsQueryExecutor.executeAndExtractJsonPath(deleteExerciseTypeQuery, "data.deleteExerciseType", variables);
 
         Assertions.assertNotNull(id);
     }

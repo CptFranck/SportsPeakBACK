@@ -1,6 +1,7 @@
-package com.CptFranck.SportsPeak.controller;
+package com.CptFranck.SportsPeak.controller.IntegrationTest;
 
 import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
+import com.CptFranck.SportsPeak.controller.ProgExerciseController;
 import com.CptFranck.SportsPeak.domain.dto.ExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
@@ -31,7 +32,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.CptFranck.SportsPeak.controller.graphqlQuery.ProgExerciseQuery.*;
+import static com.CptFranck.SportsPeak.controller.IntegrationTest.graphqlQuery.ProgExerciseQuery.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.*;

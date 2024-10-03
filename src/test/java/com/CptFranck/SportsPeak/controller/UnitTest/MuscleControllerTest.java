@@ -1,5 +1,6 @@
-package com.CptFranck.SportsPeak.controller;
+package com.CptFranck.SportsPeak.controller.UnitTest;
 
+import com.CptFranck.SportsPeak.controller.MuscleController;
 import com.CptFranck.SportsPeak.domain.dto.MuscleDto;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
@@ -90,7 +91,7 @@ class MuscleControllerTest {
 
     @Test
     void MuscleController_ModifyMuscle_UnsuccessfulDoesNotExist() {
-        MuscleDto muscleDto = muscleController.addMuscle(createTestInputMuscle(1L));
+        MuscleDto muscleDto = muscleController.modifyMuscle(createTestInputMuscle(1L));
 
         Assertions.assertNull(muscleDto);
     }
@@ -98,11 +99,12 @@ class MuscleControllerTest {
     @Test
     void MuscleController_ModifyMuscle_Success() {
         Set<ExerciseEntity> exercises = new HashSet<>();
+        when(muscleService.exists(Mockito.any(Long.class))).thenReturn(true);
         when(exerciseService.findMany(Mockito.anySet())).thenReturn(exercises);
         when(muscleService.save(Mockito.any(MuscleEntity.class))).thenReturn(muscle);
         when(muscleMapper.mapTo(Mockito.any(MuscleEntity.class))).thenReturn(muscleDto);
 
-        MuscleDto muscleDto = muscleController.addMuscle(createTestInputMuscle(1L));
+        MuscleDto muscleDto = muscleController.modifyMuscle(createTestInputMuscle(1L));
 
         Assertions.assertNotNull(muscleDto);
     }
