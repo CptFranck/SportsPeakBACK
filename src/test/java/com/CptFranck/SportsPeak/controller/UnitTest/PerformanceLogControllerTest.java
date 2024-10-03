@@ -1,14 +1,13 @@
 package com.CptFranck.SportsPeak.controller.UnitTest;
 
-import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
 import com.CptFranck.SportsPeak.controller.PerformanceLogController;
 import com.CptFranck.SportsPeak.domain.dto.*;
 import com.CptFranck.SportsPeak.domain.entity.*;
+import com.CptFranck.SportsPeak.domain.exception.LabelMatchNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.PerformanceLogService;
 import com.CptFranck.SportsPeak.service.TargetSetService;
-import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
-import com.netflix.graphql.dgs.exceptions.QueryException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,11 +32,6 @@ import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@SpringBootTest(classes = {
-        DgsAutoConfiguration.class,
-        LocalDateTimeScalar.class,
-        PerformanceLogController.class
-})
 class PerformanceLogControllerTest {
 
     @InjectMocks
@@ -114,7 +107,7 @@ class PerformanceLogControllerTest {
     void PerformanceLogController_AddPerformanceLog_UnsuccessfulTargetSetNotFound() {
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(QueryException.class,
+        Assertions.assertThrows(TargetSetNotFoundException.class,
                 () -> performanceLogController.addPerformanceLog(
                         createTestInputNewPerformanceLog(1L, false))
         );
@@ -124,7 +117,7 @@ class PerformanceLogControllerTest {
     void PerformanceLogController_AddPerformanceLog_UnsuccessfulWrongLabel() {
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
 
-        Assertions.assertThrows(QueryException.class,
+        Assertions.assertThrows(LabelMatchNotFoundException.class,
                 () -> performanceLogController.addPerformanceLog(
                         createTestInputNewPerformanceLog(1L, true))
         );
@@ -159,7 +152,7 @@ class PerformanceLogControllerTest {
         when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(true);
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
 
-        Assertions.assertThrows(QueryException.class,
+        Assertions.assertThrows(LabelMatchNotFoundException.class,
                 () -> performanceLogController.modifyPerformanceLog(
                         createTestInputPerformanceLog(1L, 1L, true)
                 )
@@ -182,8 +175,6 @@ class PerformanceLogControllerTest {
 
     @Test
     void PerformanceLogController_DeletePerformanceLog_Success() {
-        when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(true);
-
         Long id = performanceLogController.deletePerformanceLog(1L);
 
         Assertions.assertNotNull(id);
