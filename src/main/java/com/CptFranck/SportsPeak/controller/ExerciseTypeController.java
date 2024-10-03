@@ -3,6 +3,7 @@ package com.CptFranck.SportsPeak.controller;
 import com.CptFranck.SportsPeak.domain.dto.ExerciseTypeDto;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
+import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseTypeNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.exerciseType.InputExerciseType;
 import com.CptFranck.SportsPeak.domain.input.exerciseType.InputNewExerciseType;
 import com.CptFranck.SportsPeak.mappers.Mapper;
@@ -17,7 +18,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @DgsComponent
@@ -40,8 +40,9 @@ public class ExerciseTypeController {
 
     @DgsQuery
     public ExerciseTypeDto getExerciseTypeById(@InputArgument Long id) {
-        Optional<ExerciseTypeEntity> exerciseType = exerciseTypeService.findOne(id);
-        return exerciseType.map(exerciseTypeMapper::mapTo).orElse(null);
+        ExerciseTypeEntity exerciseType = exerciseTypeService.findOne(id)
+                .orElseThrow(() -> new ExerciseTypeNotFoundException(id));
+        return exerciseTypeMapper.mapTo(exerciseType);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -53,9 +54,6 @@ public class ExerciseTypeController {
     @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
     public ExerciseTypeDto modifyExerciseType(@InputArgument InputExerciseType inputExerciseType) {
-        if (!exerciseTypeService.exists(inputExerciseType.getId())) {
-            return null;
-        }
         return exerciseTypeMapper.mapTo(inputToEntity(inputExerciseType));
     }
 
@@ -72,12 +70,14 @@ public class ExerciseTypeController {
 
         Set<ExerciseEntity> exercises = exerciseService.findMany(newExerciseIds);
 
-        Long id = null;
+        Long id;
         if (inputNewExerciseType instanceof InputExerciseType) {
             id = ((InputExerciseType) inputNewExerciseType).getId();
-            Optional<ExerciseTypeEntity> exerciseType = exerciseTypeService.findOne(id);
-            exerciseType.ifPresent(exerciseTypeEntity ->
-                    exerciseTypeEntity.getExercises().forEach(e -> oldExerciseIds.add(e.getId())));
+            ExerciseTypeEntity exerciseType = exerciseTypeService.findOne(id)
+                    .orElseThrow(() -> new ExerciseTypeNotFoundException(id));
+            exerciseType.getExercises().forEach(e -> oldExerciseIds.add(e.getId()));
+        } else {
+            id = null;
         }
         ExerciseTypeEntity exerciseType = new ExerciseTypeEntity(
                 id,

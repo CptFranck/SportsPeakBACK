@@ -4,6 +4,7 @@ import com.CptFranck.SportsPeak.controller.ExerciseTypeController;
 import com.CptFranck.SportsPeak.domain.dto.ExerciseTypeDto;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
+import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseTypeNotFoundException;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import com.CptFranck.SportsPeak.service.ExerciseTypeService;
@@ -62,9 +63,9 @@ class ExerciseTypeControllerTest {
     void ExerciseTypeController_GetExerciseTypeById_Unsuccessful() {
         when(exerciseTypeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        ExerciseTypeDto exerciseTypeDto = exerciseTypeController.getExerciseTypeById(1L);
-
-        Assertions.assertNull(exerciseTypeDto);
+        Assertions.assertThrows(ExerciseTypeNotFoundException.class,
+                () -> exerciseTypeController.getExerciseTypeById(1L)
+        );
     }
 
     @Test
@@ -91,18 +92,14 @@ class ExerciseTypeControllerTest {
 
     @Test
     void ExerciseTypeController_ModifyExerciseType_Unsuccessful() {
-        when(exerciseTypeService.exists(Mockito.any(Long.class))).thenReturn(false);
-
-        ExerciseTypeDto exerciseTypeDto = exerciseTypeController.modifyExerciseType(createTestInputExerciseType());
-
-        Assertions.assertNull(exerciseTypeDto);
+        Assertions.assertThrows(ExerciseTypeNotFoundException.class,
+                () -> exerciseTypeController.modifyExerciseType(createTestInputExerciseType())
+        );
     }
 
     @Test
     void ExerciseTypeController_ModifyExerciseType_Success() {
-
         Set<ExerciseEntity> exercises = new HashSet<>();
-        when(exerciseTypeService.exists(Mockito.any(Long.class))).thenReturn(true);
         when(exerciseService.findMany(Mockito.anySet())).thenReturn(exercises);
         when(exerciseTypeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(exerciseType));
         when(exerciseTypeService.save(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseType);

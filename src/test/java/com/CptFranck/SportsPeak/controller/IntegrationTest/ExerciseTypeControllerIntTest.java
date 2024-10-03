@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.graphql.dgs.DgsQueryExecutor;
 import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
+import com.netflix.graphql.dgs.exceptions.QueryException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -78,10 +79,9 @@ class ExerciseTypeControllerIntTest {
         variables.put("id", 1);
         when(exerciseTypeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        LinkedHashMap<String, Object> exerciseTypeDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(getExerciseTypeByIdQuery, "data.getExerciseTypeById", variables);
-
-        Assertions.assertNull(exerciseTypeDto);
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(getExerciseTypeByIdQuery, "data.getExerciseTypeById", variables)
+        );
     }
 
     @Test
@@ -123,12 +123,10 @@ class ExerciseTypeControllerIntTest {
                 }
                 )
         );
-        when(exerciseTypeService.exists(Mockito.any(Long.class))).thenReturn(false);
 
-        LinkedHashMap<String, Object> exerciseTypeDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(modifyExerciseTypeQuery, "data.modifyExerciseType", variables);
-
-        Assertions.assertNull(exerciseTypeDto);
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyExerciseTypeQuery, "data.modifyExerciseType", variables)
+        );
     }
 
     @Test
@@ -140,7 +138,6 @@ class ExerciseTypeControllerIntTest {
                 )
         );
         Set<ExerciseEntity> exercises = new HashSet<>();
-        when(exerciseTypeService.exists(Mockito.any(Long.class))).thenReturn(true);
         when(exerciseService.findMany(Mockito.anySet())).thenReturn(exercises);
         when(exerciseTypeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(exerciseType));
         when(exerciseTypeService.save(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseType);
@@ -155,7 +152,6 @@ class ExerciseTypeControllerIntTest {
     @Test
     void ExerciseTypeController_DeleteExercise_Success() {
         variables.put("exerciseTypeId", 1);
-        when(exerciseTypeService.exists(Mockito.any(Long.class))).thenReturn(true);
 
         Integer id = dgsQueryExecutor.executeAndExtractJsonPath(deleteExerciseTypeQuery, "data.deleteExerciseType", variables);
 
