@@ -3,6 +3,7 @@ package com.CptFranck.SportsPeak.controller;
 import com.CptFranck.SportsPeak.domain.dto.PrivilegeDto;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
+import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.privilege.InputNewPrivilege;
 import com.CptFranck.SportsPeak.domain.input.privilege.InputPrivilege;
 import com.CptFranck.SportsPeak.mappers.Mapper;
@@ -17,7 +18,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @DgsComponent
@@ -42,8 +42,9 @@ public class PrivilegeController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsQuery
     public PrivilegeDto getPrivilegeById(@InputArgument Long id) {
-        Optional<PrivilegeEntity> privilege = privilegeService.findOne(id);
-        return privilege.map(privilegeMapper::mapTo).orElse(null);
+        PrivilegeEntity privilege = privilegeService.findOne(id)
+                .orElseThrow(() -> new PrivilegeNotFoundException(id));
+        return privilegeMapper.mapTo(privilege);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -55,9 +56,6 @@ public class PrivilegeController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsMutation
     public PrivilegeDto modifyPrivilege(@InputArgument InputPrivilege inputPrivilege) {
-        if (!privilegeService.exists(inputPrivilege.getId())) {
-            return null;
-        }
         return privilegeMapper.mapTo(inputToEntity(inputPrivilege));
     }
 
@@ -74,12 +72,14 @@ public class PrivilegeController {
 
         Set<RoleEntity> roles = roleService.findMany(newRoleIds);
 
-        Long id = null;
+        Long id;
         if (inputNewPrivilege instanceof InputPrivilege) {
             id = ((InputPrivilege) inputNewPrivilege).getId();
-            Optional<PrivilegeEntity> privilege = privilegeService.findOne(id);
-            privilege.ifPresent(privilegeEntity ->
-                    privilegeEntity.getRoles().forEach(r -> oldRoleIds.add(r.getId())));
+            PrivilegeEntity privilege = privilegeService.findOne(id)
+                    .orElseThrow(() -> new PrivilegeNotFoundException(id));
+            privilege.getRoles().forEach(r -> oldRoleIds.add(r.getId()));
+        } else {
+            id = null;
         }
         PrivilegeEntity privilege = new PrivilegeEntity(
                 id,

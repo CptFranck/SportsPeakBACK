@@ -4,6 +4,7 @@ import com.CptFranck.SportsPeak.controller.PrivilegeController;
 import com.CptFranck.SportsPeak.domain.dto.PrivilegeDto;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
+import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeNotFoundException;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.PrivilegeService;
 import com.CptFranck.SportsPeak.service.RoleService;
@@ -53,16 +54,16 @@ class PrivilegeControllerTest {
 
         List<PrivilegeDto> privilegeDtos = privilegeController.getPrivileges();
 
-        Assertions.assertNotNull(privilegeDtos);
+        Assertions.assertEquals(List.of(this.privilegeDto), privilegeDtos);
     }
 
     @Test
     void PrivilegeController_GetPrivilegeById_Unsuccessful() {
         when(privilegeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        PrivilegeDto privilegeDto = privilegeController.getPrivilegeById(1L);
-
-        Assertions.assertNull(privilegeDto);
+        Assertions.assertThrows(PrivilegeNotFoundException.class,
+                () -> privilegeController.getPrivilegeById(1L)
+        );
     }
 
     @Test
@@ -72,7 +73,7 @@ class PrivilegeControllerTest {
 
         PrivilegeDto privilegeDto = privilegeController.getPrivilegeById(1L);
 
-        Assertions.assertNotNull(privilegeDto);
+        Assertions.assertEquals(this.privilegeDto, privilegeDto);
     }
 
     @Test
@@ -84,22 +85,23 @@ class PrivilegeControllerTest {
 
         PrivilegeDto privilegeDto = privilegeController.addPrivilege(createTestInputNewPrivilege());
 
-        Assertions.assertNotNull(privilegeDto);
+        Assertions.assertEquals(this.privilegeDto, privilegeDto);
     }
 
     @Test
     void PrivilegeController_ModifyPrivilege_UnsuccessfulDoesNotExist() {
-        when(privilegeService.exists(Mockito.any(Long.class))).thenReturn(false);
+        Set<RoleEntity> roles = new HashSet<>();
+        when(roleService.findMany(Mockito.anySet())).thenReturn(roles);
+        when(privilegeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        PrivilegeDto privilegeDto = privilegeController.modifyPrivilege(createTestInputPrivilege(1L));
-
-        Assertions.assertNull(privilegeDto);
+        Assertions.assertThrows(PrivilegeNotFoundException.class,
+                () -> privilegeController.modifyPrivilege(createTestInputPrivilege(1L))
+        );
     }
 
     @Test
     void PrivilegeController_ModifyPrivilege_Success() {
         Set<RoleEntity> roles = new HashSet<>();
-        when(privilegeService.exists(Mockito.any(Long.class))).thenReturn(true);
         when(roleService.findMany(Mockito.anySet())).thenReturn(roles);
         when(privilegeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(privilegeEntity));
         when(privilegeService.save(Mockito.any(PrivilegeEntity.class))).thenReturn(privilegeEntity);
@@ -107,13 +109,13 @@ class PrivilegeControllerTest {
 
         PrivilegeDto privilegeDto = privilegeController.modifyPrivilege(createTestInputPrivilege(1L));
 
-        Assertions.assertNotNull(privilegeDto);
+        Assertions.assertEquals(this.privilegeDto, privilegeDto);
     }
 
     @Test
     void PrivilegeController_DeletePrivilege_Success() {
         Long id = privilegeController.deletePrivilege(1L);
 
-        Assertions.assertNotNull(id);
+        Assertions.assertEquals(1L, id);
     }
 }

@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.graphql.dgs.DgsQueryExecutor;
 import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
+import com.netflix.graphql.dgs.exceptions.QueryException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -78,10 +79,9 @@ class PrivilegeControllerIntTest {
         variables.put("id", 1);
         when(privilegeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        LinkedHashMap<String, Object> privilegeDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(getPrivilegeByIdQuery, "data.getPrivilegeById", variables);
-
-        Assertions.assertNull(privilegeDto);
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(getPrivilegeByIdQuery, "data.getPrivilegeById", variables)
+        );
     }
 
     @Test
@@ -123,12 +123,10 @@ class PrivilegeControllerIntTest {
                         }
                 )
         );
-        when(privilegeService.exists(Mockito.any(Long.class))).thenReturn(false);
 
-        LinkedHashMap<String, Object> privilegeDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(modifyPrivilegeQuery, "data.modifyPrivilege", variables);
-
-        Assertions.assertNull(privilegeDto);
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(getPrivilegeByIdQuery, "data.getPrivilegeById", variables)
+        );
     }
 
     @Test
@@ -140,7 +138,6 @@ class PrivilegeControllerIntTest {
                 )
         );
         Set<RoleEntity> roles = new HashSet<>();
-        when(privilegeService.exists(Mockito.any(Long.class))).thenReturn(true);
         when(roleService.findMany(Mockito.anySet())).thenReturn(roles);
         when(privilegeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(privilegeEntity));
         when(privilegeService.save(Mockito.any(PrivilegeEntity.class))).thenReturn(privilegeEntity);
@@ -155,7 +152,6 @@ class PrivilegeControllerIntTest {
     @Test
     void PrivilegeController_DeletePrivilege_Success() {
         variables.put("privilegeId", 1);
-        when(privilegeService.exists(Mockito.any(Long.class))).thenReturn(true);
 
         Integer id =
                 dgsQueryExecutor.executeAndExtractJsonPath(deletePrivilegeQuery, "data.deletePrivilege", variables);
