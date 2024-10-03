@@ -65,7 +65,7 @@ type Mutation {
 
     addExercise(inputNewExercise: InputNewExercise!): Exercise!
     modifyExercise(inputExercise: InputExercise!): Exercise
-    deleteExercise(exerciseId: Int!): Int
+    deleteExercise(exerciseId: Int!): Int!
 
     addExerciseType(inputNewExerciseType: InputNewExerciseType!): ExerciseType!
     modifyExerciseType(inputExerciseType: InputExerciseType!): ExerciseType
