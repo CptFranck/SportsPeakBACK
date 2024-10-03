@@ -97,10 +97,9 @@ class PerformanceLogControllerIntTest {
         variables.put("id", 1);
         when(performanceLogService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        LinkedHashMap<String, Object> PerformanceLogDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(getPerformanceLogByIdQuery, "data.getPerformanceLogById", variables);
-
-        Assertions.assertNull(PerformanceLogDto);
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(getPerformanceLogByIdQuery, "data.getPerformanceLogById", variables)
+        );
     }
 
     @Test
@@ -183,10 +182,9 @@ class PerformanceLogControllerIntTest {
         );
         when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(false);
 
-        LinkedHashMap<String, Object> PerformanceLogDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(modifyPerformanceLogQuery, "data.modifyPerformanceLog", variables);
-
-        Assertions.assertNull(PerformanceLogDto);
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyPerformanceLogQuery, "data.modifyPerformanceLog", variables)
+        );
     }
 
     @Test
@@ -217,10 +215,9 @@ class PerformanceLogControllerIntTest {
         when(performanceLogService.save(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLog);
         when(performanceLogMapper.mapTo(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLogDto);
 
-        LinkedHashMap<String, Object> PerformanceLogDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(modifyPerformanceLogQuery, "data.modifyPerformanceLog", variables);
-
-        Assertions.assertNotNull(PerformanceLogDto);
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyPerformanceLogQuery, "data.modifyPerformanceLog", variables)
+        );
     }
 
     @Test

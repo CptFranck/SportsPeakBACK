@@ -4,6 +4,7 @@ import com.CptFranck.SportsPeak.controller.PerformanceLogController;
 import com.CptFranck.SportsPeak.domain.dto.*;
 import com.CptFranck.SportsPeak.domain.entity.*;
 import com.CptFranck.SportsPeak.domain.exception.LabelMatchNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.performanceLog.PerformanceLogNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.PerformanceLogService;
@@ -78,9 +79,9 @@ class PerformanceLogControllerTest {
     void PerformanceLogController_GetPerformanceLogById_Unsuccessful() {
         when(performanceLogService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        PerformanceLogDto performanceLogDto = performanceLogController.getPerformanceLogById(1L);
-
-        Assertions.assertNull(performanceLogDto);
+        Assertions.assertThrows(PerformanceLogNotFoundException.class,
+                () -> performanceLogController.getPerformanceLogById(1L)
+        );
     }
 
     @Test
@@ -138,19 +139,29 @@ class PerformanceLogControllerTest {
 
     @Test
     void PerformanceLogController_ModifyPerformanceLog_UnsuccessfulDoesNotExist() {
-        when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(false);
-
-        PerformanceLogDto performanceLogDto = performanceLogController.modifyPerformanceLog(
-                createTestInputPerformanceLog(1L, 1L, false)
+        Assertions.assertThrows(TargetSetNotFoundException.class,
+                () -> performanceLogController.modifyPerformanceLog(
+                        createTestInputPerformanceLog(1L, 1L, false)
+                )
         );
+    }
 
-        Assertions.assertNull(performanceLogDto);
+    @Test
+    void PerformanceLogController_ModifyPerformanceLog_UnsuccessfulPerformanceNotFound() {
+        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
+        when(performanceLogService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(PerformanceLogNotFoundException.class,
+                () -> performanceLogController.modifyPerformanceLog(
+                        createTestInputPerformanceLog(1L, 1L, true)
+                )
+        );
     }
 
     @Test
     void PerformanceLogController_ModifyPerformanceLog_UnsuccessfulWrongLabel() {
-        when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(true);
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
+        when(performanceLogService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(performanceLog));
 
         Assertions.assertThrows(LabelMatchNotFoundException.class,
                 () -> performanceLogController.modifyPerformanceLog(
@@ -161,8 +172,8 @@ class PerformanceLogControllerTest {
 
     @Test
     void PerformanceLogController_ModifyPerformanceLog_Success() {
-        when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(true);
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
+        when(performanceLogService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(performanceLog));
         when(performanceLogService.save(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLog);
         when(performanceLogMapper.mapTo(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLogDto);
 

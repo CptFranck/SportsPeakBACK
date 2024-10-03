@@ -4,6 +4,7 @@ import com.CptFranck.SportsPeak.domain.dto.PerformanceLogDto;
 import com.CptFranck.SportsPeak.domain.entity.PerformanceLogEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.enumType.WeightUnit;
+import com.CptFranck.SportsPeak.domain.exception.performanceLog.PerformanceLogNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputNewPerformanceLog;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputPerformanceLog;
@@ -17,7 +18,6 @@ import com.netflix.graphql.dgs.InputArgument;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
-import java.util.Optional;
 
 @DgsComponent
 public class PerformanceLogController {
@@ -39,8 +39,9 @@ public class PerformanceLogController {
 
     @DgsQuery
     public PerformanceLogDto getPerformanceLogById(@InputArgument Long id) {
-        Optional<PerformanceLogEntity> targetSet = performanceLogService.findOne(id);
-        return targetSet.map(performanceLogMapper::mapTo).orElse(null);
+        PerformanceLogEntity performanceLog = performanceLogService.findOne(id)
+                .orElseThrow(() -> new PerformanceLogNotFoundException(id));
+        return performanceLogMapper.mapTo(performanceLog);
     }
 
 
@@ -59,9 +60,6 @@ public class PerformanceLogController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
     public PerformanceLogDto modifyPerformanceLog(@InputArgument InputPerformanceLog inputPerformanceLog) {
-        if (!performanceLogService.exists(inputPerformanceLog.getId())) {
-            return null;
-        }
         return performanceLogMapper.mapTo(inputToEntity(inputPerformanceLog));
     }
 
@@ -76,9 +74,12 @@ public class PerformanceLogController {
         TargetSetEntity targetSet = targetSetService.findOne(inputNewPerformanceLog.getTargetSetId()).orElseThrow(
                 () -> new TargetSetNotFoundException(inputNewPerformanceLog.getTargetSetId()));
 
-        Long id = null;
+        Long id;
         if (inputNewPerformanceLog instanceof InputPerformanceLog) {
             id = ((InputPerformanceLog) inputNewPerformanceLog).getId();
+            performanceLogService.findOne(id).orElseThrow(() -> new PerformanceLogNotFoundException(id));
+        } else {
+            id = null;
         }
 
         PerformanceLogEntity performanceLogEntity = new PerformanceLogEntity(
