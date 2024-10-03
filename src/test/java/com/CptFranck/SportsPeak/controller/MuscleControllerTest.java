@@ -1,63 +1,50 @@
 package com.CptFranck.SportsPeak.controller;
 
-import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
 import com.CptFranck.SportsPeak.domain.dto.MuscleDto;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import com.CptFranck.SportsPeak.service.MuscleService;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netflix.graphql.dgs.DgsQueryExecutor;
-import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
-import static com.CptFranck.SportsPeak.controller.graphqlQuery.MuscleQuery.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@SpringBootTest(classes = {
-        DgsAutoConfiguration.class,
-        LocalDateTimeScalar.class,
-        MuscleController.class
-})
 class MuscleControllerTest {
 
-    @Autowired
-    private DgsQueryExecutor dgsQueryExecutor;
+    @InjectMocks
+    private MuscleController muscleController;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    @MockBean
+    @Mock
     private Mapper<MuscleEntity, MuscleDto> muscleMapper;
 
-    @MockBean
+    @Mock
     private MuscleService muscleService;
 
-    @MockBean
+    @Mock
     private ExerciseService exerciseService;
 
     private MuscleEntity muscle;
     private MuscleDto muscleDto;
-    private LinkedHashMap<String, Object> variables;
 
     @BeforeEach
     void init() {
         muscle = createTestMuscle(1L);
         muscleDto = createTestMuscleDto(1L);
-        variables = new LinkedHashMap<>();
     }
 
     @Test
@@ -65,98 +52,64 @@ class MuscleControllerTest {
         when(muscleService.findAll()).thenReturn(List.of(muscle));
         when(muscleMapper.mapTo(Mockito.any(MuscleEntity.class))).thenReturn(muscleDto);
 
-        List<LinkedHashMap<String, Object>> muscleDtos =
-                dgsQueryExecutor.executeAndExtractJsonPath(getMusclesQuery, "data.getMuscles");
+        List<MuscleDto> muscleDtos = muscleController.getMuscles();
 
         Assertions.assertNotNull(muscleDtos);
     }
 
     @Test
     void MuscleController_GetMuscleById_Unsuccessful() {
-        variables.put("id", 1);
         when(muscleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        LinkedHashMap<String, Object> muscleDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(getMuscleByIdQuery, "data.getMuscleById", variables);
+        MuscleDto muscleDto = muscleController.getMuscleById(1L);
 
         Assertions.assertNull(muscleDto);
     }
 
     @Test
     void MuscleController_GetMuscleById_Success() {
-        variables.put("id", 1);
         when(muscleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(muscle));
         when(muscleMapper.mapTo(Mockito.any(MuscleEntity.class))).thenReturn(muscleDto);
 
-        LinkedHashMap<String, Object> muscleDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(getMuscleByIdQuery, "data.getMuscleById", variables);
+        MuscleDto muscleDto = muscleController.getMuscleById(1L);
 
         Assertions.assertNotNull(muscleDto);
     }
 
     @Test
     void MuscleController_AddMuscle_Success() {
-        variables.put("inputNewMuscle", objectMapper.convertValue(
-                        createTestInputNewMuscle(),
-                new TypeReference<LinkedHashMap<String, Object>>() {
-                }
-                )
-        );
         Set<ExerciseEntity> exercises = new HashSet<>();
         when(exerciseService.findMany(Mockito.anySet())).thenReturn(exercises);
         when(muscleService.save(Mockito.any(MuscleEntity.class))).thenReturn(muscle);
         when(muscleMapper.mapTo(Mockito.any(MuscleEntity.class))).thenReturn(muscleDto);
 
-        LinkedHashMap<String, Object> muscleDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(addMuscleQuery, "data.addMuscle", variables);
+        MuscleDto muscleDto = muscleController.addMuscle(createTestInputNewMuscle());
 
         Assertions.assertNotNull(muscleDto);
     }
 
     @Test
     void MuscleController_ModifyMuscle_UnsuccessfulDoesNotExist() {
-        variables.put("inputMuscle", objectMapper.convertValue(
-                        createTestInputMuscle(1L),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(muscleService.exists(Mockito.any(Long.class))).thenReturn(false);
-
-        LinkedHashMap<String, Object> muscleDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(modifyMuscleQuery, "data.modifyMuscle", variables);
+        MuscleDto muscleDto = muscleController.addMuscle(createTestInputMuscle(1L));
 
         Assertions.assertNull(muscleDto);
     }
 
     @Test
     void MuscleController_ModifyMuscle_Success() {
-        variables.put("inputMuscle", objectMapper.convertValue(
-                        createTestInputMuscle(1L),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
         Set<ExerciseEntity> exercises = new HashSet<>();
-        when(muscleService.exists(Mockito.any(Long.class))).thenReturn(true);
         when(exerciseService.findMany(Mockito.anySet())).thenReturn(exercises);
-        when(muscleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(muscle));
         when(muscleService.save(Mockito.any(MuscleEntity.class))).thenReturn(muscle);
         when(muscleMapper.mapTo(Mockito.any(MuscleEntity.class))).thenReturn(muscleDto);
 
-        LinkedHashMap<String, Object> muscleDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(modifyMuscleQuery, "data.modifyMuscle", variables);
+        MuscleDto muscleDto = muscleController.addMuscle(createTestInputMuscle(1L));
 
         Assertions.assertNotNull(muscleDto);
     }
 
     @Test
     void MuscleController_DeleteMuscle_Success() {
-        variables.put("muscleId", 1);
-        when(muscleService.exists(Mockito.any(Long.class))).thenReturn(true);
-
-        Integer id =
-                dgsQueryExecutor.executeAndExtractJsonPath(deleteMuscleQuery, "data.deleteMuscle", variables);
+        Long id = muscleController.deleteMuscle(1L);
 
         Assertions.assertNotNull(id);
     }
