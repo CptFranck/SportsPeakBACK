@@ -5,6 +5,7 @@ import com.CptFranck.SportsPeak.domain.dto.RoleDto;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.PrivilegeService;
 import com.CptFranck.SportsPeak.service.RoleService;
@@ -60,16 +61,16 @@ class RoleControllerTest {
 
         List<RoleDto> roleDtos = roleController.getRoles();
 
-        Assertions.assertNotNull(roleDtos);
+        Assertions.assertEquals(List.of(this.roleDto), roleDtos);
     }
 
     @Test
     void RoleController_GetRoleById_Unsuccessful() {
         when(roleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        RoleDto roleDto = roleController.getRoleById(1L);
-
-        Assertions.assertNull(roleDto);
+        Assertions.assertThrows(RoleNotFoundException.class,
+                () -> roleController.getRoleById(1L)
+        );
     }
 
     @Test
@@ -79,7 +80,7 @@ class RoleControllerTest {
 
         RoleDto roleDto = roleController.getRoleById(1L);
 
-        Assertions.assertNotNull(roleDto);
+        Assertions.assertEquals(this.roleDto, roleDto);
     }
 
     @Test
@@ -93,23 +94,21 @@ class RoleControllerTest {
 
         RoleDto roleDto = roleController.addRole(createTestInputNewRole());
 
-        Assertions.assertNotNull(roleDto);
+        Assertions.assertEquals(this.roleDto, roleDto);
     }
 
     @Test
     void RoleController_ModifyRole_UnsuccessfulDoesNotExist() {
-        when(roleService.exists(Mockito.any(Long.class))).thenReturn(false);
-
-        RoleDto roleDto = roleController.modifyRole(createTestInputRole(1L));
-
-        Assertions.assertNull(roleDto);
+        Assertions.assertThrows(RoleNotFoundException.class,
+                () -> roleController.modifyRole(createTestInputRole(1L)
+                )
+        );
     }
 
     @Test
     void RoleController_ModifyRole_Success() {
         Set<UserEntity> users = new HashSet<>();
         Set<PrivilegeEntity> privileges = new HashSet<>();
-        when(roleService.exists(Mockito.any(Long.class))).thenReturn(true);
         when(userService.findMany(Mockito.anySet())).thenReturn(users);
         when(privilegeService.findMany(Mockito.anySet())).thenReturn(privileges);
         when(roleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(roleEntity));
@@ -118,13 +117,13 @@ class RoleControllerTest {
 
         RoleDto roleDto = roleController.modifyRole(createTestInputRole(1L));
 
-        Assertions.assertNotNull(roleDto);
+        Assertions.assertEquals(this.roleDto, roleDto);
     }
 
     @Test
     void RoleController_DeleteRole_Success() {
         Long id = roleController.deleteRole(1L);
 
-        Assertions.assertNotNull(id);
+        Assertions.assertEquals(1L, id);
     }
 }

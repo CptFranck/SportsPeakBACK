@@ -7,7 +7,6 @@ import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.mappers.Mapper;
-import com.CptFranck.SportsPeak.service.ExerciseTypeService;
 import com.CptFranck.SportsPeak.service.PrivilegeService;
 import com.CptFranck.SportsPeak.service.RoleService;
 import com.CptFranck.SportsPeak.service.UserService;
@@ -15,6 +14,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.graphql.dgs.DgsQueryExecutor;
 import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
+import com.netflix.graphql.dgs.exceptions.QueryException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,9 +58,6 @@ class RoleControllerIntTest {
     private PrivilegeService privilegeService;
 
 
-    @MockBean
-    private ExerciseTypeService exerciseTypeService;
-
     private RoleEntity roleEntity;
     private RoleDto roleDto;
     private LinkedHashMap<String, Object> variables;
@@ -88,10 +85,9 @@ class RoleControllerIntTest {
         variables.put("id", 1);
         when(roleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        LinkedHashMap<String, Object> roleDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(getRoleByIdQuery, "data.getRoleById", variables);
-
-        Assertions.assertNull(roleDto);
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(getRoleByIdQuery, "data.getRoleById", variables)
+        );
     }
 
     @Test
@@ -135,12 +131,10 @@ class RoleControllerIntTest {
                         }
                 )
         );
-        when(roleService.exists(Mockito.any(Long.class))).thenReturn(false);
 
-        LinkedHashMap<String, Object> roleDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(modifyRoleQuery, "data.modifyRole", variables);
-
-        Assertions.assertNull(roleDto);
+        Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyRoleQuery, "data.modifyRole", variables)
+        );
     }
 
     @Test
@@ -153,7 +147,6 @@ class RoleControllerIntTest {
         );
         Set<UserEntity> users = new HashSet<>();
         Set<PrivilegeEntity> privileges = new HashSet<>();
-        when(roleService.exists(Mockito.any(Long.class))).thenReturn(true);
         when(userService.findMany(Mockito.anySet())).thenReturn(users);
         when(privilegeService.findMany(Mockito.anySet())).thenReturn(privileges);
         when(roleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(roleEntity));
@@ -169,7 +162,6 @@ class RoleControllerIntTest {
     @Test
     void RoleController_DeleteRole_Success() {
         variables.put("roleId", 1);
-        when(roleService.exists(Mockito.any(Long.class))).thenReturn(true);
 
         Integer id =
                 dgsQueryExecutor.executeAndExtractJsonPath(deleteRoleQuery, "data.deleteRole", variables);

@@ -4,6 +4,7 @@ import com.CptFranck.SportsPeak.domain.dto.RoleDto;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.role.InputNewRole;
 import com.CptFranck.SportsPeak.domain.input.role.InputRole;
 import com.CptFranck.SportsPeak.mappers.Mapper;
@@ -19,7 +20,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @DgsComponent
@@ -46,8 +46,9 @@ public class RoleController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsQuery
     public RoleDto getRoleById(@InputArgument Long id) {
-        Optional<RoleEntity> role = roleService.findOne(id);
-        return role.map(roleMapper::mapTo).orElse(null);
+        RoleEntity role = roleService.findOne(id).orElseThrow(() -> new RoleNotFoundException(id.toString()));
+        ;
+        return roleMapper.mapTo(role);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -59,9 +60,6 @@ public class RoleController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsMutation
     public RoleDto modifyRole(@InputArgument InputRole inputRole) {
-        if (!roleService.exists(inputRole.getId())) {
-            return null;
-        }
         return roleMapper.mapTo(inputToEntity(inputRole));
     }
 
@@ -80,12 +78,13 @@ public class RoleController {
         Set<UserEntity> users = userService.findMany(newUserIds);
         Set<PrivilegeEntity> privileges = privilegeService.findMany(privilegeIds);
 
-        Long id = null;
+        Long id;
         if (inputNewRole instanceof InputRole) {
             id = ((InputRole) inputNewRole).getId();
-            Optional<RoleEntity> roles = roleService.findOne(id);
-            roles.ifPresent(roleEntity ->
-                    roleEntity.getUsers().forEach(u -> oldUserIds.add(u.getId())));
+            RoleEntity roles = roleService.findOne(id).orElseThrow(() -> new RoleNotFoundException(id.toString()));
+            roles.getUsers().forEach(u -> oldUserIds.add(u.getId()));
+        } else {
+            id = null;
         }
         RoleEntity role = new RoleEntity(
                 id,
