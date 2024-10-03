@@ -79,9 +79,6 @@ public class TargetSetController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
     public Long deleteTargetSet(@InputArgument Long targetSetId) {
-        if (!targetSetService.exists(targetSetId)) {
-            return null;
-        }
         targetSetService.delete(targetSetId);
         return targetSetId;
     }
