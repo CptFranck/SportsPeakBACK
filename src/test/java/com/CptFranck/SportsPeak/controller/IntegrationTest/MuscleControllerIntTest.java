@@ -124,7 +124,6 @@ class MuscleControllerIntTest {
                         }
                 )
         );
-        when(muscleService.exists(Mockito.any(Long.class))).thenReturn(false);
 
         Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyMuscleQuery, "data.modifyMuscle", variables)
@@ -140,7 +139,6 @@ class MuscleControllerIntTest {
                 )
         );
         Set<ExerciseEntity> exercises = new HashSet<>();
-        when(muscleService.exists(Mockito.any(Long.class))).thenReturn(true);
         when(exerciseService.findMany(Mockito.anySet())).thenReturn(exercises);
         when(muscleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(muscle));
         when(muscleService.save(Mockito.any(MuscleEntity.class))).thenReturn(muscle);
@@ -155,7 +153,6 @@ class MuscleControllerIntTest {
     @Test
     void MuscleController_DeleteMuscle_Success() {
         variables.put("muscleId", 1);
-        when(muscleService.exists(Mockito.any(Long.class))).thenReturn(true);
 
         Integer id =
                 dgsQueryExecutor.executeAndExtractJsonPath(deleteMuscleQuery, "data.deleteMuscle", variables);
