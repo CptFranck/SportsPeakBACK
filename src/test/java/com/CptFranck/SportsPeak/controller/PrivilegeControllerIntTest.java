@@ -33,11 +33,14 @@ import static org.mockito.Mockito.when;
         LocalDateTimeScalar.class,
         PrivilegeController.class
 })
-class PrivilegeControllerTest {
+class PrivilegeControllerIntTest {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     private DgsQueryExecutor dgsQueryExecutor;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @MockBean
     private Mapper<PrivilegeEntity, PrivilegeDto> privilegeMapper;
 

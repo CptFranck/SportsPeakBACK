@@ -36,12 +36,13 @@ import static org.mockito.Mockito.when;
         LocalDateTimeScalar.class,
         ExerciseController.class
 })
-class ExerciseControllerTest {
+class ExerciseControllerIntTest {
 
     @Autowired
     private DgsQueryExecutor dgsQueryExecutor;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private Mapper<ExerciseEntity, ExerciseDto> exerciseMapper;

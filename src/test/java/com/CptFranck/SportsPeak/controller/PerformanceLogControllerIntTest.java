@@ -8,8 +8,6 @@ import com.CptFranck.SportsPeak.service.PerformanceLogService;
 import com.CptFranck.SportsPeak.service.TargetSetService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.netflix.graphql.dgs.DgsQueryExecutor;
 import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
 import com.netflix.graphql.dgs.exceptions.QueryException;
@@ -45,14 +43,13 @@ import static org.mockito.Mockito.when;
         LocalDateTimeScalar.class,
         PerformanceLogController.class
 })
-class PerformanceLogControllerTest {
+class PerformanceLogControllerIntTest {
 
     @Autowired
     private DgsQueryExecutor dgsQueryExecutor;
 
-    private final ObjectMapper objectMapper = new ObjectMapper()
-            .registerModule(new JavaTimeModule())
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private Mapper<PerformanceLogEntity, PerformanceLogDto> performanceLogMapper;

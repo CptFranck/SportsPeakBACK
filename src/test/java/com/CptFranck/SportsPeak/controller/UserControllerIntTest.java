@@ -39,9 +39,10 @@ import static org.mockito.Mockito.when;
         LocalDateTimeScalar.class,
         UserController.class
 })
-class UserControllerTest {
+class UserControllerIntTest {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private DgsQueryExecutor dgsQueryExecutor;

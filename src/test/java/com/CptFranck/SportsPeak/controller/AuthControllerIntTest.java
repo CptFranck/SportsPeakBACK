@@ -45,12 +45,13 @@ import static org.mockito.Mockito.when;
         AuthController.class
 })
 @ExtendWith(MockitoExtension.class)
-public class AuthControllerTest {
+public class AuthControllerIntTest {
 
     @Autowired
     private DgsQueryExecutor dgsQueryExecutor;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private AuthService authService;
