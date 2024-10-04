@@ -66,9 +66,8 @@ public class ExerciseServiceImplIntTest {
 
     @Test
     void exerciseService_FindAll_Success() {
-        List<ExerciseEntity> exerciseList = createTestExerciseList(true);
-        exerciseList = StreamSupport.stream(
-                exerciseRepository.saveAll(exerciseList).spliterator(),
+        List<ExerciseEntity> exerciseList = StreamSupport.stream(
+                exerciseRepository.saveAll(createTestExerciseList(true)).spliterator(),
                 false).toList();
 
         List<ExerciseEntity> exercisesFound = exerciseServiceImpl.findAll();
@@ -78,8 +77,7 @@ public class ExerciseServiceImplIntTest {
 
     @Test
     void exerciseService_FindOne_Success() {
-        ExerciseEntity exerciseSaved = createTestExercise(null);
-        exerciseSaved = exerciseRepository.save(exerciseSaved);
+        ExerciseEntity exerciseSaved = exerciseRepository.save(createTestExercise(null));
 
         Optional<ExerciseEntity> exerciseFound = exerciseServiceImpl.findOne(exerciseSaved.getId());
 
@@ -89,9 +87,8 @@ public class ExerciseServiceImplIntTest {
 
     @Test
     void exerciseService_FindMany_Success() {
-        List<ExerciseEntity> exerciseList = createTestExerciseList(true);
-        exerciseList = StreamSupport.stream(
-                exerciseRepository.saveAll(exerciseList).spliterator(),
+        List<ExerciseEntity> exerciseList = StreamSupport.stream(
+                exerciseRepository.saveAll(createTestExerciseList(true)).spliterator(),
                 false).toList();
         Set<Long> ExerciseIds = exerciseList.stream().map(ExerciseEntity::getId).collect(Collectors.toSet());
 

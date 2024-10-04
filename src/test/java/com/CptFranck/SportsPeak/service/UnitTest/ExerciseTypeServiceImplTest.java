@@ -53,7 +53,7 @@ public class ExerciseTypeServiceImplTest {
 
     @Test
     void exerciseTypeService_FindAll_Success() {
-        List<ExerciseTypeEntity> exerciseTypeList = createTestExerciseTypeList();
+        List<ExerciseTypeEntity> exerciseTypeList = createTestExerciseTypeList(false);
         when(exerciseTypeRepository.findAll()).thenReturn(exerciseTypeList);
 
         List<ExerciseTypeEntity> exerciseTypeFound = exerciseTypeTypeServiceImpl.findAll();
@@ -73,7 +73,7 @@ public class ExerciseTypeServiceImplTest {
 
     @Test
     void exerciseTypeService_FindMany_Success() {
-        List<ExerciseTypeEntity> exerciseTypeList = createTestExerciseTypeList();
+        List<ExerciseTypeEntity> exerciseTypeList = createTestExerciseTypeList(false);
         Set<Long> exerciseTypeIds = exerciseTypeList.stream().map(ExerciseTypeEntity::getId).collect(Collectors.toSet());
         when(exerciseTypeRepository.findAllById(Mockito.anyIterable())).thenReturn(exerciseTypeList);
 
