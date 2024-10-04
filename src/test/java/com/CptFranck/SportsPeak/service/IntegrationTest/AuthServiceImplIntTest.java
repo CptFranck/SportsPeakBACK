@@ -17,8 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserBis;
+import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -73,7 +72,7 @@ public class AuthServiceImplIntTest {
 
         UserEntity returnedUser = authServiceImpl.login(wrongPasswordInputCredentials);
 
-        asserEqualUser(user, returnedUser);
+        assertEqualsUser(user, returnedUser);
     }
 
     @Test
@@ -99,15 +98,6 @@ public class AuthServiceImplIntTest {
 
         UserEntity registeredUser = authServiceImpl.register(userToRegister);
 
-        asserEqualUser(userToRegister, registeredUser);
-    }
-
-    private void asserEqualUser(UserEntity userToGet, UserEntity obtainedUser) {
-        Assertions.assertEquals(userToGet.getId(), obtainedUser.getId());
-        Assertions.assertEquals(userToGet.getEmail(), obtainedUser.getEmail());
-        Assertions.assertEquals(userToGet.getFirstName(), obtainedUser.getFirstName());
-        Assertions.assertEquals(userToGet.getLastName(), obtainedUser.getLastName());
-        Assertions.assertEquals(userToGet.getUsername(), obtainedUser.getUsername());
-        Assertions.assertEquals(userToGet.getPassword(), obtainedUser.getPassword());
+        assertEqualsUser(userToRegister, registeredUser);
     }
 }

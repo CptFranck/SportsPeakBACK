@@ -7,12 +7,22 @@ import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.user.*;
+import org.junit.jupiter.api.Assertions;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 public class TestUserUtils {
+
+    public static void assertEqualsUser(UserEntity userToGet, UserEntity obtainedUser) {
+        Assertions.assertEquals(userToGet.getId(), obtainedUser.getId());
+        Assertions.assertEquals(userToGet.getEmail(), obtainedUser.getEmail());
+        Assertions.assertEquals(userToGet.getFirstName(), obtainedUser.getFirstName());
+        Assertions.assertEquals(userToGet.getLastName(), obtainedUser.getLastName());
+        Assertions.assertEquals(userToGet.getUsername(), obtainedUser.getUsername());
+        Assertions.assertEquals(userToGet.getPassword(), obtainedUser.getPassword());
+    }
 
     public static UserEntity createTestUser(Long id) {
         return new UserEntity(
@@ -42,11 +52,11 @@ public class TestUserUtils {
         );
     }
 
-    public static List<UserEntity> createTestUserList() {
-        return List.of(
-                createTestUser(1L),
-                createTestUser(2L)
-        );
+    public static List<UserEntity> createTestUserList(boolean nullIds) {
+        if (nullIds)
+            return List.of(createTestUser(null), createTestUserBis(null));
+        else
+            return List.of(createTestUser(1L), createTestUserBis(2L));
     }
 
     public static UserDto createTestUserDto(Long id) {

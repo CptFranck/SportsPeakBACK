@@ -66,7 +66,7 @@ public class UserServiceImplTest {
 
     @Test
     void UserService_FindAll_Success() {
-        List<UserEntity> userList = createTestUserList();
+        List<UserEntity> userList = createTestUserList(false);
         when(userRepository.findAll()).thenReturn(userList);
 
         List<UserEntity> userFound = userServiceImpl.findAll();
@@ -86,7 +86,7 @@ public class UserServiceImplTest {
 
     @Test
     void UserService_FindMany_Success() {
-        List<UserEntity> userList = createTestUserList();
+        List<UserEntity> userList = createTestUserList(false);
         Set<Long> userIds = userList.stream().map(UserEntity::getId).collect(Collectors.toSet());
         when(userRepository.findAllById(Mockito.anyIterable())).thenReturn(userList);
 
@@ -99,7 +99,7 @@ public class UserServiceImplTest {
     void UserService_FindUserBySubscribedProgExercises_Success() {
         ExerciseEntity exercise = createTestExercise(1L);
         ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
-        List<UserEntity> userList = createTestUserList();
+        List<UserEntity> userList = createTestUserList(false);
         userList.forEach(user -> user.getSubscribedProgExercises().add(progExercise));
         when(userRepository.findAllBySubscribedProgExercisesContaining(Mockito.any(ProgExerciseEntity.class))).thenReturn(userList);
 
