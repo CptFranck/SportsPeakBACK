@@ -1,0 +1,29 @@
+spring:
+  output:
+    ansi:
+      enabled: ALWAYS
+  application:
+    name: SportsPeakTest
+  # DB CONNECTION
+  datasource:
+    url: jdbc:h2:mem:dbtest
+    username: user
+    password: password
+    driver-class-name: org.h2.Driver
+  # JPA
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        ddl-auto: create
+        type:
+          preferred_duration_jdbc_type: INTERVAL_SECOND
+    database-platform: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+  h2:
+    console:
+      enabled: true
