@@ -29,8 +29,11 @@ public class TestExerciseUtils {
         );
     }
 
-    public static List<ExerciseEntity> createTestExerciseList() {
-        return List.of(createTestExercise(1L), createTestExercise(2L), createTestExercise(3L));
+    public static List<ExerciseEntity> createTestExerciseList(boolean nullIds) {
+        if (nullIds)
+            return List.of(createTestExercise(null), createTestExercise(null), createTestExercise(null));
+        else
+            return List.of(createTestExercise(1L), createTestExercise(2L), createTestExercise(3L));
     }
 
     public static ExerciseDto createTestExerciseDto(Long id) {

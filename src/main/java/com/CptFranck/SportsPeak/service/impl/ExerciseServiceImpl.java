@@ -55,7 +55,6 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     @Override
     public void updateExerciseTypeRelation(Set<Long> newIds, Set<Long> oldIds, ExerciseTypeEntity exerciseType) {
-
         this.findMany(oldIds).forEach(e -> {
             e.getExerciseTypes().removeIf(et -> Objects.equals(et.getId(), exerciseType.getId()));
             this.save(e);
