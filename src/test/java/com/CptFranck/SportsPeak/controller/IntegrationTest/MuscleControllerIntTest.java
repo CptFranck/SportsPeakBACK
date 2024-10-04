@@ -21,7 +21,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.*;
 
@@ -43,13 +42,13 @@ class MuscleControllerIntTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
+    @Autowired
     private Mapper<MuscleEntity, MuscleDto> muscleMapper;
 
-    @MockBean
+    @Autowired
     private MuscleService muscleService;
 
-    @MockBean
+    @Autowired
     private ExerciseService exerciseService;
 
     private MuscleEntity muscle;

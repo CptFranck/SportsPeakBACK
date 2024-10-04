@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.service;
+package com.CptFranck.SportsPeak.service.UnitTest;
 
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailExistsException;
