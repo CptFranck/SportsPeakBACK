@@ -55,7 +55,7 @@ public class MuscleServiceImplTest {
 
     @Test
     void muscleService_FindAll_Success() {
-        List<MuscleEntity> muscleList = createTestMuscleList();
+        List<MuscleEntity> muscleList = createTestMuscleList(false);
         when(muscleRepository.findAll()).thenReturn(muscleList);
 
         List<MuscleEntity> muscleFound = muscleServiceImpl.findAll();
@@ -75,7 +75,7 @@ public class MuscleServiceImplTest {
 
     @Test
     void muscleService_FindMany_Success() {
-        List<MuscleEntity> muscleList = createTestMuscleList();
+        List<MuscleEntity> muscleList = createTestMuscleList(false);
         Set<Long> muscleIds = muscleList.stream().map(MuscleEntity::getId).collect(Collectors.toSet());
         when(muscleRepository.findAllById(Mockito.anyIterable())).thenReturn(muscleList);
 

@@ -61,7 +61,7 @@ public class ExerciseServiceImplIntTest {
 
         ExerciseEntity exerciseSaved = exerciseServiceImpl.save(unsavedExercise);
 
-        Assertions.assertEquals(unsavedExercise, exerciseSaved);
+        assertEqualExercise(unsavedExercise, exerciseSaved);
     }
 
     @Test

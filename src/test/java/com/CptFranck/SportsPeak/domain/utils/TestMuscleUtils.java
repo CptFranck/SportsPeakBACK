@@ -23,8 +23,11 @@ public class TestMuscleUtils {
         );
     }
 
-    public static List<MuscleEntity> createTestMuscleList() {
-        return List.of(createTestMuscle(1L), createTestMuscle(2L), createTestMuscle(3L));
+    public static List<MuscleEntity> createTestMuscleList(boolean nullIds) {
+        if (nullIds)
+            return List.of(createTestMuscle(null), createTestMuscle(null), createTestMuscle(null));
+        else
+            return List.of(createTestMuscle(1L), createTestMuscle(2L), createTestMuscle(3L));
     }
 
     public static MuscleDto createTestMuscleDto(Long id) {
