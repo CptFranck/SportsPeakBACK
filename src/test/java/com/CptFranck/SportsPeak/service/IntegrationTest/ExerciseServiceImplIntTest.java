@@ -195,5 +195,4 @@ public class ExerciseServiceImplIntTest {
         Assertions.assertEquals(expected.getDescription(), actual.getDescription());
         Assertions.assertEquals(expected.getGoal(), actual.getGoal());
     }
-
 }
