@@ -5,8 +5,6 @@ import com.CptFranck.SportsPeak.repositories.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
@@ -18,7 +16,6 @@ import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTes
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class PerformanceLogRepositoryIntTest {
 
     @Autowired
