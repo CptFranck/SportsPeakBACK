@@ -72,7 +72,7 @@ public class PrivilegeServiceImplTest {
 
     @Test
     void PrivilegeService_FindAll_Success() {
-        List<PrivilegeEntity> privilegeList = createNewTestPrivilegeList();
+        List<PrivilegeEntity> privilegeList = createNewTestPrivilegeList(false);
         when(privilegeRepository.findAll()).thenReturn(privilegeList);
 
         List<PrivilegeEntity> privilegeFound = privilegeServiceImpl.findAll();
@@ -92,7 +92,7 @@ public class PrivilegeServiceImplTest {
 
     @Test
     void PrivilegeService_FindMany_Success() {
-        List<PrivilegeEntity> privilegeList = createNewTestPrivilegeList();
+        List<PrivilegeEntity> privilegeList = createNewTestPrivilegeList(false);
         Set<Long> privilegeIds = privilegeList.stream().map(PrivilegeEntity::getId).collect(Collectors.toSet());
         when(privilegeRepository.findAllById(Mockito.anyIterable())).thenReturn(privilegeList);
 

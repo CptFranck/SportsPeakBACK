@@ -22,11 +22,19 @@ public class TestPrivilegeUtils {
     }
 
 
-    public static List<PrivilegeEntity> createNewTestPrivilegeList() {
-        return List.of(
-                createTestPrivilege(1L),
-                createTestPrivilege(2L)
-        );
+    public static List<PrivilegeEntity> createNewTestPrivilegeList(boolean nullIds) {
+        if (nullIds) {
+            PrivilegeEntity one = createTestPrivilege(null);
+            PrivilegeEntity two = createTestPrivilege(null);
+            one.setName("one");
+            two.setName("rwo");
+            return List.of(one, two);
+        } else {
+            return List.of(
+                    createTestPrivilege(1L),
+                    createTestPrivilege(2L)
+            );
+        }
     }
 
     public static PrivilegeDto createTestPrivilegeDto(Long id) {
