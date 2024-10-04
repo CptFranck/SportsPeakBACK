@@ -13,28 +13,26 @@ import java.util.List;
 
 public class TestPrivilegeUtils {
 
-    public static PrivilegeEntity createTestPrivilege(Long id) {
+    public static PrivilegeEntity createTestPrivilege(Long id, int option) {
+        String privilegeName = "Privilege name";
+        if (option == 1) {
+            privilegeName = "Privilege One";
+        } else if (option == 2) {
+            privilegeName = "Privilege Two";
+        }
         return new PrivilegeEntity(
                 id,
-                "Privilege name",
+                privilegeName,
                 new HashSet<RoleEntity>()
         );
     }
 
 
     public static List<PrivilegeEntity> createNewTestPrivilegeList(boolean nullIds) {
-        if (nullIds) {
-            PrivilegeEntity one = createTestPrivilege(null);
-            PrivilegeEntity two = createTestPrivilege(null);
-            one.setName("one");
-            two.setName("rwo");
-            return List.of(one, two);
-        } else {
-            return List.of(
-                    createTestPrivilege(1L),
-                    createTestPrivilege(2L)
-            );
-        }
+        if (nullIds)
+            return List.of(createTestPrivilege(null, 1), createTestPrivilege(null, 2));
+        else
+            return List.of(createTestPrivilege(1L, 1), createTestPrivilege(2L, 2));
     }
 
     public static PrivilegeDto createTestPrivilegeDto(Long id) {

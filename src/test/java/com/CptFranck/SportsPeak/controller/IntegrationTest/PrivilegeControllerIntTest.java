@@ -58,7 +58,7 @@ class PrivilegeControllerIntTest {
 
     @BeforeEach
     void init() {
-        privilegeEntity = createTestPrivilege(1L);
+        privilegeEntity = createTestPrivilege(1L, 0);
         privilegeDto = createTestPrivilegeDto(1L);
         variables = new LinkedHashMap<>();
     }

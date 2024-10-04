@@ -27,7 +27,7 @@ public class PrivilegeMapperImplTest {
 
     @Test
     void privilegeTypeMapper_MapTo_Success() {
-        PrivilegeEntity privilege = createTestPrivilege(1L);
+        PrivilegeEntity privilege = createTestPrivilege(1L, 0);
         RoleEntity role = createTestRole(1L, 0);
         privilege.getRoles().add(role);
 

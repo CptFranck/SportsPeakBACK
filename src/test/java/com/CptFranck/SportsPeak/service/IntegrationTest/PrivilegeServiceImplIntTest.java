@@ -43,7 +43,7 @@ public class PrivilegeServiceImplIntTest {
 
     @Test
     void PrivilegeService_Save_Success() {
-        PrivilegeEntity unsavedPrivilege = createTestPrivilege(null);
+        PrivilegeEntity unsavedPrivilege = createTestPrivilege(null, 0);
 
         PrivilegeEntity privilegeSaved = privilegeServiceImpl.save(unsavedPrivilege);
 
@@ -52,8 +52,8 @@ public class PrivilegeServiceImplIntTest {
 
     @Test
     void PrivilegeService_Save_UpdateSuccess() {
-        PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(null));
-        PrivilegeEntity privilegeBis = createTestPrivilege(null);
+        PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(null, 0));
+        PrivilegeEntity privilegeBis = createTestPrivilege(null, 0);
         privilegeBis.setName("other privilege name");
         privilegeRepository.save(privilegeBis);
 
@@ -64,9 +64,9 @@ public class PrivilegeServiceImplIntTest {
 
     @Test
     void PrivilegeService_Save_UnSuccessful() {
-        privilegeServiceImpl.save(createTestPrivilege(null));
+        privilegeServiceImpl.save(createTestPrivilege(null, 0));
 
-        assertThrows(PrivilegeExistsException.class, () -> privilegeServiceImpl.save(createTestPrivilege(null)));
+        assertThrows(PrivilegeExistsException.class, () -> privilegeServiceImpl.save(createTestPrivilege(null, 0)));
     }
 
     @Test
@@ -82,7 +82,7 @@ public class PrivilegeServiceImplIntTest {
 
     @Test
     void PrivilegeService_FindOne_Success() {
-        PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(null));
+        PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(null, 0));
 
         Optional<PrivilegeEntity> privilegeFound = privilegeServiceImpl.findOne(privilege.getId());
 
@@ -104,7 +104,7 @@ public class PrivilegeServiceImplIntTest {
 
     @Test
     void PrivilegeService_Exists_Success() {
-        PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(null));
+        PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(null, 0));
 
         boolean privilegeFound = privilegeServiceImpl.exists(privilege.getId());
 
@@ -113,14 +113,14 @@ public class PrivilegeServiceImplIntTest {
 
     @Test
     void PrivilegeService_Delete_Success() {
-        PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(null));
+        PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(null, 0));
 
         assertAll(() -> privilegeServiceImpl.delete(privilege.getId()));
     }
 
     @Test
     void PrivilegeService_Delete_Unsuccessful() {
-        PrivilegeEntity privilege = privilegeServiceImpl.save(createTestPrivilege(null));
+        PrivilegeEntity privilege = privilegeServiceImpl.save(createTestPrivilege(null, 0));
         privilegeRepository.delete(privilege);
 
         assertThrows(PrivilegeNotFoundException.class, () -> privilegeServiceImpl.delete(privilege.getId()));

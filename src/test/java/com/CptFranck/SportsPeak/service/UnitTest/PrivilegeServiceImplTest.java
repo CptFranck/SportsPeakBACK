@@ -39,12 +39,12 @@ public class PrivilegeServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        privilege = createTestPrivilege(1L);
+        privilege = createTestPrivilege(1L, 0);
     }
 
     @Test
     void PrivilegeService_Save_Success() {
-        PrivilegeEntity unsavedPrivilege = createTestPrivilege(null);
+        PrivilegeEntity unsavedPrivilege = createTestPrivilege(null, 0);
         when(privilegeRepository.save(Mockito.any(PrivilegeEntity.class))).thenReturn(privilege);
 
         PrivilegeEntity privilegeSaved = privilegeServiceImpl.save(unsavedPrivilege);
@@ -64,7 +64,7 @@ public class PrivilegeServiceImplTest {
 
     @Test
     void PrivilegeService_Save_UnSuccessful() {
-        PrivilegeEntity privilegeAlreadyRegisteredWithSameName = createTestPrivilege(2L);
+        PrivilegeEntity privilegeAlreadyRegisteredWithSameName = createTestPrivilege(2L, 0);
         when(privilegeRepository.findByName(Mockito.any(String.class))).thenReturn(Optional.of(privilegeAlreadyRegisteredWithSameName));
 
         assertThrows(PrivilegeExistsException.class, () -> privilegeServiceImpl.save(privilege));

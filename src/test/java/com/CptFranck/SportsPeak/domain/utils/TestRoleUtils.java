@@ -30,11 +30,11 @@ public class TestRoleUtils {
         );
     }
 
-    public static List<RoleEntity> createNewTestRoleList() {
-        return List.of(
-                createTestRole(1L, 1),
-                createTestRole(2L, 2)
-        );
+    public static List<RoleEntity> createNewTestRoleList(boolean nullIds) {
+        if (nullIds)
+            return List.of(createTestRole(null, 1), createTestRole(null, 2));
+        else
+            return List.of(createTestRole(1L, 1), createTestRole(2L, 2));
     }
 
     public static RoleDto createTestRoleDto(Long id) {

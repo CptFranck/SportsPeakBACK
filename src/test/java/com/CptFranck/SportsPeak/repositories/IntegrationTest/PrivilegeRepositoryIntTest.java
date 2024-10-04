@@ -19,7 +19,7 @@ public class PrivilegeRepositoryIntTest {
 
     @Test
     public void privilegeRepository_FindByName_ReturnTrue() {
-        PrivilegeEntity privilege = createTestPrivilege(null);
+        PrivilegeEntity privilege = createTestPrivilege(null, 0);
         PrivilegeEntity savedPrivilege = privilegeRepository.save(privilege);
 
         Optional<PrivilegeEntity> foundPrivilege = privilegeRepository.findByName(savedPrivilege.getName());

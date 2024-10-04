@@ -33,7 +33,7 @@ public class RoleMapperImplTest {
     void roleTypeMapper_MapTo_Success() {
         RoleEntity role = createTestRole(1L, 0);
         UserEntity user = createTestUser(1L);
-        PrivilegeEntity privilege = createTestPrivilege(1L);
+        PrivilegeEntity privilege = createTestPrivilege(1L, 0);
         role.getUsers().add(user);
         role.getPrivileges().add(privilege);
 

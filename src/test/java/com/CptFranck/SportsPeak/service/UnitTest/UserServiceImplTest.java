@@ -298,7 +298,7 @@ public class UserServiceImplTest {
     @Test
     void UserService_LoadUserByUsername_Successful() {
         RoleEntity role = createTestRole(1L, 1);
-        role.getPrivileges().add(createTestPrivilege(1L));
+        role.getPrivileges().add(createTestPrivilege(1L, 0));
         user.getRoles().add(role);
 
         when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.of(user));

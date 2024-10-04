@@ -75,7 +75,7 @@ public class RoleServiceImplTest {
 
     @Test
     void RoleService_FindAll_Success() {
-        List<RoleEntity> roleList = createNewTestRoleList();
+        List<RoleEntity> roleList = createNewTestRoleList(false);
         when(roleRepository.findAll()).thenReturn(roleList);
 
         List<RoleEntity> roleFound = roleServiceImpl.findAll();
@@ -105,7 +105,7 @@ public class RoleServiceImplTest {
 
     @Test
     void RoleService_FindMany_Success() {
-        List<RoleEntity> roleList = createNewTestRoleList();
+        List<RoleEntity> roleList = createNewTestRoleList(false);
         Set<Long> roleIds = roleList.stream().map(RoleEntity::getId).collect(Collectors.toSet());
         when(roleRepository.findAllById(Mockito.anyIterable())).thenReturn(roleList);
 
@@ -122,7 +122,7 @@ public class RoleServiceImplTest {
         oldRoleIds.add(roleOne.getId());
         newRoleIds.add(roleTwo.getId());
 
-        PrivilegeEntity privilege = createTestPrivilege(1L);
+        PrivilegeEntity privilege = createTestPrivilege(1L, 0);
 
         when(roleRepository.findAllById(oldRoleIds)).thenReturn(List.of(roleOne));
         when(roleRepository.findAllById(newRoleIds)).thenReturn(List.of(roleTwo));
