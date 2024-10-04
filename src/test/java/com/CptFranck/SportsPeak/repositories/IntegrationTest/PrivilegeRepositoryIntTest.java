@@ -1,6 +1,7 @@
-package com.CptFranck.SportsPeak.repositories;
+package com.CptFranck.SportsPeak.repositories.IntegrationTest;
 
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
+import com.CptFranck.SportsPeak.repositories.PrivilegeRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import static com.CptFranck.SportsPeak.domain.utils.TestPrivilegeUtils.createTes
 
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
-public class PrivilegeRepositoryTest {
+public class PrivilegeRepositoryIntTest {
 
     @Autowired
     private PrivilegeRepository privilegeRepository;
