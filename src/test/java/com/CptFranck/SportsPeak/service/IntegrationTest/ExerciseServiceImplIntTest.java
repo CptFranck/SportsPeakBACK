@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -48,11 +47,11 @@ public class ExerciseServiceImplIntTest {
 
     @AfterEach
     public void afterEach() {
-        this.muscleRepository.deleteAll();
-        this.exerciseTypeRepository.deleteAll();
         this.progExerciseRepository.deleteAll();
         this.userRepository.deleteAll();
         this.exerciseRepository.deleteAll();
+        this.muscleRepository.deleteAll();
+        this.exerciseTypeRepository.deleteAll();
     }
 
     @Test
@@ -98,43 +97,50 @@ public class ExerciseServiceImplIntTest {
     }
 
     @Test
-    @Transactional
     void exerciseService_UpdateExerciseTypeRelation_Success() {
         ExerciseTypeEntity exerciseType = exerciseTypeRepository.save(createTestExerciseType(null));
-        ExerciseEntity exerciseWithTypeToRemove = exerciseRepository.save(createTestExercise(null));
-        ExerciseEntity exerciseWithTypeToAdd = exerciseRepository.save(createTestExercise(null));
+        ExerciseEntity exerciseOne = exerciseRepository.save(createTestExercise(null));
+        ExerciseEntity exerciseTwo = exerciseRepository.save(createTestExercise(null));
         Set<Long> oldExerciseIds = new HashSet<>();
         Set<Long> newExerciseIds = new HashSet<>();
-        oldExerciseIds.add(exerciseWithTypeToRemove.getId());
-        newExerciseIds.add(exerciseWithTypeToAdd.getId());
-        exerciseWithTypeToRemove.getExerciseTypes().add(exerciseType);
-        exerciseRepository.save(exerciseWithTypeToRemove);
+        oldExerciseIds.add(exerciseOne.getId());
+        newExerciseIds.add(exerciseTwo.getId());
+        exerciseOne.getExerciseTypes().add(exerciseType);
+        exerciseRepository.save(exerciseOne);
 
         exerciseServiceImpl.updateExerciseTypeRelation(newExerciseIds, oldExerciseIds, exerciseType);
 
-        assertEquals(0, exerciseWithTypeToRemove.getExerciseTypes().size());
-        assertEquals(1, exerciseWithTypeToAdd.getExerciseTypes().size());
-        assertEquals(exerciseType.getId(), exerciseWithTypeToAdd.getExerciseTypes().stream().toList().getFirst().getId());
+
+        Optional<ExerciseEntity> exerciseOneReturn = exerciseRepository.findById(exerciseOne.getId());
+        Optional<ExerciseEntity> exerciseTwoReturn = exerciseRepository.findById(exerciseTwo.getId());
+        assertTrue(exerciseOneReturn.isPresent());
+        assertTrue(exerciseTwoReturn.isPresent());
+        assertEquals(0, exerciseOneReturn.get().getExerciseTypes().size());
+        assertEquals(1, exerciseTwoReturn.get().getExerciseTypes().size());
+        assertEquals(exerciseType.getId(), exerciseTwoReturn.get().getExerciseTypes().stream().toList().getFirst().getId());
     }
 
     @Test
-    @Transactional
     void exerciseService_UpdateMuscleRelation_Success() {
         MuscleEntity muscle = muscleRepository.save(createTestMuscle(null));
-        ExerciseEntity exerciseWithTypeToRemove = exerciseRepository.save(createTestExercise(null));
-        ExerciseEntity exerciseWithTypeToAdd = exerciseRepository.save(createTestExercise(null));
+        ExerciseEntity exerciseOne = exerciseRepository.save(createTestExercise(null));
+        ExerciseEntity exerciseTwo = exerciseRepository.save(createTestExercise(null));
         Set<Long> oldExerciseIds = new HashSet<>();
         Set<Long> newExerciseIds = new HashSet<>();
-        oldExerciseIds.add(exerciseWithTypeToRemove.getId());
-        newExerciseIds.add(exerciseWithTypeToAdd.getId());
-        exerciseWithTypeToRemove.getMuscles().add(muscle);
-        exerciseRepository.save(exerciseWithTypeToRemove);
+        oldExerciseIds.add(exerciseOne.getId());
+        newExerciseIds.add(exerciseTwo.getId());
+        exerciseOne.getMuscles().add(muscle);
+        exerciseRepository.save(exerciseOne);
 
         exerciseServiceImpl.updateMuscleRelation(newExerciseIds, oldExerciseIds, muscle);
 
-        assertEquals(0, exerciseWithTypeToRemove.getMuscles().size());
-        assertEquals(1, exerciseWithTypeToAdd.getMuscles().size());
-        assertEquals(muscle.getId(), exerciseWithTypeToAdd.getMuscles().stream().toList().getFirst().getId());
+        Optional<ExerciseEntity> exerciseOneReturn = exerciseRepository.findById(exerciseOne.getId());
+        Optional<ExerciseEntity> exerciseTwoReturn = exerciseRepository.findById(exerciseTwo.getId());
+        assertTrue(exerciseOneReturn.isPresent());
+        assertTrue(exerciseTwoReturn.isPresent());
+        assertEquals(0, exerciseOneReturn.get().getMuscles().size());
+        assertEquals(1, exerciseTwoReturn.get().getMuscles().size());
+        assertEquals(muscle.getId(), exerciseTwoReturn.get().getMuscles().stream().toList().getFirst().getId());
     }
 
     @Test
