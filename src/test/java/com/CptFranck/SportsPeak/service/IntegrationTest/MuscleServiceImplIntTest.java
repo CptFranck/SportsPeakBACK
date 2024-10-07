@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -44,7 +43,8 @@ public class MuscleServiceImplIntTest {
 
     @AfterEach
     public void afterEach() {
-        this.muscleRepository.deleteAll();
+        exerciseRepository.deleteAll();
+        muscleRepository.deleteAll();
     }
 
     @Test
@@ -108,18 +108,16 @@ public class MuscleServiceImplIntTest {
     }
 
     @Test
-    @Transactional
     void muscleService_Delete_Unsuccessful_Exception() {
         MuscleEntity muscle = muscleRepository.save(createTestMuscle(null));
-        ExerciseEntity exerciseSaved = exerciseRepository.save(createTestExercise(null));
-        muscle.getExercises().add(exerciseSaved);
-        muscleRepository.save(muscle);
+        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
+        exercise.getMuscles().add(muscle);
+        exerciseRepository.save(exercise);
 
         assertThrows(MuscleStillUsedInExerciseException.class, () -> muscleServiceImpl.delete(muscle.getId()));
     }
 
     @Test
-    @Transactional
     void muscleService_Delete_Success() {
         MuscleEntity muscle = muscleRepository.save(createTestMuscle(null));
 
