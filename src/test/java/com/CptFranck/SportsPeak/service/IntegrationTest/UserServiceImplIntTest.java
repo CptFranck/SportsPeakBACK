@@ -53,10 +53,14 @@ public class UserServiceImplIntTest {
 
     @AfterEach
     public void afterEach() {
-        this.progExerciseRepository.deleteAll();
-        this.exerciseRepository.deleteAll();
-        this.userRepository.deleteAll();
-        this.roleRepository.deleteAll();
+        userRepository.findAll().forEach(user -> {
+            user.setSubscribedProgExercises(new HashSet<>());
+            userRepository.save(user);
+        });
+        progExerciseRepository.deleteAll();
+        exerciseRepository.deleteAll();
+        userRepository.deleteAll();
+        roleRepository.deleteAll();
     }
 
 
@@ -103,7 +107,6 @@ public class UserServiceImplIntTest {
     }
 
     @Test
-    @Transactional
     void UserService_FindUserBySubscribedProgExercises_Success() {
         UserEntity user = userRepository.save(createTestUser(null));
         UserEntity userBis = userRepository.save(createTestUserBis(null));
@@ -322,7 +325,6 @@ public class UserServiceImplIntTest {
 
     @Test
     void UserService_LoadUserByUsername_UnsuccessfulUsernameNotFound() {
-
         assertThrows(UsernameNotFoundException.class,
                 () -> userServiceImpl.loadUserByUsername("email"));
     }
