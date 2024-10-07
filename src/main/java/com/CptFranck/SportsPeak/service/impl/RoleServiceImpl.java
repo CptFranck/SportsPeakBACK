@@ -64,14 +64,13 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void updatePrivilegeRelation(Set<Long> newIds, Set<Long> oldIds, PrivilegeEntity privilegeEntity) {
-        this.findMany(oldIds).forEach(p -> {
+        findMany(oldIds).forEach(p -> {
             p.getPrivileges().removeIf(et -> Objects.equals(et.getId(), privilegeEntity.getId()));
-            this.save(p);
+            save(p);
         });
-
-        this.findMany(newIds).forEach(p -> {
+        findMany(newIds).forEach(p -> {
             p.getPrivileges().add(privilegeEntity);
-            this.save(p);
+            save(p);
         });
     }
 

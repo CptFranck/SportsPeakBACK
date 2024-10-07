@@ -7,7 +7,6 @@ import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
 import com.CptFranck.SportsPeak.repositories.PrivilegeRepository;
 import com.CptFranck.SportsPeak.repositories.RoleRepository;
 import com.CptFranck.SportsPeak.service.impl.RoleServiceImpl;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -40,8 +39,8 @@ public class RoleServiceImplIntTest {
 
     @AfterEach
     public void afterEach() {
-        this.privilegeRepository.deleteAll();
         this.roleRepository.deleteAll();
+        this.privilegeRepository.deleteAll();
     }
 
     @Test
@@ -113,7 +112,6 @@ public class RoleServiceImplIntTest {
     }
 
     @Test
-    @Transactional
     void exerciseService_UpdatePrivilegeRelation_Success() {
         PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(1L, 0));
         RoleEntity roleOne = roleRepository.save(createTestRole(1L, 1));
@@ -127,9 +125,13 @@ public class RoleServiceImplIntTest {
 
         roleServiceImpl.updatePrivilegeRelation(newRoleIds, oldRoleIds, privilege);
 
-        assertEquals(0, roleOne.getPrivileges().size());
-        assertEquals(1, roleTwo.getPrivileges().size());
-        assertEquals(privilege.getId(), roleTwo.getPrivileges().stream().toList().getFirst().getId());
+        Optional<RoleEntity> roleOneReturn = roleServiceImpl.findOne(roleOne.getId());
+        Optional<RoleEntity> roleTwoReturn = roleServiceImpl.findOne(roleTwo.getId());
+        assertTrue(roleOneReturn.isPresent());
+        assertTrue(roleTwoReturn.isPresent());
+        assertEquals(0, roleOneReturn.get().getPrivileges().size());
+        assertEquals(1, roleTwoReturn.get().getPrivileges().size());
+        assertEquals(privilege.getId(), roleTwoReturn.get().getPrivileges().stream().toList().getFirst().getId());
     }
 
     @Test
