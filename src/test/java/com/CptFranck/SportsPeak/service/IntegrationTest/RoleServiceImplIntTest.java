@@ -125,8 +125,8 @@ public class RoleServiceImplIntTest {
 
         roleServiceImpl.updatePrivilegeRelation(newRoleIds, oldRoleIds, privilege);
 
-        Optional<RoleEntity> roleOneReturn = roleServiceImpl.findOne(roleOne.getId());
-        Optional<RoleEntity> roleTwoReturn = roleServiceImpl.findOne(roleTwo.getId());
+        Optional<RoleEntity> roleOneReturn = roleRepository.findById(roleOne.getId());
+        Optional<RoleEntity> roleTwoReturn = roleRepository.findById(roleTwo.getId());
         assertTrue(roleOneReturn.isPresent());
         assertTrue(roleTwoReturn.isPresent());
         assertEquals(0, roleOneReturn.get().getPrivileges().size());
