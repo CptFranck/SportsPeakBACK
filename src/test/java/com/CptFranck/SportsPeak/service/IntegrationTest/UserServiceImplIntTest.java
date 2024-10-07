@@ -13,7 +13,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -124,7 +123,6 @@ public class UserServiceImplIntTest {
     }
 
     @Test
-    @Transactional
     void exerciseService_UpdateRoleRelation_Success() {
         RoleEntity role = roleRepository.save(createTestRole(null, 0));
         UserEntity user = userRepository.save(createTestUser(null));
@@ -138,9 +136,13 @@ public class UserServiceImplIntTest {
 
         userServiceImpl.updateRoleRelation(newUserIds, oldUserIds, role);
 
-        assertEquals(0, user.getRoles().size());
-        assertEquals(1, userBis.getRoles().size());
-        assertEquals(role.getId(), userBis.getRoles().stream().toList().getFirst().getId());
+        Optional<UserEntity> userReturn = userRepository.findById(user.getId());
+        Optional<UserEntity> userBisReturn = userRepository.findById(userBis.getId());
+        assertTrue(userReturn.isPresent());
+        assertTrue(userBisReturn.isPresent());
+        assertEquals(0, userReturn.get().getRoles().size());
+        assertEquals(1, userBisReturn.get().getRoles().size());
+        assertEquals(role.getId(), userBisReturn.get().getRoles().stream().toList().getFirst().getId());
 
     }
 
@@ -169,7 +171,6 @@ public class UserServiceImplIntTest {
     }
 
     @Test
-    @Transactional
     void UserService_ChangeIdentity_Unsuccessful() {
 
         assertThrows(EmailUnknownException.class,
