@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (passwordEncoder.matches(password, user.getPassword())) {
             Optional<UserEntity> userOptionalEmail = userRepository.findByEmail(newEmail);
             if (userOptionalEmail.isPresent()) {
-                throw new EmailExistsException();
+                throw new EmailAlreadyUsedException();
             }
             user.setEmail(newEmail);
         } else {

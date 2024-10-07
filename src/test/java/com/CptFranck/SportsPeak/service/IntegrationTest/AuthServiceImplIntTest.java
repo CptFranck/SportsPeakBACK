@@ -1,7 +1,7 @@
 package com.CptFranck.SportsPeak.service.IntegrationTest;
 
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
-import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailExistsException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailAlreadyUsedException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailUnknownException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.IncorrectPasswordException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UsernameExistsException;
@@ -80,7 +80,7 @@ public class AuthServiceImplIntTest {
         UserEntity userToRegister = createTestUserBis(null);
         userToRegister.setEmail(user.getEmail());
 
-        Assertions.assertThrows(EmailExistsException.class, () -> authServiceImpl.register(userToRegister));
+        Assertions.assertThrows(EmailAlreadyUsedException.class, () -> authServiceImpl.register(userToRegister));
     }
 
     @Test

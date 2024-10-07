@@ -227,7 +227,7 @@ public class UserServiceImplIntTest {
         user.setPassword(passwordEncoder.encode(rawPassword));
         userServiceImpl.save(user);
 
-        assertThrows(EmailExistsException.class,
+        assertThrows(EmailAlreadyUsedException.class,
                 () -> userServiceImpl.changeEmail(user.getId(), "password", user.getEmail()));
     }
 

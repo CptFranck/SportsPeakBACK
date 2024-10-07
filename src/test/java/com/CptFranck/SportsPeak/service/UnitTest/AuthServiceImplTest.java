@@ -1,7 +1,7 @@
 package com.CptFranck.SportsPeak.service.UnitTest;
 
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
-import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailExistsException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailAlreadyUsedException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailUnknownException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.IncorrectPasswordException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UsernameExistsException;
@@ -73,7 +73,7 @@ public class AuthServiceImplTest {
     void authService_Register_UnsuccessfulEmailAlreadyUsed() {
         when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.of(user));
 
-        Assertions.assertThrows(EmailExistsException.class, () -> authServiceImpl.register(user));
+        Assertions.assertThrows(EmailAlreadyUsedException.class, () -> authServiceImpl.register(user));
     }
 
     @Test

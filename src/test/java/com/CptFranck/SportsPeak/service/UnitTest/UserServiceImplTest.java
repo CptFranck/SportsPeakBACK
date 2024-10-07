@@ -208,7 +208,7 @@ public class UserServiceImplTest {
         when(passwordEncoder.matches(Mockito.any(String.class), Mockito.any(String.class))).thenReturn(true);
         when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.of(user));
 
-        assertThrows(EmailExistsException.class,
+        assertThrows(EmailAlreadyUsedException.class,
                 () -> userServiceImpl.changeEmail(user.getId(), "password", "newEmail"));
     }
 

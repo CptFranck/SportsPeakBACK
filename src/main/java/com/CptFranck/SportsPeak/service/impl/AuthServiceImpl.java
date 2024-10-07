@@ -1,7 +1,7 @@
 package com.CptFranck.SportsPeak.service.impl;
 
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
-import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailExistsException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailAlreadyUsedException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailUnknownException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.IncorrectPasswordException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UsernameExistsException;
@@ -39,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
         Optional<UserEntity> userOptionalEmail = userRepository.findByEmail(user.getEmail());
         Optional<UserEntity> userOptionalUsername = userRepository.findByUsername(user.getUsername());
         if (userOptionalEmail.isPresent()) {
-            throw new EmailExistsException();
+            throw new EmailAlreadyUsedException();
         }
         if (userOptionalUsername.isPresent()) {
             throw new UsernameExistsException();
