@@ -16,7 +16,7 @@ import java.util.List;
 public class TestRoleUtils {
 
     public static RoleEntity createTestRole(Long id, int option) {
-        String roleName = "Role name";
+        String roleName = "ROLE_USER";
         if (option == 1) {
             roleName = "Role One";
         } else if (option == 2) {
