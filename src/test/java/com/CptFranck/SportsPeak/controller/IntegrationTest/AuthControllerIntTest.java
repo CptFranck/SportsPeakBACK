@@ -80,7 +80,7 @@ public class AuthControllerIntTest {
 
         AuthDto authDto = authController.login(inputCredentials);
 
-        Assertions.assertNotNull(authDto);
+        assertAuthDto(authDto);
     }
 
     @Test
@@ -127,6 +127,13 @@ public class AuthControllerIntTest {
 
         AuthDto authDto = authController.register(inputCredentials);
 
+        assertAuthDto(authDto);
+    }
+
+    private void assertAuthDto(AuthDto authDto) {
         Assertions.assertNotNull(authDto);
+        Assertions.assertNotNull(authDto.getAccessToken());
+        Assertions.assertEquals(user.getId(), authDto.getUser().getId());
+        Assertions.assertEquals("Bearer", authDto.getTokenType());
     }
 }

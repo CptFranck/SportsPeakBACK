@@ -73,10 +73,9 @@ public class AuthControllerTest {
         when(authenticationManager.authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class))).thenReturn(null);
         when(userAuthProvider.generateToken(Mockito.any())).thenReturn(jwToken);
 
-        AuthDto authDto = authController.login(new InputCredentials(user.getEmail(), user.getPassword()));
-        Assertions.assertEquals(this.authDto.getUser(), authDto.getUser());
-        Assertions.assertEquals(this.authDto.getExpiration(), authDto.getExpiration());
-        Assertions.assertEquals(this.authDto.getAccessToken(), authDto.getAccessToken());
+        AuthDto authDtoReturn = authController.login(new InputCredentials(user.getEmail(), user.getPassword()));
+
+        assertEqualsAuth(authDto, authDtoReturn);
     }
 
     @Test
@@ -104,7 +103,7 @@ public class AuthControllerTest {
         when(authenticationManager.authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class))).thenReturn(null);
         when(userAuthProvider.generateToken(Mockito.any())).thenReturn(jwToken);
 
-        AuthDto authDto = authController.register(new InputRegisterNewUser(
+        AuthDto authDtoReturn = authController.register(new InputRegisterNewUser(
                         user.getEmail(),
                         user.getFirstName(),
                         user.getLastName(),
@@ -113,8 +112,12 @@ public class AuthControllerTest {
                 )
         );
 
-        Assertions.assertEquals(this.authDto.getUser(), authDto.getUser());
-        Assertions.assertEquals(this.authDto.getExpiration(), authDto.getExpiration());
-        Assertions.assertEquals(this.authDto.getAccessToken(), authDto.getAccessToken());
+        assertEqualsAuth(authDto, authDtoReturn);
+    }
+
+    private void assertEqualsAuth(AuthDto authDto, AuthDto authDtoReturn) {
+        Assertions.assertEquals(authDto.getUser(), authDtoReturn.getUser());
+        Assertions.assertEquals(authDto.getExpiration(), authDtoReturn.getExpiration());
+        Assertions.assertEquals(authDto.getAccessToken(), authDtoReturn.getAccessToken());
     }
 }
