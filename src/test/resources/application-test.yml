@@ -17,6 +17,7 @@ spring:
       hibernate:
         format_sql: true
         ddl-auto: create
+        enable_lazy_load_no_trans: true
         type:
           preferred_duration_jdbc_type: INTERVAL_SECOND
     database-platform: org.hibernate.dialect.H2Dialect
@@ -27,3 +28,9 @@ spring:
   h2:
     console:
       enabled: true
+
+# SECURITY
+security:
+  jwt:
+    token:
+      secret-key: TestY2hhbmdlbWVpbnByb2QhY2hhbmdlbWVpbnByb2Qh
