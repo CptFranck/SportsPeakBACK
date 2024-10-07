@@ -4,6 +4,9 @@ import com.CptFranck.SportsPeak.controller.AuthController;
 import com.CptFranck.SportsPeak.domain.dto.AuthDto;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailAlreadyUsedException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailUnknownException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.IncorrectPasswordException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.UsernameExistsException;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
 import com.CptFranck.SportsPeak.repositories.RoleRepository;
@@ -56,6 +59,22 @@ public class AuthControllerIntTest {
     }
 
     @Test
+    public void AuthController_Login_UnsuccessfulEmailUnknown() {
+        InputCredentials inputCredentials = new InputCredentials("user.getEmail()", rawPassword);
+
+        Assertions.assertThrows(EmailUnknownException.class,
+                () -> authController.login(inputCredentials));
+    }
+
+    @Test
+    public void AuthController_Login_UnsuccessfulIncorrectPass() {
+        InputCredentials inputCredentials = new InputCredentials(user.getEmail(), "rawPassword");
+
+        Assertions.assertThrows(IncorrectPasswordException.class,
+                () -> authController.login(inputCredentials));
+    }
+
+    @Test
     public void AuthController_Login_ReturnAuthDto() {
         InputCredentials inputCredentials = new InputCredentials(user.getEmail(), rawPassword);
 
@@ -70,11 +89,27 @@ public class AuthControllerIntTest {
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),
-                user.getLastName(),
-                rawPassword
+                user.getUsername(),
+                user.getPassword()
         );
 
         Assertions.assertThrows(EmailAlreadyUsedException.class,
+                () -> authController.register(inputCredentials));
+    }
+
+    @Test
+    public void AuthController_Register_UnsuccessfulUsernameExists() {
+        UserEntity userBis = createTestUserBis(null);
+
+        InputRegisterNewUser inputCredentials = new InputRegisterNewUser(
+                userBis.getEmail(),
+                userBis.getFirstName(),
+                userBis.getLastName(),
+                user.getUsername(),
+                userBis.getPassword()
+        );
+
+        Assertions.assertThrows(UsernameExistsException.class,
                 () -> authController.register(inputCredentials));
     }
 
@@ -86,7 +121,7 @@ public class AuthControllerIntTest {
                 userBis.getEmail(),
                 userBis.getFirstName(),
                 userBis.getLastName(),
-                userBis.getLastName(),
+                userBis.getUsername(),
                 userBis.getPassword()
         );
 
