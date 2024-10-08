@@ -98,7 +98,7 @@ class ExerciseControllerTest {
     @Test
     void ExerciseController_ModifyExercise_UnsuccessfulDoesNotExist() {
         Assertions.assertThrows(ExerciseNotFoundException.class,
-                () -> exerciseController.modifyExercise(createTestInputExercise())
+                () -> exerciseController.modifyExercise(createTestInputExercise(1L))
         );
     }
 
@@ -111,7 +111,7 @@ class ExerciseControllerTest {
         when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
         Assertions.assertThrows(ExerciseNotFoundException.class,
-                () -> exerciseController.modifyExercise(createTestInputExercise()));
+                () -> exerciseController.modifyExercise(createTestInputExercise(1L)));
     }
 
     @Test
@@ -124,7 +124,7 @@ class ExerciseControllerTest {
         when(exerciseService.save(Mockito.any(ExerciseEntity.class))).thenReturn(exercise);
         when(exerciseMapper.mapTo(Mockito.any(ExerciseEntity.class))).thenReturn(exerciseDto);
 
-        ExerciseDto exerciseDto = exerciseController.modifyExercise(createTestInputExercise());
+        ExerciseDto exerciseDto = exerciseController.modifyExercise(createTestInputExercise(1L));
 
         Assertions.assertEquals(this.exerciseDto, exerciseDto);
     }

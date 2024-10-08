@@ -58,9 +58,9 @@ public class TestExerciseUtils {
         );
     }
 
-    public static InputExercise createTestInputExercise() {
+    public static InputExercise createTestInputExercise(Long id) {
         return new InputExercise(
-                1L,
+                id,
                 "name",
                 "description",
                 "goal",

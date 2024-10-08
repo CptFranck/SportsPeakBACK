@@ -73,7 +73,7 @@ class ExerciseControllerIntTest {
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void ExerciseController_ModifyExercise_UnsuccessfulExerciseNotFound() {
-        InputExercise inputExercise = createTestInputExercise();
+        InputExercise inputExercise = createTestInputExercise(1L);
 
         Assertions.assertThrows(ExerciseNotFoundException.class,
                 () -> exerciseController.modifyExercise(inputExercise)
@@ -84,7 +84,7 @@ class ExerciseControllerIntTest {
     @WithMockUser(username = "user", roles = "ADMIN")
     void ExerciseController_ModifyExercise_Success() {
         ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
-        InputExercise inputExercise = createTestInputExercise();
+        InputExercise inputExercise = createTestInputExercise(exercise.getId());
 
         ExerciseDto exerciseDto = exerciseController.modifyExercise(inputExercise);
 
