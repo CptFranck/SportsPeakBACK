@@ -94,7 +94,7 @@ class ExerciseTypeControllerIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void ExerciseController_DeleteExercise_UnsuccessfulExerciseNotFound() {
+    void ExerciseTypeController_DeleteExerciseType_UnsuccessfulExerciseNotFound() {
         Assertions.assertThrows(ExerciseTypeNotFoundException.class,
                 () -> exerciseTypeController.deleteExerciseType(1L)
         );
