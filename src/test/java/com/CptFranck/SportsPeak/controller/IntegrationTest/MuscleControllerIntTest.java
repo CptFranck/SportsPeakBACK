@@ -123,6 +123,7 @@ class MuscleControllerIntTest {
 
     private void assertExerciseDtoAndEntity(MuscleEntity muscleEntity, MuscleDto muscleDto) {
         Assertions.assertNotNull(muscleDto);
+        Assertions.assertEquals(muscleEntity.getId(), muscleDto.getId());
         Assertions.assertEquals(muscleEntity.getName(), muscleDto.getName());
         Assertions.assertEquals(muscleEntity.getFunction(), muscleDto.getFunction());
         Assertions.assertEquals(muscleEntity.getDescription(), muscleDto.getDescription());

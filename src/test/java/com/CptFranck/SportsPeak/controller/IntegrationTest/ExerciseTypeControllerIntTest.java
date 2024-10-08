@@ -122,6 +122,7 @@ class ExerciseTypeControllerIntTest {
 
     private void assertExerciseDtoAndEntity(ExerciseTypeEntity exerciseType, ExerciseTypeDto exerciseTypeDto) {
         Assertions.assertNotNull(exerciseTypeDto);
+        Assertions.assertEquals(exerciseType.getId(), exerciseTypeDto.getId());
         Assertions.assertEquals(exerciseType.getName(), exerciseTypeDto.getName());
         Assertions.assertEquals(exerciseType.getGoal(), exerciseTypeDto.getGoal());
     }
