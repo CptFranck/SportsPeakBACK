@@ -33,7 +33,6 @@ public class LocalDateTimeScalar implements Coercing<LocalDateTime, String> {
         if (input instanceof StringValue) {
             return LocalDateTime.parse(((StringValue) input).getValue(), DateTimeFormatter.ISO_DATE_TIME);
         }
-
         throw new CoercingParseLiteralException("Value is not a valid ISO date time");
     }
 
