@@ -47,9 +47,9 @@ public class TestExerciseTypeUtils {
         );
     }
 
-    public static InputExerciseType createTestInputExerciseType() {
+    public static InputExerciseType createTestInputExerciseType(Long id) {
         return new InputExerciseType(
-                1L,
+                id,
                 "name",
                 "goal",
                 new ArrayList<Long>()

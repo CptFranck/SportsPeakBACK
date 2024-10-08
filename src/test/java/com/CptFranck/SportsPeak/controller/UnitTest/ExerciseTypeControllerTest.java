@@ -93,7 +93,7 @@ class ExerciseTypeControllerTest {
     @Test
     void ExerciseTypeController_ModifyExerciseType_Unsuccessful() {
         Assertions.assertThrows(ExerciseTypeNotFoundException.class,
-                () -> exerciseTypeController.modifyExerciseType(createTestInputExerciseType())
+                () -> exerciseTypeController.modifyExerciseType(createTestInputExerciseType(1L))
         );
     }
 
@@ -105,7 +105,7 @@ class ExerciseTypeControllerTest {
         when(exerciseTypeService.save(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseType);
         when(exerciseTypeMapper.mapTo(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseTypeDto);
 
-        ExerciseTypeDto exerciseTypeDto = exerciseTypeController.modifyExerciseType(createTestInputExerciseType());
+        ExerciseTypeDto exerciseTypeDto = exerciseTypeController.modifyExerciseType(createTestInputExerciseType(1L));
 
         Assertions.assertEquals(this.exerciseTypeDto, exerciseTypeDto);
     }
