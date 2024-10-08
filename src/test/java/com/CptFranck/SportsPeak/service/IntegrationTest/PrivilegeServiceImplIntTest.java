@@ -29,11 +29,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class PrivilegeServiceImplIntTest {
 
     @Autowired
-
     private PrivilegeRepository privilegeRepository;
 
     @Autowired
-
     private PrivilegeServiceImpl privilegeServiceImpl;
 
     @AfterEach

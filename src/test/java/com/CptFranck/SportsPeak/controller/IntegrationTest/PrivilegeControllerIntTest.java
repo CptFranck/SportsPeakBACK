@@ -1,161 +1,138 @@
 package com.CptFranck.SportsPeak.controller.IntegrationTest;
 
-import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
 import com.CptFranck.SportsPeak.controller.PrivilegeController;
 import com.CptFranck.SportsPeak.domain.dto.PrivilegeDto;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
-import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
-import com.CptFranck.SportsPeak.mappers.Mapper;
-import com.CptFranck.SportsPeak.service.PrivilegeService;
-import com.CptFranck.SportsPeak.service.RoleService;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netflix.graphql.dgs.DgsQueryExecutor;
-import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
-import com.netflix.graphql.dgs.exceptions.QueryException;
+import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeNotFoundException;
+import com.CptFranck.SportsPeak.domain.input.privilege.InputNewPrivilege;
+import com.CptFranck.SportsPeak.domain.input.privilege.InputPrivilege;
+import com.CptFranck.SportsPeak.repositories.PrivilegeRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
-import static com.CptFranck.SportsPeak.controller.IntegrationTest.graphqlQuery.PrivilegeQuery.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestPrivilegeUtils.*;
-import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-@SpringBootTest(classes = {
-        DgsAutoConfiguration.class,
-        LocalDateTimeScalar.class,
-        PrivilegeController.class
-})
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 class PrivilegeControllerIntTest {
 
     @Autowired
-    private DgsQueryExecutor dgsQueryExecutor;
+    private PrivilegeController privilegeController;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private PrivilegeRepository privilegeRepository;
 
-    @MockBean
-    private Mapper<PrivilegeEntity, PrivilegeDto> privilegeMapper;
-
-    @MockBean
-    private PrivilegeService privilegeService;
-
-    @MockBean
-    private RoleService roleService;
-
-    private PrivilegeEntity privilegeEntity;
-    private PrivilegeDto privilegeDto;
-    private LinkedHashMap<String, Object> variables;
-
-    @BeforeEach
-    void init() {
-        privilegeEntity = createTestPrivilege(1L, 0);
-        privilegeDto = createTestPrivilegeDto(1L);
-        variables = new LinkedHashMap<>();
+    @AfterEach
+    public void afterEach() {
+        this.privilegeRepository.deleteAll();
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void PrivilegeController_GetPrivileges_Success() {
-        when(privilegeService.findAll()).thenReturn(List.of(privilegeEntity));
-        when(privilegeMapper.mapTo(Mockito.any(PrivilegeEntity.class))).thenReturn(privilegeDto);
+        PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(null, 0));
 
-        List<LinkedHashMap<String, Object>> privilegeDtos =
-                dgsQueryExecutor.executeAndExtractJsonPath(getPrivilegeQuery, "data.getPrivileges");
+        List<PrivilegeDto> PerformanceLogDtos = privilegeController.getPrivileges();
 
-        Assertions.assertNotNull(privilegeDtos);
+        assertEqualExerciseList(List.of(privilege), PerformanceLogDtos);
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void PrivilegeController_GetPrivilegeById_Unsuccessful() {
-        variables.put("id", 1);
-        when(privilegeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(getPrivilegeByIdQuery, "data.getPrivilegeById", variables)
+        Assertions.assertThrows(PrivilegeNotFoundException.class,
+                () -> privilegeController.getPrivilegeById(1L)
         );
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void PrivilegeController_GetPrivilegeById_Success() {
-        variables.put("id", 1);
-        when(privilegeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(privilegeEntity));
-        when(privilegeMapper.mapTo(Mockito.any(PrivilegeEntity.class))).thenReturn(privilegeDto);
+        PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(null, 0));
 
-        LinkedHashMap<String, Object> privilegeDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(getPrivilegeByIdQuery, "data.getPrivilegeById", variables);
+        PrivilegeDto PerformanceLogDto = privilegeController.getPrivilegeById(privilege.getId());
 
-        Assertions.assertNotNull(privilegeDto);
+        assertExerciseDtoAndEntity(privilege, PerformanceLogDto);
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void PrivilegeController_AddPrivilege_Success() {
-        variables.put("inputNewPrivilege", objectMapper.convertValue(
-                        createTestInputNewPrivilege(),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        Set<RoleEntity> roles = new HashSet<>();
-        when(roleService.findMany(Mockito.anySet())).thenReturn(roles);
-        when(privilegeService.save(Mockito.any(PrivilegeEntity.class))).thenReturn(privilegeEntity);
-        when(privilegeMapper.mapTo(Mockito.any(PrivilegeEntity.class))).thenReturn(privilegeDto);
+        InputNewPrivilege inputNewPrivilege = createTestInputNewPrivilege();
 
-        LinkedHashMap<String, Object> privilegeDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(addPrivilegeQuery, "data.addPrivilege", variables);
+        PrivilegeDto exerciseDto = privilegeController.addPrivilege(inputNewPrivilege);
 
-        Assertions.assertNotNull(privilegeDto);
+        assertExerciseDtoAndInput(inputNewPrivilege, exerciseDto);
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void PrivilegeController_ModifyPrivilege_UnsuccessfulDoesNotExist() {
-        variables.put("inputPrivilege", objectMapper.convertValue(
-                        createTestInputPrivilege(1L),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
+        InputPrivilege inputExercise = createTestInputPrivilege(1L);
 
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(getPrivilegeByIdQuery, "data.getPrivilegeById", variables)
+        Assertions.assertThrows(PrivilegeNotFoundException.class,
+                () -> privilegeController.modifyPrivilege(inputExercise)
         );
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void PrivilegeController_ModifyPrivilege_Success() {
-        variables.put("inputPrivilege", objectMapper.convertValue(
-                        createTestInputPrivilege(1L),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        Set<RoleEntity> roles = new HashSet<>();
-        when(roleService.findMany(Mockito.anySet())).thenReturn(roles);
-        when(privilegeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(privilegeEntity));
-        when(privilegeService.save(Mockito.any(PrivilegeEntity.class))).thenReturn(privilegeEntity);
-        when(privilegeMapper.mapTo(Mockito.any(PrivilegeEntity.class))).thenReturn(privilegeDto);
+        PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(null, 0));
+        InputPrivilege inputExercise = createTestInputPrivilege(privilege.getId());
 
-        LinkedHashMap<String, Object> privilegeDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(modifyPrivilegeQuery, "data.modifyPrivilege", variables);
+        PrivilegeDto exerciseDto = privilegeController.modifyPrivilege(inputExercise);
 
-        Assertions.assertNotNull(privilegeDto);
+        assertExerciseDtoAndInput(inputExercise, exerciseDto);
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void PrivilegeController_DeletePrivilege_UnsuccessfulExerciseNotFound() {
+        Assertions.assertThrows(PrivilegeNotFoundException.class,
+                () -> privilegeController.deletePrivilege(1L)
+        );
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void PrivilegeController_DeletePrivilege_Success() {
-        variables.put("privilegeId", 1);
+        PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(null, 0));
 
-        Integer id =
-                dgsQueryExecutor.executeAndExtractJsonPath(deletePrivilegeQuery, "data.deletePrivilege", variables);
+        Long id = privilegeController.deletePrivilege(privilege.getId());
 
-        Assertions.assertNotNull(id);
+        Assertions.assertEquals(privilege.getId(), id);
+    }
+
+    private void assertEqualExerciseList(
+            List<PrivilegeEntity> privilegeEntities,
+            List<PrivilegeDto> privilegeDtos
+    ) {
+        privilegeDtos.forEach(exerciseDto -> assertExerciseDtoAndEntity(
+                privilegeEntities.stream().filter(
+                        privilegeEntity -> Objects.equals(privilegeEntity.getId(), exerciseDto.getId())
+                ).toList().getFirst(),
+                exerciseDto)
+        );
+    }
+
+    private void assertExerciseDtoAndEntity(PrivilegeEntity privilegeEntity, PrivilegeDto privilegeDto) {
+        Assertions.assertNotNull(privilegeDto);
+        Assertions.assertEquals(privilegeEntity.getId(), privilegeDto.getId());
+        Assertions.assertEquals(privilegeEntity.getName(), privilegeDto.getName());
+    }
+
+    private void assertExerciseDtoAndInput(InputNewPrivilege inputNewPrivilege, PrivilegeDto privilegeDto) {
+        Assertions.assertNotNull(privilegeDto);
+        Assertions.assertEquals(inputNewPrivilege.getName(), privilegeDto.getName());
     }
 }
