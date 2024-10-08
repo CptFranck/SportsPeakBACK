@@ -128,7 +128,11 @@ public class TargetSetServiceImplIntTest {
         TargetSetEntity targetSetUpdate = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
         TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, targetSetUpdate));
 
-        assertAll(() -> targetSetServiceImpl.updatePreviousUpdateState(targetSet.getId(), TargetSetState.HIDDEN));
+        targetSetServiceImpl.updatePreviousUpdateState(targetSetUpdate.getId(), TargetSetState.HIDDEN);
+
+        Optional<TargetSetEntity> targetSetUpdated = targetSetServiceImpl.findOne(targetSet.getId());
+        Assertions.assertTrue(targetSetUpdated.isPresent());
+        Assertions.assertEquals(TargetSetState.HIDDEN, targetSetUpdated.get().getState());
     }
 
     @Test
