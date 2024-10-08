@@ -334,11 +334,11 @@ public class UserServiceImplIntTest {
     void UserService_LoadUserByUsername_Successful() {
         UserEntity user = userRepository.save(createTestUser(null));
         RoleEntity role = roleRepository.save(createTestRole(null, 0));
+        PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(null, 0));
         user.getRoles().add(role);
         userRepository.save(user);
-        PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(null, 0));
         role.getPrivileges().add(privilege);
-        privilegeRepository.save(privilege);
+        roleRepository.save(role);
 
         UserDetails userSaved = userServiceImpl.loadUserByUsername(user.getEmail());
 
