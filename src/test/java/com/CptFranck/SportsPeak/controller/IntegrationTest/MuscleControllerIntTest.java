@@ -1,162 +1,137 @@
 package com.CptFranck.SportsPeak.controller.IntegrationTest;
 
-import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
 import com.CptFranck.SportsPeak.controller.MuscleController;
 import com.CptFranck.SportsPeak.domain.dto.MuscleDto;
-import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
-import com.CptFranck.SportsPeak.mappers.Mapper;
-import com.CptFranck.SportsPeak.service.ExerciseService;
-import com.CptFranck.SportsPeak.service.MuscleService;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netflix.graphql.dgs.DgsQueryExecutor;
-import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
-import com.netflix.graphql.dgs.exceptions.QueryException;
+import com.CptFranck.SportsPeak.domain.exception.muscle.MuscleNotFoundException;
+import com.CptFranck.SportsPeak.domain.input.muscle.InputMuscle;
+import com.CptFranck.SportsPeak.domain.input.muscle.InputNewMuscle;
+import com.CptFranck.SportsPeak.repositories.MuscleRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
-import static com.CptFranck.SportsPeak.controller.IntegrationTest.graphqlQuery.MuscleQuery.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.*;
-import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-@SpringBootTest(classes = {
-        DgsAutoConfiguration.class,
-        LocalDateTimeScalar.class,
-        MuscleController.class
-})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 class MuscleControllerIntTest {
 
     @Autowired
-    private DgsQueryExecutor dgsQueryExecutor;
+    private MuscleController muscleController;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private MuscleRepository muscleRepository;
 
-    @MockBean
-    private Mapper<MuscleEntity, MuscleDto> muscleMapper;
-
-    @MockBean
-    private MuscleService muscleService;
-
-    @MockBean
-    private ExerciseService exerciseService;
-
-    private MuscleEntity muscle;
-    private MuscleDto muscleDto;
-    private LinkedHashMap<String, Object> variables;
-
-    @BeforeEach
-    void init() {
-        muscle = createTestMuscle(1L);
-        muscleDto = createTestMuscleDto(1L);
-        variables = new LinkedHashMap<>();
+    @AfterEach
+    void afterEach() {
+        muscleRepository.deleteAll();
     }
 
     @Test
     void MuscleController_GetMuscles_Success() {
-        when(muscleService.findAll()).thenReturn(List.of(muscle));
-        when(muscleMapper.mapTo(Mockito.any(MuscleEntity.class))).thenReturn(muscleDto);
+        MuscleEntity muscle = muscleRepository.save(createTestMuscle(null));
 
-        List<LinkedHashMap<String, Object>> muscleDtos =
-                dgsQueryExecutor.executeAndExtractJsonPath(getMusclesQuery, "data.getMuscles");
+        List<MuscleDto> muscleDtos = muscleController.getMuscles();
 
-        Assertions.assertNotNull(muscleDtos);
+        assertEqualExerciseList(List.of(muscle), muscleDtos);
     }
 
     @Test
     void MuscleController_GetMuscleById_Unsuccessful() {
-        variables.put("id", 1);
-        when(muscleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(getMuscleByIdQuery, "data.getMuscleById", variables)
+        Assertions.assertThrows(MuscleNotFoundException.class,
+                () -> muscleController.getMuscleById(1L)
         );
-
     }
 
     @Test
     void MuscleController_GetMuscleById_Success() {
-        variables.put("id", 1);
-        when(muscleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(muscle));
-        when(muscleMapper.mapTo(Mockito.any(MuscleEntity.class))).thenReturn(muscleDto);
+        MuscleEntity muscle = muscleRepository.save(createTestMuscle(null));
 
-        LinkedHashMap<String, Object> muscleDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(getMuscleByIdQuery, "data.getMuscleById", variables);
+        MuscleDto muscleDto = muscleController.getMuscleById(muscle.getId());
 
-        Assertions.assertNotNull(muscleDto);
+        assertExerciseDtoAndEntity(muscle, muscleDto);
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void MuscleController_AddMuscle_Success() {
-        variables.put("inputNewMuscle", objectMapper.convertValue(
-                        createTestInputNewMuscle(),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        Set<ExerciseEntity> exercises = new HashSet<>();
-        when(exerciseService.findMany(Mockito.anySet())).thenReturn(exercises);
-        when(muscleService.save(Mockito.any(MuscleEntity.class))).thenReturn(muscle);
-        when(muscleMapper.mapTo(Mockito.any(MuscleEntity.class))).thenReturn(muscleDto);
+        InputNewMuscle inputNewExercise = createTestInputNewMuscle();
 
-        LinkedHashMap<String, Object> muscleDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(addMuscleQuery, "data.addMuscle", variables);
+        MuscleDto muscleDto = muscleController.addMuscle(inputNewExercise);
 
-        Assertions.assertNotNull(muscleDto);
+        assertExerciseDtoAndInput(inputNewExercise, muscleDto);
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void MuscleController_ModifyMuscle_UnsuccessfulDoesNotExist() {
-        variables.put("inputMuscle", objectMapper.convertValue(
-                        createTestInputMuscle(1L),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
+        InputMuscle inputMuscle = createTestInputMuscle(1L);
 
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyMuscleQuery, "data.modifyMuscle", variables)
+        Assertions.assertThrows(MuscleNotFoundException.class,
+                () -> muscleController.modifyMuscle(inputMuscle)
         );
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void MuscleController_ModifyMuscle_Success() {
-        variables.put("inputMuscle", objectMapper.convertValue(
-                        createTestInputMuscle(1L),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        Set<ExerciseEntity> exercises = new HashSet<>();
-        when(exerciseService.findMany(Mockito.anySet())).thenReturn(exercises);
-        when(muscleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(muscle));
-        when(muscleService.save(Mockito.any(MuscleEntity.class))).thenReturn(muscle);
-        when(muscleMapper.mapTo(Mockito.any(MuscleEntity.class))).thenReturn(muscleDto);
+        MuscleEntity muscle = muscleRepository.save(createTestMuscle(null));
+        InputMuscle testInputMuscle = createTestInputMuscle(muscle.getId());
 
-        LinkedHashMap<String, Object> muscleDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(modifyMuscleQuery, "data.modifyMuscle", variables);
+        MuscleDto exerciseDto = muscleController.modifyMuscle(testInputMuscle);
 
-        Assertions.assertNotNull(muscleDto);
+        assertExerciseDtoAndInput(testInputMuscle, exerciseDto);
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void MuscleController_DeleteMuscle_UnsuccessfulExerciseNotFound() {
+        Assertions.assertThrows(MuscleNotFoundException.class,
+                () -> muscleController.deleteMuscle(1L)
+        );
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void MuscleController_DeleteMuscle_Success() {
-        variables.put("muscleId", 1);
+        MuscleEntity muscle = muscleRepository.save(createTestMuscle(null));
 
-        Integer id =
-                dgsQueryExecutor.executeAndExtractJsonPath(deleteMuscleQuery, "data.deleteMuscle", variables);
+        Long id = muscleController.deleteMuscle(muscle.getId());
 
-        Assertions.assertNotNull(id);
+        Assertions.assertEquals(muscle.getId(), id);
+    }
+
+    private void assertEqualExerciseList(
+            List<MuscleEntity> muscleEntities,
+            List<MuscleDto> muscleDtos
+    ) {
+        muscleDtos.forEach(muscleDto -> assertExerciseDtoAndEntity(
+                muscleEntities.stream().filter(
+                        muscleEntity -> Objects.equals(muscleEntity.getId(), muscleDto.getId())
+                ).toList().getFirst(),
+                muscleDto)
+        );
+    }
+
+    private void assertExerciseDtoAndEntity(MuscleEntity muscleEntity, MuscleDto muscleDto) {
+        Assertions.assertNotNull(muscleDto);
+        Assertions.assertEquals(muscleEntity.getName(), muscleDto.getName());
+        Assertions.assertEquals(muscleEntity.getFunction(), muscleDto.getFunction());
+        Assertions.assertEquals(muscleEntity.getDescription(), muscleDto.getDescription());
+    }
+
+    private void assertExerciseDtoAndInput(InputNewMuscle inputNewExercise, MuscleDto muscleDto) {
+        Assertions.assertNotNull(muscleDto);
+        Assertions.assertEquals(inputNewExercise.getName(), muscleDto.getName());
+        Assertions.assertEquals(inputNewExercise.getFunction(), muscleDto.getFunction());
+        Assertions.assertEquals(inputNewExercise.getDescription(), muscleDto.getDescription());
     }
 }
