@@ -94,10 +94,8 @@ class ExerciseControllerIntTest {
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void ExerciseController_DeleteExercise_UnsuccessfulExerciseNotFound() {
-        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
-
         Assertions.assertThrows(ExerciseNotFoundException.class,
-                () -> exerciseController.deleteExercise(exercise.getId())
+                () -> exerciseController.deleteExercise(1L)
         );
     }
 
