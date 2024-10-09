@@ -1,319 +1,276 @@
 package com.CptFranck.SportsPeak.controller.IntegrationTest;
 
-import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
 import com.CptFranck.SportsPeak.controller.ProgExerciseController;
-import com.CptFranck.SportsPeak.domain.dto.ExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
-import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
-import com.CptFranck.SportsPeak.mappers.Mapper;
-import com.CptFranck.SportsPeak.service.ExerciseService;
-import com.CptFranck.SportsPeak.service.ProgExerciseService;
-import com.CptFranck.SportsPeak.service.UserService;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netflix.graphql.dgs.DgsQueryExecutor;
-import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
-import com.netflix.graphql.dgs.exceptions.QueryException;
+import com.CptFranck.SportsPeak.domain.exception.LabelMatchNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.progExercise.ProgExerciseNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.progExercise.ProgExerciseStillUsedException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
+import com.CptFranck.SportsPeak.domain.input.progExercise.InputNewProgExercise;
+import com.CptFranck.SportsPeak.domain.input.progExercise.InputProgExercise;
+import com.CptFranck.SportsPeak.domain.input.progExercise.InputProgExerciseTrustLabel;
+import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
+import com.CptFranck.SportsPeak.repositories.ProgExerciseRepository;
+import com.CptFranck.SportsPeak.repositories.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 
-import java.util.LinkedHashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.Objects;
 
-import static com.CptFranck.SportsPeak.controller.IntegrationTest.graphqlQuery.ProgExerciseQuery.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
-import static org.mockito.Mockito.when;
+import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserBis;
 
-@ExtendWith(MockitoExtension.class)
-@SpringBootTest(classes = {
-        DgsAutoConfiguration.class,
-        LocalDateTimeScalar.class,
-        ProgExerciseController.class
-})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 class ProgExerciseControllerIntTest {
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private ProgExerciseController progExerciseController;
 
     @Autowired
-    private DgsQueryExecutor dgsQueryExecutor;
+    private UserRepository userRepository;
 
-    @MockBean
-    private Mapper<ProgExerciseEntity, ProgExerciseDto> progExerciseMapper;
+    @Autowired
+    private ExerciseRepository exerciseRepository;
 
-    @MockBean
-    private UserService userService;
-
-    @MockBean
-    private ExerciseService exerciseService;
-
-    @MockBean
-    private ProgExerciseService progExerciseService;
+    @Autowired
+    private ProgExerciseRepository progExerciseRepository;
 
     private UserEntity user;
+
     private ExerciseEntity exercise;
-    private ProgExerciseEntity progExercise;
-    private ProgExerciseDto progExerciseDto;
-    private LinkedHashMap<String, Object> variables;
 
     @BeforeEach
-    void init() {
-        user = createTestUser(1L);
-        exercise = createTestExercise(1L);
-        UserDto userDto = createTestUserDto(1L);
-        ExerciseDto exerciseDto = createTestExerciseDto(1L);
-        progExercise = createTestProgExercise(1L, user, exercise);
-        progExerciseDto = createTestProgExerciseDto(1L, userDto, exerciseDto);
-        variables = new LinkedHashMap<>();
+    void setUp() {
+        user = userRepository.save(createTestUser(null));
+        exercise = exerciseRepository.save(createTestExercise(null));
+    }
+
+    @AfterEach
+    public void afterEach() {
+        userRepository.findAll().forEach(user -> {
+            user.setSubscribedProgExercises(new HashSet<>());
+            userRepository.save(user);
+        });
+        this.progExerciseRepository.deleteAll();
+        this.exerciseRepository.deleteAll();
+        this.userRepository.deleteAll();
     }
 
     @Test
     void ProgExerciseController_GetProgExercises_Success() {
-        when(progExerciseService.findAll()).thenReturn(List.of(progExercise));
-        when(progExerciseMapper.mapTo(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExerciseDto);
+        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
 
-        List<LinkedHashMap<String, Object>> progExerciseDtos =
-                dgsQueryExecutor.executeAndExtractJsonPath(getProgExercisesQuery, "data.getProgExercises");
+        List<ProgExerciseDto> progExerciseDtos = progExerciseController.getProgExercises();
 
-        Assertions.assertNotNull(progExerciseDtos);
+        assertEqualExerciseList(List.of(progExercise), progExerciseDtos);
     }
 
     @Test
-    void ProgExerciseController_GetProgExerciseById_Unsuccessful() {
-        variables.put("id", 1);
-        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(getProgExerciseByIdQuery, "data.getProgExerciseById", variables));
-
+    void ProgExerciseController_GetProgExerciseById_UnsuccessfulProgExerciseNotFound() {
+        Assertions.assertThrows(ProgExerciseNotFoundException.class,
+                () -> progExerciseController.getProgExerciseById(1L)
+        );
     }
 
     @Test
     void ProgExerciseController_GetProgExerciseById_Success() {
-        variables.put("id", 1);
-        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
-        when(progExerciseMapper.mapTo(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExerciseDto);
+        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
 
-        LinkedHashMap<String, Object> progExerciseDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(getProgExerciseByIdQuery, "data.getProgExerciseById", variables);
+        ProgExerciseDto progExerciseDto = progExerciseController.getProgExerciseById(exercise.getId());
 
-        Assertions.assertNotNull(progExerciseDto);
+        assertExerciseDtoAndEntity(progExercise, progExerciseDto);
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void ProgExerciseController_AddProgExercise_UnsuccessfulUserNotFound() {
-        variables.put("inputNewProgExercise", objectMapper.convertValue(
-                        createTestInputNewProgExercise(1L, 1L),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(userService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+        InputNewProgExercise inputNewExercise = createTestInputNewProgExercise(user.getId(), exercise.getId());
+        userRepository.delete(user);
 
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(addProgExerciseQuery, "data.addProgExercise", variables));
+        Assertions.assertThrows(UserNotFoundException.class,
+                () -> progExerciseController.addProgExercise(inputNewExercise));
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void ProgExerciseController_AddProgExercise_UnsuccessfulExerciseNotFound() {
-        variables.put("inputNewProgExercise", objectMapper.convertValue(
-                        createTestInputNewProgExercise(1L, 1L),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(userService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(user));
-        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+        InputNewProgExercise inputNewExercise = createTestInputNewProgExercise(user.getId(), exercise.getId());
+        exerciseRepository.delete(exercise);
 
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(addProgExerciseQuery, "data.addProgExercise", variables));
+        Assertions.assertThrows(ExerciseNotFoundException.class,
+                () -> progExerciseController.addProgExercise(inputNewExercise));
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void ProgExerciseController_AddProgExercise_Success() {
-        variables.put("inputNewProgExercise", objectMapper.convertValue(
-                        createTestInputNewProgExercise(1L, 1L),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(userService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(user));
-        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(exercise));
-        when(progExerciseService.save(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExercise);
-        when(progExerciseMapper.mapTo(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExerciseDto);
+        InputNewProgExercise inputNewExercise = createTestInputNewProgExercise(user.getId(), exercise.getId());
 
-        LinkedHashMap<String, Object> progExerciseDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(addProgExerciseQuery, "data.addProgExercise", variables);
+        ProgExerciseDto progExerciseDto = progExerciseController.addProgExercise(inputNewExercise);
 
-        Assertions.assertNotNull(progExerciseDto);
+        assertExerciseDtoAndInputNew(inputNewExercise, progExerciseDto);
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void ProgExerciseController_ModifyProgExercise_UnsuccessfulProgExerciseNotFound() {
-        variables.put("inputProgExercise", objectMapper.convertValue(
-                createTestInputProgExercise(1L, 1L, false),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+        InputProgExercise inputNewExercise = createTestInputProgExercise(1L, user.getId(), false);
 
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyProgExerciseQuery, "data.modifyProgExercise", variables));
+        Assertions.assertThrows(ProgExerciseNotFoundException.class,
+                () -> progExerciseController.modifyProgExercise(inputNewExercise));
     }
 
     @Test
-    void ProgExerciseController_ModifyProgExercise_Unsuccessful() {
-        variables.put("inputProgExercise", objectMapper.convertValue(
-                createTestInputProgExercise(1L, 1L, false),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
-        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+    @WithMockUser(username = "user", roles = "USER")
+    void ProgExerciseController_ModifyProgExercise_UnsuccessfulExerciseNotFound() {
+        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
+        InputProgExercise inputNewExercise =
+                createTestInputProgExercise(progExercise.getId(), user.getId(), false);
+        exerciseRepository.delete(exercise);
 
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyProgExerciseQuery, "data.modifyProgExercise", variables));
+        Assertions.assertThrows(ExerciseNotFoundException.class,
+                () -> progExerciseController.modifyProgExercise(inputNewExercise));
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void ProgExerciseController_ModifyProgExercise_UnsuccessfulWrongLabel() {
-        variables.put("inputProgExercise", objectMapper.convertValue(
-                        createTestInputProgExercise(1L, 1L, true),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
-        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(exercise));
+        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
+        InputProgExercise inputNewExercise =
+                createTestInputProgExercise(progExercise.getId(), user.getId(), true);
 
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyProgExerciseQuery, "data.modifyProgExercise", variables));
+        Assertions.assertThrows(LabelMatchNotFoundException.class,
+                () -> progExerciseController.modifyProgExercise(inputNewExercise));
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void ProgExerciseController_ModifyProgExercise_Success() {
-        variables.put("inputProgExercise", objectMapper.convertValue(
-                createTestInputProgExercise(1L, 1L, false),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
-        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(exercise));
-        when(progExerciseService.save(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExercise);
-        when(progExerciseMapper.mapTo(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExerciseDto);
+        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
+        InputProgExercise inputNewExercise =
+                createTestInputProgExercise(progExercise.getId(), user.getId(), false);
 
-        LinkedHashMap<String, Object> progExerciseDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(modifyProgExerciseQuery, "data.modifyProgExercise", variables);
+        ProgExerciseDto progExerciseDto = progExerciseController.modifyProgExercise(inputNewExercise);
 
-        Assertions.assertNotNull(progExerciseDto);
+        assertExerciseDtoAndInput(inputNewExercise, progExerciseDto);
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void ProgExerciseController_ModifyProgExerciseTrustLabel_UnsuccessfulProgExerciseNotFound() {
-        variables.put("inputProgExerciseTrustLabel", objectMapper.convertValue(
-                createTestInputProgExerciseTrustLabel(1L, false),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
+        InputProgExerciseTrustLabel inputProgExerciseTrustLabel =
+                createTestInputProgExerciseTrustLabel(0L, false);
 
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyProgExerciseTrustLabelQuery, "data.modifyProgExerciseTrustLabel", variables));
+        Assertions.assertThrows(ProgExerciseNotFoundException.class,
+                () -> progExerciseController.modifyProgExerciseTrustLabel(inputProgExerciseTrustLabel));
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void ProgExerciseController_ModifyProgExerciseTrustLabel_UnsuccessfulWrongLabel() {
-        variables.put("inputProgExerciseTrustLabel", objectMapper.convertValue(
-                        createTestInputProgExerciseTrustLabel(1L, true),
-                new TypeReference<LinkedHashMap<String, Object>>() {
-                }
-                )
-        );
-        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
+        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
+        InputProgExerciseTrustLabel inputProgExerciseTrustLabel =
+                createTestInputProgExerciseTrustLabel(progExercise.getId(), true);
 
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyProgExerciseTrustLabelQuery, "data.modifyProgExerciseTrustLabel", variables));
+        Assertions.assertThrows(LabelMatchNotFoundException.class,
+                () -> progExerciseController.modifyProgExerciseTrustLabel(inputProgExerciseTrustLabel));
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void ProgExerciseController_ModifyProgExerciseTrustLabel_Success() {
-        variables.put("inputProgExerciseTrustLabel", objectMapper.convertValue(
-                createTestInputProgExerciseTrustLabel(1L, false),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
-        when(progExerciseService.save(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExercise);
-        when(progExerciseMapper.mapTo(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExerciseDto);
+        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
+        InputProgExerciseTrustLabel inputProgExerciseTrustLabel =
+                createTestInputProgExerciseTrustLabel(progExercise.getId(), false);
 
-        LinkedHashMap<String, Object> progExerciseDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(modifyProgExerciseTrustLabelQuery, "data.modifyProgExerciseTrustLabel", variables);
+        ProgExerciseDto progExerciseDto = progExerciseController.modifyProgExerciseTrustLabel(inputProgExerciseTrustLabel);
 
-        Assertions.assertNotNull(progExerciseDto);
+        Assertions.assertEquals(inputProgExerciseTrustLabel.getId(), progExerciseDto.getId());
+        Assertions.assertEquals(inputProgExerciseTrustLabel.getTrustLabel(), progExerciseDto.getTrustLabel());
     }
 
     @Test
-    void ProgExerciseController_DeleteProgExercise_UnsuccessfulNotFound() {
-        variables.put("progExerciseId", 1);
-        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(deleteProgExerciseQuery, "data.deleteProgExercise", variables));
+    @WithMockUser(username = "user", roles = "USER")
+    void ProgExerciseController_DeleteProgExercise_UnsuccessfulProgExerciseNotFound() {
+        Assertions.assertThrows(ProgExerciseNotFoundException.class,
+                () -> progExerciseController.deleteProgExercise(0L));
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void ProgExerciseController_DeleteProgExercise_UnsuccessfulProgExerciseStillUsed() {
-        UserEntity userBis = createTestUser(2L);
-        variables.put("progExerciseId", 1);
-        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
-        when(userService.findUserBySubscribedProgExercises(Mockito.any(ProgExerciseEntity.class))).thenReturn(Set.of(user, userBis));
+        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
+        UserEntity userBis = userRepository.save(createTestUserBis(null));
+        userBis.getSubscribedProgExercises().add(progExercise);
+        userRepository.save(userBis);
 
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(deleteProgExerciseQuery, "data.deleteProgExercise", variables));
+        Assertions.assertThrows(ProgExerciseStillUsedException.class,
+                () -> progExerciseController.deleteProgExercise(progExercise.getId()));
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void ProgExerciseController_DeleteProgExercise_Success() {
-        variables.put("progExerciseId", 1);
-        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
-        when(userService.findUserBySubscribedProgExercises(Mockito.any(ProgExerciseEntity.class))).thenReturn(Set.of(user));
+        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
 
-        Integer id =
-                dgsQueryExecutor.executeAndExtractJsonPath(deleteProgExerciseQuery, "data.deleteProgExercise", variables);
+        Long id = progExerciseController.deleteProgExercise(progExercise.getId());
 
-        Assertions.assertNotNull(id);
+        Assertions.assertEquals(progExercise.getId(), id);
     }
 
-    @Test
-    void ProgExerciseController_DeleteProgExercise_SuccessWithNoSubscriber() {
-        variables.put("progExerciseId", 1);
-        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
-        when(userService.findUserBySubscribedProgExercises(Mockito.any(ProgExerciseEntity.class))).thenReturn(Set.of());
+    private void assertEqualExerciseList(
+            List<ProgExerciseEntity> progExerciseEntities,
+            List<ProgExerciseDto> progExerciseDtos
+    ) {
+        progExerciseDtos.forEach(progExerciseDto -> assertExerciseDtoAndEntity(
+                progExerciseEntities.stream().filter(
+                        progExercise -> Objects.equals(progExercise.getId(), progExerciseDto.getId())
+                ).toList().getFirst(),
+                progExerciseDto)
+        );
+    }
 
-        Integer id =
-                dgsQueryExecutor.executeAndExtractJsonPath(deleteProgExerciseQuery, "data.deleteProgExercise", variables);
+    private void assertExerciseDtoAndEntity(ProgExerciseEntity progExercise, ProgExerciseDto progExerciseDto) {
+        Assertions.assertNotNull(progExerciseDto);
+        Assertions.assertEquals(progExercise.getName(), progExerciseDto.getName());
+        Assertions.assertEquals(progExercise.getNote(), progExerciseDto.getNote());
+        Assertions.assertEquals(progExercise.getVisibility().label, progExerciseDto.getVisibility());
+        Assertions.assertEquals(progExercise.getTrustLabel().label, progExerciseDto.getTrustLabel());
+        Assertions.assertEquals(progExercise.getCreator().getId(), progExerciseDto.getCreator().getId());
+        Assertions.assertEquals(progExercise.getExercise().getId(), progExerciseDto.getExercise().getId());
+        Assertions.assertEquals(progExercise.getTargetSets().size(), progExerciseDto.getTargetSets().size());
+    }
 
-        Assertions.assertNotNull(id);
+    private void assertExerciseDtoAndInputNew(InputNewProgExercise inputNewProgExercise, ProgExerciseDto progExerciseDto) {
+        Assertions.assertNotNull(progExerciseDto);
+        Assertions.assertEquals(inputNewProgExercise.getName(), progExerciseDto.getName());
+        Assertions.assertEquals(inputNewProgExercise.getNote(), progExerciseDto.getNote());
+        Assertions.assertEquals(inputNewProgExercise.getVisibility(), progExerciseDto.getVisibility());
+        Assertions.assertEquals(inputNewProgExercise.getCreatorId(), progExerciseDto.getCreator().getId());
+        Assertions.assertEquals(inputNewProgExercise.getExerciseId(), progExerciseDto.getExercise().getId());
+    }
+
+    private void assertExerciseDtoAndInput(InputProgExercise inputProgExercise, ProgExerciseDto progExerciseDto) {
+        Assertions.assertNotNull(progExerciseDto);
+        Assertions.assertEquals(inputProgExercise.getName(), progExerciseDto.getName());
+        Assertions.assertEquals(inputProgExercise.getNote(), progExerciseDto.getNote());
+        Assertions.assertEquals(inputProgExercise.getVisibility(), progExerciseDto.getVisibility());
+        Assertions.assertEquals(inputProgExercise.getExerciseId(), progExerciseDto.getExercise().getId());
     }
 }
