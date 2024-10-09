@@ -1,171 +1,145 @@
 package com.CptFranck.SportsPeak.controller.IntegrationTest;
 
-import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
 import com.CptFranck.SportsPeak.controller.RoleController;
 import com.CptFranck.SportsPeak.domain.dto.RoleDto;
-import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
-import com.CptFranck.SportsPeak.domain.entity.UserEntity;
-import com.CptFranck.SportsPeak.mappers.Mapper;
-import com.CptFranck.SportsPeak.service.PrivilegeService;
-import com.CptFranck.SportsPeak.service.RoleService;
-import com.CptFranck.SportsPeak.service.UserService;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netflix.graphql.dgs.DgsQueryExecutor;
-import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
-import com.netflix.graphql.dgs.exceptions.QueryException;
+import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
+import com.CptFranck.SportsPeak.domain.input.role.InputNewRole;
+import com.CptFranck.SportsPeak.domain.input.role.InputRole;
+import com.CptFranck.SportsPeak.repositories.PrivilegeRepository;
+import com.CptFranck.SportsPeak.repositories.RoleRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
-import static com.CptFranck.SportsPeak.controller.IntegrationTest.graphqlQuery.RoleQuery.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestRoleUtils.*;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@SpringBootTest(classes = {
-        DgsAutoConfiguration.class,
-        LocalDateTimeScalar.class,
-        RoleController.class
-})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 class RoleControllerIntTest {
 
     @Autowired
-    private DgsQueryExecutor dgsQueryExecutor;
+    private RoleRepository roleRepository;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private RoleController roleController;
 
-    @MockBean
-    private Mapper<RoleEntity, RoleDto> roleMapper;
+    @Autowired
+    private PrivilegeRepository privilegeRepository;
 
-    @MockBean
-    private RoleService roleService;
-
-    @MockBean
-    private UserService userService;
-
-    @MockBean
-    private PrivilegeService privilegeService;
-
-
-    private RoleEntity roleEntity;
-    private RoleDto roleDto;
-    private LinkedHashMap<String, Object> variables;
-
-    @BeforeEach
-    void init() {
-        roleEntity = createTestRole(1L, 0);
-        roleDto = createTestRoleDto(1L);
-        variables = new LinkedHashMap<>();
+    @AfterEach
+    public void afterEach() {
+        this.roleRepository.deleteAll();
+        this.privilegeRepository.deleteAll();
     }
 
+
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void RoleController_GetRoles_Success() {
-        when(roleService.findAll()).thenReturn(List.of(roleEntity));
-        when(roleMapper.mapTo(Mockito.any(RoleEntity.class))).thenReturn(roleDto);
+        RoleEntity role = roleRepository.save(createTestRole(null, 0));
 
-        List<LinkedHashMap<String, Object>> roleDtos =
-                dgsQueryExecutor.executeAndExtractJsonPath(getRolesQuery, "data.getRoles");
+        List<RoleDto> roleDtos = roleController.getRoles();
 
-        Assertions.assertNotNull(roleDtos);
+        assertEqualExerciseList(List.of(role), roleDtos);
     }
 
     @Test
-    void RoleController_GetRoleById_Unsuccessful() {
-        variables.put("id", 1);
-        when(roleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(getRoleByIdQuery, "data.getRoleById", variables)
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void RoleController_GetRoleById_UnsuccessfulRoleNotFound() {
+        Assertions.assertThrows(RoleNotFoundException.class,
+                () -> roleController.getRoleById(1L)
         );
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void RoleController_GetRoleById_Success() {
-        variables.put("id", 1);
-        when(roleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(roleEntity));
-        when(roleMapper.mapTo(Mockito.any(RoleEntity.class))).thenReturn(roleDto);
+        RoleEntity role = roleRepository.save(createTestRole(null, 0));
 
-        LinkedHashMap<String, Object> roleDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(getRoleByIdQuery, "data.getRoleById", variables);
+        RoleDto roleDto = roleController.getRoleById(role.getId());
 
-        Assertions.assertNotNull(roleDto);
+        assertExerciseDtoAndEntity(role, roleDto);
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void RoleController_AddRole_Success() {
-        variables.put("inputNewRole", objectMapper.convertValue(
-                        createTestInputNewRole(),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        Set<UserEntity> users = new HashSet<>();
-        Set<PrivilegeEntity> privileges = new HashSet<>();
-        when(userService.findMany(Mockito.anySet())).thenReturn(users);
-        when(privilegeService.findMany(Mockito.anySet())).thenReturn(privileges);
-        when(roleService.save(Mockito.any(RoleEntity.class))).thenReturn(roleEntity);
-        when(roleMapper.mapTo(Mockito.any(RoleEntity.class))).thenReturn(roleDto);
+        InputNewRole InputNewRole = createTestInputNewRole();
 
-        LinkedHashMap<String, Object> roleDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(addRoleQuery, "data.addRole", variables);
+        RoleDto roleDto = roleController.addRole(InputNewRole);
 
-        Assertions.assertNotNull(roleDto);
+        assertExerciseDtoAndInput(InputNewRole, roleDto);
     }
 
     @Test
-    void RoleController_ModifyRole_UnsuccessfulDoesNotExist() {
-        variables.put("inputRole", objectMapper.convertValue(
-                        createTestInputRole(1L),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void RoleController_ModifyRole_UnsuccessfulRoleDoesNotExist() {
+        InputRole inputRole = createTestInputRole(1L);
 
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyRoleQuery, "data.modifyRole", variables)
+        Assertions.assertThrows(RoleNotFoundException.class,
+                () -> roleController.modifyRole(inputRole)
         );
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void RoleController_ModifyRole_Success() {
-        variables.put("inputRole", objectMapper.convertValue(
-                        createTestInputRole(1L),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        Set<UserEntity> users = new HashSet<>();
-        Set<PrivilegeEntity> privileges = new HashSet<>();
-        when(userService.findMany(Mockito.anySet())).thenReturn(users);
-        when(privilegeService.findMany(Mockito.anySet())).thenReturn(privileges);
-        when(roleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(roleEntity));
-        when(roleService.save(Mockito.any(RoleEntity.class))).thenReturn(roleEntity);
-        when(roleMapper.mapTo(Mockito.any(RoleEntity.class))).thenReturn(roleDto);
+        RoleEntity role = roleRepository.save(createTestRole(null, 0));
+        InputRole inputRole = createTestInputRole(role.getId());
 
-        LinkedHashMap<String, Object> roleDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(modifyRoleQuery, "data.modifyRole", variables);
+        RoleDto roleDto = roleController.modifyRole(inputRole);
 
-        Assertions.assertNotNull(roleDto);
+        assertExerciseDtoAndInput(inputRole, roleDto);
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void RoleController_DeleteExercise_UnsuccessfulExerciseNotFound() {
+        Assertions.assertThrows(RoleNotFoundException.class,
+                () -> roleController.deleteRole(1L)
+        );
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void RoleController_DeleteRole_Success() {
-        variables.put("roleId", 1);
+        RoleEntity role = roleRepository.save(createTestRole(null, 0));
 
-        Integer id =
-                dgsQueryExecutor.executeAndExtractJsonPath(deleteRoleQuery, "data.deleteRole", variables);
+        Long id = roleController.deleteRole(role.getId());
 
-        Assertions.assertNotNull(id);
+        Assertions.assertEquals(role.getId(), id);
+    }
+
+    private void assertEqualExerciseList(
+            List<RoleEntity> roleEntities,
+            List<RoleDto> roleDtos
+    ) {
+        roleDtos.forEach(roleDto -> assertExerciseDtoAndEntity(
+                roleEntities.stream().filter(
+                        roleEntity -> Objects.equals(roleEntity.getId(), roleDto.getId())
+                ).toList().getFirst(),
+                roleDto)
+        );
+    }
+
+    private void assertExerciseDtoAndEntity(RoleEntity roleEntity, RoleDto roleDto) {
+        Assertions.assertNotNull(roleDto);
+        Assertions.assertEquals(roleEntity.getName(), roleDto.getName());
+    }
+
+    private void assertExerciseDtoAndInput(InputNewRole inputNewRole, RoleDto roleDto) {
+        Assertions.assertNotNull(roleDto);
+        Assertions.assertEquals(inputNewRole.getName(), roleDto.getName());
     }
 }
