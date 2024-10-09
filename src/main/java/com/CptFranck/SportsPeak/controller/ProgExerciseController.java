@@ -111,7 +111,6 @@ public class ProgExerciseController {
         );
 
         progExerciseEntity = progExerciseService.save(progExerciseEntity);
-        userService.save(creator);
         exercise.getProgExercises().add(progExerciseEntity);
         exerciseService.save(exercise);
         return progExerciseEntity;
@@ -137,7 +136,7 @@ public class ProgExerciseController {
 
     private ProgExerciseEntity inputTrustLabelToEntity(InputProgExerciseTrustLabel inputProgExerciseTrustLabel) {
         ProgExerciseEntity progExercise = progExerciseService.findOne(inputProgExerciseTrustLabel.getId()).orElseThrow(
-                () -> new ExerciseNotFoundException(inputProgExerciseTrustLabel.getId()));
+                () -> new ProgExerciseNotFoundException(inputProgExerciseTrustLabel.getId()));
 
         progExercise.setTrustLabel(TrustLabel.valueOfLabel(inputProgExerciseTrustLabel.getTrustLabel()));
         return progExerciseService.save(progExercise);
