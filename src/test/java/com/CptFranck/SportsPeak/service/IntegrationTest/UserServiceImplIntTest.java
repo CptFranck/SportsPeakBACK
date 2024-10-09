@@ -171,8 +171,7 @@ public class UserServiceImplIntTest {
     }
 
     @Test
-    void UserService_ChangeIdentity_Unsuccessful() {
-
+    void UserService_ChangeIdentity_UnsuccessfulEmailUnknown() {
         assertThrows(EmailUnknownException.class,
                 () -> userServiceImpl.changeIdentity(1L, "firstName", "lastName"));
     }
@@ -192,7 +191,7 @@ public class UserServiceImplIntTest {
     }
 
     @Test
-    void UserService_ChangeRoles_Unsuccessful() {
+    void UserService_ChangeRoles_UnsuccessfulEmailUnknown() {
         assertThrows(EmailUnknownException.class,
                 () -> userServiceImpl.changeRoles(1L, new HashSet<>()));
     }
@@ -322,6 +321,7 @@ public class UserServiceImplIntTest {
         Assertions.assertEquals(user.getLastName(), userSaved.getLastName());
         Assertions.assertEquals(user.getUsername(), userSaved.getUsername());
         Assertions.assertNotEquals(user.getPassword(), userSaved.getPassword());
+        Assertions.assertTrue(passwordEncoder.matches("newPassword", userSaved.getPassword()));
     }
 
     @Test
