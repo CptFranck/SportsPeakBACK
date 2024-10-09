@@ -88,10 +88,10 @@ public class TestUserUtils {
         );
     }
 
-    public static InputUserEmail createTestInputUserEmail(Long id) {
+    public static InputUserEmail createTestInputUserEmail(Long id, String rawPassword) {
         return new InputUserEmail(
                 id,
-                "Password",
+                rawPassword,
                 "newemail@test.com"
         );
     }
@@ -103,10 +103,10 @@ public class TestUserUtils {
         );
     }
 
-    public static InputUserPassword createTestInputUserPassword(Long id) {
+    public static InputUserPassword createTestInputUserPassword(Long id, String olRawPassword) {
         return new InputUserPassword(
                 id,
-                "OldPassword",
+                olRawPassword,
                 "NewPassword"
         );
     }

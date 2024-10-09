@@ -168,7 +168,7 @@ class UserControllerDGSIntTest {
     @Test
     void UserController_modifyUserEmailQuery_Success() {
         variables.put("inputUserEmail", objectMapper.convertValue(
-                        createTestInputUserEmail(1L),
+                createTestInputUserEmail(1L, "rawPassword"),
                         new TypeReference<LinkedHashMap<String, Object>>() {
                         }
                 )
@@ -205,7 +205,7 @@ class UserControllerDGSIntTest {
     @Test
     void UserController_ModifyUserPassword_Success() {
         variables.put("inputUserPassword", objectMapper.convertValue(
-                        createTestInputUserPassword(1L),
+                createTestInputUserPassword(1L, "rawPassword"),
                         new TypeReference<LinkedHashMap<String, Object>>() {
                         }
                 )

@@ -140,7 +140,8 @@ class UserControllerTest {
         when(authenticationManager.authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class))).thenReturn(null);
         when(userAuthProvider.generateToken(Mockito.any())).thenReturn(jwToken);
 
-        AuthDto authDto = userController.modifyUserEmail(createTestInputUserEmail(1L));
+        AuthDto authDto = userController.modifyUserEmail(createTestInputUserEmail(1L, "rawPassword"));
+
         Assertions.assertEquals(returnValue.getAccessToken(), authDto.getAccessToken());
         Assertions.assertEquals(returnValue.getUser(), authDto.getUser());
         Assertions.assertEquals(returnValue.getExpiration(), authDto.getExpiration());
@@ -161,7 +162,7 @@ class UserControllerTest {
         when(userService.changePassword(Mockito.any(Long.class), Mockito.any(String.class), Mockito.any(String.class))).thenReturn(user);
         when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
 
-        UserDto userDto = userController.modifyUserPassword(createTestInputUserPassword(1L));
+        UserDto userDto = userController.modifyUserPassword(createTestInputUserPassword(1L, "rawPassword"));
 
         Assertions.assertEquals(this.userDto, userDto);
     }
