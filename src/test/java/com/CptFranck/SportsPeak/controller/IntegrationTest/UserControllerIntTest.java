@@ -1,232 +1,232 @@
 package com.CptFranck.SportsPeak.controller.IntegrationTest;
 
-import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
-import com.CptFranck.SportsPeak.config.security.JwtProvider;
 import com.CptFranck.SportsPeak.controller.UserController;
+import com.CptFranck.SportsPeak.domain.dto.AuthDto;
+import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
+import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
+import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
-import com.CptFranck.SportsPeak.domain.model.JWToken;
-import com.CptFranck.SportsPeak.mappers.Mapper;
-import com.CptFranck.SportsPeak.service.RoleService;
-import com.CptFranck.SportsPeak.service.UserService;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netflix.graphql.dgs.DgsQueryExecutor;
-import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
-import com.netflix.graphql.dgs.exceptions.QueryException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
+import com.CptFranck.SportsPeak.domain.input.user.*;
+import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
+import com.CptFranck.SportsPeak.repositories.ProgExerciseRepository;
+import com.CptFranck.SportsPeak.repositories.RoleRepository;
+import com.CptFranck.SportsPeak.repositories.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 
-import static com.CptFranck.SportsPeak.controller.IntegrationTest.graphqlQuery.UserQuery.*;
+import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.domain.utils.TestRoleUtils.createTestRole;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.*;
-import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-@SpringBootTest(classes = {
-        DgsAutoConfiguration.class,
-        LocalDateTimeScalar.class,
-        UserController.class
-})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 class UserControllerIntTest {
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private UserController userController;
 
     @Autowired
-    private DgsQueryExecutor dgsQueryExecutor;
+    private UserRepository userRepository;
 
-    @MockBean
-    private Mapper<UserEntity, UserDto> userMapper;
+    @Autowired
+    private ExerciseRepository exerciseRepository;
 
-    @MockBean
-    private UserService userService;
+    @Autowired
+    private ProgExerciseRepository progExerciseRepository;
 
-    @MockBean
-    private RoleService roleService;
+    @Autowired
+    private RoleRepository roleRepository;
 
-    @MockBean
-    private JwtProvider userAuthProvider;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    @MockBean
-    private AuthenticationManager authenticationManager;
-
-    private UserEntity user;
-    private UserDto userDto;
-    private LinkedHashMap<String, Object> variables;
-
-    @BeforeEach
-    void init() {
-        user = createTestUser(1L);
-        userDto = createTestUserDto(1L);
-        variables = new LinkedHashMap<>();
+    @AfterEach
+    public void afterEach() {
+        userRepository.findAll().forEach(user -> {
+            user.setSubscribedProgExercises(new HashSet<>());
+            userRepository.save(user);
+        });
+        progExerciseRepository.deleteAll();
+        exerciseRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void UserController_GetUsers_Success() {
-        when(userService.findAll()).thenReturn(List.of(user));
-        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
+        UserEntity user = userRepository.save(createTestUser(null));
 
-        List<LinkedHashMap<String, Object>> userDtos =
-                dgsQueryExecutor.executeAndExtractJsonPath(getUsersQuery, "data.getUsers");
+        List<UserDto> userDtos = userController.getUsers();
 
-        Assertions.assertNotNull(userDtos);
+        assertEqualExerciseList(List.of(user), userDtos);
     }
 
     @Test
-    void UserController_GetUserById_Unsuccessful() {
-        variables.put("id", 1);
-        when(userService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(getUserByIdQuery, "data.getUserById", variables)
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void UserController_GetUserById_UnsuccessfulUserNotFound() {
+        Assertions.assertThrows(UserNotFoundException.class,
+                () -> userController.getUserById(1L)
         );
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void UserController_GetUserById_Success() {
-        variables.put("id", 1);
-        when(userService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(user));
-        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
+        UserEntity user = userRepository.save(createTestUser(null));
 
-        LinkedHashMap<String, Object> userDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(getUserByIdQuery, "data.getUserById", variables);
+        UserDto userDto = userController.getUserById(user.getId());
 
-        Assertions.assertNotNull(userDto);
+        assertExerciseDtoAndEntity(user, userDto);
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void UserController_GetUserProgExercises_UnsuccessfulUserNotFound() {
-        variables.put("userId", 1);
-        when(userService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-
-
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(getUserProgExercisesQuery, "data.getUserProgExercises", variables));
+        Assertions.assertThrows(UserNotFoundException.class,
+                () -> userController.getUserProgExercises(1L)
+        );
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void UserController_GetUserProgExercises_Success() {
-        variables.put("userId", 1);
-        when(userService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(user));
-        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
+        UserEntity user = createTestUser(null);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user = userRepository.save(user);
+        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
+        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
+        user.getSubscribedProgExercises().add(progExercise);
+        userRepository.save(user);
 
-        List<LinkedHashMap<String, Object>> userDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(getUserProgExercisesQuery, "data.getUserProgExercises", variables);
+        List<ProgExerciseDto> progExerciseDtos = userController.getUserProgExercises(user.getId());
 
-        Assertions.assertNotNull(userDto);
+        Assertions.assertEquals(progExercise.getName(), progExerciseDtos.getFirst().getName());
+        Assertions.assertEquals(progExercise.getNote(), progExerciseDtos.getFirst().getNote());
+        Assertions.assertEquals(progExercise.getVisibility().label, progExerciseDtos.getFirst().getVisibility());
+        Assertions.assertEquals(progExercise.getTrustLabel().label, progExerciseDtos.getFirst().getTrustLabel());
+        Assertions.assertEquals(progExercise.getCreator().getId(), progExerciseDtos.getFirst().getCreator().getId());
+        Assertions.assertEquals(progExercise.getTargetSets().size(), progExerciseDtos.getFirst().getTargetSets().size());
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void UserController_ModifyUserIdentity_Success() {
-        variables.put("inputUserIdentity", objectMapper.convertValue(
-                        createTestInputUserIdentity(1L),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(userService.changeIdentity(Mockito.any(Long.class), Mockito.any(String.class), Mockito.any(String.class))).thenReturn(user);
-        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
+        UserEntity user = userRepository.save(createTestUser(null));
+        InputUserIdentity inputUserIdentity = createTestInputUserIdentity(user.getId());
 
-        LinkedHashMap<String, Object> userDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(modifyUserIdentityQuery, "data.modifyUserIdentity", variables);
+        UserDto userDto = userController.modifyUserIdentity(inputUserIdentity);
 
-        Assertions.assertNotNull(userDto);
+
+        Assertions.assertEquals(userDto.getFirstName(), inputUserIdentity.getFirstName());
+        Assertions.assertEquals(userDto.getLastName(), inputUserIdentity.getLastName());
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void UserController_ModifyUserRoles_Success() {
-        variables.put("inputUserRoles", objectMapper.convertValue(
-                        createTestInputUserRoles(1L),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        Set<RoleEntity> roles = new HashSet<RoleEntity>();
-        when(roleService.findMany(Mockito.anySet())).thenReturn(roles);
-        when(userService.changeRoles(Mockito.any(Long.class), Mockito.anySet())).thenReturn(user);
-        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
+        RoleEntity role = roleRepository.save(createTestRole(null, 0));
+        UserEntity user = userRepository.save(createTestUser(null));
+        InputUserRoles inputUserIdentity = createTestInputUserRoles(user.getId());
+        inputUserIdentity.getRoleIds().add(role.getId());
 
-        LinkedHashMap<String, Object> userDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(modifyUserRolesQuery, "data.modifyUserRoles", variables);
+        UserDto userDto = userController.modifyUserRoles(inputUserIdentity);
 
-        Assertions.assertNotNull(userDto);
+        Assertions.assertEquals(role.getName(), userDto.getRoles().stream().findFirst().orElseThrow().getName());
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void UserController_modifyUserEmailQuery_Success() {
-        variables.put("inputUserEmail", objectMapper.convertValue(
-                        createTestInputUserEmail(1L),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        JWToken jwToken = new JWToken("token", LocalDateTime.now());
-        when(userService.changeEmail(Mockito.any(Long.class), Mockito.any(String.class), Mockito.any(String.class))).thenReturn(user);
-        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
-        when(authenticationManager.authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class))).thenReturn(null);
-        when(userAuthProvider.generateToken(Mockito.any())).thenReturn(jwToken);
+        UserEntity user = createTestUser(null);
+        String rawPasword = user.getPassword();
+        user.setPassword(passwordEncoder.encode(rawPasword));
+        user = userRepository.save(user);
+        InputUserEmail inputUserIdentity = createTestInputUserEmail(user.getId(), rawPasword);
 
-        LinkedHashMap<String, Object> userDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(modifyUserEmailQuery, "data.modifyUserEmail", variables);
+        AuthDto authDto = userController.modifyUserEmail(inputUserIdentity);
 
-        Assertions.assertNotNull(userDto);
+        Assertions.assertEquals(inputUserIdentity.getNewEmail(), authDto.getUser().getEmail());
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void UserController_ModifyUserUsername_Success() {
-        variables.put("inputUserUsername", objectMapper.convertValue(
-                        createTestInputUserUsername(1L),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(userService.changeUsername(Mockito.any(Long.class), Mockito.any(String.class))).thenReturn(user);
-        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
+        UserEntity user = userRepository.save(createTestUser(null));
+        InputUserUsername testInputUserUsername = createTestInputUserUsername(user.getId());
 
-        LinkedHashMap<String, Object> userDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(modifyUserUsernameQuery, "data.modifyUserUsername", variables);
+        UserDto authDto = userController.modifyUserUsername(testInputUserUsername);
 
-        Assertions.assertNotNull(userDto);
+        Assertions.assertEquals(testInputUserUsername.getNewUsername(), authDto.getUsername());
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void UserController_ModifyUserPassword_Success() {
-        variables.put("inputUserPassword", objectMapper.convertValue(
-                        createTestInputUserPassword(1L),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(userService.changePassword(Mockito.any(Long.class), Mockito.any(String.class), Mockito.any(String.class))).thenReturn(user);
-        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
+        UserEntity user = createTestUser(null);
+        String rawPassword = user.getPassword();
+        user.setPassword(passwordEncoder.encode(rawPassword));
+        user = userRepository.save(user);
+        InputUserPassword inputUserPassword = createTestInputUserPassword(user.getId(), rawPassword);
 
-        LinkedHashMap<String, Object> userDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(modifyUserPasswordQuery, "data.modifyUserPassword", variables);
+        userController.modifyUserPassword(inputUserPassword);
 
-        Assertions.assertNotNull(userDto);
+        UserEntity modifyUser = userRepository.findById(user.getId()).orElseThrow();
+        Assertions.assertTrue(passwordEncoder.matches(inputUserPassword.getNewPassword(), modifyUser.getPassword()));
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void UserController_DeleteUser_UnsuccessfulUserNotFound() {
+        Assertions.assertThrows(UserNotFoundException.class,
+                () -> userController.deleteUser(1L)
+        );
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void UserController_DeleteUser_Success() {
-        variables.put("userId", 1);
-        when(userService.exists(Mockito.any(Long.class))).thenReturn(true);
+        UserEntity user = userRepository.save(createTestUser(null));
 
-        Integer id =
-                dgsQueryExecutor.executeAndExtractJsonPath(deleteUserQuery, "data.deleteUser", variables);
 
-        Assertions.assertNotNull(id);
+        Long id = userController.deleteUser(user.getId());
+
+        Assertions.assertEquals(user.getId(), id);
+    }
+
+    private void assertEqualExerciseList(
+            List<UserEntity> userEntities,
+            List<UserDto> userDtos
+    ) {
+        userDtos.forEach(userDto -> assertExerciseDtoAndEntity(
+                userEntities.stream().filter(
+                        userEntity -> Objects.equals(userEntity.getId(), userDto.getId())
+                ).toList().getFirst(),
+                userDto)
+        );
+    }
+
+    private void assertExerciseDtoAndEntity(UserEntity userEntity, UserDto userDto) {
+        Assertions.assertNotNull(userDto);
+        Assertions.assertEquals(userEntity.getEmail(), userDto.getEmail());
+        Assertions.assertEquals(userEntity.getFirstName(), userDto.getFirstName());
+        Assertions.assertEquals(userEntity.getLastName(), userDto.getLastName());
+        Assertions.assertEquals(userEntity.getUsername(), userDto.getUsername());
+        Assertions.assertEquals(userEntity.getRoles().size(), userDto.getRoles().size());
+        Assertions.assertEquals(userEntity.getProgExercisesCreated().size(), userDto.getProgExercisesCreated().size());
+        Assertions.assertEquals(userEntity.getSubscribedProgExercises().size(), userDto.getSubscribedProgExercises().size());
     }
 }
