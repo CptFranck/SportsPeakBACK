@@ -96,6 +96,7 @@ class TargetSetControllerIntTest {
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void TargetSetController_GetTargetSetsByTargetId_Success() {
         TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
 
@@ -253,19 +254,19 @@ class TargetSetControllerIntTest {
             Assertions.assertEquals(targetSetEntity.getTargetSetUpdate().getId(), targetSetDto.getTargetSetUpdate().getId());
     }
 
-    private void assertExerciseDtoAndInputNew(InputNewTargetSet targetSetEntity, TargetSetDto targetSetDto) {
+    private void assertExerciseDtoAndInputNew(InputNewTargetSet inputNewTargetSet, TargetSetDto targetSetDto) {
         Assertions.assertNotNull(targetSetDto);
-        Assertions.assertEquals(targetSetEntity.getIndex(), targetSetDto.getIndex());
-        Assertions.assertEquals(targetSetEntity.getSetNumber(), targetSetDto.getSetNumber());
-        Assertions.assertEquals(targetSetEntity.getRepetitionNumber(), targetSetDto.getRepetitionNumber());
-        Assertions.assertEquals(targetSetEntity.getWeight(), targetSetDto.getWeight());
-        Assertions.assertEquals(targetSetEntity.getWeightUnit(), targetSetDto.getWeightUnit());
-        Assertions.assertEquals(targetSetEntity.getPhysicalExertionUnitTime(), targetSetDto.getPhysicalExertionUnitTime());
-        Assertions.assertEquals(targetSetEntity.getRestTime(), targetSetDto.getRestTime());
-        Assertions.assertEquals(targetSetEntity.getProgExerciseId(), targetSetDto.getProgExercise().getId());
-        Assertions.assertEquals(targetSetEntity.getCreationDate(), targetSetDto.getCreationDate());
-        if (targetSetEntity.getTargetSetUpdateId() != null && targetSetDto.getTargetSetUpdate() != null)
-            Assertions.assertEquals(targetSetEntity.getTargetSetUpdateId(), targetSetDto.getTargetSetUpdate().getId());
+        Assertions.assertEquals(inputNewTargetSet.getIndex(), targetSetDto.getIndex());
+        Assertions.assertEquals(inputNewTargetSet.getSetNumber(), targetSetDto.getSetNumber());
+        Assertions.assertEquals(inputNewTargetSet.getRepetitionNumber(), targetSetDto.getRepetitionNumber());
+        Assertions.assertEquals(inputNewTargetSet.getWeight(), targetSetDto.getWeight());
+        Assertions.assertEquals(inputNewTargetSet.getWeightUnit(), targetSetDto.getWeightUnit());
+        Assertions.assertEquals(inputNewTargetSet.getPhysicalExertionUnitTime().getHours(), targetSetDto.getPhysicalExertionUnitTime().getHours());
+        Assertions.assertEquals(inputNewTargetSet.getRestTime().getHours(), targetSetDto.getRestTime().getHours());
+        Assertions.assertEquals(inputNewTargetSet.getProgExerciseId(), targetSetDto.getProgExercise().getId());
+        Assertions.assertEquals(inputNewTargetSet.getCreationDate(), targetSetDto.getCreationDate());
+        if (inputNewTargetSet.getTargetSetUpdateId() != null && targetSetDto.getTargetSetUpdate() != null)
+            Assertions.assertEquals(inputNewTargetSet.getTargetSetUpdateId(), targetSetDto.getTargetSetUpdate().getId());
     }
 
     private void assertExerciseDtoAndInput(InputTargetSet targetSetEntity, TargetSetDto targetSetDto) {
@@ -275,7 +276,7 @@ class TargetSetControllerIntTest {
         Assertions.assertEquals(targetSetEntity.getRepetitionNumber(), targetSetDto.getRepetitionNumber());
         Assertions.assertEquals(targetSetEntity.getWeight(), targetSetDto.getWeight());
         Assertions.assertEquals(targetSetEntity.getWeightUnit(), targetSetDto.getWeightUnit());
-        Assertions.assertEquals(targetSetEntity.getPhysicalExertionUnitTime(), targetSetDto.getPhysicalExertionUnitTime());
-        Assertions.assertEquals(targetSetEntity.getRestTime(), targetSetDto.getRestTime());
+        Assertions.assertEquals(targetSetEntity.getPhysicalExertionUnitTime().getHours(), targetSetDto.getPhysicalExertionUnitTime().getHours());
+        Assertions.assertEquals(targetSetEntity.getRestTime().getHours(), targetSetDto.getRestTime().getHours());
     }
 }
