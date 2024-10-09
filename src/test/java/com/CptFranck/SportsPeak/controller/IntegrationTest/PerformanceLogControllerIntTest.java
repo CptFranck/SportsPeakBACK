@@ -1,233 +1,254 @@
 package com.CptFranck.SportsPeak.controller.IntegrationTest;
 
-import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
 import com.CptFranck.SportsPeak.controller.PerformanceLogController;
-import com.CptFranck.SportsPeak.domain.dto.*;
+import com.CptFranck.SportsPeak.domain.dto.PerformanceLogDto;
 import com.CptFranck.SportsPeak.domain.entity.*;
-import com.CptFranck.SportsPeak.mappers.Mapper;
-import com.CptFranck.SportsPeak.service.PerformanceLogService;
-import com.CptFranck.SportsPeak.service.TargetSetService;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netflix.graphql.dgs.DgsQueryExecutor;
-import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
-import com.netflix.graphql.dgs.exceptions.QueryException;
+import com.CptFranck.SportsPeak.domain.exception.LabelMatchNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.performanceLog.PerformanceLogNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
+import com.CptFranck.SportsPeak.domain.input.performanceLog.InputNewPerformanceLog;
+import com.CptFranck.SportsPeak.domain.input.performanceLog.InputPerformanceLog;
+import com.CptFranck.SportsPeak.mappers.impl.PerformanceLogMapperImpl;
+import com.CptFranck.SportsPeak.repositories.*;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
-import static com.CptFranck.SportsPeak.controller.IntegrationTest.graphqlQuery.PerformanceLogQuery.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSet;
-import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSetDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
-import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-@SpringBootTest(classes = {
-        DgsAutoConfiguration.class,
-        LocalDateTimeScalar.class,
-        PerformanceLogController.class
-})
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 class PerformanceLogControllerIntTest {
 
+
+    private final PerformanceLogMapperImpl performanceLogMapper;
     @Autowired
-    private DgsQueryExecutor dgsQueryExecutor;
+    private PerformanceLogController performanceLogController;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private PerformanceLogRepository performanceLogRepository;
 
-    @MockBean
-    private Mapper<PerformanceLogEntity, PerformanceLogDto> performanceLogMapper;
+    @Autowired
+    private ProgExerciseRepository progExerciseRepository;
 
-    @MockBean
-    private PerformanceLogService performanceLogService;
+    @Autowired
+    private TargetSetRepository targetSetRepository;
 
-    @MockBean
-    private TargetSetService targetSetService;
+    @Autowired
+    private ExerciseRepository exerciseRepository;
 
-    private PerformanceLogEntity performanceLog;
-    private PerformanceLogDto performanceLogDto;
+    @Autowired
+    private UserRepository userRepository;
+
     private TargetSetEntity targetSet;
-    private LinkedHashMap<String, Object> variables;
+
+    public PerformanceLogControllerIntTest() {
+        this.performanceLogMapper = new PerformanceLogMapperImpl(new ModelMapper());
+    }
 
     @BeforeEach
-    void init() {
-        UserEntity user = createTestUser(1L);
-        UserDto userDto = createTestUserDto(1L);
-        ExerciseEntity exercise = createTestExercise(1L);
-        ExerciseDto exerciseDto = createTestExerciseDto(1L);
-        ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
-        ProgExerciseDto progExerciseDto = createTestProgExerciseDto(1L, userDto, exerciseDto);
-        targetSet = createTestTargetSet(1L, progExercise, null);
-        TargetSetDto targetSetDto = createTestTargetSetDto(1L, progExerciseDto, null);
-        performanceLog = createTestPerformanceLog(1L, targetSet);
-        performanceLogDto = createTestPerformanceLogDto(1L, targetSetDto);
-        variables = new LinkedHashMap<>();
+    void setUp() {
+        UserEntity user = userRepository.save(createTestUser(null));
+        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
+        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(1L, user, exercise));
+        user.getProgExercisesCreated().add(progExercise);
+        exercise.getProgExercises().add(progExercise);
+        exerciseRepository.save(exercise);
+        userRepository.save(user);
+        targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
+    }
+
+    @AfterEach
+    public void afterEach() {
+        this.performanceLogRepository.deleteAll();
+        this.targetSetRepository.deleteAll();
+        this.progExerciseRepository.deleteAll();
+        this.userRepository.deleteAll();
+        this.exerciseRepository.deleteAll();
     }
 
     @Test
     void PerformanceLogController_GetPerformanceLogs_Success() {
-        when(performanceLogService.findAll()).thenReturn(List.of(performanceLog));
-        when(performanceLogMapper.mapTo(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLogDto);
+        PerformanceLogEntity performanceLogEntity =
+                performanceLogRepository.save(createTestPerformanceLog(null, targetSet));
 
-        List<LinkedHashMap<String, Object>> PerformanceLogDtos =
-                dgsQueryExecutor.executeAndExtractJsonPath(getPerformanceLogsQuery, "data.getPerformanceLogs");
+        List<PerformanceLogDto> performanceLogsDtos = performanceLogController.getPerformanceLogs();
 
-        Assertions.assertNotNull(PerformanceLogDtos);
+        assertEqualExerciseList(List.of(performanceLogEntity), performanceLogsDtos);
     }
 
     @Test
     void PerformanceLogController_GetPerformanceLogById_Unsuccessful() {
-        variables.put("id", 1);
-        when(performanceLogService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(getPerformanceLogByIdQuery, "data.getPerformanceLogById", variables)
+        Assertions.assertThrows(PerformanceLogNotFoundException.class,
+                () -> performanceLogController.getPerformanceLogById(1L)
         );
     }
 
     @Test
     void PerformanceLogController_GetPerformanceLogById_Success() {
-        variables.put("id", 1);
-        when(performanceLogService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(performanceLog));
-        when(performanceLogMapper.mapTo(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLogDto);
+        PerformanceLogEntity performanceLogEntity =
+                performanceLogRepository.save(createTestPerformanceLog(null, targetSet));
 
-        LinkedHashMap<String, Object> PerformanceLogDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(getPerformanceLogByIdQuery, "data.getPerformanceLogById", variables);
+        UserEntity user = createTestUser(1L);
+        ExerciseEntity exercise = createTestExercise(1L);
+        ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
+        TargetSetEntity targetSet = createTestTargetSet(1L, progExercise, null);
+        PerformanceLogEntity performanceLog = createTestPerformanceLog(1L, targetSet);
+        performanceLogMapper.mapTo(performanceLog);
+        performanceLogMapper.mapTo(performanceLogEntity);
 
-        Assertions.assertNotNull(PerformanceLogDto);
+        PerformanceLogDto performanceLogDto =
+                performanceLogController.getPerformanceLogById(performanceLogEntity.getId());
+
+        assertExerciseDtoAndEntity(performanceLogEntity, performanceLogDto);
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void PerformanceLogController_GetPerformanceLogsByTargetId_Success() {
-        variables.put("targetSetId", 1);
-        when(performanceLogService.findAllByTargetSetId(Mockito.any(Long.class))).thenReturn(List.of(performanceLog));
-        when(performanceLogMapper.mapTo(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLogDto);
+        PerformanceLogEntity performanceLogEntity =
+                performanceLogRepository.save(createTestPerformanceLog(null, targetSet));
 
-        List<LinkedHashMap<String, Object>> PerformanceLogDtos =
-                dgsQueryExecutor.executeAndExtractJsonPath(getPerformanceLogsByTargetSetsIdQuery, "data.getPerformanceLogsByTargetSetsId", variables);
+        List<PerformanceLogDto> performanceLogsDtos =
+                performanceLogController.getPerformanceLogsByTargetSetsId(targetSet.getId());
 
-        Assertions.assertNotNull(PerformanceLogDtos);
+        assertEqualExerciseList(List.of(performanceLogEntity), performanceLogsDtos);
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void PerformanceLogController_AddPerformanceLog_UnsuccessfulTargetSetNotFound() {
-        variables.put("inputNewPerformanceLog", objectMapper.convertValue(
-                createTestInputNewPerformanceLog(1L, false),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+        InputNewPerformanceLog inputNewPerformanceLog =
+                createTestInputNewPerformanceLog(1L, false);
 
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(addPerformanceLogQuery, "data.addPerformanceLog", variables));
+        Assertions.assertThrows(TargetSetNotFoundException.class,
+                () -> performanceLogController.addPerformanceLog(inputNewPerformanceLog)
+        );
+
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void PerformanceLogController_AddPerformanceLog_UnsuccessfulWrongLabel() {
-        variables.put("inputNewPerformanceLog", objectMapper.convertValue(
-                        createTestInputNewPerformanceLog(1L, true),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
+        InputNewPerformanceLog inputNewPerformanceLog =
+                createTestInputNewPerformanceLog(targetSet.getId(), true);
 
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(addPerformanceLogQuery, "data.addPerformanceLog", variables));
+        Assertions.assertThrows(LabelMatchNotFoundException.class,
+                () -> performanceLogController.addPerformanceLog(inputNewPerformanceLog)
+        );
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void PerformanceLogController_AddPerformanceLog_Success() {
-        variables.put("inputNewPerformanceLog", objectMapper.convertValue(
-                createTestInputNewPerformanceLog(1L, false),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
-        when(performanceLogService.save(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLog);
-        when(performanceLogMapper.mapTo(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLogDto);
+        InputNewPerformanceLog inputNewPerformanceLog =
+                createTestInputNewPerformanceLog(targetSet.getId(), false);
 
-        LinkedHashMap<String, Object> PerformanceLogDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(addPerformanceLogQuery, "data.addPerformanceLog", variables);
+        PerformanceLogDto performanceLogDto = performanceLogController.addPerformanceLog(inputNewPerformanceLog);
 
-        Assertions.assertNotNull(PerformanceLogDto);
+        assertExerciseDtoAndInput(inputNewPerformanceLog, performanceLogDto);
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void PerformanceLogController_ModifyPerformanceLog_UnsuccessfulDoesNotExist() {
-        variables.put("inputPerformanceLog", objectMapper.convertValue(
-                createTestInputPerformanceLog(1L, 1L, false),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(false);
+        InputPerformanceLog inputPerformanceLog =
+                createTestInputPerformanceLog(1L, targetSet.getId(), false);
 
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyPerformanceLogQuery, "data.modifyPerformanceLog", variables)
+        Assertions.assertThrows(PerformanceLogNotFoundException.class,
+                () -> performanceLogController.modifyPerformanceLog(inputPerformanceLog)
         );
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void PerformanceLogController_ModifyPerformanceLog_UnsuccessfulWrongLabel() {
-        variables.put("inputNewPerformanceLog", objectMapper.convertValue(
-                createTestInputPerformanceLog(1L, 1L, true),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(true);
-        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
+        PerformanceLogEntity performanceLogEntity =
+                performanceLogRepository.save(createTestPerformanceLog(null, targetSet));
+        InputPerformanceLog inputPerformanceLog =
+                createTestInputPerformanceLog(performanceLogEntity.getId(), targetSet.getId(), true);
 
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyPerformanceLogQuery, "data.modifyPerformanceLog", variables));
+        Assertions.assertThrows(LabelMatchNotFoundException.class,
+                () -> performanceLogController.modifyPerformanceLog(inputPerformanceLog)
+        );
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void PerformanceLogController_ModifyPerformanceLog_Success() {
-        variables.put("inputPerformanceLog", objectMapper.convertValue(
-                        createTestInputPerformanceLog(1L, 1L, false),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(true);
-        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
-        when(performanceLogService.save(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLog);
-        when(performanceLogMapper.mapTo(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLogDto);
+        PerformanceLogEntity performanceLogEntity =
+                performanceLogRepository.save(createTestPerformanceLog(null, targetSet));
+        InputPerformanceLog inputPerformanceLog =
+                createTestInputPerformanceLog(performanceLogEntity.getId(), targetSet.getId(), false);
 
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyPerformanceLogQuery, "data.modifyPerformanceLog", variables)
+        PerformanceLogDto performanceLogDto = performanceLogController.modifyPerformanceLog(inputPerformanceLog);
+
+        assertExerciseDtoAndInput(inputPerformanceLog, performanceLogDto);
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void PerformanceLogController_DeletePerformanceLog_UnsuccessfulExerciseNotFound() {
+        Assertions.assertThrows(PerformanceLogNotFoundException.class,
+                () -> performanceLogController.deletePerformanceLog(1L)
         );
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void PerformanceLogController_DeletePerformanceLog_Success() {
-        variables.put("performanceLogId", 1);
-        when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(true);
+        PerformanceLogEntity performanceLogEntity =
+                performanceLogRepository.save(createTestPerformanceLog(null, targetSet));
 
-        Integer id =
-                dgsQueryExecutor.executeAndExtractJsonPath(deletePerformanceLogQuery, "data.deletePerformanceLog", variables);
+        Long id = performanceLogController.deletePerformanceLog(performanceLogEntity.getId());
 
-        Assertions.assertNotNull(id);
+        Assertions.assertEquals(performanceLogEntity.getId(), id);
+    }
+
+    private void assertEqualExerciseList(
+            List<PerformanceLogEntity> performanceLogEntities,
+            List<PerformanceLogDto> performanceLogDtos
+    ) {
+        performanceLogDtos.forEach(performanceLogDto -> assertExerciseDtoAndEntity(
+                performanceLogEntities.stream().filter(
+                        performanceLogEntity -> Objects.equals(performanceLogEntity.getId(), performanceLogDto.getId())
+                ).toList().getFirst(),
+                performanceLogDto)
+        );
+    }
+
+    private void assertExerciseDtoAndEntity(PerformanceLogEntity performanceLogEntity, PerformanceLogDto performanceLogDto) {
+        Assertions.assertNotNull(performanceLogDto);
+        Assertions.assertEquals(performanceLogEntity.getId(), performanceLogDto.getId());
+        Assertions.assertEquals(performanceLogEntity.getSetIndex(), performanceLogDto.getSetIndex());
+        Assertions.assertEquals(performanceLogEntity.getRepetitionNumber(), performanceLogDto.getRepetitionNumber());
+        Assertions.assertEquals(performanceLogEntity.getWeight(), performanceLogDto.getWeight());
+        Assertions.assertEquals(performanceLogEntity.getWeightUnit().label, performanceLogDto.getWeightUnit());
+        Assertions.assertEquals(performanceLogEntity.getLogDate(), performanceLogDto.getLogDate());
+        Assertions.assertEquals(performanceLogEntity.getTargetSet().getId(), performanceLogDto.getTargetSet().getId());
+    }
+
+    private void assertExerciseDtoAndInput(InputNewPerformanceLog inputNewPerformanceLog, PerformanceLogDto performanceLogDto) {
+        Assertions.assertNotNull(performanceLogDto);
+        Assertions.assertEquals(inputNewPerformanceLog.getSetIndex(), performanceLogDto.getSetIndex());
+        Assertions.assertEquals(inputNewPerformanceLog.getRepetitionNumber(), performanceLogDto.getRepetitionNumber());
+        Assertions.assertEquals(inputNewPerformanceLog.getWeight(), performanceLogDto.getWeight());
+        Assertions.assertEquals(inputNewPerformanceLog.getWeightUnit(), performanceLogDto.getWeightUnit());
+        Assertions.assertEquals(inputNewPerformanceLog.getLogDate(), performanceLogDto.getLogDate());
+        Assertions.assertEquals(inputNewPerformanceLog.getTargetSetId(), performanceLogDto.getTargetSet().getId());
     }
 }
