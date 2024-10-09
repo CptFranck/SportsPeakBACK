@@ -1,290 +1,281 @@
 package com.CptFranck.SportsPeak.controller.IntegrationTest;
 
-import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
 import com.CptFranck.SportsPeak.controller.TargetSetController;
-import com.CptFranck.SportsPeak.domain.dto.ExerciseDto;
-import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.TargetSetDto;
-import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
-import com.CptFranck.SportsPeak.mappers.Mapper;
-import com.CptFranck.SportsPeak.service.ProgExerciseService;
-import com.CptFranck.SportsPeak.service.TargetSetService;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netflix.graphql.dgs.DgsQueryExecutor;
-import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
-import com.netflix.graphql.dgs.exceptions.QueryException;
+import com.CptFranck.SportsPeak.domain.exception.LabelMatchNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.progExercise.ProgExerciseNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
+import com.CptFranck.SportsPeak.domain.input.targetSet.InputNewTargetSet;
+import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSet;
+import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSetState;
+import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
+import com.CptFranck.SportsPeak.repositories.ProgExerciseRepository;
+import com.CptFranck.SportsPeak.repositories.TargetSetRepository;
+import com.CptFranck.SportsPeak.repositories.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
-import static com.CptFranck.SportsPeak.controller.IntegrationTest.graphqlQuery.TargetSetQuery.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
-import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-@SpringBootTest(classes = {
-        DgsAutoConfiguration.class,
-        LocalDateTimeScalar.class,
-        TargetSetController.class
-})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 class TargetSetControllerIntTest {
 
     @Autowired
-    private DgsQueryExecutor dgsQueryExecutor;
+    private ExerciseRepository exerciseRepository;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private UserRepository userRepository;
 
-    @MockBean
-    private Mapper<TargetSetEntity, TargetSetDto> TargetSetMapper;
+    @Autowired
+    private ProgExerciseRepository progExerciseRepository;
 
-    @MockBean
-    private TargetSetService targetSetService;
+    @Autowired
+    private TargetSetRepository targetSetRepository;
 
-    @MockBean
-    private ProgExerciseService progExerciseService;
+    @Autowired
+    private TargetSetController targetSetController;
 
-    private TargetSetEntity targetSet;
-    private TargetSetDto targetSetDto;
     private ProgExerciseEntity progExercise;
-    private LinkedHashMap<String, Object> variables;
+
 
     @BeforeEach
-    void init() {
-        UserEntity user = createTestUser(1L);
-        UserDto userDto = createTestUserDto(1L);
-        ExerciseEntity exercise = createTestExercise(1L);
-        ExerciseDto exerciseDto = createTestExerciseDto(1L);
-        progExercise = createTestProgExercise(1L, user, exercise);
-        ProgExerciseDto progExerciseDto = createTestProgExerciseDto(1L, userDto, exerciseDto);
-        targetSet = createTestTargetSet(1L, progExercise, null);
-        targetSetDto = createTestTargetSetDto(1L, progExerciseDto, null);
-        variables = new LinkedHashMap<>();
+    void setUp() {
+        UserEntity user = userRepository.save(createTestUser(null));
+        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
+        progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
+    }
+
+    @AfterEach
+    public void afterEach() {
+        this.targetSetRepository.deleteAll();
+        this.progExerciseRepository.deleteAll();
+        this.exerciseRepository.deleteAll();
+        this.userRepository.deleteAll();
     }
 
     @Test
     void TargetSetController_GetTargetSets_Success() {
-        when(targetSetService.findAll()).thenReturn(List.of(targetSet));
-        when(TargetSetMapper.mapTo(Mockito.any(TargetSetEntity.class))).thenReturn(targetSetDto);
+        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
 
-        List<LinkedHashMap<String, Object>> TargetSetDtos =
-                dgsQueryExecutor.executeAndExtractJsonPath(getTargetSetsQuery, "data.getTargetSets");
+        List<TargetSetDto> targetSetDtos = targetSetController.getTargetSets();
 
-        Assertions.assertNotNull(TargetSetDtos);
+        assertEqualExerciseList(List.of(targetSet), targetSetDtos);
     }
 
     @Test
     void TargetSetController_GetTargetSetById_UnsuccessfulDoesNotExist() {
-        variables.put("id", 1);
-        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(getTargetSetByIdQuery, "data.getTargetSetById", variables)
+        Assertions.assertThrows(TargetSetNotFoundException.class,
+                () -> targetSetController.getTargetSetById(1L)
         );
     }
 
     @Test
     void TargetSetController_GetTargetSetById_Success() {
-        variables.put("id", 1);
-        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
-        when(TargetSetMapper.mapTo(Mockito.any(TargetSetEntity.class))).thenReturn(targetSetDto);
+        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
 
-        LinkedHashMap<String, Object> TargetSetDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(getTargetSetByIdQuery, "data.getTargetSetById", variables);
+        TargetSetDto targetSetDto = targetSetController.getTargetSetById(targetSet.getId());
 
-        Assertions.assertNotNull(TargetSetDto);
+        assertExerciseDtoAndEntity(targetSet, targetSetDto);
     }
 
     @Test
     void TargetSetController_GetTargetSetsByTargetId_Success() {
-        variables.put("progExerciseId", 1);
-        when(targetSetService.findAllByProgExerciseId(Mockito.any(Long.class))).thenReturn(List.of(targetSet));
-        when(TargetSetMapper.mapTo(Mockito.any(TargetSetEntity.class))).thenReturn(targetSetDto);
+        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
 
-        List<LinkedHashMap<String, Object>> TargetSetDtos =
-                dgsQueryExecutor.executeAndExtractJsonPath(getTargetSetsByProgExerciseIdQuery, "data.getTargetSetsByProgExerciseId", variables);
+        List<TargetSetDto> targetSetDto = targetSetController.getTargetSetsByProgExerciseId(progExercise.getId());
 
-        Assertions.assertNotNull(TargetSetDtos);
+        assertEqualExerciseList(List.of(targetSet), targetSetDto);
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void TargetSetController_AddTargetSet_UnsuccessfulProgExerciseNotFound() {
-        variables.put("inputNewTargetSet", objectMapper.convertValue(
-                        createTestInputNewTargetSet(1L, null),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+        InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), null);
+        progExerciseRepository.delete(progExercise);
 
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(addTargetSetQuery, "data.addTargetSet", variables));
+        Assertions.assertThrows(ProgExerciseNotFoundException.class,
+                () -> targetSetController.addTargetSet(inputNewTargetSet)
+        );
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void TargetSetController_AddTargetSet_Success() {
-        variables.put("inputNewTargetSet", objectMapper.convertValue(
-                        createTestInputNewTargetSet(1L, null),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
-        when(targetSetService.save(Mockito.any(TargetSetEntity.class))).thenReturn(targetSet);
-        when(TargetSetMapper.mapTo(Mockito.any(TargetSetEntity.class))).thenReturn(targetSetDto);
+        InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), null);
 
-        LinkedHashMap<String, Object> TargetSetDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(addTargetSetQuery, "data.addTargetSet", variables);
+        TargetSetDto targetSetDto = targetSetController.addTargetSet(inputNewTargetSet);
 
-        Assertions.assertNotNull(TargetSetDto);
+        assertExerciseDtoAndInputNew(inputNewTargetSet, targetSetDto);
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void TargetSetController_AddTargetSetWithUpdate_UnsuccessfulTargetSetNotFound() {
-        variables.put("inputNewTargetSet", objectMapper.convertValue(
-                createTestInputNewTargetSet(1L, 1L),
-                new TypeReference<LinkedHashMap<String, Object>>() {
-                }
-                )
-        );
-        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
-        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
+        InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), targetSet.getId());
+        targetSetRepository.delete(targetSet);
 
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(addTargetSetQuery, "data.addTargetSet", variables));
+        Assertions.assertThrows(TargetSetNotFoundException.class,
+                () -> targetSetController.addTargetSet(inputNewTargetSet)
+        );
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void TargetSetController_AddTargetSetWithUpdate_Success() {
-        variables.put("inputNewTargetSet", objectMapper.convertValue(
-                        createTestInputNewTargetSet(1L, 1L),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(progExercise));
-        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
-        when(targetSetService.save(Mockito.any(TargetSetEntity.class))).thenReturn(targetSet);
-        when(TargetSetMapper.mapTo(Mockito.any(TargetSetEntity.class))).thenReturn(targetSetDto);
+        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
+        InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), targetSet.getId());
 
-        LinkedHashMap<String, Object> TargetSetDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(addTargetSetQuery, "data.addTargetSet", variables);
+        TargetSetDto targetSetDto = targetSetController.addTargetSet(inputNewTargetSet);
 
-        Assertions.assertNotNull(TargetSetDto);
+        assertExerciseDtoAndInputNew(inputNewTargetSet, targetSetDto);
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void TargetSetController_ModifyTargetSet_UnsuccessfulTargetSetNotFound() {
-        variables.put("inputTargetSet", objectMapper.convertValue(
-                        createTestInputTargetSet(1L),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(true);
-        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
+        InputTargetSet inputNewTargetSet = createTestInputTargetSet(targetSet.getId());
+        targetSetRepository.delete(targetSet);
 
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyTargetSetQuery, "data.modifyTargetSet", variables));
+        Assertions.assertThrows(TargetSetNotFoundException.class,
+                () -> targetSetController.modifyTargetSet(inputNewTargetSet)
+        );
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void TargetSetController_ModifyTargetSet_Success() {
-        variables.put("inputTargetSet", objectMapper.convertValue(
-                        createTestInputTargetSet(1L),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(true);
-        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
-        when(targetSetService.save(Mockito.any(TargetSetEntity.class))).thenReturn(targetSet);
-        when(TargetSetMapper.mapTo(Mockito.any(TargetSetEntity.class))).thenReturn(targetSetDto);
+        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
+        InputTargetSet inputTargetSet = createTestInputTargetSet(targetSet.getId());
 
-        LinkedHashMap<String, Object> TargetSetDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(modifyTargetSetQuery, "data.modifyTargetSet", variables);
+        TargetSetDto targetSetDto = targetSetController.modifyTargetSet(inputTargetSet);
 
-        Assertions.assertNotNull(TargetSetDto);
+        assertExerciseDtoAndInput(inputTargetSet, targetSetDto);
+
     }
 
     @Test
-    void TargetSetController_ModifyTargetSetState_UnsuccessfulNotFound() {
-        variables.put("inputTargetSetState", objectMapper.convertValue(
-                createTestInputInputTargetSetState(1L, false),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(true);
-        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+    @WithMockUser(username = "user", roles = "USER")
+    void TargetSetController_ModifyTargetSetState_UnsuccessfulTargetSetNotFound() {
+        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
+        InputTargetSetState inputTargetSetState = createTestInputInputTargetSetState(targetSet.getId(), false);
+        targetSetRepository.delete(targetSet);
 
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyTargetSetStateQuery, "data.modifyTargetSetState", variables));
+        Assertions.assertThrows(TargetSetNotFoundException.class,
+                () -> targetSetController.modifyTargetSetState(inputTargetSetState)
+        );
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void TargetSetController_ModifyTargetSetState_UnsuccessfulWrongLabel() {
-        variables.put("inputTargetSetState", objectMapper.convertValue(
-                        createTestInputInputTargetSetState(1L, true),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
-        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(true);
-        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
+        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
+        InputTargetSetState inputTargetSetState = createTestInputInputTargetSetState(targetSet.getId(), true);
 
-        Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyTargetSetStateQuery, "data.modifyTargetSetState", variables));
+        Assertions.assertThrows(LabelMatchNotFoundException.class,
+                () -> targetSetController.modifyTargetSetState(inputTargetSetState)
+        );
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
     void TargetSetController_ModifyTargetSetState_Success() {
-        variables.put("inputTargetSetState", objectMapper.convertValue(
-                createTestInputInputTargetSetState(1L, false),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
+        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
+        InputTargetSetState inputTargetSetState = createTestInputInputTargetSetState(targetSet.getId(), false);
+
+        List<TargetSetDto> targetSetDtos = targetSetController.modifyTargetSetState(inputTargetSetState);
+
+        targetSetDtos.forEach(targetSetDto ->
+                Assertions.assertEquals(targetSetDto.getState(), inputTargetSetState.getState())
         );
-        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(true);
-        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
-        when(targetSetService.save(Mockito.any(TargetSetEntity.class))).thenReturn(targetSet);
-        when(TargetSetMapper.mapTo(Mockito.any(TargetSetEntity.class))).thenReturn(targetSetDto);
-
-        List<LinkedHashMap<String, Object>> TargetSetDto =
-                dgsQueryExecutor.executeAndExtractJsonPath(modifyTargetSetStateQuery, "data.modifyTargetSetState", variables);
-
-        Assertions.assertNotNull(TargetSetDto);
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void TargetSetController_DeleteExercise_UnsuccessfulExerciseNotFound() {
+        Assertions.assertThrows(TargetSetNotFoundException.class,
+                () -> targetSetController.deleteTargetSet(1L)
+        );
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "USER")
     void TargetSetController_DeleteTargetSet_Success() {
-        variables.put("targetSetId", 1);
-        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(true);
+        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
 
-        Integer id =
-                dgsQueryExecutor.executeAndExtractJsonPath(deleteTargetSetQuery, "data.deleteTargetSet", variables);
+        Long id = targetSetController.deleteTargetSet(targetSet.getId());
 
-        Assertions.assertNotNull(id);
+        Assertions.assertEquals(targetSet.getId(), id);
+    }
+
+    private void assertEqualExerciseList(
+            List<TargetSetEntity> targetSetEntities,
+            List<TargetSetDto> targetSetDtos
+    ) {
+        targetSetDtos.forEach(targetSetDto -> assertExerciseDtoAndEntity(
+                targetSetEntities.stream().filter(
+                        targetSetEntity -> Objects.equals(targetSetEntity.getId(), targetSetDto.getId())
+                ).toList().getFirst(),
+                targetSetDto)
+        );
+    }
+
+    private void assertExerciseDtoAndEntity(TargetSetEntity targetSetEntity, TargetSetDto targetSetDto) {
+        Assertions.assertNotNull(targetSetDto);
+        Assertions.assertEquals(targetSetEntity.getIndex(), targetSetDto.getIndex());
+        Assertions.assertEquals(targetSetEntity.getSetNumber(), targetSetDto.getSetNumber());
+        Assertions.assertEquals(targetSetEntity.getRepetitionNumber(), targetSetDto.getRepetitionNumber());
+        Assertions.assertEquals(targetSetEntity.getWeight(), targetSetDto.getWeight());
+        Assertions.assertEquals(targetSetEntity.getWeightUnit().label, targetSetDto.getWeightUnit());
+        Assertions.assertEquals(targetSetEntity.getPhysicalExertionUnitTime(), targetSetDto.getPhysicalExertionUnitTime().InputDurationToDuration());
+        Assertions.assertEquals(targetSetEntity.getRestTime(), targetSetDto.getRestTime().InputDurationToDuration());
+        Assertions.assertEquals(targetSetEntity.getState().label, targetSetDto.getState());
+        Assertions.assertEquals(targetSetEntity.getProgExercise().getId(), targetSetDto.getProgExercise().getId());
+        if (targetSetEntity.getTargetSetUpdate() != null && targetSetDto.getTargetSetUpdate() != null)
+            Assertions.assertEquals(targetSetEntity.getTargetSetUpdate().getId(), targetSetDto.getTargetSetUpdate().getId());
+    }
+
+    private void assertExerciseDtoAndInputNew(InputNewTargetSet targetSetEntity, TargetSetDto targetSetDto) {
+        Assertions.assertNotNull(targetSetDto);
+        Assertions.assertEquals(targetSetEntity.getIndex(), targetSetDto.getIndex());
+        Assertions.assertEquals(targetSetEntity.getSetNumber(), targetSetDto.getSetNumber());
+        Assertions.assertEquals(targetSetEntity.getRepetitionNumber(), targetSetDto.getRepetitionNumber());
+        Assertions.assertEquals(targetSetEntity.getWeight(), targetSetDto.getWeight());
+        Assertions.assertEquals(targetSetEntity.getWeightUnit(), targetSetDto.getWeightUnit());
+        Assertions.assertEquals(targetSetEntity.getPhysicalExertionUnitTime(), targetSetDto.getPhysicalExertionUnitTime());
+        Assertions.assertEquals(targetSetEntity.getRestTime(), targetSetDto.getRestTime());
+        Assertions.assertEquals(targetSetEntity.getProgExerciseId(), targetSetDto.getProgExercise().getId());
+        Assertions.assertEquals(targetSetEntity.getCreationDate(), targetSetDto.getCreationDate());
+        if (targetSetEntity.getTargetSetUpdateId() != null && targetSetDto.getTargetSetUpdate() != null)
+            Assertions.assertEquals(targetSetEntity.getTargetSetUpdateId(), targetSetDto.getTargetSetUpdate().getId());
+    }
+
+    private void assertExerciseDtoAndInput(InputTargetSet targetSetEntity, TargetSetDto targetSetDto) {
+        Assertions.assertNotNull(targetSetDto);
+        Assertions.assertEquals(targetSetEntity.getIndex(), targetSetDto.getIndex());
+        Assertions.assertEquals(targetSetEntity.getSetNumber(), targetSetDto.getSetNumber());
+        Assertions.assertEquals(targetSetEntity.getRepetitionNumber(), targetSetDto.getRepetitionNumber());
+        Assertions.assertEquals(targetSetEntity.getWeight(), targetSetDto.getWeight());
+        Assertions.assertEquals(targetSetEntity.getWeightUnit(), targetSetDto.getWeightUnit());
+        Assertions.assertEquals(targetSetEntity.getPhysicalExertionUnitTime(), targetSetDto.getPhysicalExertionUnitTime());
+        Assertions.assertEquals(targetSetEntity.getRestTime(), targetSetDto.getRestTime());
     }
 }
