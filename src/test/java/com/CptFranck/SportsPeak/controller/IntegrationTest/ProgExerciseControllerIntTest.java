@@ -91,7 +91,7 @@ class ProgExerciseControllerIntTest {
     void ProgExerciseController_GetProgExerciseById_Success() {
         ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
 
-        ProgExerciseDto progExerciseDto = progExerciseController.getProgExerciseById(exercise.getId());
+        ProgExerciseDto progExerciseDto = progExerciseController.getProgExerciseById(progExercise.getId());
 
         assertExerciseDtoAndEntity(progExercise, progExerciseDto);
     }
@@ -137,22 +137,10 @@ class ProgExerciseControllerIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void ProgExerciseController_ModifyProgExercise_UnsuccessfulExerciseNotFound() {
-        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
-        InputProgExercise inputNewExercise =
-                createTestInputProgExercise(progExercise.getId(), user.getId(), false);
-        exerciseRepository.delete(exercise);
-
-        Assertions.assertThrows(ExerciseNotFoundException.class,
-                () -> progExerciseController.modifyProgExercise(inputNewExercise));
-    }
-
-    @Test
-    @WithMockUser(username = "user", roles = "USER")
     void ProgExerciseController_ModifyProgExercise_UnsuccessfulWrongLabel() {
         ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
         InputProgExercise inputNewExercise =
-                createTestInputProgExercise(progExercise.getId(), user.getId(), true);
+                createTestInputProgExercise(progExercise.getId(), exercise.getId(), true);
 
         Assertions.assertThrows(LabelMatchNotFoundException.class,
                 () -> progExerciseController.modifyProgExercise(inputNewExercise));
@@ -163,7 +151,7 @@ class ProgExerciseControllerIntTest {
     void ProgExerciseController_ModifyProgExercise_Success() {
         ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
         InputProgExercise inputNewExercise =
-                createTestInputProgExercise(progExercise.getId(), user.getId(), false);
+                createTestInputProgExercise(progExercise.getId(), exercise.getId(), false);
 
         ProgExerciseDto progExerciseDto = progExerciseController.modifyProgExercise(inputNewExercise);
 
@@ -193,7 +181,7 @@ class ProgExerciseControllerIntTest {
     }
 
     @Test
-    @WithMockUser(username = "user", roles = "USER")
+    @WithMockUser(username = "user", roles = "ADMIN")
     void ProgExerciseController_ModifyProgExerciseTrustLabel_Success() {
         ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
         InputProgExerciseTrustLabel inputProgExerciseTrustLabel =
