@@ -147,6 +147,9 @@ class TargetSetControllerIntTest {
         TargetSetDto targetSetDto = targetSetController.addTargetSet(inputNewTargetSet);
 
         assertExerciseDtoAndInputNew(inputNewTargetSet, targetSetDto);
+        targetSet = targetSetRepository.findById(targetSet.getId()).orElseThrow();
+        Assertions.assertNotNull(targetSet.getTargetSetUpdate());
+        Assertions.assertEquals(targetSet.getTargetSetUpdate().getId(), targetSetDto.getId());
     }
 
     @Test
@@ -250,8 +253,6 @@ class TargetSetControllerIntTest {
         Assertions.assertEquals(targetSetEntity.getRestTime(), targetSetDto.getRestTime().InputDurationToDuration());
         Assertions.assertEquals(targetSetEntity.getState().label, targetSetDto.getState());
         Assertions.assertEquals(targetSetEntity.getProgExercise().getId(), targetSetDto.getProgExercise().getId());
-        if (targetSetEntity.getTargetSetUpdate() != null && targetSetDto.getTargetSetUpdate() != null)
-            Assertions.assertEquals(targetSetEntity.getTargetSetUpdate().getId(), targetSetDto.getTargetSetUpdate().getId());
     }
 
     private void assertExerciseDtoAndInputNew(InputNewTargetSet inputNewTargetSet, TargetSetDto targetSetDto) {
@@ -265,8 +266,6 @@ class TargetSetControllerIntTest {
         Assertions.assertEquals(inputNewTargetSet.getRestTime().getHours(), targetSetDto.getRestTime().getHours());
         Assertions.assertEquals(inputNewTargetSet.getProgExerciseId(), targetSetDto.getProgExercise().getId());
         Assertions.assertEquals(inputNewTargetSet.getCreationDate(), targetSetDto.getCreationDate());
-        if (inputNewTargetSet.getTargetSetUpdateId() != null && targetSetDto.getTargetSetUpdate() != null)
-            Assertions.assertEquals(inputNewTargetSet.getTargetSetUpdateId(), targetSetDto.getTargetSetUpdate().getId());
     }
 
     private void assertExerciseDtoAndInput(InputTargetSet targetSetEntity, TargetSetDto targetSetDto) {
