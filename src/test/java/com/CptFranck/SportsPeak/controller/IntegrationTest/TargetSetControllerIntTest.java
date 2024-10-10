@@ -101,9 +101,9 @@ class TargetSetControllerIntTest {
     void TargetSetController_GetTargetSetsByTargetId_Success() {
         TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
 
-        List<TargetSetDto> targetSetDto = targetSetController.getTargetSetsByProgExerciseId(progExercise.getId());
+        List<TargetSetDto> targetSetDtos = targetSetController.getTargetSetsByProgExerciseId(progExercise.getId());
 
-        assertEqualExerciseList(List.of(targetSet), targetSetDto);
+        assertEqualExerciseList(List.of(targetSet), targetSetDtos);
     }
 
     @Test
