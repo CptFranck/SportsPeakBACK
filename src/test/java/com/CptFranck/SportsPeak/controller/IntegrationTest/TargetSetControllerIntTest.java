@@ -28,6 +28,7 @@ import org.springframework.test.context.TestPropertySource;
 import java.util.List;
 import java.util.Objects;
 
+import static com.CptFranck.SportsPeak.domain.utils.TestDateTimeUtils.assertDatetimeWithTimestamp;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.*;
@@ -265,7 +266,7 @@ class TargetSetControllerIntTest {
         Assertions.assertEquals(inputNewTargetSet.getPhysicalExertionUnitTime().getHours(), targetSetDto.getPhysicalExertionUnitTime().getHours());
         Assertions.assertEquals(inputNewTargetSet.getRestTime().getHours(), targetSetDto.getRestTime().getHours());
         Assertions.assertEquals(inputNewTargetSet.getProgExerciseId(), targetSetDto.getProgExercise().getId());
-        Assertions.assertEquals(inputNewTargetSet.getCreationDate(), targetSetDto.getCreationDate());
+        assertDatetimeWithTimestamp(inputNewTargetSet.getCreationDate(), targetSetDto.getCreationDate());
     }
 
     private void assertExerciseDtoAndInput(InputTargetSet targetSetEntity, TargetSetDto targetSetDto) {

@@ -8,13 +8,11 @@ import com.CptFranck.SportsPeak.domain.exception.performanceLog.PerformanceLogNo
 import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputNewPerformanceLog;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputPerformanceLog;
-import com.CptFranck.SportsPeak.mappers.impl.PerformanceLogMapperImpl;
 import com.CptFranck.SportsPeak.repositories.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -23,6 +21,7 @@ import org.springframework.test.context.TestPropertySource;
 import java.util.List;
 import java.util.Objects;
 
+import static com.CptFranck.SportsPeak.domain.utils.TestDateTimeUtils.assertDatetimeWithTimestamp;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
@@ -35,7 +34,6 @@ import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser
 class PerformanceLogControllerIntTest {
 
 
-    private final PerformanceLogMapperImpl performanceLogMapper;
     @Autowired
     private PerformanceLogController performanceLogController;
 
@@ -55,10 +53,6 @@ class PerformanceLogControllerIntTest {
     private UserRepository userRepository;
 
     private TargetSetEntity targetSet;
-
-    public PerformanceLogControllerIntTest() {
-        this.performanceLogMapper = new PerformanceLogMapperImpl(new ModelMapper());
-    }
 
     @BeforeEach
     void setUp() {
@@ -102,15 +96,6 @@ class PerformanceLogControllerIntTest {
     void PerformanceLogController_GetPerformanceLogById_Success() {
         PerformanceLogEntity performanceLogEntity =
                 performanceLogRepository.save(createTestPerformanceLog(null, targetSet));
-
-        UserEntity user = createTestUser(1L);
-        ExerciseEntity exercise = createTestExercise(1L);
-        ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
-        TargetSetEntity targetSet = createTestTargetSet(1L, progExercise, null);
-        PerformanceLogEntity performanceLog = createTestPerformanceLog(1L, targetSet);
-        performanceLogMapper.mapTo(performanceLog);
-        performanceLogMapper.mapTo(performanceLogEntity);
-
         PerformanceLogDto performanceLogDto =
                 performanceLogController.getPerformanceLogById(performanceLogEntity.getId());
 
@@ -238,7 +223,7 @@ class PerformanceLogControllerIntTest {
         Assertions.assertEquals(performanceLogEntity.getRepetitionNumber(), performanceLogDto.getRepetitionNumber());
         Assertions.assertEquals(performanceLogEntity.getWeight(), performanceLogDto.getWeight());
         Assertions.assertEquals(performanceLogEntity.getWeightUnit().label, performanceLogDto.getWeightUnit());
-        Assertions.assertEquals(performanceLogEntity.getLogDate(), performanceLogDto.getLogDate());
+        assertDatetimeWithTimestamp(performanceLogEntity.getLogDate(), performanceLogDto.getLogDate());
         Assertions.assertEquals(performanceLogEntity.getTargetSet().getId(), performanceLogDto.getTargetSet().getId());
     }
 
@@ -248,7 +233,7 @@ class PerformanceLogControllerIntTest {
         Assertions.assertEquals(inputNewPerformanceLog.getRepetitionNumber(), performanceLogDto.getRepetitionNumber());
         Assertions.assertEquals(inputNewPerformanceLog.getWeight(), performanceLogDto.getWeight());
         Assertions.assertEquals(inputNewPerformanceLog.getWeightUnit(), performanceLogDto.getWeightUnit());
-        Assertions.assertEquals(inputNewPerformanceLog.getLogDate(), performanceLogDto.getLogDate());
+        assertDatetimeWithTimestamp(inputNewPerformanceLog.getLogDate(), performanceLogDto.getLogDate());
         Assertions.assertEquals(inputNewPerformanceLog.getTargetSetId(), performanceLogDto.getTargetSet().getId());
     }
 }

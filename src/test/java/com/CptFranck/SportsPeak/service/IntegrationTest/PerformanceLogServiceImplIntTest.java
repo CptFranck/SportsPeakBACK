@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static com.CptFranck.SportsPeak.domain.utils.TestDateTimeUtils.assertDatetimeWithTimestamp;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createNewTestPerformanceLogList;
 import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createTestPerformanceLog;
@@ -165,7 +166,6 @@ public class PerformanceLogServiceImplIntTest {
         Assertions.assertEquals(expected.getRepetitionNumber(), actual.getRepetitionNumber());
         Assertions.assertEquals(expected.getWeight(), actual.getWeight());
         Assertions.assertEquals(expected.getWeightUnit(), actual.getWeightUnit());
-        Assertions.assertEquals(expected.getLogDate().getHour(), actual.getLogDate().getHour());
-        Assertions.assertEquals(expected.getLogDate().getMinute(), actual.getLogDate().getMinute());
+        assertDatetimeWithTimestamp(expected.getLogDate(), actual.getLogDate());
     }
 }

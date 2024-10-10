@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static com.CptFranck.SportsPeak.domain.utils.TestDateTimeUtils.assertDatetimeWithTimestamp;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSet;
@@ -187,7 +188,6 @@ public class TargetSetServiceImplIntTest {
         Assertions.assertEquals(expected.getWeightUnit(), actual.getWeightUnit());
         Assertions.assertEquals(expected.getPhysicalExertionUnitTime(), actual.getPhysicalExertionUnitTime());
         Assertions.assertEquals(expected.getRestTime(), actual.getRestTime());
-        Assertions.assertEquals(expected.getCreationDate().getHour(), actual.getCreationDate().getHour());
-        Assertions.assertEquals(expected.getCreationDate().getMinute(), actual.getCreationDate().getMinute());
+        assertDatetimeWithTimestamp(expected.getCreationDate(), actual.getCreationDate());
     }
 }
