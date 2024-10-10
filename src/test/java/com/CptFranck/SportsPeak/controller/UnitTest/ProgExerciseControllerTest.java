@@ -188,7 +188,7 @@ class ProgExerciseControllerTest {
     void ProgExerciseController_ModifyProgExerciseTrustLabel_UnsuccessfulProgExerciseNotFound() {
         when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(ExerciseNotFoundException.class,
+        Assertions.assertThrows(ProgExerciseNotFoundException.class,
                 () -> progExerciseController.modifyProgExerciseTrustLabel(
                         createTestInputProgExerciseTrustLabel(1L, false)
                 )
