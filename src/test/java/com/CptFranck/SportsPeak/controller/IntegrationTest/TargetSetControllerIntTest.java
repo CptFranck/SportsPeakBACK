@@ -2,10 +2,7 @@ package com.CptFranck.SportsPeak.controller.IntegrationTest;
 
 import com.CptFranck.SportsPeak.controller.TargetSetController;
 import com.CptFranck.SportsPeak.domain.dto.TargetSetDto;
-import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
-import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
-import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
-import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.entity.*;
 import com.CptFranck.SportsPeak.domain.exception.LabelMatchNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.progExercise.ProgExerciseNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
@@ -30,6 +27,7 @@ import java.util.Objects;
 
 import static com.CptFranck.SportsPeak.domain.utils.TestDateTimeUtils.assertDatetimeWithTimestamp;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createTestPerformanceLog;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
@@ -224,11 +222,19 @@ class TargetSetControllerIntTest {
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void TargetSetController_DeleteTargetSet_Success() {
-        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
+        TargetSetEntity targetSet1 = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
+        TargetSetEntity targetSet2 = targetSetRepository.save(createTestTargetSet(null, progExercise, targetSet1));
+        TargetSetEntity targetSet3 = targetSetRepository.save(createTestTargetSet(null, progExercise, targetSet2));
+        PerformanceLogEntity performanceLog = createTestPerformanceLog(null, targetSet2);
+        targetSet2.getPerformanceLogs().add(performanceLog);
+        targetSetRepository.save(targetSet2);
 
-        Long id = targetSetController.deleteTargetSet(targetSet.getId());
+        Long id = targetSetController.deleteTargetSet(targetSet2.getId());
 
-        Assertions.assertEquals(targetSet.getId(), id);
+        targetSet1 = targetSetRepository.findById(targetSet1.getId()).orElseThrow();
+        targetSet3 = targetSetRepository.findById(targetSet3.getId()).orElseThrow();
+        Assertions.assertEquals(targetSet2.getId(), id);
+        Assertions.assertEquals(targetSet3.getTargetSetUpdate().getId(), targetSet1.getId());
     }
 
     private void assertEqualExerciseList(
