@@ -13,6 +13,7 @@ import com.CptFranck.SportsPeak.domain.exception.LabelMatchNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.progExercise.ProgExerciseNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
 import com.CptFranck.SportsPeak.mappers.Mapper;
+import com.CptFranck.SportsPeak.service.PerformanceLogService;
 import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import com.CptFranck.SportsPeak.service.TargetSetService;
 import org.junit.jupiter.api.Assertions;
@@ -29,6 +30,7 @@ import java.util.Optional;
 
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
+import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createTestPerformanceLog;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.*;
@@ -47,6 +49,9 @@ class TargetSetControllerTest {
 
     @Mock
     private TargetSetService targetSetService;
+
+    @Mock
+    private PerformanceLogService performanceLogService;
 
     @Mock
     private ProgExerciseService progExerciseService;
@@ -214,7 +219,19 @@ class TargetSetControllerTest {
     }
 
     @Test
+    void TargetSetController_DeleteTargetSet_UnsuccessfulTargetSetNotFound() {
+        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(false);
+
+        Assertions.assertThrows(TargetSetNotFoundException.class, () -> targetSetController.deleteTargetSet(1L));
+    }
+
+    @Test
     void TargetSetController_DeleteTargetSet_Success() {
+        when(targetSetService.exists(Mockito.any(Long.class))).thenReturn(true);
+        when(performanceLogService.findAllByTargetSetId(Mockito.any())).thenReturn(
+                List.of(createTestPerformanceLog(1L, targetSet))
+        );
+
         Long id = targetSetController.deleteTargetSet(1L);
 
         Assertions.assertEquals(1L, id);
