@@ -154,9 +154,17 @@ public class TargetSetServiceImplIntTest {
 
     @Test
     void TargetSetService_Delete_Success() {
-        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
+        TargetSetEntity targetSet1 = targetSetServiceImpl.save(createTestTargetSet(null, progExercise, null));
+        TargetSetEntity targetSet2 = targetSetServiceImpl.save(createTestTargetSet(null, progExercise, targetSet1));
+        TargetSetEntity targetSet3 = targetSetServiceImpl.save(createTestTargetSet(null, progExercise, targetSet2));
+        targetSetServiceImpl.delete(targetSet2.getId());
 
-        assertAll(() -> targetSetServiceImpl.delete(targetSet.getId()));
+        boolean targetSetFound = targetSetServiceImpl.exists(targetSet2.getId());
+
+        targetSet1 = targetSetServiceImpl.findOne(targetSet1.getId()).orElseThrow();
+        targetSet3 = targetSetServiceImpl.findOne(targetSet3.getId()).orElseThrow();
+        Assertions.assertFalse(targetSetFound);
+        Assertions.assertEquals(targetSet3.getTargetSetUpdate().getId(), targetSet1.getId());
     }
 
     @Test
