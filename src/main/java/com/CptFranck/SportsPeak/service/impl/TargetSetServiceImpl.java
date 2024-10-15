@@ -62,8 +62,10 @@ public class TargetSetServiceImpl implements TargetSetService {
 
     @Override
     public void delete(Long id) {
-        TargetSetEntity exercise = targetSetRepository.findById(id).orElseThrow(() -> new TargetSetNotFoundException(id));
-        targetSetRepository.delete(exercise);
+        TargetSetEntity targetSet = targetSetRepository.findById(id).orElseThrow(() -> new TargetSetNotFoundException(id));
+        Optional<TargetSetEntity> targetSetUpdated = targetSetRepository.findByTargetSetUpdateId(id);
+        targetSetUpdated.ifPresent(targetSetEntity -> targetSetEntity.setTargetSetUpdate(targetSet.getTargetSetUpdate()));
+        targetSetRepository.delete(targetSet);
     }
 
     @Override
