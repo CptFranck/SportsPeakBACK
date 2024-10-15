@@ -143,13 +143,13 @@ class TargetSetControllerIntTest {
     @WithMockUser(username = "user", roles = "USER")
     void TargetSetController_AddTargetSetWithUpdate_Success() {
         TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
+        targetSet = targetSetRepository.findById(targetSet.getId()).orElseThrow();
         InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), targetSet.getId());
 
         TargetSetDto targetSetDto = targetSetController.addTargetSet(inputNewTargetSet);
 
-        assertExerciseDtoAndInputNew(inputNewTargetSet, targetSetDto);
         targetSet = targetSetRepository.findById(targetSet.getId()).orElseThrow();
-        Assertions.assertNotNull(targetSet.getTargetSetUpdate());
+        assertExerciseDtoAndInputNew(inputNewTargetSet, targetSetDto);
         Assertions.assertEquals(targetSet.getTargetSetUpdate().getId(), targetSetDto.getId());
     }
 

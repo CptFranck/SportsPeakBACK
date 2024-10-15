@@ -161,7 +161,7 @@ class ProgExerciseControllerIntTest {
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void ProgExerciseController_ModifyProgExerciseTrustLabel_UnsuccessfulProgExerciseNotFound() {
-        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
+        progExerciseRepository.save(createTestProgExercise(null, user, exercise));
         InputProgExerciseTrustLabel inputProgExerciseTrustLabel =
                 createTestInputProgExerciseTrustLabel(0L, false);
 
