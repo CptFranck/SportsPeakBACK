@@ -37,18 +37,24 @@ public class UserEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(
+            fetch = FetchType.EAGER
+    )
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "app_user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleEntity> roles;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(
+            fetch = FetchType.EAGER
+    )
     @JoinTable(name = "user_prog_exercise_subscriptions",
             joinColumns = @JoinColumn(name = "app_user_id"),
             inverseJoinColumns = @JoinColumn(name = "prog_exercise_id"))
     private Set<ProgExerciseEntity> subscribedProgExercises;
 
-    @OneToMany(mappedBy = "creator")
+    @OneToMany(mappedBy = "creator"
+            , fetch = FetchType.EAGER
+    )
     private Set<ProgExerciseEntity> progExercisesCreated;
 }
