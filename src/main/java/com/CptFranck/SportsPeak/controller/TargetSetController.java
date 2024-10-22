@@ -13,6 +13,7 @@ import com.CptFranck.SportsPeak.domain.input.targetSet.InputNewTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSetState;
 import com.CptFranck.SportsPeak.mappers.Mapper;
+import com.CptFranck.SportsPeak.service.PerformanceLogService;
 import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import com.CptFranck.SportsPeak.service.TargetSetService;
 import com.netflix.graphql.dgs.DgsComponent;
@@ -31,12 +32,14 @@ public class TargetSetController {
 
     private final TargetSetService targetSetService;
     private final ProgExerciseService progExerciseService;
+    private final PerformanceLogService performanceLogService;
     private final Mapper<TargetSetEntity, TargetSetDto> targetSetMapper;
 
-    public TargetSetController(TargetSetService targetSetService, ProgExerciseService progExerciseService, Mapper<TargetSetEntity, TargetSetDto> targetSetMapper) {
+    public TargetSetController(TargetSetService targetSetService, ProgExerciseService progExerciseService, Mapper<TargetSetEntity, TargetSetDto> targetSetMapper, PerformanceLogService performanceLogService) {
         this.targetSetService = targetSetService;
         this.progExerciseService = progExerciseService;
         this.targetSetMapper = targetSetMapper;
+        this.performanceLogService = performanceLogService;
     }
 
     @DgsQuery
@@ -59,7 +62,11 @@ public class TargetSetController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
     public TargetSetDto addTargetSet(@InputArgument InputNewTargetSet inputNewTargetSet) {
-        return targetSetMapper.mapTo(inputToEntity(inputNewTargetSet));
+        TargetSetEntity test = inputToEntity(inputNewTargetSet);
+        System.out.println("progExerciseEntity ID: " + test.getProgExercise().getId());
+        TargetSetDto testBis = targetSetMapper.mapTo(test);
+        System.out.println("progExerciseDto ID: " + testBis.getProgExercise().getId());
+        return testBis;
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -78,7 +85,13 @@ public class TargetSetController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
     public Long deleteTargetSet(@InputArgument Long targetSetId) {
-        targetSetService.delete(targetSetId);
+        if (targetSetService.exists(targetSetId)) {
+            List<PerformanceLogEntity> performanceLogs = performanceLogService.findAllByTargetSetId(targetSetId);
+            performanceLogs.forEach(performanceLog -> performanceLogService.delete(performanceLog.getId()));
+            targetSetService.delete(targetSetId);
+        } else {
+            throw new TargetSetNotFoundException(targetSetId);
+        }
         return targetSetId;
     }
 
