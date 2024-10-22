@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 @SpringBootTest(classes = {
@@ -34,8 +35,7 @@ public class LocalDateTimeScalarIntTest {
     @Test
     public void LocalDateTimeScalar_serialize_Success() {
         LocalDateTime localDateTime = LocalDateTime.now();
-        String expected = localDateTime.toString();
-        expected = expected.substring(0, expected.length() - 2);
+        String expected = localDateTime.format(DateTimeFormatter.ISO_DATE_TIME);
 
         String result = localDateTimeScalar.serialize(localDateTime);
 
@@ -81,8 +81,8 @@ public class LocalDateTimeScalarIntTest {
     @Test
     public void LocalDateTimeScalar_valueToLiteral() {
         LocalDateTime localDateTime = LocalDateTime.now();
-        String localDateTimeString = localDateTime.toString();
-        StringValue expected = new StringValue(localDateTimeString.substring(0, localDateTimeString.length() - 2));
+        String localDateTimeString = localDateTime.format(DateTimeFormatter.ISO_DATE_TIME);
+        StringValue expected = new StringValue(localDateTimeString);
 
         Value result = localDateTimeScalar.valueToLiteral(localDateTime);
 
