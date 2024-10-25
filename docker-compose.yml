@@ -8,4 +8,8 @@ services:
     environment:
       POSTGRES_PASSWORD: changemeinprod!
     volumes:
-      - /var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
+    name: sports_peak_postgres_db
