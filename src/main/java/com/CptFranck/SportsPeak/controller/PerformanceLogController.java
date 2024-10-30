@@ -77,7 +77,8 @@ public class PerformanceLogController {
         Long id;
         if (inputNewPerformanceLog instanceof InputPerformanceLog) {
             id = ((InputPerformanceLog) inputNewPerformanceLog).getId();
-            performanceLogService.findOne(id).orElseThrow(() -> new PerformanceLogNotFoundException(id));
+            if (!performanceLogService.exists(id))
+                throw new PerformanceLogNotFoundException(id);
         } else {
             id = null;
         }
