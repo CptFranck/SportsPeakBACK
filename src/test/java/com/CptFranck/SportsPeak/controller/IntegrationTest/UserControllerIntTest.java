@@ -63,6 +63,7 @@ class UserControllerIntTest {
         progExerciseRepository.deleteAll();
         exerciseRepository.deleteAll();
         userRepository.deleteAll();
+        roleRepository.deleteAll();
     }
 
     @Test
