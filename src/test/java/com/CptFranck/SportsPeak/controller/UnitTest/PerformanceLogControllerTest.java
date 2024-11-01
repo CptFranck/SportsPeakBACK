@@ -150,7 +150,7 @@ class PerformanceLogControllerTest {
     @Test
     void PerformanceLogController_ModifyPerformanceLog_UnsuccessfulPerformanceNotFound() {
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
-        when(performanceLogService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
+        when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(false);
 
         Assertions.assertThrows(PerformanceLogNotFoundException.class,
                 () -> performanceLogController.modifyPerformanceLog(
@@ -162,7 +162,7 @@ class PerformanceLogControllerTest {
     @Test
     void PerformanceLogController_ModifyPerformanceLog_UnsuccessfulWrongLabel() {
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
-        when(performanceLogService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(performanceLog));
+        when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(true);
 
         Assertions.assertThrows(LabelMatchNotFoundException.class,
                 () -> performanceLogController.modifyPerformanceLog(
@@ -174,7 +174,7 @@ class PerformanceLogControllerTest {
     @Test
     void PerformanceLogController_ModifyPerformanceLog_Success() {
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
-        when(performanceLogService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(performanceLog));
+        when(performanceLogService.exists(Mockito.any(Long.class))).thenReturn(true);
         when(performanceLogService.save(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLog);
         when(performanceLogMapper.mapTo(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLogDto);
 
