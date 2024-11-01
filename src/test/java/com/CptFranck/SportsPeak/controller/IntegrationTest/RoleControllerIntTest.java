@@ -47,11 +47,14 @@ class RoleControllerIntTest {
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void RoleController_GetRoles_Success() {
+        List<RoleDto> roleDtos = roleController.getRoles();
         RoleEntity role = roleRepository.save(createTestRole(null, 0));
 
-        List<RoleDto> roleDtos = roleController.getRoles();
-
-        assertEqualExerciseList(List.of(role), roleDtos);
+        roleDtos.forEach(System.out::println);
+//        List<RoleDto>
+        roleDtos = roleController.getRoles();
+        roleDtos.forEach(System.out::println);
+        assertEqualRoleList(List.of(role), roleDtos);
     }
 
     @Test
@@ -121,15 +124,15 @@ class RoleControllerIntTest {
         Assertions.assertEquals(role.getId(), id);
     }
 
-    private void assertEqualExerciseList(
+    private void assertEqualRoleList(
             List<RoleEntity> roleEntities,
             List<RoleDto> roleDtos
     ) {
-        roleDtos.forEach(roleDto -> assertExerciseDtoAndEntity(
-                roleEntities.stream().filter(
-                        roleEntity -> Objects.equals(roleEntity.getId(), roleDto.getId())
-                ).toList().getFirst(),
-                roleDto)
+        roleEntities.forEach(roleEntity -> assertExerciseDtoAndEntity(
+                roleEntity,
+                roleDtos.stream().filter(
+                        roleDto -> Objects.equals(roleDto.getId(), roleEntity.getId())
+                ).toList().getFirst())
         );
     }
 
