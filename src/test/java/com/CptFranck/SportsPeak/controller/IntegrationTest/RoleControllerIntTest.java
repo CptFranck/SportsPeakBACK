@@ -50,10 +50,10 @@ class RoleControllerIntTest {
         List<RoleDto> roleDtos = roleController.getRoles();
         RoleEntity role = roleRepository.save(createTestRole(null, 0));
 
-        roleDtos.forEach(System.out::println);
+        roleDtos.forEach((r) -> System.out.println(role.getName()));
 //        List<RoleDto>
         roleDtos = roleController.getRoles();
-        roleDtos.forEach(System.out::println);
+        roleDtos.forEach((r) -> System.out.println(role.getName()));
         assertEqualRoleList(List.of(role), roleDtos);
     }
 
