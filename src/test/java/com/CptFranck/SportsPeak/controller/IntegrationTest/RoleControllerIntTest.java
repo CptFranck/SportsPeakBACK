@@ -48,12 +48,13 @@ class RoleControllerIntTest {
     @WithMockUser(username = "user", roles = "ADMIN")
     void RoleController_GetRoles_Success() {
         List<RoleDto> roleDtos = roleController.getRoles();
+        roleDtos.forEach((r) -> System.out.println(r.getName()));
+
         RoleEntity role = roleRepository.save(createTestRole(null, 0));
 
-        roleDtos.forEach((r) -> System.out.println(role.getName()));
 //        List<RoleDto>
         roleDtos = roleController.getRoles();
-        roleDtos.forEach((r) -> System.out.println(role.getName()));
+        roleDtos.forEach((r) -> System.out.println(r.getName()));
         assertEqualRoleList(List.of(role), roleDtos);
     }
 
