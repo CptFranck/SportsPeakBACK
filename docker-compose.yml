@@ -9,7 +9,14 @@ services:
       POSTGRES_PASSWORD: changemeinprod!
     volumes:
       - db_data:/var/lib/postgresql/data
+    networks:
+      net:
+        ipv4_address: 172.20.0.2
 
 volumes:
   db_data:
     name: sports_peak_postgres_db
+
+networks:
+  net:
+    external: true
