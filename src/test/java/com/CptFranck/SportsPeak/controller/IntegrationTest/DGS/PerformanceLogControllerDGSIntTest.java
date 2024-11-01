@@ -108,10 +108,10 @@ class PerformanceLogControllerDGSIntTest {
         when(performanceLogService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(performanceLog));
         when(performanceLogMapper.mapTo(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLogDto);
 
-        LinkedHashMap<String, Object> PerformanceLogDto =
+        LinkedHashMap<String, Object> performanceLogDto =
                 dgsQueryExecutor.executeAndExtractJsonPath(getPerformanceLogByIdQuery, "data.getPerformanceLogById", variables);
 
-        Assertions.assertNotNull(PerformanceLogDto);
+        Assertions.assertNotNull(performanceLogDto);
     }
 
     @Test

@@ -59,9 +59,9 @@ class PrivilegeControllerIntTest {
     void PrivilegeController_GetPrivilegeById_Success() {
         PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(null, 0));
 
-        PrivilegeDto PerformanceLogDto = privilegeController.getPrivilegeById(privilege.getId());
+        PrivilegeDto performanceLogDto = privilegeController.getPrivilegeById(privilege.getId());
 
-        assertExerciseDtoAndEntity(privilege, PerformanceLogDto);
+        assertExerciseDtoAndEntity(privilege, performanceLogDto);
     }
 
     @Test
