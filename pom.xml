@@ -20,9 +20,10 @@
         <sonar.language>java</sonar.language>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-        <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
-        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../target/jacoco-report/jacoco.xml
-        </sonar.coverage.jacoco.xmlReportPaths>
+        <!--        <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>-->
+        <!--        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../target/jacoco-report/jacoco.xml-->
+        <!--        </sonar.coverage.jacoco.xmlReportPaths>-->
+        <sonar.jacoco.reportPaths>${project.build.directory}/jacoco.exec</sonar.jacoco.reportPaths>
     </properties>
 
     <dependencyManagement>
