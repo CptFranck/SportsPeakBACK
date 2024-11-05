@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Collection;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -17,7 +17,7 @@ public class RoleDto {
 
     private String name;
 
-    private Collection<UserDto> users;
+    private Set<UserDto> users;
 
-    private Collection<PrivilegeDto> privileges;
+    private Set<PrivilegeDto> privileges;
 }
