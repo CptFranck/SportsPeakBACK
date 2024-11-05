@@ -153,10 +153,10 @@ class UserControllerIntTest {
     @WithMockUser(username = "user", roles = "USER")
     void UserController_modifyUserEmailQuery_Success() {
         UserEntity user = createTestUser(null);
-        String rawPasword = user.getPassword();
-        user.setPassword(passwordEncoder.encode(rawPasword));
+        String rawPassword = user.getPassword();
+        user.setPassword(passwordEncoder.encode(rawPassword));
         user = userRepository.save(user);
-        InputUserEmail inputUserIdentity = createTestInputUserEmail(user.getId(), rawPasword);
+        InputUserEmail inputUserIdentity = createTestInputUserEmail(user.getId(), rawPassword);
 
         AuthDto authDto = userController.modifyUserEmail(inputUserIdentity);
 
