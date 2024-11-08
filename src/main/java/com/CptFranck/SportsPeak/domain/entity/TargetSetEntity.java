@@ -62,8 +62,6 @@ public class TargetSetEntity {
     @JoinColumn(name = "target_set_update_id")
     private TargetSetEntity targetSetUpdate;
 
-    @OneToMany(mappedBy = "targetSet"
-            , fetch = FetchType.EAGER
-    )
+    @OneToMany(mappedBy = "targetSet")
     private Set<PerformanceLogEntity> performanceLogs;
 }
