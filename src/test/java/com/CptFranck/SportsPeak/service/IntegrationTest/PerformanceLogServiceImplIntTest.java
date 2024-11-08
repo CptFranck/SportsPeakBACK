@@ -58,7 +58,7 @@ public class PerformanceLogServiceImplIntTest {
     void setUp() {
         UserEntity user = userRepository.save(createTestUser(null));
         ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
-        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(1L, user, exercise));
+        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
         targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
     }
 

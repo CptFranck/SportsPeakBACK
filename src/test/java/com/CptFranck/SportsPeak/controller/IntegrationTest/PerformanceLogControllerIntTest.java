@@ -58,7 +58,7 @@ class PerformanceLogControllerIntTest {
     void setUp() {
         UserEntity user = userRepository.save(createTestUser(null));
         ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
-        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(1L, user, exercise));
+        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
         user.getProgExercisesCreated().add(progExercise);
         exercise.getProgExercises().add(progExercise);
         exerciseRepository.save(exercise);
