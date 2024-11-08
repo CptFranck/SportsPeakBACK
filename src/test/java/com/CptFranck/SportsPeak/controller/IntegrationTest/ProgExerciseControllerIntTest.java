@@ -93,7 +93,7 @@ class ProgExerciseControllerIntTest {
 
         ProgExerciseDto progExerciseDto = progExerciseController.getProgExerciseById(progExercise.getId());
 
-        assertExerciseDtoAndEntity(progExercise, progExerciseDto);
+        assertProgExerciseDtoAndEntity(progExercise, progExerciseDto);
     }
 
     @Test
@@ -123,7 +123,7 @@ class ProgExerciseControllerIntTest {
 
         ProgExerciseDto progExerciseDto = progExerciseController.addProgExercise(inputNewExercise);
 
-        assertExerciseDtoAndInputNew(inputNewExercise, progExerciseDto);
+        assertProgExerciseDtoAndInputNew(inputNewExercise, progExerciseDto);
     }
 
     @Test
@@ -155,7 +155,7 @@ class ProgExerciseControllerIntTest {
 
         ProgExerciseDto progExerciseDto = progExerciseController.modifyProgExercise(inputNewExercise);
 
-        assertExerciseDtoAndInput(inputNewExercise, progExerciseDto);
+        assertProgExerciseDtoAndInput(inputNewExercise, progExerciseDto);
     }
 
     @Test
@@ -226,7 +226,7 @@ class ProgExerciseControllerIntTest {
             List<ProgExerciseEntity> progExerciseEntities,
             List<ProgExerciseDto> progExerciseDtos
     ) {
-        progExerciseDtos.forEach(progExerciseDto -> assertExerciseDtoAndEntity(
+        progExerciseDtos.forEach(progExerciseDto -> assertProgExerciseDtoAndEntity(
                 progExerciseEntities.stream().filter(
                         progExercise -> Objects.equals(progExercise.getId(), progExerciseDto.getId())
                 ).toList().getFirst(),
@@ -234,7 +234,7 @@ class ProgExerciseControllerIntTest {
         );
     }
 
-    private void assertExerciseDtoAndEntity(ProgExerciseEntity progExercise, ProgExerciseDto progExerciseDto) {
+    private void assertProgExerciseDtoAndEntity(ProgExerciseEntity progExercise, ProgExerciseDto progExerciseDto) {
         Assertions.assertNotNull(progExerciseDto);
         Assertions.assertEquals(progExercise.getName(), progExerciseDto.getName());
         Assertions.assertEquals(progExercise.getNote(), progExerciseDto.getNote());
@@ -245,7 +245,7 @@ class ProgExerciseControllerIntTest {
         Assertions.assertEquals(progExercise.getTargetSets().size(), progExerciseDto.getTargetSets().size());
     }
 
-    private void assertExerciseDtoAndInputNew(InputNewProgExercise inputNewProgExercise, ProgExerciseDto progExerciseDto) {
+    private void assertProgExerciseDtoAndInputNew(InputNewProgExercise inputNewProgExercise, ProgExerciseDto progExerciseDto) {
         Assertions.assertNotNull(progExerciseDto);
         Assertions.assertEquals(inputNewProgExercise.getName(), progExerciseDto.getName());
         Assertions.assertEquals(inputNewProgExercise.getNote(), progExerciseDto.getNote());
@@ -254,7 +254,7 @@ class ProgExerciseControllerIntTest {
         Assertions.assertEquals(inputNewProgExercise.getExerciseId(), progExerciseDto.getExercise().getId());
     }
 
-    private void assertExerciseDtoAndInput(InputProgExercise inputProgExercise, ProgExerciseDto progExerciseDto) {
+    private void assertProgExerciseDtoAndInput(InputProgExercise inputProgExercise, ProgExerciseDto progExerciseDto) {
         Assertions.assertNotNull(progExerciseDto);
         Assertions.assertEquals(inputProgExercise.getName(), progExerciseDto.getName());
         Assertions.assertEquals(inputProgExercise.getNote(), progExerciseDto.getNote());
