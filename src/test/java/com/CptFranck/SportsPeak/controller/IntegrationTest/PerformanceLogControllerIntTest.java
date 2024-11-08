@@ -82,7 +82,7 @@ class PerformanceLogControllerIntTest {
 
         List<PerformanceLogDto> performanceLogsDtos = performanceLogController.getPerformanceLogs();
 
-        assertEqualExerciseList(List.of(performanceLogEntity), performanceLogsDtos);
+        assertEqualPerformanceLogList(List.of(performanceLogEntity), performanceLogsDtos);
     }
 
     @Test
@@ -99,7 +99,7 @@ class PerformanceLogControllerIntTest {
         PerformanceLogDto performanceLogDto =
                 performanceLogController.getPerformanceLogById(performanceLogEntity.getId());
 
-        assertExerciseDtoAndEntity(performanceLogEntity, performanceLogDto);
+        assertPerformanceLogDtoAndEntity(performanceLogEntity, performanceLogDto);
     }
 
     @Test
@@ -111,7 +111,7 @@ class PerformanceLogControllerIntTest {
         List<PerformanceLogDto> performanceLogsDtos =
                 performanceLogController.getPerformanceLogsByTargetSetsId(targetSet.getId());
 
-        assertEqualExerciseList(List.of(performanceLogEntity), performanceLogsDtos);
+        assertEqualPerformanceLogList(List.of(performanceLogEntity), performanceLogsDtos);
     }
 
     @Test
@@ -145,7 +145,7 @@ class PerformanceLogControllerIntTest {
 
         PerformanceLogDto performanceLogDto = performanceLogController.addPerformanceLog(inputNewPerformanceLog);
 
-        assertExerciseDtoAndInput(inputNewPerformanceLog, performanceLogDto);
+        assertPerformanceLogDtoAndInput(inputNewPerformanceLog, performanceLogDto);
     }
 
     @Test
@@ -182,7 +182,7 @@ class PerformanceLogControllerIntTest {
 
         PerformanceLogDto performanceLogDto = performanceLogController.modifyPerformanceLog(inputPerformanceLog);
 
-        assertExerciseDtoAndInput(inputPerformanceLog, performanceLogDto);
+        assertPerformanceLogDtoAndInput(inputPerformanceLog, performanceLogDto);
     }
 
     @Test
@@ -204,11 +204,11 @@ class PerformanceLogControllerIntTest {
         Assertions.assertEquals(performanceLogEntity.getId(), id);
     }
 
-    private void assertEqualExerciseList(
+    private void assertEqualPerformanceLogList(
             List<PerformanceLogEntity> performanceLogEntities,
             List<PerformanceLogDto> performanceLogDtos
     ) {
-        performanceLogDtos.forEach(performanceLogDto -> assertExerciseDtoAndEntity(
+        performanceLogDtos.forEach(performanceLogDto -> assertPerformanceLogDtoAndEntity(
                 performanceLogEntities.stream().filter(
                         performanceLogEntity -> Objects.equals(performanceLogEntity.getId(), performanceLogDto.getId())
                 ).toList().getFirst(),
@@ -216,7 +216,7 @@ class PerformanceLogControllerIntTest {
         );
     }
 
-    private void assertExerciseDtoAndEntity(PerformanceLogEntity performanceLogEntity, PerformanceLogDto performanceLogDto) {
+    private void assertPerformanceLogDtoAndEntity(PerformanceLogEntity performanceLogEntity, PerformanceLogDto performanceLogDto) {
         Assertions.assertNotNull(performanceLogDto);
         Assertions.assertEquals(performanceLogEntity.getId(), performanceLogDto.getId());
         Assertions.assertEquals(performanceLogEntity.getSetIndex(), performanceLogDto.getSetIndex());
@@ -227,7 +227,7 @@ class PerformanceLogControllerIntTest {
         Assertions.assertEquals(performanceLogEntity.getTargetSet().getId(), performanceLogDto.getTargetSet().getId());
     }
 
-    private void assertExerciseDtoAndInput(InputNewPerformanceLog inputNewPerformanceLog, PerformanceLogDto performanceLogDto) {
+    private void assertPerformanceLogDtoAndInput(InputNewPerformanceLog inputNewPerformanceLog, PerformanceLogDto performanceLogDto) {
         Assertions.assertNotNull(performanceLogDto);
         Assertions.assertEquals(inputNewPerformanceLog.getSetIndex(), performanceLogDto.getSetIndex());
         Assertions.assertEquals(inputNewPerformanceLog.getRepetitionNumber(), performanceLogDto.getRepetitionNumber());
