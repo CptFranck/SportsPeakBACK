@@ -23,6 +23,4 @@ public class PerformanceLogDto {
     private String weightUnit;
 
     private LocalDateTime logDate;
-
-    private TargetSetDto targetSet;
 }
