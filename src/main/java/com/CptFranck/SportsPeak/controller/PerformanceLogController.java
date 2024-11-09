@@ -26,7 +26,7 @@ public class PerformanceLogController {
     private final PerformanceLogService performanceLogService;
     private final Mapper<PerformanceLogEntity, PerformanceLogDto> performanceLogMapper;
 
-    public PerformanceLogController(TargetSetService targetSetService, TargetSetService targetSetService1, PerformanceLogService performanceLogService, Mapper<PerformanceLogEntity, PerformanceLogDto> performanceLogMapper) {
+    public PerformanceLogController(TargetSetService targetSetService, PerformanceLogService performanceLogService, Mapper<PerformanceLogEntity, PerformanceLogDto> performanceLogMapper) {
         this.targetSetService = targetSetService;
         this.performanceLogMapper = performanceLogMapper;
         this.performanceLogService = performanceLogService;
