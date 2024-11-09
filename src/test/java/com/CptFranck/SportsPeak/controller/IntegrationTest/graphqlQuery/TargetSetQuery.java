@@ -37,21 +37,6 @@ public class TargetSetQuery {
                          weightUnit
                          logDate
                      }
-                     progExercise {
-                         id
-                         name
-                         note
-                         exercise {
-                             id
-                             name
-                         }
-                         trustLabel
-                         visibility
-                         creator {
-                             id
-                             username
-                         }
-                     }
                  }
              }
             """;
@@ -89,21 +74,6 @@ public class TargetSetQuery {
                         weightUnit
                         logDate
                     }
-                    progExercise {
-                        id
-                        name
-                        note
-                        exercise {
-                            id
-                            name
-                        }
-                        trustLabel
-                        visibility
-                        creator {
-                            id
-                            username
-                        }
-                    }
                 }
             }
             """;
@@ -140,21 +110,6 @@ public class TargetSetQuery {
                         weight
                         weightUnit
                         logDate
-                    }
-                    progExercise {
-                        id
-                        name
-                        note
-                        exercise {
-                            id
-                            name
-                        }
-                        trustLabel
-                        visibility
-                        creator {
-                            id
-                            username
-                        }
                     }
                 }
             }

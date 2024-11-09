@@ -8,6 +8,7 @@ import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.mappers.Mapper;
+import com.CptFranck.SportsPeak.service.PerformanceLogService;
 import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import com.CptFranck.SportsPeak.service.TargetSetService;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -58,6 +59,9 @@ class TargetSetControllerDGSIntTest {
 
     @MockBean
     private ProgExerciseService progExerciseService;
+
+    @MockBean
+    private PerformanceLogService performanceLogService;
 
     private TargetSetEntity targetSet;
     private TargetSetDto targetSetDto;

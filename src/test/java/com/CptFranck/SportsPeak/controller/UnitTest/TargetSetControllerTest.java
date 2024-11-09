@@ -60,6 +60,7 @@ class TargetSetControllerTest {
         ExerciseEntity exercise = createTestExercise(1L);
         progExercise = createTestProgExercise(1L, user, exercise);
         targetSet = createTestTargetSet(1L, progExercise, null);
+        progExercise.getTargetSets().add(targetSet);
         targetSetDto = createTestTargetSetDto(1L, null);
     }
 
@@ -200,6 +201,7 @@ class TargetSetControllerTest {
     void TargetSetController_ModifyTargetSetState_Success() {
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
         when(targetSetService.save(Mockito.any(TargetSetEntity.class))).thenReturn(targetSet);
+        when(TargetSetMapper.mapTo(Mockito.any(TargetSetEntity.class))).thenReturn(targetSetDto);
 
         List<TargetSetDto> targetSetDtos = targetSetController.modifyTargetSetState(
                 createTestInputInputTargetSetState(1L, false)

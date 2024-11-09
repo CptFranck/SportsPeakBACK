@@ -9,7 +9,6 @@ type TargetSet {
     restTime: Duration!
     creationDate: LocalDateTime!
     state: String!
-    progExercise: ProgExercise!
     targetSetUpdate: TargetSet
     performanceLogs: [PerformanceLog]!
 }
