@@ -44,15 +44,13 @@ public class UserEntity {
     private Set<RoleEntity> roles;
 
     @ManyToMany(
-            fetch = FetchType.EAGER
+//            fetch = FetchType.EAGER
     )
     @JoinTable(name = "user_prog_exercise_subscriptions",
             joinColumns = @JoinColumn(name = "app_user_id"),
             inverseJoinColumns = @JoinColumn(name = "prog_exercise_id"))
     private Set<ProgExerciseEntity> subscribedProgExercises;
 
-    @OneToMany(mappedBy = "creator"
-            , fetch = FetchType.EAGER
-    )
+    @OneToMany(mappedBy = "creator")
     private Set<ProgExerciseEntity> progExercisesCreated;
 }
