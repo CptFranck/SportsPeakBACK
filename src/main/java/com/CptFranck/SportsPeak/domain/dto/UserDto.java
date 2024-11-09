@@ -24,6 +24,4 @@ public class UserDto {
     private String username;
 
     private Set<RoleDto> roles;
-
-    private Set<ProgExerciseDto> subscribedProgExercises;
 }
