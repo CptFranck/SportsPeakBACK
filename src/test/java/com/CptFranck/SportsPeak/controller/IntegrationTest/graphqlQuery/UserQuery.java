@@ -28,13 +28,6 @@ public class UserQuery {
                                  trustLabel
                                  visibility
                              }
-                             progExercisesCreated {
-                                 id
-                                 name
-                                 note
-                                 trustLabel
-                                 visibility
-                             }
                          }
                      }
             """;
@@ -57,13 +50,6 @@ public class UserQuery {
                                }
                            }
                            subscribedProgExercises {
-                               id
-                               name
-                               note
-                               trustLabel
-                               visibility
-                           }
-                           progExercisesCreated {
                                id
                                name
                                note
@@ -150,13 +136,6 @@ public class UserQuery {
                         trustLabel
                         visibility
                     }
-                    progExercisesCreated {
-                        id
-                        name
-                        note
-                        trustLabel
-                        visibility
-                    }
                 }
             }
             """;
@@ -179,13 +158,6 @@ public class UserQuery {
                         }
                     }
                     subscribedProgExercises {
-                        id
-                        name
-                        note
-                        trustLabel
-                        visibility
-                    }
-                    progExercisesCreated {
                         id
                         name
                         note
@@ -223,13 +195,6 @@ public class UserQuery {
                             trustLabel
                             visibility
                         }
-                        progExercisesCreated {
-                            id
-                            name
-                            note
-                            trustLabel
-                            visibility
-                        }
                     }
                 }
             }
@@ -259,13 +224,6 @@ public class UserQuery {
                         trustLabel
                         visibility
                     }
-                    progExercisesCreated {
-                        id
-                        name
-                        note
-                        trustLabel
-                        visibility
-                    }
                 }
             }
             """;
@@ -288,13 +246,6 @@ public class UserQuery {
                         }
                     }
                     subscribedProgExercises {
-                        id
-                        name
-                        note
-                        trustLabel
-                        visibility
-                    }
-                    progExercisesCreated {
                         id
                         name
                         note

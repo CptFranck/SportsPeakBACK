@@ -67,7 +67,6 @@ public class TestUserUtils {
                 "Doe",
                 "John_Doe",
                 new HashSet<RoleDto>(),
-                new HashSet<ProgExerciseDto>(),
                 new HashSet<ProgExerciseDto>()
         );
     }

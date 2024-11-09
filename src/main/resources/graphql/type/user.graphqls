@@ -6,7 +6,6 @@ type User {
     username: String!
     roles: [Role]!
     subscribedProgExercises: [ProgExercise]!
-    progExercisesCreated: [ProgExercise]!
 }
 
 input InputRegisterNewUser {
