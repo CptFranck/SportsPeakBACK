@@ -13,6 +13,7 @@ import com.CptFranck.SportsPeak.domain.model.JWToken;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.RoleService;
 import com.CptFranck.SportsPeak.service.UserService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,22 +59,28 @@ class UserControllerTest {
     private AuthenticationManager authenticationManager;
 
     private UserEntity user;
-    private UserDto userDto;
+    private UserDto userDtoMapped;
 
     @BeforeEach
     void init() {
         user = createTestUser(1L);
-        userDto = createTestUserDto(1L);
+        userDtoMapped = createTestUserDto(1L);
+    }
+
+    @AfterEach
+    void after() {
+        user = null;
+        userDtoMapped = null;
     }
 
     @Test
     void UserController_GetUsers_Success() {
         when(userService.findAll()).thenReturn(List.of(user));
-        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
+        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDtoMapped);
 
         List<UserDto> userDtos = userController.getUsers();
 
-        Assertions.assertEquals(List.of(this.userDto), userDtos);
+        Assertions.assertEquals(List.of(this.userDtoMapped), userDtos);
     }
 
     @Test
@@ -88,11 +95,11 @@ class UserControllerTest {
     @Test
     void UserController_GetUserById_Success() {
         when(userService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(user));
-        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
+        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDtoMapped);
 
         UserDto userDto = userController.getUserById(1L);
 
-        Assertions.assertEquals(this.userDto, userDto);
+        Assertions.assertEquals(this.userDtoMapped, userDto);
     }
 
     @Test
@@ -114,11 +121,11 @@ class UserControllerTest {
     @Test
     void UserController_ModifyUserIdentity_Success() {
         when(userService.changeIdentity(Mockito.any(Long.class), Mockito.any(String.class), Mockito.any(String.class))).thenReturn(user);
-        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
+        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDtoMapped);
 
         UserDto userDto = userController.modifyUserIdentity(createTestInputUserIdentity(1L));
 
-        Assertions.assertEquals(this.userDto, userDto);
+        Assertions.assertEquals(this.userDtoMapped, userDto);
     }
 
     @Test
@@ -126,20 +133,20 @@ class UserControllerTest {
         Set<RoleEntity> roles = new HashSet<RoleEntity>();
         when(roleService.findMany(Mockito.anySet())).thenReturn(roles);
         when(userService.changeRoles(Mockito.any(Long.class), Mockito.anySet())).thenReturn(user);
-        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
+        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDtoMapped);
 
         UserDto userDto = userController.modifyUserRoles(createTestInputUserRoles(1L));
 
-        Assertions.assertEquals(this.userDto, userDto);
+        Assertions.assertEquals(this.userDtoMapped, userDto);
     }
 
     @Test
     void UserController_modifyUserEmailQuery_Success() {
         JWToken jwToken = new JWToken("token", LocalDateTime.now());
-        AuthDto returnValue = new AuthDto(jwToken, userDto);
+        AuthDto returnValue = new AuthDto(jwToken, userDtoMapped);
 
         when(userService.changeEmail(Mockito.any(Long.class), Mockito.any(String.class), Mockito.any(String.class))).thenReturn(user);
-        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
+        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDtoMapped);
         when(authenticationManager.authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class))).thenReturn(null);
         when(userAuthProvider.generateToken(Mockito.any())).thenReturn(jwToken);
 
@@ -153,21 +160,21 @@ class UserControllerTest {
     @Test
     void UserController_ModifyUserUsername_Success() {
         when(userService.changeUsername(Mockito.any(Long.class), Mockito.any(String.class))).thenReturn(user);
-        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
+        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDtoMapped);
 
         UserDto userDto = userController.modifyUserUsername(createTestInputUserUsername(1L));
 
-        Assertions.assertEquals(this.userDto, userDto);
+        Assertions.assertEquals(this.userDtoMapped, userDto);
     }
 
     @Test
     void UserController_ModifyUserPassword_Success() {
         when(userService.changePassword(Mockito.any(Long.class), Mockito.any(String.class), Mockito.any(String.class))).thenReturn(user);
-        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
+        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDtoMapped);
 
         UserDto userDto = userController.modifyUserPassword(createTestInputUserPassword(1L, "rawPassword"));
 
-        Assertions.assertEquals(this.userDto, userDto);
+        Assertions.assertEquals(this.userDtoMapped, userDto);
     }
 
     @Test
