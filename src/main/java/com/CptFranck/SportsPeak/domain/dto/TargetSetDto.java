@@ -35,8 +35,6 @@ public class TargetSetDto {
 
     private String state;
 
-    private ProgExerciseDto progExercise;
-
     private TargetSetDto targetSetUpdate;
 
     private Set<PerformanceLogDto> performanceLogs;
