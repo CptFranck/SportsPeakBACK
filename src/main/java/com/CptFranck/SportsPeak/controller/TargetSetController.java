@@ -65,7 +65,6 @@ public class TargetSetController {
         TargetSetEntity test = inputToEntity(inputNewTargetSet);
         System.out.println("progExerciseEntity ID: " + test.getProgExercise().getId());
         TargetSetDto testBis = targetSetMapper.mapTo(test);
-        System.out.println("progExerciseDto ID: " + testBis.getProgExercise().getId());
         return testBis;
     }
 
