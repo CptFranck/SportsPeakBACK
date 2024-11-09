@@ -2,7 +2,6 @@ package com.CptFranck.SportsPeak.domain.utils;
 
 import com.CptFranck.SportsPeak.domain.dto.PrivilegeDto;
 import com.CptFranck.SportsPeak.domain.dto.RoleDto;
-import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
@@ -41,7 +40,6 @@ public class TestRoleUtils {
         return new RoleDto(
                 id,
                 "Role name",
-                new HashSet<UserDto>(),
                 new HashSet<PrivilegeDto>()
         );
     }

@@ -2,7 +2,6 @@ package com.CptFranck.SportsPeak.mappers.impl;
 
 import com.CptFranck.SportsPeak.domain.dto.PrivilegeDto;
 import com.CptFranck.SportsPeak.domain.dto.RoleDto;
-import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
@@ -18,7 +17,6 @@ import static com.CptFranck.SportsPeak.domain.utils.TestPrivilegeUtils.createTes
 import static com.CptFranck.SportsPeak.domain.utils.TestRoleUtils.createTestRole;
 import static com.CptFranck.SportsPeak.domain.utils.TestRoleUtils.createTestRoleDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
 
 @ExtendWith(MockitoExtension.class)
 public class RoleMapperImplTest {
@@ -46,19 +44,12 @@ public class RoleMapperImplTest {
                 role.getPrivileges().stream().map(PrivilegeEntity::getId).toArray(),
                 roleDto.getPrivileges().stream().map(PrivilegeDto::getId).toArray()
         );
-        Assertions.assertEquals(role.getUsers().size(), roleDto.getUsers().size());
-        Assertions.assertArrayEquals(
-                role.getUsers().stream().map(UserEntity::getId).toArray(),
-                roleDto.getUsers().stream().map(UserDto::getId).toArray()
-        );
     }
 
     @Test
     void roleMapper_MapFrom_Success() {
         RoleDto role = createTestRoleDto(1L);
-        UserDto user = createTestUserDto(1L);
         PrivilegeDto privilege = createTestPrivilegeDto(1L);
-        role.getUsers().add(user);
         role.getPrivileges().add(privilege);
 
         RoleEntity roleEntity = roleMapper.mapFrom(role);
@@ -69,11 +60,6 @@ public class RoleMapperImplTest {
         Assertions.assertArrayEquals(
                 role.getPrivileges().stream().map(PrivilegeDto::getId).toArray(),
                 roleEntity.getPrivileges().stream().map(PrivilegeEntity::getId).toArray()
-        );
-        Assertions.assertEquals(role.getUsers().size(), roleEntity.getUsers().size());
-        Assertions.assertArrayEquals(
-                role.getUsers().stream().map(UserDto::getId).toArray(),
-                roleEntity.getUsers().stream().map(UserEntity::getId).toArray()
         );
     }
 }

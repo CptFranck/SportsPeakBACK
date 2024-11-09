@@ -10,13 +10,6 @@ public class RoleQuery {
                      getRoles {
                          id
                          name
-                         users {
-                             id
-                             email
-                             firstName
-                             lastName
-                             username
-                         }
                          privileges {
                              id
                              name
@@ -31,13 +24,6 @@ public class RoleQuery {
                        getRoleById (id: $id) {
                            id
                            name
-                           users {
-                               id
-                               email
-                               firstName
-                               lastName
-                               username
-                           }
                            privileges {
                                id
                                name
@@ -52,13 +38,6 @@ public class RoleQuery {
                      addRole(inputNewRole: $inputNewRole) {
                          id
                          name
-                         users {
-                             id
-                             email
-                             firstName
-                             lastName
-                             username
-                         }
                          privileges {
                              id
                              name
@@ -73,13 +52,6 @@ public class RoleQuery {
                      modifyRole(inputRole: $inputRole) {
                          id
                          name
-                         users {
-                             id
-                             email
-                             firstName
-                             lastName
-                             username
-                         }
                          privileges {
                              id
                              name

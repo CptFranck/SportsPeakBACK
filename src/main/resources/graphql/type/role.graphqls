@@ -1,7 +1,6 @@
 type Role {
     id: Int!
     name: String!
-    users: [User]!
     privileges: [Privilege]!
 }
 
