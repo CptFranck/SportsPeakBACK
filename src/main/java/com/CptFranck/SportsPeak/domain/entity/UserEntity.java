@@ -37,9 +37,7 @@ public class UserEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @ManyToMany(
-            fetch = FetchType.EAGER
-    )
+    @ManyToMany
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "app_user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
