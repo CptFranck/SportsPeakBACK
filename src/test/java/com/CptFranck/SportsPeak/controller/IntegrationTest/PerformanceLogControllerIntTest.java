@@ -224,7 +224,6 @@ class PerformanceLogControllerIntTest {
         Assertions.assertEquals(performanceLogEntity.getWeight(), performanceLogDto.getWeight());
         Assertions.assertEquals(performanceLogEntity.getWeightUnit().label, performanceLogDto.getWeightUnit());
         assertDatetimeWithTimestamp(performanceLogEntity.getLogDate(), performanceLogDto.getLogDate());
-        Assertions.assertEquals(performanceLogEntity.getTargetSet().getId(), performanceLogDto.getTargetSet().getId());
     }
 
     private void assertPerformanceLogDtoAndInput(InputNewPerformanceLog inputNewPerformanceLog, PerformanceLogDto performanceLogDto) {
@@ -234,6 +233,5 @@ class PerformanceLogControllerIntTest {
         Assertions.assertEquals(inputNewPerformanceLog.getWeight(), performanceLogDto.getWeight());
         Assertions.assertEquals(inputNewPerformanceLog.getWeightUnit(), performanceLogDto.getWeightUnit());
         assertDatetimeWithTimestamp(inputNewPerformanceLog.getLogDate(), performanceLogDto.getLogDate());
-        Assertions.assertEquals(inputNewPerformanceLog.getTargetSetId(), performanceLogDto.getTargetSet().getId());
     }
 }

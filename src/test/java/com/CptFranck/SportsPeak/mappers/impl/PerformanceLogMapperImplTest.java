@@ -45,7 +45,6 @@ public class PerformanceLogMapperImplTest {
         Assertions.assertEquals(performanceLog.getWeight(), performanceLogDto.getWeight());
         Assertions.assertEquals(performanceLog.getWeightUnit().label, performanceLogDto.getWeightUnit());
         Assertions.assertEquals(performanceLog.getLogDate(), performanceLogDto.getLogDate());
-        Assertions.assertEquals(performanceLog.getTargetSet().getId(), performanceLogDto.getTargetSet().getId());
     }
 
     @Test
@@ -64,6 +63,5 @@ public class PerformanceLogMapperImplTest {
         Assertions.assertEquals(performanceLog.getWeight(), performanceLogEntity.getWeight());
         Assertions.assertEquals(performanceLog.getWeightUnit(), performanceLogEntity.getWeightUnit().label);
         Assertions.assertEquals(performanceLog.getLogDate(), performanceLogEntity.getLogDate());
-        Assertions.assertEquals(performanceLog.getTargetSet().getId(), performanceLogEntity.getTargetSet().getId());
     }
 }

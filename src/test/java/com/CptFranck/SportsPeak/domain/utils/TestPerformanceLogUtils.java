@@ -42,8 +42,7 @@ public class TestPerformanceLogUtils {
                 5,
                 0f,
                 WeightUnit.KILOGRAMME.label,
-                creationDate,
-                targetSet
+                creationDate
         );
     }
 

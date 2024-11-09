@@ -14,9 +14,6 @@ public class PerformanceLogQuery {
                           weight
                           weightUnit
                           logDate
-                          targetSet {
-                              id
-                          }
                       }
                   }
             """;
@@ -31,9 +28,6 @@ public class PerformanceLogQuery {
                            weight
                            weightUnit
                            logDate
-                           targetSet {
-                               id
-                           }
                        }
                    }
             """;
@@ -48,9 +42,6 @@ public class PerformanceLogQuery {
                            weight
                            weightUnit
                            logDate
-                           targetSet {
-                               id
-                           }
                        }
                    }
             """;
@@ -65,9 +56,6 @@ public class PerformanceLogQuery {
                            weight
                            weightUnit
                            logDate
-                           targetSet {
-                               id
-                           }
                        }
                    }
             """;
@@ -82,9 +70,6 @@ public class PerformanceLogQuery {
                          weight
                          weightUnit
                          logDate
-                         targetSet {
-                             id
-                         }
                      }
                  }
             """;
