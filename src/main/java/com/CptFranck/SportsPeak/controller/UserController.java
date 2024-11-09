@@ -4,6 +4,7 @@ import com.CptFranck.SportsPeak.config.security.JwtProvider;
 import com.CptFranck.SportsPeak.domain.dto.AuthDto;
 import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
+import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
@@ -32,13 +33,15 @@ public class UserController {
     private final UserService userService;
     private final JwtProvider userAuthProvider;
     private final Mapper<UserEntity, UserDto> userMapper;
+    private final Mapper<ProgExerciseEntity, ProgExerciseDto> progExerciseMapper;
     private final AuthenticationManager authenticationManager;
 
-    public UserController(RoleService roleService, UserService userService, JwtProvider userAuthProvider, Mapper<UserEntity, UserDto> userMapper, AuthenticationManager authenticationManager) {
+    public UserController(RoleService roleService, UserService userService, JwtProvider userAuthProvider, Mapper<UserEntity, UserDto> userMapper, Mapper<ProgExerciseEntity, ProgExerciseDto> progExerciseMapper, AuthenticationManager authenticationManager) {
         this.roleService = roleService;
         this.userService = userService;
         this.userMapper = userMapper;
         this.userAuthProvider = userAuthProvider;
+        this.progExerciseMapper = progExerciseMapper;
         this.authenticationManager = authenticationManager;
     }
 
@@ -60,7 +63,7 @@ public class UserController {
     public List<ProgExerciseDto> getUserProgExercises(@InputArgument Long userId) {
         UserEntity userEntity = userService.findOne(userId).orElseThrow(
                 () -> new UserNotFoundException(userId));
-        return userMapper.mapTo(userEntity).getSubscribedProgExercises().stream().toList();
+        return userEntity.getSubscribedProgExercises().stream().map(progExerciseMapper::mapTo).toList();
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
