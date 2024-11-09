@@ -5,7 +5,6 @@ import com.CptFranck.SportsPeak.controller.UserController;
 import com.CptFranck.SportsPeak.domain.dto.AuthDto;
 import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
-import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
@@ -13,7 +12,6 @@ import com.CptFranck.SportsPeak.domain.model.JWToken;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.RoleService;
 import com.CptFranck.SportsPeak.service.UserService;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,6 +22,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -35,6 +34,7 @@ import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@DirtiesContext
 class UserControllerTest {
 
     @InjectMocks
@@ -42,9 +42,6 @@ class UserControllerTest {
 
     @Mock
     private Mapper<UserEntity, UserDto> userMapper;
-
-    @Mock
-    private Mapper<ProgExerciseEntity, ProgExerciseDto> progExerciseMapper;
 
     @Mock
     private UserService userService;
@@ -65,12 +62,6 @@ class UserControllerTest {
     void init() {
         user = createTestUser(1L);
         userDtoMapped = createTestUserDto(1L);
-    }
-
-    @AfterEach
-    void after() {
-        user = null;
-        userDtoMapped = null;
     }
 
     @Test
