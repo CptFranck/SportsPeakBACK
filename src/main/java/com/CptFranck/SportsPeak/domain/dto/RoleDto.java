@@ -17,7 +17,5 @@ public class RoleDto {
 
     private String name;
 
-    private Set<UserDto> users;
-
     private Set<PrivilegeDto> privileges;
 }
