@@ -1,10 +1,7 @@
 package com.CptFranck.SportsPeak.controller.UnitTest;
 
 import com.CptFranck.SportsPeak.controller.TargetSetController;
-import com.CptFranck.SportsPeak.domain.dto.ExerciseDto;
-import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.TargetSetDto;
-import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
@@ -29,13 +26,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createTestPerformanceLog;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -59,18 +53,14 @@ class TargetSetControllerTest {
     private TargetSetEntity targetSet;
     private TargetSetDto targetSetDto;
     private ProgExerciseEntity progExercise;
-    private ProgExerciseDto progExerciseDto;
 
     @BeforeEach
     void init() {
         UserEntity user = createTestUser(1L);
-        UserDto userDto = createTestUserDto(1L);
         ExerciseEntity exercise = createTestExercise(1L);
-        ExerciseDto exerciseDto = createTestExerciseDto(1L);
         progExercise = createTestProgExercise(1L, user, exercise);
-        progExerciseDto = createTestProgExerciseDto(1L, userDto, exerciseDto);
         targetSet = createTestTargetSet(1L, progExercise, null);
-        targetSetDto = createTestTargetSetDto(1L, progExerciseDto, null);
+        targetSetDto = createTestTargetSetDto(1L, null);
     }
 
     @Test
@@ -215,7 +205,7 @@ class TargetSetControllerTest {
                 createTestInputInputTargetSetState(1L, false)
         );
 
-        Assertions.assertEquals(this.targetSetDto.getProgExercise().getTargetSets().stream().toList(), targetSetDtos);
+        Assertions.assertEquals(List.of(targetSetDto), targetSetDtos);
     }
 
     @Test

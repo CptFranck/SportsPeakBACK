@@ -63,7 +63,7 @@ public class ProgExerciseMapperImplTest {
         UserDto user = createTestUserDto(1L);
         ExerciseDto exercise = createTestExerciseDto(1L);
         ProgExerciseDto progExercise = createTestProgExerciseDto(1L, user, exercise);
-        TargetSetDto targetSet = createTestTargetSetDto(1L, progExercise, null);
+        TargetSetDto targetSet = createTestTargetSetDto(1L, null);
 
         progExercise.getTargetSets().add(targetSet);
 

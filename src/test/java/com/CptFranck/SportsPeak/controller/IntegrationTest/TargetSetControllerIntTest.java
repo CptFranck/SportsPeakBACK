@@ -259,7 +259,6 @@ class TargetSetControllerIntTest {
         Assertions.assertEquals(targetSetEntity.getPhysicalExertionUnitTime(), targetSetDto.getPhysicalExertionUnitTime().InputDurationToDuration());
         Assertions.assertEquals(targetSetEntity.getRestTime(), targetSetDto.getRestTime().InputDurationToDuration());
         Assertions.assertEquals(targetSetEntity.getState().label, targetSetDto.getState());
-        Assertions.assertEquals(targetSetEntity.getProgExercise().getId(), targetSetDto.getProgExercise().getId());
     }
 
     private void assertExerciseDtoAndInputNew(InputNewTargetSet inputNewTargetSet, TargetSetDto targetSetDto) {
@@ -271,7 +270,6 @@ class TargetSetControllerIntTest {
         Assertions.assertEquals(inputNewTargetSet.getWeightUnit(), targetSetDto.getWeightUnit());
         Assertions.assertEquals(inputNewTargetSet.getPhysicalExertionUnitTime().getHours(), targetSetDto.getPhysicalExertionUnitTime().getHours());
         Assertions.assertEquals(inputNewTargetSet.getRestTime().getHours(), targetSetDto.getRestTime().getHours());
-        Assertions.assertEquals(inputNewTargetSet.getProgExerciseId(), targetSetDto.getProgExercise().getId());
         assertDatetimeWithTimestamp(inputNewTargetSet.getCreationDate(), targetSetDto.getCreationDate());
     }
 

@@ -1,7 +1,8 @@
 package com.CptFranck.SportsPeak.controller.UnitTest;
 
 import com.CptFranck.SportsPeak.controller.PerformanceLogController;
-import com.CptFranck.SportsPeak.domain.dto.*;
+import com.CptFranck.SportsPeak.domain.dto.PerformanceLogDto;
+import com.CptFranck.SportsPeak.domain.dto.TargetSetDto;
 import com.CptFranck.SportsPeak.domain.entity.*;
 import com.CptFranck.SportsPeak.domain.exception.LabelMatchNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.performanceLog.PerformanceLogNotFoundException;
@@ -22,14 +23,11 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSet;
 import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSetDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,13 +52,10 @@ class PerformanceLogControllerTest {
     @BeforeEach
     void init() {
         UserEntity user = createTestUser(1L);
-        UserDto userDto = createTestUserDto(1L);
         ExerciseEntity exercise = createTestExercise(1L);
-        ExerciseDto exerciseDto = createTestExerciseDto(1L);
         ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
-        ProgExerciseDto progExerciseDto = createTestProgExerciseDto(1L, userDto, exerciseDto);
         targetSet = createTestTargetSet(1L, progExercise, null);
-        TargetSetDto targetSetDto = createTestTargetSetDto(1L, progExerciseDto, null);
+        TargetSetDto targetSetDto = createTestTargetSetDto(1L, null);
         performanceLog = createTestPerformanceLog(1L, targetSet);
         performanceLogDto = createTestPerformanceLogDto(1L, targetSetDto);
     }

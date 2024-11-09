@@ -48,8 +48,6 @@ public class ProgExerciseEntity {
     @JoinColumn(name = "exercise_id", nullable = false)
     private ExerciseEntity exercise;
 
-    @OneToMany(mappedBy = "progExercise"
-            , fetch = FetchType.EAGER
-    )
+    @OneToMany(mappedBy = "progExercise")
     private Set<TargetSetEntity> targetSets;
 }

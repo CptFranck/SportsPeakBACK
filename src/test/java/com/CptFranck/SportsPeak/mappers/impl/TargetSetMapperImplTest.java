@@ -1,6 +1,7 @@
 package com.CptFranck.SportsPeak.mappers.impl;
 
-import com.CptFranck.SportsPeak.domain.dto.*;
+import com.CptFranck.SportsPeak.domain.dto.PerformanceLogDto;
+import com.CptFranck.SportsPeak.domain.dto.TargetSetDto;
 import com.CptFranck.SportsPeak.domain.entity.*;
 import com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils;
 import com.CptFranck.SportsPeak.mappers.Mapper;
@@ -11,15 +12,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createTestPerformanceLog;
 import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createTestPerformanceLogDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSet;
 import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSetDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
 
 @ExtendWith(MockitoExtension.class)
 public class TargetSetMapperImplTest {
@@ -62,10 +60,7 @@ public class TargetSetMapperImplTest {
 
     @Test
     void targetSetTypeMapper_MapFrom_WithoutUpdate_Success() {
-        UserDto user = createTestUserDto(1L);
-        ExerciseDto exercise = createTestExerciseDto(1L);
-        ProgExerciseDto progExercise = createTestProgExerciseDto(1L, user, exercise);
-        TargetSetDto targetSet = createTestTargetSetDto(1L, progExercise, null);
+        TargetSetDto targetSet = createTestTargetSetDto(1L, null);
 
         TargetSetEntity targetSetEntity = targetSetMapper.mapFrom(targetSet);
 
@@ -77,7 +72,6 @@ public class TargetSetMapperImplTest {
         Assertions.assertEquals(targetSetEntity.getWeightUnit().label, targetSet.getWeightUnit());
         Assertions.assertEquals(targetSetEntity.getState().label, targetSet.getState());
         Assertions.assertEquals(targetSetEntity.getCreationDate(), targetSet.getCreationDate());
-        Assertions.assertEquals(targetSetEntity.getProgExercise().getId(), targetSet.getProgExercise().getId());
         Assertions.assertEquals(targetSetEntity.getPerformanceLogs().size(), targetSet.getPerformanceLogs().size());
         Assertions.assertArrayEquals(
                 targetSetEntity.getPerformanceLogs().stream().map(PerformanceLogEntity::getId).toArray(),
@@ -88,13 +82,10 @@ public class TargetSetMapperImplTest {
 
     @Test
     void targetSetTypeMapper_MapFrom_WithUpdate_Success() {
-        UserDto user = createTestUserDto(1L);
-        ExerciseDto exercise = createTestExerciseDto(1L);
-        ProgExerciseDto progExercise = createTestProgExerciseDto(1L, user, exercise);
-        TargetSetDto targetSet = createTestTargetSetDto(1L, progExercise, null);
+        TargetSetDto targetSet = createTestTargetSetDto(1L, null);
         PerformanceLogDto performanceLog = createTestPerformanceLogDto(1L, targetSet);
         targetSet.getPerformanceLogs().add(performanceLog);
-        TargetSetDto targetSetUpdate = TestTargetSetUtils.createTestTargetSetDto(1L, progExercise, null);
+        TargetSetDto targetSetUpdate = TestTargetSetUtils.createTestTargetSetDto(1L, null);
         targetSet.setTargetSetUpdate(targetSetUpdate);
 
         TargetSetEntity targetSetEntity = targetSetMapper.mapFrom(targetSet);
@@ -107,7 +98,6 @@ public class TargetSetMapperImplTest {
         Assertions.assertEquals(targetSetEntity.getWeightUnit().label, targetSet.getWeightUnit());
         Assertions.assertEquals(targetSetEntity.getState().label, targetSet.getState());
         Assertions.assertEquals(targetSetEntity.getCreationDate(), targetSet.getCreationDate());
-        Assertions.assertEquals(targetSetEntity.getProgExercise().getId(), targetSet.getProgExercise().getId());
         Assertions.assertEquals(targetSetEntity.getPerformanceLogs().size(), targetSet.getPerformanceLogs().size());
         Assertions.assertArrayEquals(
                 targetSetEntity.getPerformanceLogs().stream().map(PerformanceLogEntity::getId).toArray(),
@@ -125,7 +115,6 @@ public class TargetSetMapperImplTest {
         Assertions.assertEquals(targetSet.getWeightUnit().label, targetSetDto.getWeightUnit());
         Assertions.assertEquals(targetSet.getState().label, targetSetDto.getState());
         Assertions.assertEquals(targetSet.getCreationDate(), targetSetDto.getCreationDate());
-        Assertions.assertEquals(targetSet.getProgExercise().getId(), targetSetDto.getProgExercise().getId());
         Assertions.assertEquals(targetSet.getPerformanceLogs().size(), targetSetDto.getPerformanceLogs().size());
         Assertions.assertArrayEquals(
                 targetSet.getPerformanceLogs().stream().map(PerformanceLogEntity::getId).toArray(),

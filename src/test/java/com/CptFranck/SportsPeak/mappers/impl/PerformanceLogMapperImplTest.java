@@ -1,6 +1,7 @@
 package com.CptFranck.SportsPeak.mappers.impl;
 
-import com.CptFranck.SportsPeak.domain.dto.*;
+import com.CptFranck.SportsPeak.domain.dto.PerformanceLogDto;
+import com.CptFranck.SportsPeak.domain.dto.TargetSetDto;
 import com.CptFranck.SportsPeak.domain.entity.*;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import org.junit.jupiter.api.Assertions;
@@ -10,15 +11,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createTestPerformanceLog;
 import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createTestPerformanceLogDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExerciseDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSet;
 import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSetDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
 
 @ExtendWith(MockitoExtension.class)
 public class PerformanceLogMapperImplTest {
@@ -49,10 +47,7 @@ public class PerformanceLogMapperImplTest {
 
     @Test
     void performanceLogTypeMapper_MapFrom_WithoutUpdate_Success() {
-        UserDto user = createTestUserDto(1L);
-        ExerciseDto exercise = createTestExerciseDto(1L);
-        ProgExerciseDto progExercise = createTestProgExerciseDto(1L, user, exercise);
-        TargetSetDto targetSet = createTestTargetSetDto(1L, progExercise, null);
+        TargetSetDto targetSet = createTestTargetSetDto(1L, null);
         PerformanceLogDto performanceLog = createTestPerformanceLogDto(1L, targetSet);
 
         PerformanceLogEntity performanceLogEntity = performanceLogMapper.mapFrom(performanceLog);
