@@ -63,9 +63,7 @@ public class TargetSetController {
     @DgsMutation
     public TargetSetDto addTargetSet(@InputArgument InputNewTargetSet inputNewTargetSet) {
         TargetSetEntity test = inputToEntity(inputNewTargetSet);
-        System.out.println("progExerciseEntity ID: " + test.getProgExercise().getId());
-        TargetSetDto testBis = targetSetMapper.mapTo(test);
-        return testBis;
+        return targetSetMapper.mapTo(test);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
