@@ -26,6 +26,4 @@ public class UserDto {
     private Set<RoleDto> roles;
 
     private Set<ProgExerciseDto> subscribedProgExercises;
-
-    private Set<ProgExerciseDto> progExercisesCreated;
 }
