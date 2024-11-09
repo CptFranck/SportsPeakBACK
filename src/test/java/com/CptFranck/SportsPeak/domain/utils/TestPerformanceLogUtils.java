@@ -1,7 +1,6 @@
 package com.CptFranck.SportsPeak.domain.utils;
 
 import com.CptFranck.SportsPeak.domain.dto.PerformanceLogDto;
-import com.CptFranck.SportsPeak.domain.dto.TargetSetDto;
 import com.CptFranck.SportsPeak.domain.entity.PerformanceLogEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.enumType.VisibilityLabel;
@@ -34,7 +33,7 @@ public class TestPerformanceLogUtils {
         );
     }
 
-    public static PerformanceLogDto createTestPerformanceLogDto(Long id, TargetSetDto targetSet) {
+    public static PerformanceLogDto createTestPerformanceLogDto(Long id) {
         LocalDateTime creationDate = LocalDateTime.now();
         return new PerformanceLogDto(
                 id,

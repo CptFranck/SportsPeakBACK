@@ -3,7 +3,6 @@ package com.CptFranck.SportsPeak.controller.IntegrationTest.DGS;
 import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
 import com.CptFranck.SportsPeak.controller.PerformanceLogController;
 import com.CptFranck.SportsPeak.domain.dto.PerformanceLogDto;
-import com.CptFranck.SportsPeak.domain.dto.TargetSetDto;
 import com.CptFranck.SportsPeak.domain.entity.*;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.PerformanceLogService;
@@ -32,7 +31,6 @@ import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTest
 import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSet;
-import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSetDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
 import static org.mockito.Mockito.when;
 
@@ -70,9 +68,8 @@ class PerformanceLogControllerDGSIntTest {
         ExerciseEntity exercise = createTestExercise(1L);
         ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
         targetSet = createTestTargetSet(1L, progExercise, null);
-        TargetSetDto targetSetDto = createTestTargetSetDto(1L, null);
         performanceLog = createTestPerformanceLog(1L, targetSet);
-        performanceLogDto = createTestPerformanceLogDto(1L, targetSetDto);
+        performanceLogDto = createTestPerformanceLogDto(1L);
         variables = new LinkedHashMap<>();
     }
 

@@ -1,7 +1,6 @@
 package com.CptFranck.SportsPeak.mappers.impl;
 
 import com.CptFranck.SportsPeak.domain.dto.PerformanceLogDto;
-import com.CptFranck.SportsPeak.domain.dto.TargetSetDto;
 import com.CptFranck.SportsPeak.domain.entity.*;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import org.junit.jupiter.api.Assertions;
@@ -15,7 +14,6 @@ import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.crea
 import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createTestPerformanceLogDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSet;
-import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSetDto;
 import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,8 +45,7 @@ public class PerformanceLogMapperImplTest {
 
     @Test
     void performanceLogTypeMapper_MapFrom_WithoutUpdate_Success() {
-        TargetSetDto targetSet = createTestTargetSetDto(1L, null);
-        PerformanceLogDto performanceLog = createTestPerformanceLogDto(1L, targetSet);
+        PerformanceLogDto performanceLog = createTestPerformanceLogDto(1L);
 
         PerformanceLogEntity performanceLogEntity = performanceLogMapper.mapFrom(performanceLog);
 

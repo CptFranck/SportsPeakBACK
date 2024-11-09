@@ -83,7 +83,7 @@ public class TargetSetMapperImplTest {
     @Test
     void targetSetTypeMapper_MapFrom_WithUpdate_Success() {
         TargetSetDto targetSet = createTestTargetSetDto(1L, null);
-        PerformanceLogDto performanceLog = createTestPerformanceLogDto(1L, targetSet);
+        PerformanceLogDto performanceLog = createTestPerformanceLogDto(1L);
         targetSet.getPerformanceLogs().add(performanceLog);
         TargetSetDto targetSetUpdate = TestTargetSetUtils.createTestTargetSetDto(1L, null);
         targetSet.setTargetSetUpdate(targetSetUpdate);
