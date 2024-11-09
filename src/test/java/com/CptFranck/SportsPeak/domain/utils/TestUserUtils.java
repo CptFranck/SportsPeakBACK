@@ -1,6 +1,5 @@
 package com.CptFranck.SportsPeak.domain.utils;
 
-import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.RoleDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
@@ -66,8 +65,7 @@ public class TestUserUtils {
                 "John",
                 "Doe",
                 "John_Doe",
-                new HashSet<RoleDto>(),
-                new HashSet<ProgExerciseDto>()
+                new HashSet<RoleDto>()
         );
     }
 

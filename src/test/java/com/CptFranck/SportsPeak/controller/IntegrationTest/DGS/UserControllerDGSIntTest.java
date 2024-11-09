@@ -3,7 +3,9 @@ package com.CptFranck.SportsPeak.controller.IntegrationTest.DGS;
 import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
 import com.CptFranck.SportsPeak.config.security.JwtProvider;
 import com.CptFranck.SportsPeak.controller.UserController;
+import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
+import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.model.JWToken;
@@ -50,6 +52,9 @@ class UserControllerDGSIntTest {
 
     @MockBean
     private Mapper<UserEntity, UserDto> userMapper;
+
+    @MockBean
+    private Mapper<ProgExerciseEntity, ProgExerciseDto> progExerciseMapper;
 
     @MockBean
     private UserService userService;

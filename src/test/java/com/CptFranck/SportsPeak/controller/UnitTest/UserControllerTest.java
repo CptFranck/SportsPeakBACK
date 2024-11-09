@@ -5,6 +5,7 @@ import com.CptFranck.SportsPeak.controller.UserController;
 import com.CptFranck.SportsPeak.domain.dto.AuthDto;
 import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
+import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
@@ -40,6 +41,9 @@ class UserControllerTest {
 
     @Mock
     private Mapper<UserEntity, UserDto> userMapper;
+
+    @Mock
+    private Mapper<ProgExerciseEntity, ProgExerciseDto> progExerciseMapper;
 
     @Mock
     private UserService userService;
@@ -101,11 +105,10 @@ class UserControllerTest {
     @Test
     void UserController_GetUserProgExercises_Success() {
         when(userService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(user));
-        when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
 
         List<ProgExerciseDto> userProgExercises = userController.getUserProgExercises(1L);
 
-        Assertions.assertEquals(this.userDto.getSubscribedProgExercises().stream().toList(), userProgExercises);
+        Assertions.assertEquals(List.of(), userProgExercises);
     }
 
     @Test

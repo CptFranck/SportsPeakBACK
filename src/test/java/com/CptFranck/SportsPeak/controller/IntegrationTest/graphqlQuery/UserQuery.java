@@ -21,13 +21,6 @@ public class UserQuery {
                                      name
                                  }
                              }
-                             subscribedProgExercises {
-                                 id
-                                 name
-                                 note
-                                 trustLabel
-                                 visibility
-                             }
                          }
                      }
             """;
@@ -48,13 +41,6 @@ public class UserQuery {
                                    id
                                    name
                                }
-                           }
-                           subscribedProgExercises {
-                               id
-                               name
-                               note
-                               trustLabel
-                               visibility
                            }
                        }
                    }
@@ -129,13 +115,6 @@ public class UserQuery {
                             name
                         }
                     }
-                    subscribedProgExercises {
-                        id
-                        name
-                        note
-                        trustLabel
-                        visibility
-                    }
                 }
             }
             """;
@@ -156,13 +135,6 @@ public class UserQuery {
                             id
                             name
                         }
-                    }
-                    subscribedProgExercises {
-                        id
-                        name
-                        note
-                        trustLabel
-                        visibility
                     }
                 }
             }
@@ -188,13 +160,6 @@ public class UserQuery {
                                 name
                             }
                         }
-                        subscribedProgExercises {
-                            id
-                            name
-                            note
-                            trustLabel
-                            visibility
-                        }
                     }
                 }
             }
@@ -217,13 +182,6 @@ public class UserQuery {
                             name
                         }
                     }
-                    subscribedProgExercises {
-                        id
-                        name
-                        note
-                        trustLabel
-                        visibility
-                    }
                 }
             }
             """;
@@ -244,13 +202,6 @@ public class UserQuery {
                             id
                             name
                         }
-                    }
-                    subscribedProgExercises {
-                        id
-                        name
-                        note
-                        trustLabel
-                        visibility
                     }
                 }
             }

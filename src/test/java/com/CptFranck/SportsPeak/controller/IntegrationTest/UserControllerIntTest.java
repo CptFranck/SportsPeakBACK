@@ -227,7 +227,5 @@ class UserControllerIntTest {
         Assertions.assertEquals(userEntity.getLastName(), userDto.getLastName());
         Assertions.assertEquals(userEntity.getUsername(), userDto.getUsername());
         Assertions.assertEquals(userEntity.getRoles().size(), userDto.getRoles().size());
-//        Assertions.assertEquals(userEntity.getProgExercisesCreated().size(), userDto.getProgExercisesCreated().size());
-        Assertions.assertEquals(userEntity.getSubscribedProgExercises().size(), userDto.getSubscribedProgExercises().size());
     }
 }
