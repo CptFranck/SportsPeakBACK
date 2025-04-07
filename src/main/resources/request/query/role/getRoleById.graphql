@@ -2,13 +2,6 @@ query ($id : Int!) {
     getRoleById (id: $id) {
         id
         name
-        users {
-            id
-            email
-            firstName
-            lastName
-            username
-        }
         privileges {
             id
             name

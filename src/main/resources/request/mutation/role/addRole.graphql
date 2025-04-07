@@ -2,13 +2,6 @@ mutation ($inputNewRole : InputNewRole!){
     addRole(inputNewRole: $inputNewRole) {
         id
         name
-        users {
-            id
-            email
-            firstName
-            lastName
-            username
-        }
         privileges {
             id
             name
