@@ -13,19 +13,5 @@ query ($id: Int!) {
                 name
             }
         }
-        subscribedProgExercises {
-            id
-            name
-            note
-            trustLabel
-            visibility
-        }
-        progExercisesCreated {
-            id
-            name
-            note
-            trustLabel
-            visibility
-        }
     }
 }

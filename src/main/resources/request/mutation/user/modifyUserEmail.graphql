@@ -16,20 +16,6 @@ mutation ($inputUserEmail : InputUserEmail!){
                     name
                 }
             }
-            subscribedProgExercises {
-                id
-                name
-                note
-                trustLabel
-                visibility
-            }
-            progExercisesCreated {
-                id
-                name
-                note
-                trustLabel
-                visibility
-            }
         }
     }
 }

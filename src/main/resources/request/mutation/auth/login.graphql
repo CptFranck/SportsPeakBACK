@@ -17,14 +17,6 @@ mutation ($inputCredentials: InputCredentials!){
                     name
                 }
             }
-            progExercisesCreated {
-                id
-                name
-            }
-            subscribedProgExercises {
-                id
-                name
-            }
         }
     }
 }
