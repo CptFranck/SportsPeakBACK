@@ -38,9 +38,6 @@ query ($id : Int!){
                 weight
                 weightUnit
                 logDate
-                targetSet {
-                    id
-                }
             }
         }
         creator {
