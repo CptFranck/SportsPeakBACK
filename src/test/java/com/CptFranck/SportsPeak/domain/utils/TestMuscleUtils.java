@@ -17,6 +17,7 @@ public class TestMuscleUtils {
         return new MuscleEntity(
                 id,
                 "Muscle name",
+                "Muscle latin name",
                 "Muscle description",
                 "Muscle function",
                 new HashSet<ExerciseEntity>()
@@ -34,6 +35,7 @@ public class TestMuscleUtils {
         return new MuscleDto(
                 id,
                 "Muscle name",
+                "Muscle latin name",
                 "Muscle description",
                 "Muscle function",
                 new HashSet<ExerciseDto>()
@@ -43,6 +45,7 @@ public class TestMuscleUtils {
     public static InputNewMuscle createTestInputNewMuscle() {
         return new InputNewMuscle(
                 "name",
+                "latinName",
                 "function",
                 "description",
                 new ArrayList<Long>()
@@ -53,6 +56,7 @@ public class TestMuscleUtils {
         return new InputMuscle(
                 id,
                 "name",
+                "latinName",
                 "function",
                 "description",
                 new ArrayList<Long>()

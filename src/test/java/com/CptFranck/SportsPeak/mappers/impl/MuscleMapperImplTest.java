@@ -53,6 +53,7 @@ public class MuscleMapperImplTest {
 
         Assertions.assertEquals(muscle.getId(), muscleEntity.getId());
         Assertions.assertEquals(muscle.getName(), muscleEntity.getName());
+        Assertions.assertEquals(muscle.getLatinName(), muscleEntity.getLatinName());
         Assertions.assertEquals(muscle.getFunction(), muscleEntity.getFunction());
         Assertions.assertEquals(muscle.getExercises().size(), muscleEntity.getExercises().size());
         Assertions.assertArrayEquals(

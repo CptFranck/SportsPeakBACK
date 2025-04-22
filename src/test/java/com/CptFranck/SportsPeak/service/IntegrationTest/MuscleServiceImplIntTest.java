@@ -139,6 +139,7 @@ public class MuscleServiceImplIntTest {
     private void assertEqualMuscle(MuscleEntity expected, MuscleEntity actual) {
         Assertions.assertEquals(expected.getId(), actual.getId());
         Assertions.assertEquals(expected.getName(), actual.getName());
+        Assertions.assertEquals(expected.getLatinName(), actual.getLatinName());
         Assertions.assertEquals(expected.getDescription(), actual.getDescription());
         Assertions.assertEquals(expected.getFunction(), actual.getFunction());
     }
