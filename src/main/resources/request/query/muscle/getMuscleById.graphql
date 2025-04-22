@@ -1,12 +1,13 @@
 query ($id : Int!) {
     getMuscleById (id : $id) {
         id
+        name
+        latinName
+        function
         exercises {
             id
             name
             goal
         }
-        name
-        function
     }
 }

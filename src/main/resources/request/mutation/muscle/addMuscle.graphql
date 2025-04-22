@@ -2,6 +2,7 @@ mutation ($inputNewMuscle : InputNewMuscle!){
     addMuscle(inputNewMuscle: $inputNewMuscle) {
         id
         name
+        latinName
         function
         exercises {
             id
