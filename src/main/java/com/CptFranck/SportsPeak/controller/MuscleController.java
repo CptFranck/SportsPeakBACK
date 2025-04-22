@@ -80,6 +80,7 @@ public class MuscleController {
         MuscleEntity muscle = new MuscleEntity(
                 id,
                 inputNewMuscle.getName(),
+                inputNewMuscle.getLatinName(),
                 inputNewMuscle.getDescription(),
                 inputNewMuscle.getFunction(),
                 exercises

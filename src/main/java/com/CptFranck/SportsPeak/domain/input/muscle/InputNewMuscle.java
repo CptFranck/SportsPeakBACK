@@ -13,6 +13,8 @@ public class InputNewMuscle {
 
     private String name;
 
+    private String latinName;
+
     private String function;
 
     private String description;

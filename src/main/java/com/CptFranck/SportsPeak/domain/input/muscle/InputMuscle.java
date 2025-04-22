@@ -11,8 +11,8 @@ public class InputMuscle extends InputNewMuscle {
 
     private Long id;
 
-    public InputMuscle(Long id, String name, String function, String description, ArrayList<Long> exerciseIds) {
-        super(name, function, description, exerciseIds);
+    public InputMuscle(Long id, String name, String latinName, String function, String description, ArrayList<Long> exerciseIds) {
+        super(name, latinName, function, description, exerciseIds);
         this.id = id;
     }
 }
