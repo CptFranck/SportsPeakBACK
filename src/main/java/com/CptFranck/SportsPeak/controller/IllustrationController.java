@@ -1,5 +1,7 @@
 package com.CptFranck.SportsPeak.controller;
 
+import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
+import com.CptFranck.SportsPeak.domain.exception.muscle.MuscleNotFoundException;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import com.CptFranck.SportsPeak.service.ExerciseTypeService;
 import com.CptFranck.SportsPeak.service.MuscleService;
@@ -62,8 +64,16 @@ public class IllustrationController {
 
         switch (type) {
             case "muscle":
-            case "exercise":
-            case "exerciseType":
+                this.updateMuscleIllustrationPath(id, publicPath);
+                break;
+//            case "exercise":
+//                this.updateExerciseIllustrationPath(id, publicPath);
+//                break;
+//            case "exerciseType":
+//                this.updateExerciseTypeIllustrationPath(id, publicPath);
+//                break;
+            default:
+                return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Type not supported");
         }
 
         return ResponseEntity.ok(Map.of("url", publicPath));
@@ -76,4 +86,22 @@ public class IllustrationController {
         Files.deleteIfExists(Paths.get(path));
         return ResponseEntity.ok().build();
     }
+
+    private void updateMuscleIllustrationPath(Long muscleId, String illustrationPath) {
+        MuscleEntity muscle = muscleService.findOne(muscleId).orElseThrow(() -> new MuscleNotFoundException(muscleId));
+        muscle.setIllustrationPath(illustrationPath);
+        muscleService.save(muscle);
+    }
+
+//    private void updateExerciseIllustrationPath(Long exerciseId, String illustrationPath) {
+//        ExerciseEntity exerciseEntity = exerciseService.findOne(exerciseId).orElseThrow(() -> new ExerciseTypeNotFoundException(muscleId));
+//        exerciseEntity.setIllustrationPath(illustrationPath);
+//        exerciseService.save(exerciseEntity);
+//    }
+//
+//    private void updateExerciseTypeIllustrationPath(Long exerciseTypeId, String illustrationPath) {
+//        ExerciseTypeEntity exerciseType = exerciseTypeService.findOne(exerciseTypeId).orElseThrow(() -> new ExerciseTypeNotFoundException(muscleId));
+//        exerciseType.setIllustrationPath(illustrationPath);
+//        exerciseTypeService.save(muscle);
+//    }
 }
