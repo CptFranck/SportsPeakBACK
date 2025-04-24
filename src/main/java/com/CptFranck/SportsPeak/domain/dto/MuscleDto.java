@@ -23,5 +23,7 @@ public class MuscleDto {
 
     private String function;
 
+    private String illustrationPath;
+
     private Set<ExerciseDto> exercises;
 }

@@ -20,6 +20,7 @@ public class TestMuscleUtils {
                 "Muscle latin name",
                 "Muscle description",
                 "Muscle function",
+                "Muscle illustration path",
                 new HashSet<ExerciseEntity>()
         );
     }
@@ -38,6 +39,7 @@ public class TestMuscleUtils {
                 "Muscle latin name",
                 "Muscle description",
                 "Muscle function",
+                "Muscle illustration path",
                 new HashSet<ExerciseDto>()
         );
     }

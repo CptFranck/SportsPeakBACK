@@ -69,23 +69,26 @@ public class MuscleController {
         Set<ExerciseEntity> exercises = exerciseService.findMany(newExerciseIds);
 
         Long id;
+        String illustrationPath;
         if (inputNewMuscle instanceof InputMuscle) {
             id = ((InputMuscle) inputNewMuscle).getId();
-            MuscleEntity muscleEntity = muscleService.findOne(id)
-                    .orElseThrow(() -> new MuscleNotFoundException(id));
+            MuscleEntity muscleEntity = muscleService.findOne(id).orElseThrow(() -> new MuscleNotFoundException(id));
+            illustrationPath = muscleEntity.getIllustrationPath();
             muscleEntity.getExercises().forEach(e -> oldExerciseIds.add(e.getId()));
         } else {
             id = null;
+            illustrationPath = "";
         }
+
         MuscleEntity muscle = new MuscleEntity(
                 id,
                 inputNewMuscle.getName(),
                 inputNewMuscle.getLatinName(),
                 inputNewMuscle.getDescription(),
                 inputNewMuscle.getFunction(),
+                illustrationPath,
                 exercises
         );
-
         muscle = muscleService.save(muscle);
         exerciseService.updateMuscleRelation(newExerciseIds, oldExerciseIds, muscle);
         return muscle;

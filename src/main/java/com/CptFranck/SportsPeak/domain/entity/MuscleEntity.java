@@ -34,6 +34,9 @@ public class MuscleEntity {
     @Column(name = "function", columnDefinition = "TEXT", nullable = false)
     private String function;
 
+    @Column(name = "illustration_path", length = 50)
+    private String illustrationPath;
+
     @ManyToMany(mappedBy = "muscles")
     private Set<ExerciseEntity> exercises;
 }
