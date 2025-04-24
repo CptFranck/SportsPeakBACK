@@ -4,6 +4,8 @@ query {
         name
         latinName
         function
+        description
+        illustrationPath
         exercises {
             id
             name

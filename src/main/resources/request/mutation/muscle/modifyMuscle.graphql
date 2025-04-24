@@ -4,6 +4,8 @@ mutation ($inputMuscle : InputMuscle!){
         name
         latinName
         function
+        description
+        illustrationPath
         exercises {
             id
             name

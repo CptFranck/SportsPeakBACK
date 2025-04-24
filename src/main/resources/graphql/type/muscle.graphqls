@@ -4,6 +4,7 @@ type Muscle {
     latinName: String!
     description: String!
     function: String!
+    illustrationPath: String!
     exercises: [Exercise]!
 }
 

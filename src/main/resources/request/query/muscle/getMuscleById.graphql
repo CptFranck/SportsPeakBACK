@@ -4,6 +4,8 @@ query ($id : Int!) {
         name
         latinName
         function
+        description
+        illustrationPath
         exercises {
             id
             name
