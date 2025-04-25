@@ -34,3 +34,6 @@ security:
   jwt:
     token:
       secret-key: Y2hhbmdlbWVpbnByb2QhY2hhbmdlbWVpbnByb2Qh
+# STORAGE
+storage:
+  location: upload-dir
