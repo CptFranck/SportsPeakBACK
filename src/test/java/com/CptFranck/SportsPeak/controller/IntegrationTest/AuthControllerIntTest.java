@@ -1,5 +1,6 @@
 package com.CptFranck.SportsPeak.controller.IntegrationTest;
 
+import com.CptFranck.SportsPeak.config.security.JwtProvider;
 import com.CptFranck.SportsPeak.controller.AuthController;
 import com.CptFranck.SportsPeak.domain.dto.AuthDto;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
@@ -40,8 +41,10 @@ public class AuthControllerIntTest {
     @Autowired
     private RoleRepository roleRepository;
 
-    private UserEntity user;
+    @Autowired
+    private JwtProvider jwtProvider;
 
+    private UserEntity user;
     private String rawPassword;
 
     @BeforeEach
@@ -80,7 +83,7 @@ public class AuthControllerIntTest {
 
         AuthDto authDto = authController.login(inputCredentials);
 
-        assertAuthDto(authDto, user);
+        assertAuthDto(authDto, user, true);
     }
 
     @Test
@@ -127,13 +130,19 @@ public class AuthControllerIntTest {
 
         AuthDto authDto = authController.register(inputCredentials);
 
-        assertAuthDto(authDto, userBis);
+        assertAuthDto(authDto, userBis, false);
     }
 
-    private void assertAuthDto(AuthDto authDto, UserEntity user) {
+    private void assertAuthDto(AuthDto authDto, UserEntity userEntity, boolean beenRegistered) {
         Assertions.assertNotNull(authDto);
-        Assertions.assertNotNull(authDto.getAccessToken());
-        Assertions.assertEquals(user.getEmail(), authDto.getUser().getEmail());
         Assertions.assertEquals("Bearer", authDto.getTokenType());
+        Assertions.assertTrue(jwtProvider.validateToken(authDto.getAccessToken()));
+
+        Assertions.assertEquals(userEntity.getEmail(), authDto.getUser().getEmail());
+        Assertions.assertEquals(userEntity.getFirstName(), authDto.getUser().getFirstName());
+        Assertions.assertEquals(userEntity.getLastName(), authDto.getUser().getLastName());
+        Assertions.assertEquals(userEntity.getUsername(), authDto.getUser().getUsername());
+        if (beenRegistered)
+            Assertions.assertEquals(userEntity.getRoles().size(), authDto.getUser().getRoles().size());
     }
 }
