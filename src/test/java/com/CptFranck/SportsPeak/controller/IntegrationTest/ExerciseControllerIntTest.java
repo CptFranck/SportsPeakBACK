@@ -9,6 +9,7 @@ import com.CptFranck.SportsPeak.domain.input.exercise.InputNewExercise;
 import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +31,13 @@ class ExerciseControllerIntTest {
     @Autowired
     private ExerciseRepository exerciseRepository;
 
+    private ExerciseEntity exercise;
+
+    @BeforeEach
+    void setUp() {
+        exercise = exerciseRepository.save(createTestExercise(null));
+    }
+
     @AfterEach
     void afterEach() {
         exerciseRepository.deleteAll();
@@ -37,8 +45,6 @@ class ExerciseControllerIntTest {
 
     @Test
     void ExerciseController_GetExercises_Success() {
-        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
-
         List<ExerciseDto> exerciseDtos = exerciseController.getExercises();
 
         assertEqualExerciseList(List.of(exercise), exerciseDtos);
@@ -53,7 +59,6 @@ class ExerciseControllerIntTest {
 
     @Test
     void ExerciseController_GetExerciseById_Success() {
-        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
 
         ExerciseDto exerciseDto = exerciseController.getExerciseById(exercise.getId());
 
@@ -73,7 +78,7 @@ class ExerciseControllerIntTest {
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void ExerciseController_ModifyExercise_UnsuccessfulExerciseNotFound() {
-        InputExercise inputExercise = createTestInputExercise(1L);
+        InputExercise inputExercise = createTestInputExercise(exercise.getId() + 1);
 
         Assertions.assertThrows(ExerciseNotFoundException.class,
                 () -> exerciseController.modifyExercise(inputExercise)
@@ -83,7 +88,6 @@ class ExerciseControllerIntTest {
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void ExerciseController_ModifyExercise_Success() {
-        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
         InputExercise inputExercise = createTestInputExercise(exercise.getId());
 
         ExerciseDto exerciseDto = exerciseController.modifyExercise(inputExercise);
@@ -102,8 +106,6 @@ class ExerciseControllerIntTest {
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void ExerciseController_DeleteExercise_Success() {
-        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
-
         Long id = exerciseController.deleteExercise(exercise.getId());
 
         Assertions.assertEquals(exercise.getId(), id);
