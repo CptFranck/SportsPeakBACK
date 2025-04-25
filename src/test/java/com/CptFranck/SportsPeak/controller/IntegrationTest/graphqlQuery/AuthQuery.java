@@ -25,14 +25,6 @@ public class AuthQuery {
                                      name
                                  }
                              }
-                             progExercisesCreated {
-                                 id
-                                 name
-                             }
-                             subscribedProgExercises {
-                                 id
-                                 name
-                             }
                          }
                      }
                  }
