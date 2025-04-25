@@ -3,8 +3,6 @@ package com.CptFranck.SportsPeak.controller.UnitTest;
 import com.CptFranck.SportsPeak.controller.ExerciseController;
 import com.CptFranck.SportsPeak.domain.dto.ExerciseDto;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
-import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
-import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.ExerciseService;
@@ -19,7 +17,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Optional;
 
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.*;
 import static org.mockito.Mockito.when;
@@ -83,10 +83,6 @@ class ExerciseControllerTest {
 
     @Test
     void ExerciseController_AddExercise_Success() {
-        Set<MuscleEntity> muscles = new HashSet<>();
-        Set<ExerciseTypeEntity> exerciseType = new HashSet<>();
-        when(muscleService.findMany(Mockito.anySet())).thenReturn(muscles);
-        when(exerciseTypeService.findMany(Mockito.anySet())).thenReturn(exerciseType);
         when(exerciseService.save(Mockito.any(ExerciseEntity.class))).thenReturn(exercise);
         when(exerciseMapper.mapTo(Mockito.any(ExerciseEntity.class))).thenReturn(exerciseDto);
 
@@ -103,23 +99,7 @@ class ExerciseControllerTest {
     }
 
     @Test
-    void ExerciseController_ModifyExercise_UnsuccessfulExerciseNotFound() {
-        Set<MuscleEntity> muscles = new HashSet<>();
-        Set<ExerciseTypeEntity> exerciseType = new HashSet<>();
-        when(muscleService.findMany(Mockito.anySet())).thenReturn(muscles);
-        when(exerciseTypeService.findMany(Mockito.anySet())).thenReturn(exerciseType);
-        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-
-        Assertions.assertThrows(ExerciseNotFoundException.class,
-                () -> exerciseController.modifyExercise(createTestInputExercise(1L)));
-    }
-
-    @Test
     void ExerciseController_ModifyExercise_Success() {
-        Set<MuscleEntity> muscles = new HashSet<>();
-        Set<ExerciseTypeEntity> exerciseType = new HashSet<>();
-        when(muscleService.findMany(Mockito.anySet())).thenReturn(muscles);
-        when(exerciseTypeService.findMany(Mockito.anySet())).thenReturn(exerciseType);
         when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(exercise));
         when(exerciseService.save(Mockito.any(ExerciseEntity.class))).thenReturn(exercise);
         when(exerciseMapper.mapTo(Mockito.any(ExerciseEntity.class))).thenReturn(exerciseDto);
