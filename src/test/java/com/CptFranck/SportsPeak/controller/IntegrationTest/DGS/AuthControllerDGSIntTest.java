@@ -94,6 +94,7 @@ public class AuthControllerDGSIntTest {
                         }
                 )
         );
+
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(loginQuery, "data.login", variables));
 
