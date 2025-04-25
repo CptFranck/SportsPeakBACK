@@ -1,6 +1,8 @@
 package com.CptFranck.SportsPeak.controller.IntegrationTest.DGS;
 
+import com.CptFranck.SportsPeak.domain.dto.ExerciseDto;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
+import com.CptFranck.SportsPeak.domain.input.exercise.InputNewExercise;
 import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.LinkedHashMap;
@@ -50,33 +53,39 @@ class ExerciseControllerDGSIntTest {
 
     @Test
     void ExerciseController_GetExercises_Success() {
-        List<LinkedHashMap<String, Object>> exerciseDtos =
+        List<LinkedHashMap<String, Object>> response =
                 dgsQueryExecutor.executeAndExtractJsonPath(getExercisesQuery, "data.getExercises");
 
-        Assertions.assertNotNull(exerciseDtos);
+        List<ExerciseDto> exerciseDtos = objectMapper.convertValue(response, new TypeReference<List<ExerciseDto>>() {
+        });
+        exerciseDtos.forEach(exerciseDto -> assertExerciseDtoValid(exercise, exerciseDto));
     }
 
     @Test
-    void ExerciseController_GetExerciseById_Unsuccessful() {
+    void ExerciseController_GetExerciseById_UnsuccessfulExerciseNotFound() {
         variables.put("id", exercise.getId() + 1);
 
-        Assertions.assertThrows(QueryException.class,
+        QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(getExerciseByIdQuery, "data.getExerciseById", variables)
         );
+
+        Assertions.assertTrue(exception.getMessage().contains("ExerciseNotFoundException"));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The exercise with the id %s has not been found", exercise.getId() + 1)));
     }
 
     @Test
     void ExerciseController_GetExerciseById_Success() {
         variables.put("id", exercise.getId());
 
-        LinkedHashMap<String, Object> exerciseDto =
+        LinkedHashMap<String, Object> response =
                 dgsQueryExecutor.executeAndExtractJsonPath(getExerciseByIdQuery, "data.getExerciseById", variables);
 
-        Assertions.assertNotNull(exerciseDto);
+        ExerciseDto exerciseDto = objectMapper.convertValue(response, ExerciseDto.class);
+        assertExerciseDtoValid(exercise, exerciseDto);
     }
 
     @Test
-    void ExerciseController_AddExercise_UnsuccessfulNotAuthorized() {
+    void ExerciseController_AddExercise_UnsuccessfulNotAuthenticated() {
         variables.put("inputNewExercise", objectMapper.convertValue(
                         createTestInputNewExercise(),
                         new TypeReference<LinkedHashMap<String, Object>>() {
@@ -84,57 +93,71 @@ class ExerciseControllerDGSIntTest {
                 )
         );
 
-        Assertions.assertThrows(QueryException.class,
+        QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(addExerciseQuery, "data.addExercise", variables)
         );
+
+        Assertions.assertTrue(exception.getMessage().contains("AuthenticationCredentialsNotFoundException"));
+        Assertions.assertTrue(exception.getMessage().contains("An Authentication object was not found in the SecurityContext"));
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
     void ExerciseController_AddExercise_Success() {
+        InputNewExercise inputNewExercise = createTestInputNewExercise();
         variables.put("inputNewExercise", objectMapper.convertValue(
-                        createTestInputNewExercise(),
+                inputNewExercise,
                         new TypeReference<LinkedHashMap<String, Object>>() {
                         }
                 )
         );
 
-        LinkedHashMap<String, Object> exerciseDto =
+        LinkedHashMap<String, Object> response =
                 dgsQueryExecutor.executeAndExtractJsonPath(addExerciseQuery, "data.addExercise", variables);
 
-        Assertions.assertNotNull(exerciseDto);
+        ExerciseDto exerciseDto = objectMapper.convertValue(response, ExerciseDto.class);
+        assertExerciseDtoValidInput(inputNewExercise, exerciseDto);
     }
 
     @Test
-    void ExerciseController_ModifyExercise_UnsuccessfulDoesNotExist() {
+    void ExerciseController_ModifyExercise_UnsuccessfulNotAuthenticated() {
         variables.put("inputExercise", objectMapper.convertValue(
-                        createTestInputExercise(1L),
+                        createTestInputExercise(exercise.getId()),
                         new TypeReference<LinkedHashMap<String, Object>>() {
                         }
                 )
         );
-
-        Assertions.assertThrows(QueryException.class,
+        QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyExerciseQuery, "data.modifyExercise", variables)
         );
+
+        Assertions.assertTrue(exception.getMessage().contains("AuthenticationCredentialsNotFoundException"));
+        Assertions.assertTrue(exception.getMessage().contains("An Authentication object was not found in the SecurityContext"));
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
     void ExerciseController_ModifyExercise_UnsuccessfulExerciseNotFound() {
         variables.put("inputExercise", objectMapper.convertValue(
-                        createTestInputExercise(1L),
+                createTestInputExercise(exercise.getId() + 1),
                         new TypeReference<LinkedHashMap<String, Object>>() {
                         }
                 )
         );
-        Assertions.assertThrows(QueryException.class,
+
+        QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyExerciseQuery, "data.modifyExercise", variables)
         );
+
+        Assertions.assertTrue(exception.getMessage().contains("ExerciseNotFoundException"));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The exercise with the id %s has not been found", exercise.getId() + 1)));
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
     void ExerciseController_ModifyExercise_Success() {
         variables.put("inputExercise", objectMapper.convertValue(
-                        createTestInputExercise(1L),
+                createTestInputExercise(exercise.getId()),
                         new TypeReference<LinkedHashMap<String, Object>>() {
                         }
                 )
@@ -146,12 +169,43 @@ class ExerciseControllerDGSIntTest {
     }
 
     @Test
+    void ExerciseController_DeleteExercise_UnsuccessfulNotAuthenticated() {
+        variables.put("exerciseId", exercise.getId());
+
+        QueryException exception = Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(deleteExerciseQuery, "data.deleteExercise", variables)
+        );
+
+        Assertions.assertTrue(exception.getMessage().contains("AuthenticationCredentialsNotFoundException"));
+        Assertions.assertTrue(exception.getMessage().contains("An Authentication object was not found in the SecurityContext"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
     void ExerciseController_DeleteExercise_Success() {
-        variables.put("exerciseId", 1);
+        variables.put("exerciseId", exercise.getId());
 
         Integer id =
                 dgsQueryExecutor.executeAndExtractJsonPath(deleteExerciseQuery, "data.deleteExercise", variables);
 
-        Assertions.assertNotNull(id);
+        Assertions.assertEquals(id, exercise.getId().intValue());
+    }
+
+    private void assertExerciseDtoValid(ExerciseEntity exerciseEntity, ExerciseDto exerciseDto) {
+        Assertions.assertNotNull(exerciseDto);
+        Assertions.assertEquals(exerciseEntity.getName(), exerciseDto.getName());
+        Assertions.assertEquals(exerciseEntity.getGoal(), exerciseDto.getGoal());
+        Assertions.assertEquals(exerciseEntity.getDescription(), exerciseDto.getDescription());
+        Assertions.assertEquals(exerciseEntity.getMuscles().size(), exerciseDto.getMuscles().size());
+        Assertions.assertEquals(exerciseEntity.getExerciseTypes().size(), exerciseDto.getProgExercises().size());
+    }
+
+    private void assertExerciseDtoValidInput(InputNewExercise inputNewExercise, ExerciseDto exerciseDto) {
+        Assertions.assertNotNull(exerciseDto);
+        Assertions.assertEquals(inputNewExercise.getName(), exerciseDto.getName());
+        Assertions.assertEquals(inputNewExercise.getGoal(), exerciseDto.getGoal());
+        Assertions.assertEquals(inputNewExercise.getDescription(), exerciseDto.getDescription());
+        Assertions.assertEquals(inputNewExercise.getMuscleIds().size(), exerciseDto.getMuscles().size());
+        Assertions.assertEquals(inputNewExercise.getExerciseTypeIds().size(), exerciseDto.getProgExercises().size());
     }
 }

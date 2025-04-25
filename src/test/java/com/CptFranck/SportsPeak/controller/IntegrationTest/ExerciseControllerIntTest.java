@@ -21,7 +21,7 @@ import java.util.Objects;
 
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 class ExerciseControllerIntTest {
 
@@ -53,7 +53,7 @@ class ExerciseControllerIntTest {
     @Test
     void ExerciseController_GetExerciseById_UnsuccessfulExerciseNotFound() {
         Assertions.assertThrows(ExerciseNotFoundException.class,
-                () -> exerciseController.getExerciseById(1L)
+                () -> exerciseController.getExerciseById(exercise.getId() + 1)
         );
     }
 
