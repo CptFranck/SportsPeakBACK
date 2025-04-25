@@ -1,15 +1,21 @@
 spring:
+  servlet:
+    multipart:
+      max-file-size: 1MB
+      max-request-size: 1MB
   output:
     ansi:
       enabled: ALWAYS
   application:
     name: SportsPeakTest
+
   # DB CONNECTION
   datasource:
     url: jdbc:h2:mem:dbtest
     username: user
     password: password
     driver-class-name: org.h2.Driver
+
   # JPA
   jpa:
     show-sql: false
@@ -29,8 +35,18 @@ spring:
     console:
       enabled: true
 
+# DGS Framework
+dgs:
+  graphql:
+    path: /service/api/graphql
+    schema-locations: classpath*:/graphql/**/*.graphql*
+
 # SECURITY
 security:
   jwt:
     token:
       secret-key: TestY2hhbmdlbWVpbnByb2QhY2hhbmdlbWVpbnByb2Qh
+
+# STORAGE
+storage:
+  location: upload-dir

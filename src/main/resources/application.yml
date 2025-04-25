@@ -8,13 +8,15 @@ spring:
       enabled: ALWAYS
   application:
     name: SportsPeak
-# DB CONNECTION
+
+  # DB CONNECTION
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: changemeinprod!
     driver-class-name: org.postgresql.Driver
-# JPA
+
+  # JPA
   jpa:
     show-sql: false
     properties:
@@ -24,16 +26,19 @@ spring:
         enable_lazy_load_no_trans: true
         type:
           preferred_duration_jdbc_type: INTERVAL_SECOND
+
 # DGS Framework
 dgs:
   graphql:
     path: /service/api/graphql
     schema-locations: classpath*:/graphql/**/*.graphql*
+
 # SECURITY
 security:
   jwt:
     token:
       secret-key: Y2hhbmdlbWVpbnByb2QhY2hhbmdlbWVpbnByb2Qh
+
 # STORAGE
 storage:
   location: upload-dir
