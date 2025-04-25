@@ -1,5 +1,7 @@
 package com.CptFranck.SportsPeak.controller.IntegrationTest.DGS;
 
+import com.CptFranck.SportsPeak.config.security.JwtProvider;
+import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
@@ -46,6 +48,9 @@ public class AuthControllerDGSIntTest {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private JwtProvider jwtProvider;
+
     private UserEntity user;
     private String rawPassword;
     private LinkedHashMap<String, Object> variables;
@@ -74,8 +79,11 @@ public class AuthControllerDGSIntTest {
                 )
         );
 
-        Assertions.assertThrows(QueryException.class,
+        QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(loginQuery, "data.login", variables));
+
+        Assertions.assertTrue(exception.getMessage().contains("EmailUnknownException"));
+        Assertions.assertTrue(exception.getMessage().contains("Email unknown"));
     }
 
     @Test
@@ -86,9 +94,11 @@ public class AuthControllerDGSIntTest {
                         }
                 )
         );
-
-        Assertions.assertThrows(QueryException.class,
+        QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(loginQuery, "data.login", variables));
+
+        Assertions.assertTrue(exception.getMessage().contains("IncorrectPasswordException"));
+        Assertions.assertTrue(exception.getMessage().contains("Incorrect password"));
     }
 
     @Test
@@ -100,10 +110,10 @@ public class AuthControllerDGSIntTest {
                 )
         );
 
-        LinkedHashMap<String, Object> authDto =
+        LinkedHashMap<String, Object> response =
                 dgsQueryExecutor.executeAndExtractJsonPath(loginQuery, "data.login", variables);
 
-        Assertions.assertNotNull(authDto);
+        assertAuthDtoValid(user, response, true);
     }
 
     @Test
@@ -121,8 +131,11 @@ public class AuthControllerDGSIntTest {
                 )
         );
 
-        Assertions.assertThrows(QueryException.class,
+        QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(registerQuery, "data.register", variables));
+
+        Assertions.assertTrue(exception.getMessage().contains("EmailAlreadyUsedException"));
+        Assertions.assertTrue(exception.getMessage().contains("Email already used"));
     }
 
     @Test
@@ -141,8 +154,11 @@ public class AuthControllerDGSIntTest {
                 )
         );
 
-        Assertions.assertThrows(QueryException.class,
+        QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(registerQuery, "data.register", variables));
+
+        Assertions.assertTrue(exception.getMessage().contains("UsernameExistsException"));
+        Assertions.assertTrue(exception.getMessage().contains("Username already used for an other account"));
     }
 
     @Test
@@ -153,7 +169,7 @@ public class AuthControllerDGSIntTest {
                                 userBis.getEmail(),
                                 userBis.getFirstName(),
                                 userBis.getLastName(),
-                                userBis.getLastName(),
+                                userBis.getUsername(),
                                 userBis.getPassword()
                         ),
                         new TypeReference<LinkedHashMap<String, Object>>() {
@@ -161,9 +177,23 @@ public class AuthControllerDGSIntTest {
                 )
         );
 
-        LinkedHashMap<String, Object> authDto =
+        LinkedHashMap<String, Object> response =
                 dgsQueryExecutor.executeAndExtractJsonPath(registerQuery, "data.register", variables);
 
-        Assertions.assertNotNull(authDto);
+        assertAuthDtoValid(userBis, response, false);
+    }
+
+    private void assertAuthDtoValid(UserEntity userEntity, LinkedHashMap<String, Object> response, boolean beenRegistered) {
+        Assertions.assertNotNull(response);
+        Assertions.assertTrue(jwtProvider.validateToken((String) response.get("accessToken")));
+
+        UserDto userDto = objectMapper.convertValue(response.get("user"), UserDto.class);
+
+        Assertions.assertEquals(userEntity.getEmail(), userDto.getEmail());
+        Assertions.assertEquals(userEntity.getFirstName(), userDto.getFirstName());
+        Assertions.assertEquals(userEntity.getLastName(), userDto.getLastName());
+        Assertions.assertEquals(userEntity.getUsername(), userDto.getUsername());
+        if (beenRegistered)
+            Assertions.assertEquals(userEntity.getRoles().size(), userDto.getRoles().size());
     }
 }
