@@ -9,6 +9,9 @@ public class ExerciseQuery {
                query {
                        getExercises {
                            id
+                           name
+                           description
+                           goal
                            exerciseTypes {
                                id
                                name
@@ -26,9 +29,6 @@ public class ExerciseQuery {
                                trustLabel
                                visibility
                            }
-                           name
-                           description
-                           goal
                        }
                    }
             """;
@@ -38,6 +38,9 @@ public class ExerciseQuery {
             query ($id : Int!){
                      getExerciseById(id: $id) {
                          id
+                         name
+                         description
+                         goal
                          exerciseTypes {
                              id
                              name
@@ -55,9 +58,6 @@ public class ExerciseQuery {
                              trustLabel
                              visibility
                          }
-                         name
-                         description
-                         goal
                      }
                  }
             """;
@@ -68,6 +68,7 @@ public class ExerciseQuery {
                      addExercise(inputNewExercise: $inputNewExercise) {
                          id
                          name
+                         description
                          goal
                          muscles {
                              id
@@ -96,6 +97,7 @@ public class ExerciseQuery {
                       modifyExercise(inputExercise: $inputExercise) {
                           id
                           name
+                          description
                           goal
                           muscles {
                               id
