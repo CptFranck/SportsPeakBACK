@@ -25,10 +25,10 @@ public class UserEntity {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "firstName", length = 50, nullable = false)
+    @Column(name = "first_name", length = 50, nullable = false)
     private String firstName;
 
-    @Column(name = "lastName", length = 50, nullable = false)
+    @Column(name = "last_name", length = 50, nullable = false)
     private String lastName;
 
     @Column(name = "username", unique = true, length = 50, nullable = false)
