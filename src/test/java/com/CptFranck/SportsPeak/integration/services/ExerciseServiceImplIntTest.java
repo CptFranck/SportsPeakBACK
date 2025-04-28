@@ -13,12 +13,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseType;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExerciseList;
 import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.createTestMuscle;
 import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
@@ -75,13 +72,9 @@ public class ExerciseServiceImplIntTest {
 
     @Test
     void exerciseService_FindAll_Success() {
-        List<ExerciseEntity> exerciseList = StreamSupport.stream(
-                exerciseRepository.saveAll(createTestExerciseList(true)).spliterator(),
-                false).toList();
-
         List<ExerciseEntity> exercisesFound = exerciseServiceImpl.findAll();
 
-        assertEqualExerciseList(exerciseList, exercisesFound.stream().toList());
+        assertEqualExerciseList(List.of(exercise, exerciseBis), exercisesFound.stream().toList());
     }
 
     @Test
@@ -94,28 +87,20 @@ public class ExerciseServiceImplIntTest {
 
     @Test
     void exerciseService_FindMany_Success() {
-        List<ExerciseEntity> exerciseList = StreamSupport.stream(
-                exerciseRepository.saveAll(createTestExerciseList(true)).spliterator(),
-                false).toList();
-        Set<Long> ExerciseIds = exerciseList.stream().map(ExerciseEntity::getId).collect(Collectors.toSet());
+        Set<ExerciseEntity> exercisesFound = exerciseServiceImpl.findMany(Set.of(exercise.getId(), exerciseBis.getId()));
 
-        Set<ExerciseEntity> exercisesFound = exerciseServiceImpl.findMany(ExerciseIds);
-
-        assertEqualExerciseList(exerciseList, exercisesFound.stream().toList());
+        assertEqualExerciseList(List.of(exercise, exerciseBis), exercisesFound.stream().toList());
     }
 
     @Test
     void exerciseService_UpdateExerciseTypeRelation_Success() {
         ExerciseTypeEntity exerciseType = exerciseTypeRepository.save(createTestExerciseType(null));
-        Set<Long> oldExerciseIds = new HashSet<>();
-        Set<Long> newExerciseIds = new HashSet<>();
-        oldExerciseIds.add(exercise.getId());
-        newExerciseIds.add(exerciseBis.getId());
+        Set<Long> oldExerciseIds = Set.of(exercise.getId());
+        Set<Long> newExerciseIds = Set.of(exerciseBis.getId());
         exercise.getExerciseTypes().add(exerciseType);
         exerciseRepository.save(exercise);
 
         exerciseServiceImpl.updateExerciseTypeRelation(newExerciseIds, oldExerciseIds, exerciseType);
-
 
         Optional<ExerciseEntity> exerciseOneReturn = exerciseRepository.findById(exercise.getId());
         Optional<ExerciseEntity> exerciseTwoReturn = exerciseRepository.findById(exerciseBis.getId());
@@ -184,6 +169,7 @@ public class ExerciseServiceImplIntTest {
             List<ExerciseEntity> expectedExerciseList,
             List<ExerciseEntity> exerciseListObtained
     ) {
+        Assertions.assertEquals(expectedExerciseList.size(), exerciseListObtained.size());
         expectedExerciseList.forEach(exerciseFound -> assertEqualExercise(
                 exerciseListObtained.stream().filter(
                         exercise -> Objects.equals(exercise.getId(), exerciseFound.getId())
