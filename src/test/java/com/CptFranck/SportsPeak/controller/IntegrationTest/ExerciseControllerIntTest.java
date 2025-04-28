@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 
@@ -59,10 +60,18 @@ class ExerciseControllerIntTest {
 
     @Test
     void ExerciseController_GetExerciseById_Success() {
-
         ExerciseDto exerciseDto = exerciseController.getExerciseById(exercise.getId());
 
         assertExerciseDtoAndEntity(exercise, exerciseDto);
+    }
+
+    @Test
+    void ExerciseController_AddExercise_UnsuccessfulNotAuthenticated() {
+        InputNewExercise inputNewExercise = createTestInputNewExercise();
+
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
+                () -> exerciseController.addExercise(inputNewExercise)
+        );
     }
 
     @Test
@@ -73,6 +82,15 @@ class ExerciseControllerIntTest {
         ExerciseDto exerciseDto = exerciseController.addExercise(inputNewExercise);
 
         assertExerciseDtoAndInput(inputNewExercise, exerciseDto);
+    }
+
+    @Test
+    void ExerciseController_ModifyExercise_UnsuccessfulNotAuthenticated() {
+        InputExercise inputExercise = createTestInputExercise(exercise.getId());
+
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
+                () -> exerciseController.modifyExercise(inputExercise)
+        );
     }
 
     @Test
@@ -96,10 +114,17 @@ class ExerciseControllerIntTest {
     }
 
     @Test
+    void ExerciseController_DeleteExercise_UnsuccessfulNotAuthenticated() {
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
+                () -> exerciseController.deleteExercise(exercise.getId())
+        );
+    }
+
+    @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void ExerciseController_DeleteExercise_UnsuccessfulExerciseNotFound() {
         Assertions.assertThrows(ExerciseNotFoundException.class,
-                () -> exerciseController.deleteExercise(1L)
+                () -> exerciseController.deleteExercise(exercise.getId() + 1)
         );
     }
 
