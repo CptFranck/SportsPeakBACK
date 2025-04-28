@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.integration.service;
+package com.CptFranck.SportsPeak.integration.services;
 
 import com.CptFranck.SportsPeak.domain.entity.*;
 import com.CptFranck.SportsPeak.domain.exception.performanceLog.PerformanceLogNotFoundException;
