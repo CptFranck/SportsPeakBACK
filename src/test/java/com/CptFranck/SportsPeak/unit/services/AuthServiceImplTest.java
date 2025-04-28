@@ -20,7 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 

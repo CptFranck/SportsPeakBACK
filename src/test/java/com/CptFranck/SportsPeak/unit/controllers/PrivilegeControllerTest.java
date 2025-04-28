@@ -19,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestPrivilegeUtils.*;
+import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

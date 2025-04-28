@@ -28,8 +28,8 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserDto;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

@@ -19,8 +19,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseTypeUtils.createTestExerciseType;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseTypeUtils.createTestExerciseTypeList;
+import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseType;
+import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseTypeList;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;

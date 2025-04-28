@@ -21,11 +21,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.*;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSet;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestPerformanceLogUtils.*;
+import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.TestTargetSetUtils.createTestTargetSet;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

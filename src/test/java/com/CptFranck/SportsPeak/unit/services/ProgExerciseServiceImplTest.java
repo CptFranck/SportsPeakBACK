@@ -21,10 +21,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createNewTestProgExerciseList;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createNewTestProgExerciseList;
+import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;

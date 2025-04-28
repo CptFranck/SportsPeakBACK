@@ -29,11 +29,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.*;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExerciseDto;
+import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.*;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserDto;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

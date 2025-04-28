@@ -21,7 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.*;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

@@ -20,8 +20,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestPrivilegeUtils.createNewTestPrivilegeList;
-import static com.CptFranck.SportsPeak.domain.utils.TestPrivilegeUtils.createTestPrivilege;
+import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.createNewTestPrivilegeList;
+import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.createTestPrivilege;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;

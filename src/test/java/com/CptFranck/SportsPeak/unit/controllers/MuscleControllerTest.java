@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.*;
+import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
