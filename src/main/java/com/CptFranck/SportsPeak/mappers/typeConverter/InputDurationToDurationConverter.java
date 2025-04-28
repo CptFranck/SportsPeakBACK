@@ -6,8 +6,13 @@ import org.modelmapper.AbstractConverter;
 import java.time.Duration;
 
 public class InputDurationToDurationConverter extends AbstractConverter<InputDuration, Duration> {
+
+    public Duration convertTest(InputDuration inputDuration) {
+        return convert(inputDuration);
+    }
+
     @Override
-    protected Duration convert(InputDuration duration) {
-        return duration.InputDurationToDuration();
+    protected Duration convert(InputDuration inputDuration) {
+        return inputDuration.InputDurationToDuration();
     }
 }
