@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.domain.utils;
+package com.CptFranck.SportsPeak.utils;
 
 import org.junit.jupiter.api.Assertions;
 

@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.domain.utils;
+package com.CptFranck.SportsPeak.utils;
 
 import com.CptFranck.SportsPeak.domain.dto.RoleDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
