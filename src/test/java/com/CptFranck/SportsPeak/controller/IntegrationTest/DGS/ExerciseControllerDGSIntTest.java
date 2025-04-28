@@ -197,6 +197,7 @@ class ExerciseControllerDGSIntTest {
         Assertions.assertEquals(exerciseEntity.getDescription(), exerciseDto.getDescription());
         Assertions.assertEquals(exerciseEntity.getMuscles().size(), exerciseDto.getMuscles().size());
         Assertions.assertEquals(exerciseEntity.getExerciseTypes().size(), exerciseDto.getProgExercises().size());
+        Assertions.assertEquals(exerciseEntity.getProgExercises().size(), exerciseDto.getProgExercises().size());
     }
 
     private void assertExerciseDtoValidInput(InputNewExercise inputNewExercise, ExerciseDto exerciseDto) {
@@ -205,6 +206,7 @@ class ExerciseControllerDGSIntTest {
         Assertions.assertEquals(inputNewExercise.getGoal(), exerciseDto.getGoal());
         Assertions.assertEquals(inputNewExercise.getDescription(), exerciseDto.getDescription());
         Assertions.assertEquals(inputNewExercise.getMuscleIds().size(), exerciseDto.getMuscles().size());
+        Assertions.assertEquals(inputNewExercise.getExerciseTypeIds().size(), exerciseDto.getProgExercises().size());
         Assertions.assertEquals(inputNewExercise.getExerciseTypeIds().size(), exerciseDto.getProgExercises().size());
     }
 }
