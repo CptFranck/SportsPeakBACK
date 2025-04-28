@@ -24,7 +24,7 @@ import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.createTestPrivil
 import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 public class RoleServiceImplIntTest {
 
