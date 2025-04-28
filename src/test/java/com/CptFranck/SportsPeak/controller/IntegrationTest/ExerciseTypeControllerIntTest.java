@@ -8,9 +8,11 @@ import com.CptFranck.SportsPeak.domain.input.exerciseType.InputNewExerciseType;
 import com.CptFranck.SportsPeak.repositories.ExerciseTypeRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 
@@ -30,6 +32,13 @@ class ExerciseTypeControllerIntTest {
     @Autowired
     private ExerciseTypeRepository exerciseTypeRepository;
 
+    private ExerciseTypeEntity exerciseType;
+
+    @BeforeEach
+    void setUp() {
+        exerciseType = exerciseTypeRepository.save(createTestExerciseType(null));
+
+    }
     @AfterEach
     void afterEach() {
         exerciseTypeRepository.deleteAll();
@@ -37,8 +46,6 @@ class ExerciseTypeControllerIntTest {
 
     @Test
     void ExerciseTypeController_GetExerciseTypes_Success() {
-        ExerciseTypeEntity exerciseType = exerciseTypeRepository.save(createTestExerciseType(null));
-
         List<ExerciseTypeDto> exerciseTypeDtos = exerciseTypeController.getExerciseTypes();
 
         assertEqualExerciseList(List.of(exerciseType), exerciseTypeDtos);
@@ -46,19 +53,26 @@ class ExerciseTypeControllerIntTest {
 
 
     @Test
-    void ExerciseTypeController_GetExerciseTypeById_Unsuccessful() {
+    void ExerciseTypeController_GetExerciseTypeById_UnsuccessfulExerciseTypeNotFound() {
         Assertions.assertThrows(ExerciseTypeNotFoundException.class,
-                () -> exerciseTypeController.getExerciseTypeById(1L)
+                () -> exerciseTypeController.getExerciseTypeById(exerciseType.getId() + 1)
         );
     }
 
     @Test
     void ExerciseTypeController_GetExerciseTypeById_Success() {
-        ExerciseTypeEntity exerciseType = exerciseTypeRepository.save(createTestExerciseType(null));
-
         ExerciseTypeDto exerciseTypeDto = exerciseTypeController.getExerciseTypeById(exerciseType.getId());
 
         assertExerciseDtoAndEntity(exerciseType, exerciseTypeDto);
+    }
+
+    @Test
+    void ExerciseTypeController_AddExerciseType_UnsuccessfulNotAuthenticated() {
+        InputNewExerciseType inputNewExerciseType = createTestInputNewExerciseType();
+
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
+                () -> exerciseTypeController.addExerciseType(inputNewExerciseType)
+        );
     }
 
     @Test
@@ -72,9 +86,18 @@ class ExerciseTypeControllerIntTest {
     }
 
     @Test
+    void ExerciseTypeController_ModifyExerciseType_UnsuccessfulNotAuthenticated() {
+        InputNewExerciseType inputNewExerciseType = createTestInputExerciseType(exerciseType.getId());
+
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
+                () -> exerciseTypeController.addExerciseType(inputNewExerciseType)
+        );
+    }
+
+    @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void ExerciseTypeController_ModifyExerciseType_UnsuccessfulExerciseTypeNotFound() {
-        InputNewExerciseType inputNewExerciseType = createTestInputExerciseType(1L);
+        InputNewExerciseType inputNewExerciseType = createTestInputExerciseType(exerciseType.getId() + 1);
 
         Assertions.assertThrows(ExerciseTypeNotFoundException.class,
                 () -> exerciseTypeController.addExerciseType(inputNewExerciseType)
@@ -84,7 +107,6 @@ class ExerciseTypeControllerIntTest {
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void ExerciseTypeController_ModifyExerciseType_Success() {
-        ExerciseTypeEntity exerciseType = exerciseTypeRepository.save(createTestExerciseType(null));
         InputNewExerciseType inputNewExerciseType = createTestInputExerciseType(exerciseType.getId());
 
         ExerciseTypeDto exerciseTypeDto = exerciseTypeController.addExerciseType(inputNewExerciseType);
@@ -93,18 +115,23 @@ class ExerciseTypeControllerIntTest {
     }
 
     @Test
+    void ExerciseTypeController_DeleteExerciseType_UnsuccessfulNotAuthenticated() {
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
+                () -> exerciseTypeController.deleteExerciseType(exerciseType.getId())
+        );
+    }
+
+    @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void ExerciseTypeController_DeleteExerciseType_UnsuccessfulExerciseNotFound() {
         Assertions.assertThrows(ExerciseTypeNotFoundException.class,
-                () -> exerciseTypeController.deleteExerciseType(1L)
+                () -> exerciseTypeController.deleteExerciseType(exerciseType.getId() + 1)
         );
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void ExerciseTypeController_DeleteExercise_Success() {
-        ExerciseTypeEntity exerciseType = exerciseTypeRepository.save(createTestExerciseType(null));
-
         Long id = exerciseTypeController.deleteExerciseType(exerciseType.getId());
 
         Assertions.assertEquals(exerciseType.getId(), id);
