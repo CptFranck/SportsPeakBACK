@@ -16,11 +16,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseType;
-import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseTypeList;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -58,13 +55,9 @@ public class ExerciseTypeServiceImplIntTest {
 
     @Test
     void exerciseTypeService_FindAll_Success() {
-        List<ExerciseTypeEntity> exerciseTypeList = StreamSupport.stream(
-                exerciseTypeRepository.saveAll(createTestExerciseTypeList(true)).spliterator(),
-                false).toList();
-
         List<ExerciseTypeEntity> exerciseTypeFound = exerciseTypeTypeServiceImpl.findAll();
 
-        assertEqualExerciseList(exerciseTypeList, exerciseTypeFound);
+        assertEqualExerciseList(List.of(exerciseType), exerciseTypeFound);
     }
 
     @Test
@@ -77,14 +70,9 @@ public class ExerciseTypeServiceImplIntTest {
 
     @Test
     void exerciseTypeService_FindMany_Success() {
-        List<ExerciseTypeEntity> exerciseTypeList = StreamSupport.stream(
-                exerciseTypeRepository.saveAll(createTestExerciseTypeList(true)).spliterator(),
-                false).toList();
-        Set<Long> exerciseTypeIds = exerciseTypeList.stream().map(ExerciseTypeEntity::getId).collect(Collectors.toSet());
+        Set<ExerciseTypeEntity> exerciseTypeFound = exerciseTypeTypeServiceImpl.findMany(Set.of(exerciseType.getId()));
 
-        Set<ExerciseTypeEntity> exerciseTypeFound = exerciseTypeTypeServiceImpl.findMany(exerciseTypeIds);
-
-        assertEqualExerciseList(exerciseTypeList, exerciseTypeFound.stream().toList());
+        assertEqualExerciseList(List.of(exerciseType), exerciseTypeFound.stream().toList());
     }
 
     @Test
@@ -110,6 +98,7 @@ public class ExerciseTypeServiceImplIntTest {
             List<ExerciseTypeEntity> expectedExerciseTypeList,
             List<ExerciseTypeEntity> exerciseTypeListObtained
     ) {
+        Assertions.assertEquals(expectedExerciseTypeList.size(), exerciseTypeListObtained.size());
         expectedExerciseTypeList.forEach(exerciseTypeFound -> asserEqualExerciseType(
                 exerciseTypeListObtained.stream().filter(
                         exerciseType -> Objects.equals(exerciseType.getId(), exerciseTypeFound.getId())
