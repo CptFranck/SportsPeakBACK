@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.controller.UnitTest;
+package com.CptFranck.SportsPeak.unit.controller;
 
 import com.CptFranck.SportsPeak.controller.PrivilegeController;
 import com.CptFranck.SportsPeak.domain.dto.PrivilegeDto;
