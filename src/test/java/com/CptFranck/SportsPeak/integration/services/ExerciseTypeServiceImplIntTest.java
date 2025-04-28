@@ -6,6 +6,7 @@ import com.CptFranck.SportsPeak.repositories.ExerciseTypeRepository;
 import com.CptFranck.SportsPeak.service.impl.ExerciseTypeServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,8 +19,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseTypeUtils.createTestExerciseType;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseTypeUtils.createTestExerciseTypeList;
+import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseType;
+import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseTypeList;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -34,6 +35,12 @@ public class ExerciseTypeServiceImplIntTest {
     @Autowired
     private ExerciseTypeServiceImpl exerciseTypeTypeServiceImpl;
 
+    private ExerciseTypeEntity exerciseType;
+
+    @BeforeEach
+    public void setUp() {
+        exerciseType = exerciseTypeRepository.save(createTestExerciseType(null));
+    }
 
     @AfterEach
     public void afterEach() {
@@ -54,7 +61,6 @@ public class ExerciseTypeServiceImplIntTest {
         List<ExerciseTypeEntity> exerciseTypeList = StreamSupport.stream(
                 exerciseTypeRepository.saveAll(createTestExerciseTypeList(true)).spliterator(),
                 false).toList();
-        ;
 
         List<ExerciseTypeEntity> exerciseTypeFound = exerciseTypeTypeServiceImpl.findAll();
 
@@ -63,8 +69,6 @@ public class ExerciseTypeServiceImplIntTest {
 
     @Test
     void exerciseTypeService_FindOne_Success() {
-        ExerciseTypeEntity exerciseType = exerciseTypeRepository.save(createTestExerciseType(null));
-
         Optional<ExerciseTypeEntity> exerciseTypeFound = exerciseTypeTypeServiceImpl.findOne(exerciseType.getId());
 
         Assertions.assertTrue(exerciseTypeFound.isPresent());
@@ -85,8 +89,6 @@ public class ExerciseTypeServiceImplIntTest {
 
     @Test
     void exerciseTypeService_Exists_Success() {
-        ExerciseTypeEntity exerciseType = exerciseTypeRepository.save(createTestExerciseType(null));
-
         boolean exerciseTypeFound = exerciseTypeTypeServiceImpl.exists(exerciseType.getId());
 
         Assertions.assertTrue(exerciseTypeFound);
@@ -94,14 +96,11 @@ public class ExerciseTypeServiceImplIntTest {
 
     @Test
     void exerciseTypeService_Delete_Success() {
-        ExerciseTypeEntity exerciseType = exerciseTypeRepository.save(createTestExerciseType(null));
-
         assertAll(() -> exerciseTypeTypeServiceImpl.delete(exerciseType.getId()));
     }
 
     @Test
     void exerciseTypeService_Delete_Unsuccessful() {
-        ExerciseTypeEntity exerciseType = exerciseTypeRepository.save(createTestExerciseType(null));
         exerciseTypeRepository.delete(exerciseType);
 
         assertThrows(ExerciseTypeNotFoundException.class, () -> exerciseTypeTypeServiceImpl.delete(exerciseType.getId()));
