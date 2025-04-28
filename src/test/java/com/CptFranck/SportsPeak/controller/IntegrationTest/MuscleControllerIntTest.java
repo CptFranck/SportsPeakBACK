@@ -9,9 +9,11 @@ import com.CptFranck.SportsPeak.domain.input.muscle.InputNewMuscle;
 import com.CptFranck.SportsPeak.repositories.MuscleRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 
@@ -30,6 +32,13 @@ class MuscleControllerIntTest {
     @Autowired
     private MuscleRepository muscleRepository;
 
+    private MuscleEntity muscle;
+
+    @BeforeEach
+    void setUp() {
+        muscle = muscleRepository.save(createTestMuscle(null));
+    }
+
     @AfterEach
     void afterEach() {
         muscleRepository.deleteAll();
@@ -37,27 +46,32 @@ class MuscleControllerIntTest {
 
     @Test
     void MuscleController_GetMuscles_Success() {
-        MuscleEntity muscle = muscleRepository.save(createTestMuscle(null));
-
         List<MuscleDto> muscleDtos = muscleController.getMuscles();
 
         assertEqualExerciseList(List.of(muscle), muscleDtos);
     }
 
     @Test
-    void MuscleController_GetMuscleById_Unsuccessful() {
+    void MuscleController_GetMuscleById_UnsuccessfulMuscleNotFound() {
         Assertions.assertThrows(MuscleNotFoundException.class,
-                () -> muscleController.getMuscleById(1L)
+                () -> muscleController.getMuscleById(muscle.getId() + 1)
         );
     }
 
     @Test
     void MuscleController_GetMuscleById_Success() {
-        MuscleEntity muscle = muscleRepository.save(createTestMuscle(null));
-
         MuscleDto muscleDto = muscleController.getMuscleById(muscle.getId());
 
         assertExerciseDtoAndEntity(muscle, muscleDto);
+    }
+
+    @Test
+    void MuscleController_AddMuscle_UnsuccessfulNotAuthenticated() {
+        InputNewMuscle inputNewExercise = createTestInputNewMuscle();
+
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
+                () -> muscleController.addMuscle(inputNewExercise)
+        );
     }
 
     @Test
@@ -71,9 +85,18 @@ class MuscleControllerIntTest {
     }
 
     @Test
+    void MuscleController_ModifyMuscle_UnsuccessfulNotAuthenticated() {
+        InputMuscle inputMuscle = createTestInputMuscle(muscle.getId());
+
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
+                () -> muscleController.modifyMuscle(inputMuscle)
+        );
+    }
+
+    @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void MuscleController_ModifyMuscle_UnsuccessfulDoesNotExist() {
-        InputMuscle inputMuscle = createTestInputMuscle(1L);
+        InputMuscle inputMuscle = createTestInputMuscle(muscle.getId() + 1);
 
         Assertions.assertThrows(MuscleNotFoundException.class,
                 () -> muscleController.modifyMuscle(inputMuscle)
@@ -92,10 +115,17 @@ class MuscleControllerIntTest {
     }
 
     @Test
+    void MuscleController_DeleteMuscle_UnsuccessfulNotAuthenticated() {
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
+                () -> muscleController.deleteMuscle(muscle.getId())
+        );
+    }
+
+    @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void MuscleController_DeleteMuscle_UnsuccessfulExerciseNotFound() {
         Assertions.assertThrows(MuscleNotFoundException.class,
-                () -> muscleController.deleteMuscle(1L)
+                () -> muscleController.deleteMuscle(muscle.getId() + 1)
         );
     }
 
