@@ -16,12 +16,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static com.CptFranck.SportsPeak.utils.TestDateTimeUtils.assertDatetimeWithTimestamp;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.utils.TestPerformanceLogUtils.createNewTestPerformanceLogList;
 import static com.CptFranck.SportsPeak.utils.TestPerformanceLogUtils.createTestPerformanceLog;
 import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.TestTargetSetUtils.createTestTargetSet;
@@ -29,7 +26,7 @@ import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 public class PerformanceLogServiceImplIntTest {
 
@@ -53,7 +50,6 @@ public class PerformanceLogServiceImplIntTest {
     private PerformanceLogServiceImpl performanceLogServiceImpl;
 
     private TargetSetEntity targetSet;
-
     private PerformanceLogEntity performanceLog;
 
     @BeforeEach
@@ -85,14 +81,9 @@ public class PerformanceLogServiceImplIntTest {
 
     @Test
     void performanceLogService_FindAll_Success() {
-        performanceLogRepository.deleteAll();
-        List<PerformanceLogEntity> performanceLogList = StreamSupport.stream(
-                performanceLogRepository.saveAll(createNewTestPerformanceLogList(targetSet)).spliterator(),
-                false).toList();
-
         List<PerformanceLogEntity> performanceLogFound = performanceLogServiceImpl.findAll();
 
-        assertEqualPerformanceLogList(performanceLogList, performanceLogFound);
+        assertEqualPerformanceLogList(List.of(performanceLog), performanceLogFound);
     }
 
     @Test
@@ -105,26 +96,16 @@ public class PerformanceLogServiceImplIntTest {
 
     @Test
     void performanceLogService_FindMany_Success() {
-        List<PerformanceLogEntity> performanceLogList = StreamSupport.stream(
-                performanceLogRepository.saveAll(createNewTestPerformanceLogList(targetSet)).spliterator(),
-                false).toList();
-        Set<Long> performanceLogIds = performanceLogList.stream().map(PerformanceLogEntity::getId).collect(Collectors.toSet());
+        Set<PerformanceLogEntity> PerformanceLogFound = performanceLogServiceImpl.findMany(Set.of(performanceLog.getId()));
 
-        Set<PerformanceLogEntity> PerformanceLogFound = performanceLogServiceImpl.findMany(performanceLogIds);
-
-        assertEqualPerformanceLogList(performanceLogList, PerformanceLogFound.stream().toList());
+        assertEqualPerformanceLogList(List.of(performanceLog), PerformanceLogFound.stream().toList());
     }
 
     @Test
     void performanceLogService_FindAllByTargetSetId_Success() {
-        performanceLogRepository.deleteAll();
-        List<PerformanceLogEntity> performanceLogList = StreamSupport.stream(
-                performanceLogRepository.saveAll(createNewTestPerformanceLogList(targetSet)).spliterator(),
-                false).toList();
-
         List<PerformanceLogEntity> performanceLogFound = performanceLogServiceImpl.findAllByTargetSetId(targetSet.getId());
 
-        assertEqualPerformanceLogList(performanceLogList, performanceLogFound);
+        assertEqualPerformanceLogList(List.of(performanceLog), performanceLogFound);
     }
 
     @Test
