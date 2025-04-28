@@ -19,12 +19,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.createTestMuscle;
-import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.createTestMuscleList;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -66,13 +63,9 @@ public class MuscleServiceImplIntTest {
 
     @Test
     void muscleService_FindAll_Success() {
-        List<MuscleEntity> muscleList = StreamSupport.stream(
-                muscleRepository.saveAll(createTestMuscleList(true)).spliterator(),
-                false).toList();
-
         List<MuscleEntity> muscleFound = muscleServiceImpl.findAll();
 
-        assertEqualMuscleList(muscleList, muscleFound);
+        assertEqualMuscleList(List.of(muscle), muscleFound);
     }
 
     @Test
@@ -85,14 +78,9 @@ public class MuscleServiceImplIntTest {
 
     @Test
     void muscleService_FindMany_Success() {
-        List<MuscleEntity> muscleList = StreamSupport.stream(
-                muscleRepository.saveAll(createTestMuscleList(true)).spliterator(),
-                false).toList();
-        Set<Long> muscleIds = muscleList.stream().map(MuscleEntity::getId).collect(Collectors.toSet());
+        Set<MuscleEntity> muscleFound = muscleServiceImpl.findMany(Set.of(muscle.getId()));
 
-        Set<MuscleEntity> muscleFound = muscleServiceImpl.findMany(muscleIds);
-
-        assertEqualMuscleList(muscleList, muscleFound.stream().toList());
+        assertEqualMuscleList(List.of(muscle), muscleFound.stream().toList());
     }
 
     @Test
@@ -127,6 +115,7 @@ public class MuscleServiceImplIntTest {
             List<MuscleEntity> expectedMuscleList,
             List<MuscleEntity> muscleListObtained
     ) {
+        Assertions.assertEquals(expectedMuscleList.size(), muscleListObtained.size());
         expectedMuscleList.forEach(muscleFound -> assertEqualMuscle(
                 muscleListObtained.stream().filter(
                         muscle -> Objects.equals(muscle.getId(), muscleFound.getId())
