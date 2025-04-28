@@ -69,6 +69,7 @@ public class UserServiceImplIntTest {
         exerciseRepository.deleteAll();
         userRepository.deleteAll();
         roleRepository.deleteAll();
+        privilegeRepository.deleteAll();
     }
 
 
