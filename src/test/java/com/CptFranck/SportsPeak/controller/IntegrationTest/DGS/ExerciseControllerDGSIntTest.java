@@ -23,22 +23,21 @@ import java.util.List;
 import static com.CptFranck.SportsPeak.controller.IntegrationTest.graphqlQuery.ExerciseQuery.*;
 import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 class ExerciseControllerDGSIntTest {
-
-    @Autowired
-    private DgsQueryExecutor dgsQueryExecutor;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
+    private DgsQueryExecutor dgsQueryExecutor;
+
+    @Autowired
     private ExerciseRepository exerciseRepository;
 
-    private LinkedHashMap<String, Object> variables;
-
     private ExerciseEntity exercise;
+    private LinkedHashMap<String, Object> variables;
 
     @BeforeEach
     void init() {
