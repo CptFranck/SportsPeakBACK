@@ -49,4 +49,4 @@ security:
 
 # STORAGE
 storage:
-  location: upload-dir
+  location: src/test/resources/static/uploads
