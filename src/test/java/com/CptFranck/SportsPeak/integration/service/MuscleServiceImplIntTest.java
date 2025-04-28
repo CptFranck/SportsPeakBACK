@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.service.IntegrationTest;
+package com.CptFranck.SportsPeak.integration.service;
 
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;

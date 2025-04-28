@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.service.IntegrationTest;
+package com.CptFranck.SportsPeak.integration.service;
 
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailAlreadyUsedException;
