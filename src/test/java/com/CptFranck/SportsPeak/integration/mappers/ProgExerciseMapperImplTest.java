@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.mappers.impl;
+package com.CptFranck.SportsPeak.integration.mappers;
 
 import com.CptFranck.SportsPeak.domain.dto.ExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
@@ -9,6 +9,7 @@ import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.mappers.Mapper;
+import com.CptFranck.SportsPeak.mappers.impl.ProgExerciseMapperImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

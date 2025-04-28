@@ -159,18 +159,18 @@ class ProgExerciseControllerIntTest {
     }
 
     @Test
-    @WithMockUser(username = "user", roles = "ADMIN")
+    @WithMockUser(username = "user", roles = "STAFF")
     void ProgExerciseController_ModifyProgExerciseTrustLabel_UnsuccessfulProgExerciseNotFound() {
         progExerciseRepository.save(createTestProgExercise(null, user, exercise));
         InputProgExerciseTrustLabel inputProgExerciseTrustLabel =
-                createTestInputProgExerciseTrustLabel(0L, false);
+                createTestInputProgExerciseTrustLabel(1L, false);
 
         Assertions.assertThrows(ProgExerciseNotFoundException.class,
                 () -> progExerciseController.modifyProgExerciseTrustLabel(inputProgExerciseTrustLabel));
     }
 
     @Test
-    @WithMockUser(username = "user", roles = "ADMIN")
+    @WithMockUser(username = "user", roles = "STAFF")
     void ProgExerciseController_ModifyProgExerciseTrustLabel_UnsuccessfulWrongLabel() {
         ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
         InputProgExerciseTrustLabel inputProgExerciseTrustLabel =
@@ -181,7 +181,7 @@ class ProgExerciseControllerIntTest {
     }
 
     @Test
-    @WithMockUser(username = "user", roles = "ADMIN")
+    @WithMockUser(username = "user", roles = "STAFF")
     void ProgExerciseController_ModifyProgExerciseTrustLabel_Success() {
         ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
         InputProgExerciseTrustLabel inputProgExerciseTrustLabel =
