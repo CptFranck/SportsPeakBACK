@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.controller.IntegrationTest.DGS;
+package com.CptFranck.SportsPeak.integration.api;
 
 import com.CptFranck.SportsPeak.config.security.JwtProvider;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
