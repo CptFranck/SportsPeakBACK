@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.repositories.IntegrationTest;
+package com.CptFranck.SportsPeak.integration.repositories;
 
 import com.CptFranck.SportsPeak.domain.entity.*;
 import com.CptFranck.SportsPeak.repositories.*;
