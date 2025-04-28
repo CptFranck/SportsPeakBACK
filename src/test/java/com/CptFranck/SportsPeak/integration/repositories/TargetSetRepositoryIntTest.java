@@ -8,6 +8,7 @@ import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
 import com.CptFranck.SportsPeak.repositories.ProgExerciseRepository;
 import com.CptFranck.SportsPeak.repositories.TargetSetRepository;
 import com.CptFranck.SportsPeak.repositories.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,24 +18,27 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.util.List;
 import java.util.Optional;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSetList;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.TestTargetSetUtils.createTestTargetSetList;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 
 @DataJpaTest
 public class TargetSetRepositoryIntTest {
 
-    private ProgExerciseEntity progExercise;
-
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private ExerciseRepository exerciseRepository;
+
     @Autowired
     private TargetSetRepository targetSetRepository;
+
     @Autowired
     private ProgExerciseRepository progExerciseRepository;
+
+    private ProgExerciseEntity progExercise;
 
     private List<TargetSetEntity> saveAllTargetSetsInRepository() {
         List<TargetSetEntity> localTargetSets = createTestTargetSetList(false, progExercise);
@@ -49,26 +53,36 @@ public class TargetSetRepositoryIntTest {
         progExercise = progExerciseRepository.save(createTestProgExercise(null, creator, exercise));
     }
 
+    @AfterEach
+    public void afterEach() {
+        this.targetSetRepository.deleteAll();
+        this.progExerciseRepository.deleteAll();
+        this.exerciseRepository.deleteAll();
+        this.userRepository.deleteAll();
+    }
+
     @Test
     public void targetSetRepository_FindAllByProgExerciseId_ReturnTargetSet() {
-        saveAllTargetSetsInRepository();
+        List<TargetSetEntity> targetSetEntities = saveAllTargetSetsInRepository();
 
         List<TargetSetEntity> foundTargetSets = targetSetRepository.findAllByProgExerciseId(progExercise.getId());
 
         Assertions.assertNotNull(foundTargetSets);
-        Assertions.assertEquals(2, foundTargetSets.size());
+        Assertions.assertEquals(targetSetEntities.size(), foundTargetSets.size());
     }
 
     @Test
     public void targetSetRepository_FindByTargetSetUpdateId_ReturnTargetSet() {
         List<TargetSetEntity> targetSetEntities = saveAllTargetSetsInRepository();
-        targetSetEntities.getFirst().setTargetSetUpdate(targetSetEntities.getLast());
-        targetSetRepository.save(targetSetEntities.getFirst());
+        TargetSetEntity targetSet1 = targetSetEntities.getFirst();
+        TargetSetEntity targetSet2 = targetSetEntities.getLast();
+        targetSet1.setTargetSetUpdate(targetSet2);
+        targetSetRepository.save(targetSet1);
 
-        Optional<TargetSetEntity> foundTargetSet = targetSetRepository.findByTargetSetUpdateId(targetSetEntities.getLast().getId());
+        Optional<TargetSetEntity> foundTargetSet = targetSetRepository.findByTargetSetUpdateId(targetSet2.getId());
 
         Assertions.assertNotNull(foundTargetSet);
         Assertions.assertTrue(foundTargetSet.isPresent());
-        Assertions.assertNotNull(foundTargetSet.get());
+        Assertions.assertEquals(foundTargetSet.get().getId(), targetSet1.getId());
     }
 }

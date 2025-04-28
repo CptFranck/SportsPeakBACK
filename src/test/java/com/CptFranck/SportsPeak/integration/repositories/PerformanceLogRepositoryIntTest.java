@@ -9,23 +9,27 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createNewTestPerformanceLogList;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSet;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestPerformanceLogUtils.createNewTestPerformanceLogList;
+import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.TestTargetSetUtils.createTestTargetSet;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 
 @DataJpaTest
 public class PerformanceLogRepositoryIntTest {
 
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private ExerciseRepository exerciseRepository;
+
     @Autowired
     private TargetSetRepository targetSetRepository;
+
     @Autowired
     private ProgExerciseRepository progExerciseRepository;
+
     @Autowired
     private PerformanceLogRepository performanceLogRepository;
 
@@ -35,6 +39,7 @@ public class PerformanceLogRepositoryIntTest {
         ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
         ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, creator, exercise));
         TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
+
         performanceLogRepository.saveAll(createNewTestPerformanceLogList(targetSet));
 
         List<PerformanceLogEntity> foundPerformanceLogs = performanceLogRepository.findAllByTargetSetId(targetSet.getId());
