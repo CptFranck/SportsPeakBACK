@@ -41,7 +41,7 @@ class ExerciseTypeControllerDGSIntTest {
 
     @BeforeEach
     void init() {
-        exerciseType = exerciseTypeRepository.save(createTestExerciseType(1L));
+        exerciseType = exerciseTypeRepository.save(createTestExerciseType(null));
         variables = new LinkedHashMap<>();
     }
 
