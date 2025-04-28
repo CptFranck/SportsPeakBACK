@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.controller.IntegrationTest;
+package com.CptFranck.SportsPeak.integration.controllers;
 
 import com.CptFranck.SportsPeak.controller.ProgExerciseController;
 import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
@@ -159,18 +159,18 @@ class ProgExerciseControllerIntTest {
     }
 
     @Test
-    @WithMockUser(username = "user", roles = "STAFF")
+    @WithMockUser(username = "user", roles = "ADMIN")
     void ProgExerciseController_ModifyProgExerciseTrustLabel_UnsuccessfulProgExerciseNotFound() {
         progExerciseRepository.save(createTestProgExercise(null, user, exercise));
         InputProgExerciseTrustLabel inputProgExerciseTrustLabel =
-                createTestInputProgExerciseTrustLabel(1L, false);
+                createTestInputProgExerciseTrustLabel(0L, false);
 
         Assertions.assertThrows(ProgExerciseNotFoundException.class,
                 () -> progExerciseController.modifyProgExerciseTrustLabel(inputProgExerciseTrustLabel));
     }
 
     @Test
-    @WithMockUser(username = "user", roles = "STAFF")
+    @WithMockUser(username = "user", roles = "ADMIN")
     void ProgExerciseController_ModifyProgExerciseTrustLabel_UnsuccessfulWrongLabel() {
         ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
         InputProgExerciseTrustLabel inputProgExerciseTrustLabel =
@@ -181,7 +181,7 @@ class ProgExerciseControllerIntTest {
     }
 
     @Test
-    @WithMockUser(username = "user", roles = "STAFF")
+    @WithMockUser(username = "user", roles = "ADMIN")
     void ProgExerciseController_ModifyProgExerciseTrustLabel_Success() {
         ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
         InputProgExerciseTrustLabel inputProgExerciseTrustLabel =

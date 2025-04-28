@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.controller.IntegrationTest;
+package com.CptFranck.SportsPeak.integration.controllers;
 
 import com.CptFranck.SportsPeak.controller.PrivilegeController;
 import com.CptFranck.SportsPeak.domain.dto.PrivilegeDto;
