@@ -9,22 +9,19 @@ import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.mappers.impl.RoleMapperImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestPrivilegeUtils.createTestPrivilege;
-import static com.CptFranck.SportsPeak.domain.utils.TestPrivilegeUtils.createTestPrivilegeDto;
-import static com.CptFranck.SportsPeak.domain.utils.TestRoleUtils.createTestRole;
-import static com.CptFranck.SportsPeak.domain.utils.TestRoleUtils.createTestRoleDto;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.createTestPrivilege;
+import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.createTestPrivilegeDto;
+import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
+import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRoleDto;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 
-@ExtendWith(MockitoExtension.class)
-public class RoleMapperImplTest {
+public class RoleMapperImplIntTest {
 
     private final Mapper<RoleEntity, RoleDto> roleMapper;
 
-    public RoleMapperImplTest() {
+    public RoleMapperImplIntTest() {
         this.roleMapper = new RoleMapperImpl(new ModelMapper());
     }
 

@@ -10,23 +10,20 @@ import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.mappers.impl.UserMapperImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestRoleUtils.createTestRole;
-import static com.CptFranck.SportsPeak.domain.utils.TestRoleUtils.createTestRoleDto;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
+import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRoleDto;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserDto;
 
-@ExtendWith(MockitoExtension.class)
-public class UserMapperImplTest {
+public class UserMapperImplIntTest {
 
     private final Mapper<UserEntity, UserDto> userMapper;
 
-    public UserMapperImplTest() {
+    public UserMapperImplIntTest() {
         this.userMapper = new UserMapperImpl(new ModelMapper());
     }
 

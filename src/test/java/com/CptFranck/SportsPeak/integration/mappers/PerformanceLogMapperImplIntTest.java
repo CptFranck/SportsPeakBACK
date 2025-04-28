@@ -6,23 +6,20 @@ import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.mappers.impl.PerformanceLogMapperImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createTestPerformanceLog;
-import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createTestPerformanceLogDto;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSet;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestPerformanceLogUtils.createTestPerformanceLog;
+import static com.CptFranck.SportsPeak.utils.TestPerformanceLogUtils.createTestPerformanceLogDto;
+import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.TestTargetSetUtils.createTestTargetSet;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 
-@ExtendWith(MockitoExtension.class)
-public class PerformanceLogMapperImplTest {
+public class PerformanceLogMapperImplIntTest {
 
     private final Mapper<PerformanceLogEntity, PerformanceLogDto> performanceLogMapper;
 
-    public PerformanceLogMapperImplTest() {
+    public PerformanceLogMapperImplIntTest() {
         this.performanceLogMapper = new PerformanceLogMapperImpl(new ModelMapper());
     }
 

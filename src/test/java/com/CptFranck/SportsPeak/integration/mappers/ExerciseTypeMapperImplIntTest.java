@@ -8,21 +8,18 @@ import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.mappers.impl.ExerciseTypeMapperImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseTypeUtils.createTestExerciseType;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseTypeUtils.createTestExerciseTypeDto;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
+import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseType;
+import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseTypeDto;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExerciseDto;
 
-@ExtendWith(MockitoExtension.class)
-public class ExerciseTypeMapperImplTest {
+public class ExerciseTypeMapperImplIntTest {
 
     private final Mapper<ExerciseTypeEntity, ExerciseTypeDto> exerciseTypeMapper;
 
-    public ExerciseTypeMapperImplTest() {
+    public ExerciseTypeMapperImplIntTest() {
         this.exerciseTypeMapper = new ExerciseTypeMapperImpl(new ModelMapper());
     }
 

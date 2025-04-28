@@ -6,27 +6,24 @@ import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.mappers.impl.ExerciseMapperImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseTypeUtils.createTestExerciseType;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseTypeUtils.createTestExerciseTypeDto;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
-import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.createTestMuscle;
-import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.createTestMuscleDto;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExerciseDto;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserDto;
+import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseType;
+import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseTypeDto;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExerciseDto;
+import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.createTestMuscle;
+import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.createTestMuscleDto;
+import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExerciseDto;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserDto;
 
-@ExtendWith(MockitoExtension.class)
-public class ExerciseMapperImplTest {
+public class ExerciseMapperImplIntTest {
 
     private final Mapper<ExerciseEntity, ExerciseDto> exerciseMapper;
 
-    public ExerciseMapperImplTest() {
+    public ExerciseMapperImplIntTest() {
         this.exerciseMapper = new ExerciseMapperImpl(new ModelMapper());
     }
 

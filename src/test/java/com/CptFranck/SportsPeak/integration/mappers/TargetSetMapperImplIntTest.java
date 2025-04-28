@@ -3,29 +3,26 @@ package com.CptFranck.SportsPeak.integration.mappers;
 import com.CptFranck.SportsPeak.domain.dto.PerformanceLogDto;
 import com.CptFranck.SportsPeak.domain.dto.TargetSetDto;
 import com.CptFranck.SportsPeak.domain.entity.*;
-import com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.mappers.impl.TargetSetMapperImpl;
+import com.CptFranck.SportsPeak.utils.TestTargetSetUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createTestPerformanceLog;
-import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createTestPerformanceLogDto;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSet;
-import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSetDto;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestPerformanceLogUtils.createTestPerformanceLog;
+import static com.CptFranck.SportsPeak.utils.TestPerformanceLogUtils.createTestPerformanceLogDto;
+import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.TestTargetSetUtils.createTestTargetSet;
+import static com.CptFranck.SportsPeak.utils.TestTargetSetUtils.createTestTargetSetDto;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 
-@ExtendWith(MockitoExtension.class)
-public class TargetSetMapperImplTest {
+public class TargetSetMapperImplIntTest {
 
     private final Mapper<TargetSetEntity, TargetSetDto> targetSetMapper;
 
-    public TargetSetMapperImplTest() {
+    public TargetSetMapperImplIntTest() {
         this.targetSetMapper = new TargetSetMapperImpl(new ModelMapper());
     }
 

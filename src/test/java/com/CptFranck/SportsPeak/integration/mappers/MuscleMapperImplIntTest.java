@@ -8,21 +8,18 @@ import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.mappers.impl.MuscleMapperImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseDto;
-import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.createTestMuscle;
-import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.createTestMuscleDto;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExerciseDto;
+import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.createTestMuscle;
+import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.createTestMuscleDto;
 
-@ExtendWith(MockitoExtension.class)
-public class MuscleMapperImplTest {
+public class MuscleMapperImplIntTest {
 
     private final Mapper<MuscleEntity, MuscleDto> muscleMapper;
 
-    public MuscleMapperImplTest() {
+    public MuscleMapperImplIntTest() {
         this.muscleMapper = new MuscleMapperImpl(new ModelMapper());
     }
 
