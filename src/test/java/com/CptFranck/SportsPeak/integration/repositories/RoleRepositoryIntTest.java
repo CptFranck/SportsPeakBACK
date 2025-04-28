@@ -9,7 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Optional;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestRoleUtils.createTestRole;
+import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
 
 @DataJpaTest
 public class RoleRepositoryIntTest {
@@ -19,8 +19,7 @@ public class RoleRepositoryIntTest {
 
     @Test
     public void roleRepository_FindByName_ReturnRole() {
-        RoleEntity role = createTestRole(null, 0);
-        RoleEntity savedRole = roleRepository.save(role);
+        RoleEntity savedRole = roleRepository.save(createTestRole(null, 0));
 
         Optional<RoleEntity> foundRole = roleRepository.findByName(savedRole.getName());
 

@@ -9,7 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Optional;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestPrivilegeUtils.createTestPrivilege;
+import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.createTestPrivilege;
 
 @DataJpaTest
 public class PrivilegeRepositoryIntTest {
@@ -19,8 +19,7 @@ public class PrivilegeRepositoryIntTest {
 
     @Test
     public void privilegeRepository_FindByName_ReturnTrue() {
-        PrivilegeEntity privilege = createTestPrivilege(null, 0);
-        PrivilegeEntity savedPrivilege = privilegeRepository.save(privilege);
+        PrivilegeEntity savedPrivilege = privilegeRepository.save(createTestPrivilege(null, 0));
 
         Optional<PrivilegeEntity> foundPrivilege = privilegeRepository.findByName(savedPrivilege.getName());
 
