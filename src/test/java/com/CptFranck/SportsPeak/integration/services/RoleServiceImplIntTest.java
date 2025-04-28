@@ -9,6 +9,7 @@ import com.CptFranck.SportsPeak.repositories.RoleRepository;
 import com.CptFranck.SportsPeak.service.impl.RoleServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,15 +19,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestPrivilegeUtils.createTestPrivilege;
-import static com.CptFranck.SportsPeak.domain.utils.TestRoleUtils.createNewTestRoleList;
-import static com.CptFranck.SportsPeak.domain.utils.TestRoleUtils.createTestRole;
+import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.createTestPrivilege;
+import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createNewTestRoleList;
+import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 public class RoleServiceImplIntTest {
-
 
     @Autowired
     private RoleRepository roleRepository;
@@ -37,6 +37,13 @@ public class RoleServiceImplIntTest {
     @Autowired
     private PrivilegeRepository privilegeRepository;
 
+    private RoleEntity role;
+
+    @BeforeEach
+    public void setUp() {
+        role = roleRepository.save(createTestRole(null, 0));
+    }
+
     @AfterEach
     public void afterEach() {
         this.roleRepository.deleteAll();
@@ -45,7 +52,7 @@ public class RoleServiceImplIntTest {
 
     @Test
     void RoleService_Save_Success() {
-        RoleEntity unsavedRole = createTestRole(null, 0);
+        RoleEntity unsavedRole = createTestRole(null, 1);
 
         RoleEntity roleSaved = roleServiceImpl.save(unsavedRole);
 
@@ -54,8 +61,6 @@ public class RoleServiceImplIntTest {
 
     @Test
     void RoleService_Save_UpdateSuccess() {
-        RoleEntity role = roleRepository.save(createTestRole(null, 0));
-
         RoleEntity roleSaved = roleServiceImpl.save(role);
 
         assertEqualsRole(role, roleSaved);
@@ -63,8 +68,6 @@ public class RoleServiceImplIntTest {
 
     @Test
     void RoleService_Save_UnSuccessful() {
-        roleRepository.save(createTestRole(null, 0));
-
         assertThrows(RoleExistsException.class, () -> roleServiceImpl.save(createTestRole(null, 0)));
     }
 
@@ -81,8 +84,6 @@ public class RoleServiceImplIntTest {
 
     @Test
     void RoleService_FindOne_Success() {
-        RoleEntity role = roleRepository.save(createTestRole(null, 0));
-
         Optional<RoleEntity> roleFound = roleServiceImpl.findOne(role.getId());
 
         Assertions.assertTrue(roleFound.isPresent());
@@ -91,8 +92,6 @@ public class RoleServiceImplIntTest {
 
     @Test
     void RoleService_findByName_Success() {
-        RoleEntity role = roleRepository.save(createTestRole(null, 0));
-
         Optional<RoleEntity> roleFound = roleServiceImpl.findByName(role.getName());
 
         Assertions.assertTrue(roleFound.isPresent());
@@ -136,8 +135,6 @@ public class RoleServiceImplIntTest {
 
     @Test
     void RoleService_Exists_Success() {
-        RoleEntity role = roleRepository.save(createTestRole(null, 0));
-
         boolean roleFound = roleServiceImpl.exists(role.getId());
 
         Assertions.assertTrue(roleFound);
@@ -145,14 +142,11 @@ public class RoleServiceImplIntTest {
 
     @Test
     void RoleService_Delete_Success() {
-        RoleEntity role = roleRepository.save(createTestRole(null, 0));
-
         assertAll(() -> roleServiceImpl.delete(role.getId()));
     }
 
     @Test
     void RoleService_Delete_Unsuccessful() {
-        RoleEntity role = roleRepository.save(createTestRole(null, 0));
         roleRepository.delete(role);
 
         assertThrows(RoleNotFoundException.class, () -> roleServiceImpl.delete(role.getId()));
