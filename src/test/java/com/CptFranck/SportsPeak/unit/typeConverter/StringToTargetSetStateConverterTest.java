@@ -1,24 +1,23 @@
-package com.CptFranck.SportsPeak.mappers.typeConverter;
+package com.CptFranck.SportsPeak.unit.typeConverter;
 
 import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
+import com.CptFranck.SportsPeak.mappers.typeConverter.StringToTargetSetStateConverter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class StringToTargetSetStateConverterTest {
 
-    @InjectMocks
-    private StringToTargetSetStateConverter stringToTargetSetStateConverter;
+    private final StringToTargetSetStateConverter stringToTargetSetStateConverter = new StringToTargetSetStateConverter();
 
     @Test
     void TestTargetSetStateToStringConverterConverter_Success() {
         String state = TargetSetState.USED.label;
 
-        TargetSetState targetSetState = stringToTargetSetStateConverter.convert(state);
+        TargetSetState targetSetState = stringToTargetSetStateConverter.convertTest(state);
 
-        Assertions.assertEquals(targetSetState, TargetSetState.USED);
+        Assertions.assertEquals(TargetSetState.USED, targetSetState);
     }
 }

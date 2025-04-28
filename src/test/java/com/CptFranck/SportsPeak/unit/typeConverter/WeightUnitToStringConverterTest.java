@@ -1,23 +1,22 @@
-package com.CptFranck.SportsPeak.mappers.typeConverter;
+package com.CptFranck.SportsPeak.unit.typeConverter;
 
 import com.CptFranck.SportsPeak.domain.enumType.WeightUnit;
+import com.CptFranck.SportsPeak.mappers.typeConverter.WeightUnitToStringConverter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class WeightUnitToStringConverterTest {
 
-    @InjectMocks
-    private WeightUnitToStringConverter weightUnitConverter;
+    private final WeightUnitToStringConverter weightUnitConverter = new WeightUnitToStringConverter();
 
     @Test
     void TestWeightUnitToStringConverter_Success() {
         WeightUnit weightUnit = WeightUnit.KILOGRAMME;
 
-        String weightUnitString = weightUnitConverter.convert(weightUnit);
+        String weightUnitString = weightUnitConverter.convertTest(weightUnit);
 
         Assertions.assertEquals(weightUnit.label, weightUnitString);
     }
