@@ -15,12 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.createTestPrivilege;
-import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createNewTestRoleList;
 import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,10 +38,12 @@ public class RoleServiceImplIntTest {
     private PrivilegeRepository privilegeRepository;
 
     private RoleEntity role;
+    private RoleEntity roleBis;
 
     @BeforeEach
     public void setUp() {
         role = roleRepository.save(createTestRole(null, 0));
+        roleBis = roleRepository.save(createTestRole(null, 1));
     }
 
     @AfterEach
@@ -52,7 +54,7 @@ public class RoleServiceImplIntTest {
 
     @Test
     void RoleService_Save_Success() {
-        RoleEntity unsavedRole = createTestRole(null, 1);
+        RoleEntity unsavedRole = createTestRole(null, 2);
 
         RoleEntity roleSaved = roleServiceImpl.save(unsavedRole);
 
@@ -73,13 +75,9 @@ public class RoleServiceImplIntTest {
 
     @Test
     void RoleService_FindAll_Success() {
-        List<RoleEntity> roleList = StreamSupport.stream(
-                roleRepository.saveAll(createNewTestRoleList(true)).spliterator(),
-                false).toList();
-
         List<RoleEntity> roleFound = roleServiceImpl.findAll();
 
-        assertEqualsRoleList(roleList, roleFound);
+        assertEqualsRoleList(List.of(role, roleBis), roleFound);
     }
 
     @Test
@@ -100,32 +98,21 @@ public class RoleServiceImplIntTest {
 
     @Test
     void RoleService_FindMany_Success() {
-        List<RoleEntity> roleList = StreamSupport.stream(
-                roleRepository.saveAll(createNewTestRoleList(true)).spliterator(),
-                false).toList();
-        Set<Long> roleIds = roleList.stream().map(RoleEntity::getId).collect(Collectors.toSet());
+        Set<RoleEntity> roleFound = roleServiceImpl.findMany(Set.of(role.getId()));
 
-        Set<RoleEntity> roleFound = roleServiceImpl.findMany(roleIds);
-
-        assertEqualsRoleList(roleList, roleFound.stream().toList());
+        assertEqualsRoleList(List.of(role), roleFound.stream().toList());
     }
 
     @Test
     void exerciseService_UpdatePrivilegeRelation_Success() {
         PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(1L, 0));
-        RoleEntity roleOne = roleRepository.save(createTestRole(1L, 1));
-        RoleEntity roleTwo = roleRepository.save(createTestRole(2L, 2));
-        Set<Long> oldRoleIds = new HashSet<>();
-        Set<Long> newRoleIds = new HashSet<>();
-        oldRoleIds.add(roleOne.getId());
-        newRoleIds.add(roleTwo.getId());
-        roleOne.getPrivileges().add(privilege);
-        roleRepository.save(roleOne);
+        Set<Long> oldRoleIds = Set.of(role.getId());
+        Set<Long> newRoleIds = Set.of(roleBis.getId());
 
         roleServiceImpl.updatePrivilegeRelation(newRoleIds, oldRoleIds, privilege);
 
-        Optional<RoleEntity> roleOneReturn = roleRepository.findById(roleOne.getId());
-        Optional<RoleEntity> roleTwoReturn = roleRepository.findById(roleTwo.getId());
+        Optional<RoleEntity> roleOneReturn = roleRepository.findById(role.getId());
+        Optional<RoleEntity> roleTwoReturn = roleRepository.findById(roleBis.getId());
         assertTrue(roleOneReturn.isPresent());
         assertTrue(roleTwoReturn.isPresent());
         assertEquals(0, roleOneReturn.get().getPrivileges().size());
@@ -156,6 +143,7 @@ public class RoleServiceImplIntTest {
             List<RoleEntity> expectedRoleList,
             List<RoleEntity> roleListObtained
     ) {
+        Assertions.assertEquals(expectedRoleList.size(), roleListObtained.size());
         expectedRoleList.forEach(roleFound -> assertEqualsRole(
                 roleListObtained.stream().filter(
                         role -> Objects.equals(role.getId(), roleFound.getId())
