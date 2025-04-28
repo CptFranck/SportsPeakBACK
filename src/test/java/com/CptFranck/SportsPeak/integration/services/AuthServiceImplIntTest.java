@@ -20,7 +20,7 @@ import org.springframework.test.context.TestPropertySource;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 public class AuthServiceImplIntTest {
 

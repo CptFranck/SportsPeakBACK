@@ -19,7 +19,7 @@ import org.springframework.test.context.TestPropertySource;
 import java.util.List;
 import java.util.Objects;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseTypeUtils.*;
+import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.*;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
