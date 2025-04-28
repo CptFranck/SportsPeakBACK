@@ -6,6 +6,7 @@ import com.CptFranck.SportsPeak.repositories.*;
 import com.CptFranck.SportsPeak.service.impl.ExerciseServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,15 +16,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseTypeUtils.createTestExerciseType;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExerciseList;
-import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.createTestMuscle;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseType;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExerciseList;
+import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.createTestMuscle;
+import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 public class ExerciseServiceImplIntTest {
 
@@ -44,6 +45,15 @@ public class ExerciseServiceImplIntTest {
 
     @Autowired
     private ExerciseServiceImpl exerciseServiceImpl;
+
+    private ExerciseEntity exercise;
+    private ExerciseEntity exerciseBis;
+
+    @BeforeEach
+    public void setUp() {
+        exercise = exerciseRepository.save(createTestExercise(null));
+        exerciseBis = exerciseRepository.save(createTestExercise(null));
+    }
 
     @AfterEach
     public void afterEach() {
@@ -76,12 +86,10 @@ public class ExerciseServiceImplIntTest {
 
     @Test
     void exerciseService_FindOne_Success() {
-        ExerciseEntity exerciseSaved = exerciseRepository.save(createTestExercise(null));
-
-        Optional<ExerciseEntity> exerciseFound = exerciseServiceImpl.findOne(exerciseSaved.getId());
+        Optional<ExerciseEntity> exerciseFound = exerciseServiceImpl.findOne(exercise.getId());
 
         Assertions.assertTrue(exerciseFound.isPresent());
-        assertEqualExercise(exerciseSaved, exerciseFound.get());
+        assertEqualExercise(exercise, exerciseFound.get());
     }
 
     @Test
@@ -99,20 +107,18 @@ public class ExerciseServiceImplIntTest {
     @Test
     void exerciseService_UpdateExerciseTypeRelation_Success() {
         ExerciseTypeEntity exerciseType = exerciseTypeRepository.save(createTestExerciseType(null));
-        ExerciseEntity exerciseOne = exerciseRepository.save(createTestExercise(null));
-        ExerciseEntity exerciseTwo = exerciseRepository.save(createTestExercise(null));
         Set<Long> oldExerciseIds = new HashSet<>();
         Set<Long> newExerciseIds = new HashSet<>();
-        oldExerciseIds.add(exerciseOne.getId());
-        newExerciseIds.add(exerciseTwo.getId());
-        exerciseOne.getExerciseTypes().add(exerciseType);
-        exerciseRepository.save(exerciseOne);
+        oldExerciseIds.add(exercise.getId());
+        newExerciseIds.add(exerciseBis.getId());
+        exercise.getExerciseTypes().add(exerciseType);
+        exerciseRepository.save(exercise);
 
         exerciseServiceImpl.updateExerciseTypeRelation(newExerciseIds, oldExerciseIds, exerciseType);
 
 
-        Optional<ExerciseEntity> exerciseOneReturn = exerciseRepository.findById(exerciseOne.getId());
-        Optional<ExerciseEntity> exerciseTwoReturn = exerciseRepository.findById(exerciseTwo.getId());
+        Optional<ExerciseEntity> exerciseOneReturn = exerciseRepository.findById(exercise.getId());
+        Optional<ExerciseEntity> exerciseTwoReturn = exerciseRepository.findById(exerciseBis.getId());
         assertTrue(exerciseOneReturn.isPresent());
         assertTrue(exerciseTwoReturn.isPresent());
         assertEquals(0, exerciseOneReturn.get().getExerciseTypes().size());
@@ -123,19 +129,17 @@ public class ExerciseServiceImplIntTest {
     @Test
     void exerciseService_UpdateMuscleRelation_Success() {
         MuscleEntity muscle = muscleRepository.save(createTestMuscle(null));
-        ExerciseEntity exerciseOne = exerciseRepository.save(createTestExercise(null));
-        ExerciseEntity exerciseTwo = exerciseRepository.save(createTestExercise(null));
         Set<Long> oldExerciseIds = new HashSet<>();
         Set<Long> newExerciseIds = new HashSet<>();
-        oldExerciseIds.add(exerciseOne.getId());
-        newExerciseIds.add(exerciseTwo.getId());
-        exerciseOne.getMuscles().add(muscle);
-        exerciseRepository.save(exerciseOne);
+        oldExerciseIds.add(exercise.getId());
+        newExerciseIds.add(exerciseBis.getId());
+        exercise.getMuscles().add(muscle);
+        exerciseRepository.save(exercise);
 
         exerciseServiceImpl.updateMuscleRelation(newExerciseIds, oldExerciseIds, muscle);
 
-        Optional<ExerciseEntity> exerciseOneReturn = exerciseRepository.findById(exerciseOne.getId());
-        Optional<ExerciseEntity> exerciseTwoReturn = exerciseRepository.findById(exerciseTwo.getId());
+        Optional<ExerciseEntity> exerciseOneReturn = exerciseRepository.findById(exercise.getId());
+        Optional<ExerciseEntity> exerciseTwoReturn = exerciseRepository.findById(exerciseBis.getId());
         assertTrue(exerciseOneReturn.isPresent());
         assertTrue(exerciseTwoReturn.isPresent());
         assertEquals(0, exerciseOneReturn.get().getMuscles().size());
@@ -146,41 +150,34 @@ public class ExerciseServiceImplIntTest {
     @Test
     void exerciseService_UpdateProgExerciseRelation_Success() {
         UserEntity user = userRepository.save(createTestUser(null));
-        ExerciseEntity oldExercise = exerciseRepository.save(createTestExercise(null));
-        ExerciseEntity newExercise = exerciseRepository.save(createTestExercise(null));
-        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(1L, user, oldExercise));
-        oldExercise.getProgExercises().add(progExercise);
-        exerciseRepository.save(oldExercise);
+        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
+        exercise.getProgExercises().add(progExercise);
+        exerciseRepository.save(exercise);
 
-        exerciseServiceImpl.updateProgExerciseRelation(newExercise, oldExercise, progExercise);
+        exerciseServiceImpl.updateProgExerciseRelation(exerciseBis, exercise, progExercise);
 
-        assertEquals(0, oldExercise.getProgExercises().size());
-        assertEquals(1, newExercise.getProgExercises().size());
-        assertEquals(progExercise.getId(), newExercise.getProgExercises().stream().toList().getFirst().getId());
+        assertEquals(0, exercise.getProgExercises().size());
+        assertEquals(1, exerciseBis.getProgExercises().size());
+        assertEquals(progExercise.getId(), exerciseBis.getProgExercises().stream().toList().getFirst().getId());
     }
 
     @Test
     void exerciseService_Exists_Success() {
-        ExerciseEntity exerciseSaved = exerciseRepository.save(createTestExercise(null));
-
-        boolean ExerciseFound = exerciseServiceImpl.exists(exerciseSaved.getId());
+        boolean ExerciseFound = exerciseServiceImpl.exists(exercise.getId());
 
         Assertions.assertTrue(ExerciseFound);
     }
 
     @Test
     void exerciseService_Delete_Success() {
-        ExerciseEntity exerciseSaved = exerciseRepository.save(createTestExercise(null));
-
-        assertAll(() -> exerciseServiceImpl.delete(exerciseSaved.getId()));
+        assertAll(() -> exerciseServiceImpl.delete(exercise.getId()));
     }
 
     @Test
     void exerciseService_Delete_Unsuccessful() {
-        ExerciseEntity exerciseSaved = exerciseRepository.save(createTestExercise(null));
-        exerciseRepository.delete(exerciseSaved);
+        exerciseRepository.delete(exercise);
 
-        assertThrows(ExerciseNotFoundException.class, () -> exerciseServiceImpl.delete(exerciseSaved.getId()));
+        assertThrows(ExerciseNotFoundException.class, () -> exerciseServiceImpl.delete(exercise.getId()));
     }
 
     private void assertEqualExerciseList(
