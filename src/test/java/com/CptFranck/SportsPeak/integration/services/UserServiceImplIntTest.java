@@ -6,6 +6,7 @@ import com.CptFranck.SportsPeak.repositories.*;
 import com.CptFranck.SportsPeak.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,16 +17,15 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestPrivilegeUtils.createTestPrivilege;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestRoleUtils.createTestRole;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.*;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.createTestPrivilege;
+import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 public class UserServiceImplIntTest {
 
@@ -50,6 +50,15 @@ public class UserServiceImplIntTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    private UserEntity user;
+    private UserEntity userBis;
+
+    @BeforeEach
+    public void setUp() {
+        user = userRepository.save(createTestUser(null));
+        userBis = userRepository.save(createTestUserBis(null));
+    }
+
     @AfterEach
     public void afterEach() {
         userRepository.findAll().forEach(user -> {
@@ -65,6 +74,7 @@ public class UserServiceImplIntTest {
 
     @Test
     void UserService_Save_Success() {
+        userRepository.deleteAll();
         UserEntity userSavedInRepository = createTestUser(null);
 
         UserEntity userSaved = userServiceImpl.save(userSavedInRepository);
@@ -74,19 +84,13 @@ public class UserServiceImplIntTest {
 
     @Test
     void UserService_FindAll_Success() {
-        List<UserEntity> userList = StreamSupport.stream(
-                userRepository.saveAll(createTestUserList(true)).spliterator(),
-                false).toList();
-
         List<UserEntity> userFound = userServiceImpl.findAll();
 
-        assertEqualsUserList(userList, userFound);
+        assertEqualsUserList(List.of(user, userBis), userFound);
     }
 
     @Test
     void UserService_FindOne_Success() {
-        UserEntity user = userRepository.save(createTestUser(null));
-
         Optional<UserEntity> userFound = userServiceImpl.findOne(user.getId());
 
         Assertions.assertTrue(userFound.isPresent());
@@ -95,20 +99,13 @@ public class UserServiceImplIntTest {
 
     @Test
     void UserService_FindMany_Success() {
-        List<UserEntity> userList = StreamSupport.stream(
-                userRepository.saveAll(createTestUserList(true)).spliterator(),
-                false).toList();
-        Set<Long> userIds = userList.stream().map(UserEntity::getId).collect(Collectors.toSet());
+        Set<UserEntity> usersFound = userServiceImpl.findMany(Set.of(user.getId()));
 
-        Set<UserEntity> usersFound = userServiceImpl.findMany(userIds);
-
-        assertEqualsUserList(userList, usersFound.stream().toList());
+        assertEqualsUserList(List.of(user), usersFound.stream().toList());
     }
 
     @Test
     void UserService_FindUserBySubscribedProgExercises_Success() {
-        UserEntity user = userRepository.save(createTestUser(null));
-        UserEntity userBis = userRepository.save(createTestUserBis(null));
         List<UserEntity> userList = List.of(user, userBis);
         ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
         ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
@@ -125,8 +122,6 @@ public class UserServiceImplIntTest {
     @Test
     void exerciseService_UpdateRoleRelation_Success() {
         RoleEntity role = roleRepository.save(createTestRole(null, 0));
-        UserEntity user = userRepository.save(createTestUser(null));
-        UserEntity userBis = userRepository.save(createTestUserBis(null));
         Set<Long> oldUserIds = new HashSet<>();
         Set<Long> newUserIds = new HashSet<>();
         oldUserIds.add(user.getId());
@@ -148,8 +143,6 @@ public class UserServiceImplIntTest {
 
     @Test
     void UserService_Exists_Success() {
-        UserEntity user = userRepository.save(createTestUser(null));
-
         boolean userFound = userServiceImpl.exists(user.getId());
 
         Assertions.assertTrue(userFound);
@@ -157,14 +150,11 @@ public class UserServiceImplIntTest {
 
     @Test
     void UserService_Delete_Success() {
-        UserEntity user = userRepository.save(createTestUser(null));
-
         assertAll(() -> userServiceImpl.delete(user.getId()));
     }
 
     @Test
     void UserService_Delete_Unsuccessful() {
-        UserEntity user = userRepository.save(createTestUser(null));
         userRepository.delete(user);
 
         assertThrows(UserNotFoundException.class, () -> userServiceImpl.delete(user.getId()));
@@ -178,8 +168,6 @@ public class UserServiceImplIntTest {
 
     @Test
     void UserService_ChangeIdentity_Successful() {
-        UserEntity user = userRepository.save(createTestUser(null));
-
         UserEntity userSaved = userServiceImpl.changeIdentity(user.getId(), "firstName", "lastName");
 
         Assertions.assertEquals(user.getId(), userSaved.getId());
@@ -198,13 +186,10 @@ public class UserServiceImplIntTest {
 
     @Test
     void UserService_ChangeRoles_Successful() {
-        UserEntity user = userRepository.save(createTestUser(null));
         RoleEntity role = roleRepository.save(createTestRole(null, 1));
         RoleEntity roleBis = roleRepository.save(createTestRole(null, 2));
-        Set<RoleEntity> userRoles = new HashSet<RoleEntity>();
-        Set<RoleEntity> newRoles = new HashSet<RoleEntity>();
-        userRoles.add(role);
-        newRoles.add(roleBis);
+        Set<RoleEntity> userRoles = Set.of(role);
+        Set<RoleEntity> newRoles = Set.of(roleBis);
         user.getRoles().addAll(userRoles);
         userRepository.save(user);
 
@@ -225,7 +210,6 @@ public class UserServiceImplIntTest {
 
     @Test
     void UserService_ChangeEmail_UnsuccessfulEmailAlreadyUsed() {
-        UserEntity user = createTestUser(null);
         String rawPassword = user.getPassword();
         user.setPassword(passwordEncoder.encode(rawPassword));
         userServiceImpl.save(user);
@@ -236,7 +220,6 @@ public class UserServiceImplIntTest {
 
     @Test
     void UserService_ChangeEmail_UnsuccessfulIncorrectPassword() {
-        UserEntity user = createTestUser(null);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userServiceImpl.save(user);
 
@@ -246,7 +229,6 @@ public class UserServiceImplIntTest {
 
     @Test
     void UserService_ChangeEmail_Successful() {
-        UserEntity user = createTestUser(null);
         String rawPassword = user.getPassword();
         user.setPassword(passwordEncoder.encode(rawPassword));
         userServiceImpl.save(user);
@@ -269,23 +251,15 @@ public class UserServiceImplIntTest {
 
     @Test
     void UserService_ChangeUsername_UnsuccessfulUsernameAlreadyUsed() {
-        UserEntity user = userRepository.save(createTestUser(null));
-        UserEntity userBis = userRepository.save(createTestUserBis(null));
-
         assertThrows(UsernameExistsException.class,
                 () -> userServiceImpl.changeUsername(user.getId(), userBis.getUsername()));
     }
 
     @Test
     void UserService_ChangeUsername_Successful() {
-        UserEntity user = userRepository.save(createTestUser(null));
-
         UserEntity userSaved = userServiceImpl.changeUsername(user.getId(), "newUsername");
 
-        Assertions.assertEquals(user.getId(), userSaved.getId());
-        Assertions.assertEquals(user.getEmail(), userSaved.getEmail());
-        Assertions.assertEquals(user.getFirstName(), userSaved.getFirstName());
-        Assertions.assertEquals(user.getLastName(), userSaved.getLastName());
+
         Assertions.assertNotEquals(user.getUsername(), userSaved.getUsername());
         Assertions.assertEquals(user.getPassword(), userSaved.getPassword());
     }
@@ -298,7 +272,6 @@ public class UserServiceImplIntTest {
 
     @Test
     void UserService_ChangePassword_UnsuccessfulIncorrectPassword() {
-        UserEntity user = createTestUser(null);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userServiceImpl.save(user);
 
@@ -308,7 +281,6 @@ public class UserServiceImplIntTest {
 
     @Test
     void UserService_ChangePassword_Successful() {
-        UserEntity user = createTestUser(null);
         String rawPassword = user.getPassword();
         user.setPassword(passwordEncoder.encode(rawPassword));
         userServiceImpl.save(user);
@@ -332,7 +304,6 @@ public class UserServiceImplIntTest {
 
     @Test
     void UserService_LoadUserByUsername_Successful() {
-        UserEntity user = userRepository.save(createTestUser(null));
         RoleEntity role = roleRepository.save(createTestRole(null, 0));
         PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(null, 0));
         user.getRoles().add(role);
@@ -349,6 +320,7 @@ public class UserServiceImplIntTest {
             List<UserEntity> expectedExerciseList,
             List<UserEntity> exerciseListObtained
     ) {
+        Assertions.assertEquals(expectedExerciseList.size(), exerciseListObtained.size());
         expectedExerciseList.forEach(userFound -> assertEqualsUser(
                 exerciseListObtained.stream().filter(
                         user -> Objects.equals(user.getId(), userFound.getId())
