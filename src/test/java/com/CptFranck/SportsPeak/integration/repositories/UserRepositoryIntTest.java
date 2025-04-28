@@ -6,7 +6,9 @@ import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
 import com.CptFranck.SportsPeak.repositories.ProgExerciseRepository;
 import com.CptFranck.SportsPeak.repositories.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -14,10 +16,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.util.List;
 import java.util.Optional;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserBis;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserBis;
 
 @DataJpaTest
 public class UserRepositoryIntTest {
@@ -31,16 +33,21 @@ public class UserRepositoryIntTest {
     @Autowired
     private ProgExerciseRepository progExerciseRepository;
 
-    private UserEntity saveOneUserInRepository() {
-        UserEntity user = createTestUser(null);
-        return userRepository.save(user);
+    private UserEntity user;
+
+    @BeforeEach
+    public void setUp() {
+        user = userRepository.save(createTestUser(null));
+    }
+
+    @AfterEach
+    public void afterEach() {
+        userRepository.deleteAll();
     }
 
     @Test
     public void userRepository_FindByEmail_ReturnAllUsers() {
-        UserEntity savedUser = saveOneUserInRepository();
-
-        Optional<UserEntity> foundUser = userRepository.findByEmail(savedUser.getEmail());
+        Optional<UserEntity> foundUser = userRepository.findByEmail(user.getEmail());
 
         Assertions.assertNotNull(foundUser);
         Assertions.assertTrue(foundUser.isPresent());
@@ -49,9 +56,7 @@ public class UserRepositoryIntTest {
 
     @Test
     public void userRepository_FindByUsername_ReturnUser() {
-        UserEntity savedUser = saveOneUserInRepository();
-
-        Optional<UserEntity> foundUser = userRepository.findByUsername(savedUser.getUsername());
+        Optional<UserEntity> foundUser = userRepository.findByUsername(user.getUsername());
 
         Assertions.assertNotNull(foundUser);
         Assertions.assertTrue(foundUser.isPresent());
@@ -60,18 +65,17 @@ public class UserRepositoryIntTest {
 
     @Test
     public void userRepository_FindAllBySubscribedProgExercisesContaining_ReturnUser() {
-        UserEntity creator = saveOneUserInRepository();
         UserEntity subscriber = userRepository.save(createTestUserBis(null));
-        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(1L));
-        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(1L, creator, exercise));
-        creator.getSubscribedProgExercises().add(progExercise);
-        creator.getProgExercisesCreated().add(progExercise);
+        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
+        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(exercise.getId(), user, exercise));
+        user.getSubscribedProgExercises().add(progExercise);
+        user.getProgExercisesCreated().add(progExercise);
         subscriber.getSubscribedProgExercises().add(progExercise);
 
         List<UserEntity> foundUsers = userRepository.findAllBySubscribedProgExercisesContaining(progExercise);
 
         Assertions.assertNotNull(foundUsers);
-        Assertions.assertTrue(foundUsers.contains(creator));
+        Assertions.assertTrue(foundUsers.contains(user));
         Assertions.assertTrue(foundUsers.contains(subscriber));
     }
 }
