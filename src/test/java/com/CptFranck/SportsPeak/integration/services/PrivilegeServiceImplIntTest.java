@@ -17,10 +17,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
-import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.createNewTestPrivilegeList;
 import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.createTestPrivilege;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -58,9 +55,8 @@ public class PrivilegeServiceImplIntTest {
 
     @Test
     void PrivilegeService_Save_UpdateSuccess() {
-        PrivilegeEntity privilegeBis = createTestPrivilege(null, 0);
-        privilegeBis.setName("other privilege name");
-        privilegeRepository.save(privilegeBis);
+        privilege.setName("other privilege name");
+        privilegeRepository.save(privilege);
 
         PrivilegeEntity privilegeSaved = privilegeServiceImpl.save(privilege);
 
@@ -69,20 +65,14 @@ public class PrivilegeServiceImplIntTest {
 
     @Test
     void PrivilegeService_Save_UnSuccessful() {
-        privilegeServiceImpl.save(createTestPrivilege(null, 1));
-
         assertThrows(PrivilegeExistsException.class, () -> privilegeServiceImpl.save(createTestPrivilege(null, 0)));
     }
 
     @Test
     void PrivilegeService_FindAll_Success() {
-        List<PrivilegeEntity> privilegeList = StreamSupport.stream(
-                privilegeRepository.saveAll(createNewTestPrivilegeList(true)).spliterator(),
-                false).toList();
-
         List<PrivilegeEntity> privilegeFound = privilegeServiceImpl.findAll();
 
-        assertEqualPrivilegeList(privilegeList, privilegeFound);
+        assertEqualPrivilegeList(List.of(privilege), privilegeFound);
     }
 
     @Test
@@ -95,14 +85,9 @@ public class PrivilegeServiceImplIntTest {
 
     @Test
     void PrivilegeService_FindMany_Success() {
-        List<PrivilegeEntity> privilegeList = StreamSupport.stream(
-                privilegeRepository.saveAll(createNewTestPrivilegeList(true)).spliterator(),
-                false).toList();
-        Set<Long> privilegeIds = privilegeList.stream().map(PrivilegeEntity::getId).collect(Collectors.toSet());
+        Set<PrivilegeEntity> privilegeFound = privilegeServiceImpl.findMany(Set.of(privilege.getId()));
 
-        Set<PrivilegeEntity> privilegeFound = privilegeServiceImpl.findMany(privilegeIds);
-
-        assertEqualPrivilegeList(privilegeList, privilegeFound.stream().toList());
+        assertEqualPrivilegeList(List.of(privilege), privilegeFound.stream().toList());
     }
 
     @Test
@@ -128,6 +113,7 @@ public class PrivilegeServiceImplIntTest {
             List<PrivilegeEntity> expectedPrivilegeList,
             List<PrivilegeEntity> privilegeListObtained
     ) {
+        Assertions.assertEquals(expectedPrivilegeList.size(), privilegeListObtained.size());
         expectedPrivilegeList.forEach(privilegeFound -> assertEqualPrivilege(
                 privilegeListObtained.stream().filter(
                         privilege -> Objects.equals(privilege.getId(), privilegeFound.getId())
