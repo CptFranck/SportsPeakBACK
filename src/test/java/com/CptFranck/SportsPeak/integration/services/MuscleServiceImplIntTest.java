@@ -9,6 +9,7 @@ import com.CptFranck.SportsPeak.repositories.MuscleRepository;
 import com.CptFranck.SportsPeak.service.impl.MuscleServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,9 +22,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.createTestMuscle;
-import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.createTestMuscleList;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.createTestMuscle;
+import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.createTestMuscleList;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -40,6 +41,13 @@ public class MuscleServiceImplIntTest {
 
     @Autowired
     private MuscleServiceImpl muscleServiceImpl;
+
+    private MuscleEntity muscle;
+
+    @BeforeEach
+    public void setUp() {
+        muscle = muscleRepository.save(createTestMuscle(null));
+    }
 
     @AfterEach
     public void afterEach() {
@@ -69,9 +77,6 @@ public class MuscleServiceImplIntTest {
 
     @Test
     void muscleService_FindOne_Success() {
-        MuscleEntity muscle = muscleRepository.save(createTestMuscle(null));
-
-
         Optional<MuscleEntity> muscleFound = muscleServiceImpl.findOne(muscle.getId());
 
         Assertions.assertTrue(muscleFound.isPresent());
@@ -92,8 +97,6 @@ public class MuscleServiceImplIntTest {
 
     @Test
     void muscleService_Exists_Success() {
-        MuscleEntity muscle = muscleRepository.save(createTestMuscle(null));
-
         boolean muscleFound = muscleServiceImpl.exists(muscle.getId());
 
         Assertions.assertTrue(muscleFound);
@@ -101,7 +104,6 @@ public class MuscleServiceImplIntTest {
 
     @Test
     void muscleService_Delete_Unsuccessful() {
-        MuscleEntity muscle = muscleRepository.save(createTestMuscle(null));
         muscleRepository.delete(muscle);
 
         assertThrows(MuscleNotFoundException.class, () -> muscleServiceImpl.delete(muscle.getId()));
@@ -109,7 +111,6 @@ public class MuscleServiceImplIntTest {
 
     @Test
     void muscleService_Delete_Unsuccessful_Exception() {
-        MuscleEntity muscle = muscleRepository.save(createTestMuscle(null));
         ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
         exercise.getMuscles().add(muscle);
         exerciseRepository.save(exercise);
@@ -119,8 +120,6 @@ public class MuscleServiceImplIntTest {
 
     @Test
     void muscleService_Delete_Success() {
-        MuscleEntity muscle = muscleRepository.save(createTestMuscle(null));
-
         assertAll(() -> muscleServiceImpl.delete(muscle.getId()));
     }
 
