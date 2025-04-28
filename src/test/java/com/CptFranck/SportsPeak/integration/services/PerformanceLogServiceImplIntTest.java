@@ -19,13 +19,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestDateTimeUtils.assertDatetimeWithTimestamp;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createNewTestPerformanceLogList;
-import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createTestPerformanceLog;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSet;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.TestDateTimeUtils.assertDatetimeWithTimestamp;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestPerformanceLogUtils.createNewTestPerformanceLogList;
+import static com.CptFranck.SportsPeak.utils.TestPerformanceLogUtils.createTestPerformanceLog;
+import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.TestTargetSetUtils.createTestTargetSet;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -54,12 +54,15 @@ public class PerformanceLogServiceImplIntTest {
 
     private TargetSetEntity targetSet;
 
+    private PerformanceLogEntity performanceLog;
+
     @BeforeEach
     void setUp() {
         UserEntity user = userRepository.save(createTestUser(null));
         ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
         ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
         targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
+        performanceLog = performanceLogRepository.save(createTestPerformanceLog(null, targetSet));
     }
 
     @AfterEach
@@ -73,7 +76,7 @@ public class PerformanceLogServiceImplIntTest {
 
     @Test
     void performanceLogService_Save_Success() {
-        PerformanceLogEntity performanceLog = performanceLogRepository.save(createTestPerformanceLog(null, targetSet));
+        PerformanceLogEntity performanceLog = createTestPerformanceLog(null, targetSet);
 
         PerformanceLogEntity performanceLogSaved = performanceLogServiceImpl.save(performanceLog);
 
@@ -82,6 +85,7 @@ public class PerformanceLogServiceImplIntTest {
 
     @Test
     void performanceLogService_FindAll_Success() {
+        performanceLogRepository.deleteAll();
         List<PerformanceLogEntity> performanceLogList = StreamSupport.stream(
                 performanceLogRepository.saveAll(createNewTestPerformanceLogList(targetSet)).spliterator(),
                 false).toList();
@@ -93,12 +97,10 @@ public class PerformanceLogServiceImplIntTest {
 
     @Test
     void performanceLogService_FindOne_Success() {
-        PerformanceLogEntity performanceLogSaved = performanceLogServiceImpl.save(createTestPerformanceLog(null, targetSet));
-
-        Optional<PerformanceLogEntity> performanceLogFound = performanceLogServiceImpl.findOne(performanceLogSaved.getId());
+        Optional<PerformanceLogEntity> performanceLogFound = performanceLogServiceImpl.findOne(performanceLog.getId());
 
         Assertions.assertTrue(performanceLogFound.isPresent());
-        assertEqualPerformanceLog(performanceLogSaved, performanceLogFound.get());
+        assertEqualPerformanceLog(performanceLog, performanceLogFound.get());
     }
 
     @Test
@@ -115,6 +117,7 @@ public class PerformanceLogServiceImplIntTest {
 
     @Test
     void performanceLogService_FindAllByTargetSetId_Success() {
+        performanceLogRepository.deleteAll();
         List<PerformanceLogEntity> performanceLogList = StreamSupport.stream(
                 performanceLogRepository.saveAll(createNewTestPerformanceLogList(targetSet)).spliterator(),
                 false).toList();
@@ -126,8 +129,6 @@ public class PerformanceLogServiceImplIntTest {
 
     @Test
     void PerformanceLogService_Exists_Success() {
-        PerformanceLogEntity performanceLog = performanceLogServiceImpl.save(createTestPerformanceLog(null, targetSet));
-
         boolean performanceLogFound = performanceLogServiceImpl.exists(performanceLog.getId());
 
         Assertions.assertTrue(performanceLogFound);
@@ -135,14 +136,11 @@ public class PerformanceLogServiceImplIntTest {
 
     @Test
     void PerformanceLogService_Delete_Success() {
-        PerformanceLogEntity performanceLog = performanceLogServiceImpl.save(createTestPerformanceLog(null, targetSet));
-
         assertAll(() -> performanceLogServiceImpl.delete(performanceLog.getId()));
     }
 
     @Test
     void PerformanceLogService_Delete_Unsuccessful() {
-        PerformanceLogEntity performanceLog = performanceLogServiceImpl.save(createTestPerformanceLog(null, targetSet));
         performanceLogRepository.delete(performanceLog);
 
         assertThrows(PerformanceLogNotFoundException.class, () -> performanceLogServiceImpl.delete(performanceLog.getId()));
@@ -152,6 +150,7 @@ public class PerformanceLogServiceImplIntTest {
             List<PerformanceLogEntity> expectedPerformanceLogList,
             List<PerformanceLogEntity> PerformanceLogListObtained
     ) {
+        Assertions.assertEquals(expectedPerformanceLogList.size(), PerformanceLogListObtained.size());
         expectedPerformanceLogList.forEach(performanceLogFound -> assertEqualPerformanceLog(
                 PerformanceLogListObtained.stream().filter(
                         performanceLog -> Objects.equals(performanceLog.getId(), performanceLogFound.getId())
