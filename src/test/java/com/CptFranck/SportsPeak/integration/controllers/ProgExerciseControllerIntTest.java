@@ -77,7 +77,7 @@ class ProgExerciseControllerIntTest {
     void ProgExerciseController_GetProgExercises_Success() {
         List<ProgExerciseDto> progExerciseDtos = progExerciseController.getProgExercises();
 
-        assertEqualExerciseList(List.of(progExercise), progExerciseDtos);
+        assertEqualProgExerciseList(List.of(progExercise), progExerciseDtos);
     }
 
     @Test
@@ -141,8 +141,7 @@ class ProgExerciseControllerIntTest {
     void ProgExerciseController_ModifyProgExercise_UnsuccessfulProgExerciseNotFound() {
         InputProgExercise inputNewExercise = createTestInputProgExercise(progExercise.getId() + 1, user.getId(), false);
 
-        Assertions.assertThrows(ProgExerciseNotFoundException.class,
-                () -> progExerciseController.modifyProgExercise(inputNewExercise));
+        Assertions.assertThrows(ProgExerciseNotFoundException.class, () -> progExerciseController.modifyProgExercise(inputNewExercise));
     }
 
     @Test
@@ -233,7 +232,7 @@ class ProgExerciseControllerIntTest {
         Assertions.assertEquals(progExercise.getId(), id);
     }
 
-    private void assertEqualExerciseList(
+    private void assertEqualProgExerciseList(
             List<ProgExerciseEntity> progExerciseEntities,
             List<ProgExerciseDto> progExerciseDtos
     ) {

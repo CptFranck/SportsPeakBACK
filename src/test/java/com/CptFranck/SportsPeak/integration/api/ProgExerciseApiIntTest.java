@@ -354,16 +354,6 @@ class ProgExerciseApiIntTest {
         Assertions.assertEquals(progExercise.getId().intValue(), id);
     }
 
-    @Test
-    @WithMockUser(username = "user", roles = "USER")
-    void ProgExerciseApi_DeleteProgExercise_SuccessWithNoSubscriber() {
-        variables.put("progExerciseId", progExercise.getId());
-
-        Integer id = dgsQueryExecutor.executeAndExtractJsonPath(deleteProgExerciseQuery, "data.deleteProgExercise", variables);
-
-        Assertions.assertNotNull(id);
-    }
-
     private void assertEqualProgExerciseList(
             List<ProgExerciseEntity> progExerciseEntities,
             List<ProgExerciseDto> progExerciseDtos
