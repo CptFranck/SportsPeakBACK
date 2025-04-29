@@ -22,7 +22,7 @@ import java.util.Objects;
 import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.*;
 
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 class ExerciseTypeControllerIntTest {
 

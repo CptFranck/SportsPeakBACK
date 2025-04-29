@@ -21,7 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import static com.CptFranck.SportsPeak.controller.IntegrationTest.graphqlQuery.ExerciseTypeQuery.*;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseTypeUtils.*;
+import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.*;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
@@ -188,7 +188,7 @@ class ExerciseTypeControllerDGSIntTest {
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
     void ExerciseTypeController_DeleteExercise_Success() {
-        variables.put("exerciseTypeId", 1);
+        variables.put("exerciseTypeId", exerciseType.getId());
 
         Integer id = dgsQueryExecutor.executeAndExtractJsonPath(deleteExerciseTypeQuery, "data.deleteExerciseType", variables);
 
