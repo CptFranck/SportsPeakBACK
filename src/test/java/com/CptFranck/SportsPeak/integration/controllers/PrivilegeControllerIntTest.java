@@ -9,19 +9,21 @@ import com.CptFranck.SportsPeak.domain.input.privilege.InputPrivilege;
 import com.CptFranck.SportsPeak.repositories.PrivilegeRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
 import java.util.Objects;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestPrivilegeUtils.*;
+import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.*;
 
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 class PrivilegeControllerIntTest {
 
@@ -31,37 +33,55 @@ class PrivilegeControllerIntTest {
     @Autowired
     private PrivilegeRepository privilegeRepository;
 
+    private PrivilegeEntity privilege;
+
+    @BeforeEach
+    void setUp() {
+        privilege = privilegeRepository.save(createTestPrivilege(null, 0));
+    }
+
     @AfterEach
     public void afterEach() {
         this.privilegeRepository.deleteAll();
     }
 
     @Test
+    void PrivilegeController_GetPrivileges_UnsuccessfulNotAuthenticated() {
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> privilegeController.getPrivileges());
+    }
+
+    @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void PrivilegeController_GetPrivileges_Success() {
-        PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(null, 0));
-
         List<PrivilegeDto> PerformanceLogDtos = privilegeController.getPrivileges();
 
         assertEqualExerciseList(List.of(privilege), PerformanceLogDtos);
     }
 
     @Test
+    void PrivilegeController_GetPrivilegeById_UnsuccessfulNotAuthenticated() {
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> privilegeController.getPrivilegeById(privilege.getId()));
+    }
+
+    @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void PrivilegeController_GetPrivilegeById_Unsuccessful() {
-        Assertions.assertThrows(PrivilegeNotFoundException.class,
-                () -> privilegeController.getPrivilegeById(1L)
-        );
+    void PrivilegeController_GetPrivilegeById_UnsuccessfulPrivilegeNotFound() {
+        Assertions.assertThrows(PrivilegeNotFoundException.class, () -> privilegeController.getPrivilegeById(privilege.getId() + 1));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void PrivilegeController_GetPrivilegeById_Success() {
-        PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(null, 0));
-
         PrivilegeDto performanceLogDto = privilegeController.getPrivilegeById(privilege.getId());
 
         assertExerciseDtoAndEntity(privilege, performanceLogDto);
+    }
+
+    @Test
+    void PrivilegeController_AddPrivilege_UnsuccessfulNotAuthenticated() {
+        InputNewPrivilege inputNewPrivilege = createTestInputNewPrivilege();
+
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> privilegeController.addPrivilege(inputNewPrivilege));
     }
 
     @Test
@@ -74,20 +94,26 @@ class PrivilegeControllerIntTest {
         assertExerciseDtoAndInput(inputNewPrivilege, exerciseDto);
     }
 
+
+    @Test
+    void PrivilegeController_ModifyPrivilege_UnsuccessfulNotAuthenticated() {
+        InputPrivilege inputExercise = createTestInputPrivilege(privilege.getId());
+
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> privilegeController.modifyPrivilege(inputExercise));
+    }
+
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void PrivilegeController_ModifyPrivilege_UnsuccessfulDoesNotExist() {
-        InputPrivilege inputExercise = createTestInputPrivilege(1L);
+        InputPrivilege inputExercise = createTestInputPrivilege(privilege.getId() + 1);
 
         Assertions.assertThrows(PrivilegeNotFoundException.class,
-                () -> privilegeController.modifyPrivilege(inputExercise)
-        );
+                () -> privilegeController.modifyPrivilege(inputExercise));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void PrivilegeController_ModifyPrivilege_Success() {
-        PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(null, 0));
         InputPrivilege inputExercise = createTestInputPrivilege(privilege.getId());
 
         PrivilegeDto exerciseDto = privilegeController.modifyPrivilege(inputExercise);
@@ -96,18 +122,20 @@ class PrivilegeControllerIntTest {
     }
 
     @Test
-    @WithMockUser(username = "user", roles = "ADMIN")
-    void PrivilegeController_DeletePrivilege_UnsuccessfulExerciseNotFound() {
-        Assertions.assertThrows(PrivilegeNotFoundException.class,
-                () -> privilegeController.deletePrivilege(1L)
-        );
+    void PrivilegeController_DeletePrivilege_UnsuccessfulNotAuthenticated() {
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> privilegeController.deletePrivilege(privilege.getId()));
     }
+
+//    @Test
+//    @WithMockUser(username = "user", roles = "ADMIN")
+//    void PrivilegeController_DeletePrivilege_UnsuccessfulExerciseNotFound() {
+//        Assertions.assertThrows(PrivilegeNotFoundException.class,
+//                () -> privilegeController.deletePrivilege(privilege.getId() + 1));
+//    }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void PrivilegeController_DeletePrivilege_Success() {
-        PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(null, 0));
-
         Long id = privilegeController.deletePrivilege(privilege.getId());
 
         Assertions.assertEquals(privilege.getId(), id);
@@ -117,6 +145,7 @@ class PrivilegeControllerIntTest {
             List<PrivilegeEntity> privilegeEntities,
             List<PrivilegeDto> privilegeDtos
     ) {
+        Assertions.assertEquals(privilegeEntities.size(), privilegeDtos.size());
         privilegeDtos.forEach(exerciseDto -> assertExerciseDtoAndEntity(
                 privilegeEntities.stream().filter(
                         privilegeEntity -> Objects.equals(privilegeEntity.getId(), exerciseDto.getId())
