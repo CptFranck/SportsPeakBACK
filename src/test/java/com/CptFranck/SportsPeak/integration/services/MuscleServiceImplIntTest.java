@@ -130,5 +130,6 @@ public class MuscleServiceImplIntTest {
         Assertions.assertEquals(expected.getLatinName(), actual.getLatinName());
         Assertions.assertEquals(expected.getDescription(), actual.getDescription());
         Assertions.assertEquals(expected.getFunction(), actual.getFunction());
+        Assertions.assertEquals(expected.getExercises().size(), actual.getExercises().size());
     }
 }

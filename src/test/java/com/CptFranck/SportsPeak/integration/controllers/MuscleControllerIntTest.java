@@ -20,9 +20,9 @@ import org.springframework.test.context.TestPropertySource;
 import java.util.List;
 import java.util.Objects;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestMuscleUtils.*;
+import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 class MuscleControllerIntTest {
 
@@ -106,7 +106,6 @@ class MuscleControllerIntTest {
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void MuscleController_ModifyMuscle_Success() {
-        MuscleEntity muscle = muscleRepository.save(createTestMuscle(null));
         InputMuscle testInputMuscle = createTestInputMuscle(muscle.getId());
 
         MuscleDto exerciseDto = muscleController.modifyMuscle(testInputMuscle);
@@ -132,8 +131,6 @@ class MuscleControllerIntTest {
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void MuscleController_DeleteMuscle_Success() {
-        MuscleEntity muscle = muscleRepository.save(createTestMuscle(null));
-
         Long id = muscleController.deleteMuscle(muscle.getId());
 
         Assertions.assertEquals(muscle.getId(), id);
@@ -143,6 +140,7 @@ class MuscleControllerIntTest {
             List<MuscleEntity> muscleEntities,
             List<MuscleDto> muscleDtos
     ) {
+        Assertions.assertEquals(muscleEntities.size(), muscleDtos.size());
         muscleDtos.forEach(muscleDto -> assertExerciseDtoAndEntity(
                 muscleEntities.stream().filter(
                         muscleEntity -> Objects.equals(muscleEntity.getId(), muscleDto.getId())
@@ -158,6 +156,7 @@ class MuscleControllerIntTest {
         Assertions.assertEquals(muscleEntity.getLatinName(), muscleDto.getLatinName());
         Assertions.assertEquals(muscleEntity.getFunction(), muscleDto.getFunction());
         Assertions.assertEquals(muscleEntity.getDescription(), muscleDto.getDescription());
+        Assertions.assertEquals(muscleEntity.getExercises().size(), muscleDto.getExercises().size());
     }
 
     private void assertExerciseDtoAndInput(InputNewMuscle inputNewExercise, MuscleDto muscleDto) {
@@ -166,5 +165,6 @@ class MuscleControllerIntTest {
         Assertions.assertEquals(inputNewExercise.getLatinName(), muscleDto.getLatinName());
         Assertions.assertEquals(inputNewExercise.getFunction(), muscleDto.getFunction());
         Assertions.assertEquals(inputNewExercise.getDescription(), muscleDto.getDescription());
+        Assertions.assertEquals(inputNewExercise.getExerciseIds().size(), muscleDto.getExercises().size());
     }
 }
