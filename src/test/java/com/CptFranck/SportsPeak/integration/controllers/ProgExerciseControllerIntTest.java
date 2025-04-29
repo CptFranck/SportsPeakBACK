@@ -22,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 
@@ -29,12 +30,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.*;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUserBis;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.*;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserBis;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 class ProgExerciseControllerIntTest {
 
@@ -51,13 +52,14 @@ class ProgExerciseControllerIntTest {
     private ProgExerciseRepository progExerciseRepository;
 
     private UserEntity user;
-
     private ExerciseEntity exercise;
+    private ProgExerciseEntity progExercise;
 
     @BeforeEach
     void setUp() {
         user = userRepository.save(createTestUser(null));
         exercise = exerciseRepository.save(createTestExercise(null));
+        progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
     }
 
     @AfterEach
@@ -73,8 +75,6 @@ class ProgExerciseControllerIntTest {
 
     @Test
     void ProgExerciseController_GetProgExercises_Success() {
-        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
-
         List<ProgExerciseDto> progExerciseDtos = progExerciseController.getProgExercises();
 
         assertEqualExerciseList(List.of(progExercise), progExerciseDtos);
@@ -82,35 +82,36 @@ class ProgExerciseControllerIntTest {
 
     @Test
     void ProgExerciseController_GetProgExerciseById_UnsuccessfulProgExerciseNotFound() {
-        Assertions.assertThrows(ProgExerciseNotFoundException.class,
-                () -> progExerciseController.getProgExerciseById(1L)
-        );
+        Assertions.assertThrows(ProgExerciseNotFoundException.class, () -> progExerciseController.getProgExerciseById(progExercise.getId() + 1));
     }
 
     @Test
     void ProgExerciseController_GetProgExerciseById_Success() {
-        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
-
         ProgExerciseDto progExerciseDto = progExerciseController.getProgExerciseById(progExercise.getId());
 
         assertProgExerciseDtoAndEntity(progExercise, progExerciseDto);
     }
 
     @Test
-    @WithMockUser(username = "user", roles = "USER")
-    void ProgExerciseController_AddProgExercise_UnsuccessfulUserNotFound() {
-        InputNewProgExercise inputNewExercise = createTestInputNewProgExercise(user.getId(), exercise.getId());
-        userRepository.delete(user);
+    void ProgExerciseController_AddProgExercise_UnsuccessfulNotAuthenticated() {
+        InputNewProgExercise inputNewExercise = createTestInputNewProgExercise(user.getId() + 1, exercise.getId());
 
-        Assertions.assertThrows(UserNotFoundException.class,
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
                 () -> progExerciseController.addProgExercise(inputNewExercise));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
+    void ProgExerciseController_AddProgExercise_UnsuccessfulUserNotFound() {
+        InputNewProgExercise inputNewExercise = createTestInputNewProgExercise(user.getId() + 1, exercise.getId());
+
+        Assertions.assertThrows(UserNotFoundException.class, () -> progExerciseController.addProgExercise(inputNewExercise));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "USER")
     void ProgExerciseController_AddProgExercise_UnsuccessfulExerciseNotFound() {
-        InputNewProgExercise inputNewExercise = createTestInputNewProgExercise(user.getId(), exercise.getId());
-        exerciseRepository.delete(exercise);
+        InputNewProgExercise inputNewExercise = createTestInputNewProgExercise(user.getId(), exercise.getId() + 1);
 
         Assertions.assertThrows(ExerciseNotFoundException.class,
                 () -> progExerciseController.addProgExercise(inputNewExercise));
@@ -126,10 +127,19 @@ class ProgExerciseControllerIntTest {
         assertProgExerciseDtoAndInputNew(inputNewExercise, progExerciseDto);
     }
 
+
+    @Test
+    void ProgExerciseController_ModifyProgExercise_UnsuccessfulNotAuthenticated() {
+        InputProgExercise inputNewExercise = createTestInputProgExercise(progExercise.getId() + 1, user.getId(), false);
+
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
+                () -> progExerciseController.modifyProgExercise(inputNewExercise));
+    }
+
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void ProgExerciseController_ModifyProgExercise_UnsuccessfulProgExerciseNotFound() {
-        InputProgExercise inputNewExercise = createTestInputProgExercise(1L, user.getId(), false);
+        InputProgExercise inputNewExercise = createTestInputProgExercise(progExercise.getId() + 1, user.getId(), false);
 
         Assertions.assertThrows(ProgExerciseNotFoundException.class,
                 () -> progExerciseController.modifyProgExercise(inputNewExercise));
@@ -138,9 +148,7 @@ class ProgExerciseControllerIntTest {
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void ProgExerciseController_ModifyProgExercise_UnsuccessfulWrongLabel() {
-        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
-        InputProgExercise inputNewExercise =
-                createTestInputProgExercise(progExercise.getId(), exercise.getId(), true);
+        InputProgExercise inputNewExercise = createTestInputProgExercise(progExercise.getId(), exercise.getId(), true);
 
         Assertions.assertThrows(LabelMatchNotFoundException.class,
                 () -> progExerciseController.modifyProgExercise(inputNewExercise));
@@ -149,9 +157,7 @@ class ProgExerciseControllerIntTest {
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void ProgExerciseController_ModifyProgExercise_Success() {
-        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
-        InputProgExercise inputNewExercise =
-                createTestInputProgExercise(progExercise.getId(), exercise.getId(), false);
+        InputProgExercise inputNewExercise = createTestInputProgExercise(progExercise.getId(), exercise.getId(), false);
 
         ProgExerciseDto progExerciseDto = progExerciseController.modifyProgExercise(inputNewExercise);
 
@@ -159,33 +165,35 @@ class ProgExerciseControllerIntTest {
     }
 
     @Test
-    @WithMockUser(username = "user", roles = "ADMIN")
+    void ProgExerciseController_ModifyProgExerciseTrustLabel_UnsuccessfulNotAuthenticated() {
+        InputProgExerciseTrustLabel inputProgExerciseTrustLabel = createTestInputProgExerciseTrustLabel(progExercise.getId() + 1, false);
+
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
+                () -> progExerciseController.modifyProgExerciseTrustLabel(inputProgExerciseTrustLabel));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "STAFF")
     void ProgExerciseController_ModifyProgExerciseTrustLabel_UnsuccessfulProgExerciseNotFound() {
-        progExerciseRepository.save(createTestProgExercise(null, user, exercise));
-        InputProgExerciseTrustLabel inputProgExerciseTrustLabel =
-                createTestInputProgExerciseTrustLabel(0L, false);
+        InputProgExerciseTrustLabel inputProgExerciseTrustLabel = createTestInputProgExerciseTrustLabel(progExercise.getId() + 1, false);
 
         Assertions.assertThrows(ProgExerciseNotFoundException.class,
                 () -> progExerciseController.modifyProgExerciseTrustLabel(inputProgExerciseTrustLabel));
     }
 
     @Test
-    @WithMockUser(username = "user", roles = "ADMIN")
+    @WithMockUser(username = "user", roles = "STAFF")
     void ProgExerciseController_ModifyProgExerciseTrustLabel_UnsuccessfulWrongLabel() {
-        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
-        InputProgExerciseTrustLabel inputProgExerciseTrustLabel =
-                createTestInputProgExerciseTrustLabel(progExercise.getId(), true);
+        InputProgExerciseTrustLabel inputProgExerciseTrustLabel = createTestInputProgExerciseTrustLabel(progExercise.getId(), true);
 
         Assertions.assertThrows(LabelMatchNotFoundException.class,
                 () -> progExerciseController.modifyProgExerciseTrustLabel(inputProgExerciseTrustLabel));
     }
 
     @Test
-    @WithMockUser(username = "user", roles = "ADMIN")
+    @WithMockUser(username = "user", roles = "STAFF")
     void ProgExerciseController_ModifyProgExerciseTrustLabel_Success() {
-        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
-        InputProgExerciseTrustLabel inputProgExerciseTrustLabel =
-                createTestInputProgExerciseTrustLabel(progExercise.getId(), false);
+        InputProgExerciseTrustLabel inputProgExerciseTrustLabel = createTestInputProgExerciseTrustLabel(progExercise.getId(), false);
 
         ProgExerciseDto progExerciseDto = progExerciseController.modifyProgExerciseTrustLabel(inputProgExerciseTrustLabel);
 
@@ -194,16 +202,21 @@ class ProgExerciseControllerIntTest {
     }
 
     @Test
+    void ProgExerciseController_DeleteProgExercise_UnsuccessfulNotAuthenticated() {
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
+                () -> progExerciseController.deleteProgExercise(progExercise.getId()));
+    }
+
+    @Test
     @WithMockUser(username = "user", roles = "USER")
     void ProgExerciseController_DeleteProgExercise_UnsuccessfulProgExerciseNotFound() {
         Assertions.assertThrows(ProgExerciseNotFoundException.class,
-                () -> progExerciseController.deleteProgExercise(0L));
+                () -> progExerciseController.deleteProgExercise(progExercise.getId() + 1));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void ProgExerciseController_DeleteProgExercise_UnsuccessfulProgExerciseStillUsed() {
-        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
         UserEntity userBis = userRepository.save(createTestUserBis(null));
         userBis.getSubscribedProgExercises().add(progExercise);
         userRepository.save(userBis);
@@ -215,8 +228,6 @@ class ProgExerciseControllerIntTest {
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void ProgExerciseController_DeleteProgExercise_Success() {
-        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
-
         Long id = progExerciseController.deleteProgExercise(progExercise.getId());
 
         Assertions.assertEquals(progExercise.getId(), id);
@@ -226,6 +237,7 @@ class ProgExerciseControllerIntTest {
             List<ProgExerciseEntity> progExerciseEntities,
             List<ProgExerciseDto> progExerciseDtos
     ) {
+        Assertions.assertEquals(progExerciseEntities.size(), progExerciseDtos.size());
         progExerciseDtos.forEach(progExerciseDto -> assertProgExerciseDtoAndEntity(
                 progExerciseEntities.stream().filter(
                         progExercise -> Objects.equals(progExercise.getId(), progExerciseDto.getId())
