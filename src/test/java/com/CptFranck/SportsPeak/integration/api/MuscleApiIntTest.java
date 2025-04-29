@@ -27,7 +27,7 @@ import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.*;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-class MuscleControllerDGSIntTest {
+class MuscleApiIntTest {
 
     @Autowired
     private DgsQueryExecutor dgsQueryExecutor;
@@ -53,7 +53,7 @@ class MuscleControllerDGSIntTest {
     }
 
     @Test
-    void MuscleController_GetMuscles_Success() {
+    void MuscleApi_GetMuscles_Success() {
         List<LinkedHashMap<String, Object>> response = dgsQueryExecutor.executeAndExtractJsonPath(getMusclesQuery,
                 "data.getMuscles");
 
@@ -63,7 +63,7 @@ class MuscleControllerDGSIntTest {
     }
 
     @Test
-    void MuscleController_GetMuscleById_UnsuccessfulMuscleNotFound() {
+    void MuscleApi_GetMuscleById_UnsuccessfulMuscleNotFound() {
         variables.put("id", muscle.getId() + 1);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
@@ -74,7 +74,7 @@ class MuscleControllerDGSIntTest {
     }
 
     @Test
-    void MuscleController_GetMuscleById_Success() {
+    void MuscleApi_GetMuscleById_Success() {
         variables.put("id", muscle.getId());
 
         LinkedHashMap<String, Object> response = dgsQueryExecutor.executeAndExtractJsonPath(getMuscleByIdQuery,
@@ -85,7 +85,7 @@ class MuscleControllerDGSIntTest {
     }
 
     @Test
-    void MuscleController_AddMuscle_UnsuccessfulNotAuthenticated() {
+    void MuscleApi_AddMuscle_UnsuccessfulNotAuthenticated() {
         variables.put("inputNewMuscle", objectMapper.convertValue(
                 createTestInputNewMuscle(), new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
@@ -99,7 +99,7 @@ class MuscleControllerDGSIntTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void MuscleController_AddMuscle_Success() {
+    void MuscleApi_AddMuscle_Success() {
         InputNewMuscle inputNewMuscle = createTestInputNewMuscle();
         variables.put("inputNewMuscle", objectMapper.convertValue(
                 inputNewMuscle, new TypeReference<LinkedHashMap<String, Object>>() {
@@ -113,7 +113,7 @@ class MuscleControllerDGSIntTest {
     }
 
     @Test
-    void MuscleController_ModifyMuscle_UnsuccessfulNotAuthenticated() {
+    void MuscleApi_ModifyMuscle_UnsuccessfulNotAuthenticated() {
         variables.put("inputMuscle", objectMapper.convertValue(
                 createTestInputMuscle(muscle.getId()), new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
@@ -127,7 +127,7 @@ class MuscleControllerDGSIntTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void MuscleController_ModifyMuscle_UnsuccessfulMuscleNotFound() {
+    void MuscleApi_ModifyMuscle_UnsuccessfulMuscleNotFound() {
         variables.put("inputMuscle", objectMapper.convertValue(
                 createTestInputMuscle(muscle.getId() + 1), new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
@@ -141,7 +141,7 @@ class MuscleControllerDGSIntTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void MuscleController_ModifyMuscle_Success() {
+    void MuscleApi_ModifyMuscle_Success() {
         InputMuscle inputMuscle = createTestInputMuscle(muscle.getId());
         variables.put("inputMuscle",
                 objectMapper.convertValue(inputMuscle, new TypeReference<LinkedHashMap<String, Object>>() {
@@ -155,7 +155,7 @@ class MuscleControllerDGSIntTest {
     }
 
     @Test
-    void MuscleController_DeleteMuscle_UnsuccessfulNotAuthenticated() {
+    void MuscleApi_DeleteMuscle_UnsuccessfulNotAuthenticated() {
         variables.put("muscleId", muscle.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
@@ -167,7 +167,7 @@ class MuscleControllerDGSIntTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void MuscleController_DeleteMuscle_UnsuccessfulMuscleNotFound() {
+    void MuscleApi_DeleteMuscle_UnsuccessfulMuscleNotFound() {
         variables.put("muscleId", muscle.getId() + 1);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
@@ -179,7 +179,7 @@ class MuscleControllerDGSIntTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void MuscleController_DeleteMuscle_Success() {
+    void MuscleApi_DeleteMuscle_Success() {
         variables.put("muscleId", muscle.getId());
 
         Integer id = dgsQueryExecutor.executeAndExtractJsonPath(deleteMuscleQuery, "data.deleteMuscle", variables);
