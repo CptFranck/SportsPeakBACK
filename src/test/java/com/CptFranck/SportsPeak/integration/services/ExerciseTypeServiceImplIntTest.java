@@ -111,5 +111,6 @@ public class ExerciseTypeServiceImplIntTest {
         Assertions.assertEquals(exerciseTypeExpected.getId(), exerciseTypeObtain.getId());
         Assertions.assertEquals(exerciseTypeExpected.getName(), exerciseTypeObtain.getName());
         Assertions.assertEquals(exerciseTypeExpected.getGoal(), exerciseTypeObtain.getGoal());
+        Assertions.assertEquals(exerciseTypeExpected.getExercises().size(), exerciseTypeObtain.getExercises().size());
     }
 }

@@ -19,6 +19,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 
 import static com.CptFranck.SportsPeak.controller.IntegrationTest.graphqlQuery.ExerciseTypeQuery.*;
 import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.*;
@@ -57,7 +58,7 @@ class ExerciseTypeControllerDGSIntTest {
 
         List<ExerciseTypeDto> exerciseTypeDtos = objectMapper.convertValue(response, new TypeReference<List<ExerciseTypeDto>>() {
         });
-        exerciseTypeDtos.forEach(exerciseTypeDto -> assertExerciseTypeDtoValid(exerciseType, exerciseTypeDto));
+        assertEqualExerciseList(List.of(exerciseType), exerciseTypeDtos);
     }
 
     @Test
@@ -193,6 +194,16 @@ class ExerciseTypeControllerDGSIntTest {
         Integer id = dgsQueryExecutor.executeAndExtractJsonPath(deleteExerciseTypeQuery, "data.deleteExerciseType", variables);
 
         Assertions.assertEquals(id, exerciseType.getId().intValue());
+    }
+
+    private void assertEqualExerciseList(List<ExerciseTypeEntity> exerciseTypeEntities, List<ExerciseTypeDto> exerciseTypeDtos) {
+        Assertions.assertEquals(exerciseTypeEntities.size(), exerciseTypeDtos.size());
+        exerciseTypeDtos.forEach(exerciseTypeDto -> assertExerciseTypeDtoValid(
+                exerciseTypeEntities.stream().filter(
+                        exerciseTypeEntity -> Objects.equals(exerciseTypeEntity.getId(), exerciseTypeDto.getId())
+                ).toList().getFirst(),
+                exerciseTypeDto)
+        );
     }
 
     private void assertExerciseTypeDtoValid(ExerciseTypeEntity exerciseTypeEntity, ExerciseTypeDto exerciseTypeDto) {
