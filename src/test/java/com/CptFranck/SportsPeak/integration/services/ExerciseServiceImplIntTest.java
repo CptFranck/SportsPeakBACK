@@ -183,5 +183,8 @@ public class ExerciseServiceImplIntTest {
         Assertions.assertEquals(expected.getName(), actual.getName());
         Assertions.assertEquals(expected.getDescription(), actual.getDescription());
         Assertions.assertEquals(expected.getGoal(), actual.getGoal());
+        Assertions.assertEquals(expected.getMuscles().size(), actual.getMuscles().size());
+        Assertions.assertEquals(expected.getExerciseTypes().size(), actual.getExerciseTypes().size());
+        Assertions.assertEquals(expected.getProgExercises().size(), actual.getProgExercises().size());
     }
 }

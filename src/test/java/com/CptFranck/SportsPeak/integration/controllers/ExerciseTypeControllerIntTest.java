@@ -39,6 +39,7 @@ class ExerciseTypeControllerIntTest {
         exerciseType = exerciseTypeRepository.save(createTestExerciseType(null));
 
     }
+
     @AfterEach
     void afterEach() {
         exerciseTypeRepository.deleteAll();

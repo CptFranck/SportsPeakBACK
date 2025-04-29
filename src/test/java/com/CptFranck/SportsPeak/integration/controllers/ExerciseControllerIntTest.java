@@ -140,6 +140,7 @@ class ExerciseControllerIntTest {
             List<ExerciseEntity> exerciseEntities,
             List<ExerciseDto> exerciseDtos
     ) {
+        Assertions.assertEquals(exerciseEntities.size(), exerciseDtos.size());
         exerciseDtos.forEach(exerciseDto -> assertExerciseDtoAndEntity(
                 exerciseEntities.stream().filter(
                         exerciseEntity -> Objects.equals(exerciseEntity.getId(), exerciseDto.getId())
@@ -154,7 +155,8 @@ class ExerciseControllerIntTest {
         Assertions.assertEquals(exerciseEntity.getGoal(), exerciseDto.getGoal());
         Assertions.assertEquals(exerciseEntity.getDescription(), exerciseDto.getDescription());
         Assertions.assertEquals(exerciseEntity.getMuscles().size(), exerciseDto.getMuscles().size());
-        Assertions.assertEquals(exerciseEntity.getExerciseTypes().size(), exerciseDto.getProgExercises().size());
+        Assertions.assertEquals(exerciseEntity.getExerciseTypes().size(), exerciseDto.getExerciseTypes().size());
+        Assertions.assertEquals(exerciseEntity.getProgExercises().size(), exerciseDto.getProgExercises().size());
     }
 
     private void assertExerciseDtoAndInput(InputNewExercise inputNewExercise, ExerciseDto exerciseDto) {
