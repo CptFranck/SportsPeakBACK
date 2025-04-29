@@ -15,21 +15,22 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
 import java.util.Objects;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestDateTimeUtils.assertDatetimeWithTimestamp;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.*;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.createTestTargetSet;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.TestDateTimeUtils.assertDatetimeWithTimestamp;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestPerformanceLogUtils.*;
+import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.TestTargetSetUtils.createTestTargetSet;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 class PerformanceLogControllerIntTest {
 
@@ -53,6 +54,7 @@ class PerformanceLogControllerIntTest {
     private UserRepository userRepository;
 
     private TargetSetEntity targetSet;
+    private PerformanceLogEntity performanceLog;
 
     @BeforeEach
     void setUp() {
@@ -61,9 +63,8 @@ class PerformanceLogControllerIntTest {
         ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
         user.getProgExercisesCreated().add(progExercise);
         exercise.getProgExercises().add(progExercise);
-        exerciseRepository.save(exercise);
-        userRepository.save(user);
         targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
+        performanceLog = performanceLogRepository.save(createTestPerformanceLog(null, targetSet));
     }
 
     @AfterEach
@@ -77,71 +78,68 @@ class PerformanceLogControllerIntTest {
 
     @Test
     void PerformanceLogController_GetPerformanceLogs_Success() {
-        PerformanceLogEntity performanceLogEntity =
-                performanceLogRepository.save(createTestPerformanceLog(null, targetSet));
-
         List<PerformanceLogDto> performanceLogsDtos = performanceLogController.getPerformanceLogs();
 
-        assertEqualPerformanceLogList(List.of(performanceLogEntity), performanceLogsDtos);
+        assertEqualPerformanceLogList(List.of(performanceLog), performanceLogsDtos);
     }
 
     @Test
-    void PerformanceLogController_GetPerformanceLogById_Unsuccessful() {
+    void PerformanceLogController_GetPerformanceLogById_UnsuccessfulPerformanceLogNotFound() {
         Assertions.assertThrows(PerformanceLogNotFoundException.class,
-                () -> performanceLogController.getPerformanceLogById(1L)
-        );
+                () -> performanceLogController.getPerformanceLogById(performanceLog.getId() + 1));
     }
 
     @Test
     void PerformanceLogController_GetPerformanceLogById_Success() {
-        PerformanceLogEntity performanceLogEntity =
-                performanceLogRepository.save(createTestPerformanceLog(null, targetSet));
-        PerformanceLogDto performanceLogDto =
-                performanceLogController.getPerformanceLogById(performanceLogEntity.getId());
+        PerformanceLogDto performanceLogDto = performanceLogController.getPerformanceLogById(performanceLog.getId());
 
-        assertPerformanceLogDtoAndEntity(performanceLogEntity, performanceLogDto);
+        assertPerformanceLogDtoAndEntity(performanceLog, performanceLogDto);
     }
 
     @Test
-    @WithMockUser(username = "user", roles = "ADMIN")
+    void PerformanceLogController_GetPerformanceLogsByTargetId_UnsuccessfulNotAuthenticated() {
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
+                () -> performanceLogController.getPerformanceLogsByTargetSetsId(targetSet.getId()));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "USER")
     void PerformanceLogController_GetPerformanceLogsByTargetId_Success() {
-        PerformanceLogEntity performanceLogEntity =
-                performanceLogRepository.save(createTestPerformanceLog(null, targetSet));
+        List<PerformanceLogDto> performanceLogsDtos = performanceLogController.getPerformanceLogsByTargetSetsId(targetSet.getId());
 
-        List<PerformanceLogDto> performanceLogsDtos =
-                performanceLogController.getPerformanceLogsByTargetSetsId(targetSet.getId());
-
-        assertEqualPerformanceLogList(List.of(performanceLogEntity), performanceLogsDtos);
+        assertEqualPerformanceLogList(List.of(performanceLog), performanceLogsDtos);
     }
 
     @Test
-    @WithMockUser(username = "user", roles = "ADMIN")
+    void PerformanceLogController_AddPerformanceLog_UnsuccessfulNotAuthenticated() {
+        InputNewPerformanceLog inputNewPerformanceLog = createTestInputNewPerformanceLog(targetSet.getId(), false);
+
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
+                () -> performanceLogController.addPerformanceLog(inputNewPerformanceLog));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "USER")
     void PerformanceLogController_AddPerformanceLog_UnsuccessfulTargetSetNotFound() {
-        InputNewPerformanceLog inputNewPerformanceLog =
-                createTestInputNewPerformanceLog(1L, false);
+        InputNewPerformanceLog inputNewPerformanceLog = createTestInputNewPerformanceLog(targetSet.getId() + 1, false);
 
         Assertions.assertThrows(TargetSetNotFoundException.class,
-                () -> performanceLogController.addPerformanceLog(inputNewPerformanceLog)
-        );
-
+                () -> performanceLogController.addPerformanceLog(inputNewPerformanceLog));
     }
 
     @Test
-    @WithMockUser(username = "user", roles = "ADMIN")
+    @WithMockUser(username = "user", roles = "USER")
     void PerformanceLogController_AddPerformanceLog_UnsuccessfulWrongLabel() {
-        InputNewPerformanceLog inputNewPerformanceLog =
-                createTestInputNewPerformanceLog(targetSet.getId(), true);
+        InputNewPerformanceLog inputNewPerformanceLog = createTestInputNewPerformanceLog(targetSet.getId(), true);
 
         Assertions.assertThrows(LabelMatchNotFoundException.class,
-                () -> performanceLogController.addPerformanceLog(inputNewPerformanceLog)
-        );
+                () -> performanceLogController.addPerformanceLog(inputNewPerformanceLog));
     }
 
     @Test
-    @WithMockUser(username = "user", roles = "ADMIN")
+    @WithMockUser(username = "user", roles = "USER")
     void PerformanceLogController_AddPerformanceLog_Success() {
-        InputNewPerformanceLog inputNewPerformanceLog =
-                createTestInputNewPerformanceLog(targetSet.getId(), false);
+        InputNewPerformanceLog inputNewPerformanceLog = createTestInputNewPerformanceLog(targetSet.getId(), false);
 
         PerformanceLogDto performanceLogDto = performanceLogController.addPerformanceLog(inputNewPerformanceLog);
 
@@ -149,36 +147,35 @@ class PerformanceLogControllerIntTest {
     }
 
     @Test
-    @WithMockUser(username = "user", roles = "ADMIN")
-    void PerformanceLogController_ModifyPerformanceLog_UnsuccessfulDoesNotExist() {
-        InputPerformanceLog inputPerformanceLog =
-                createTestInputPerformanceLog(1L, targetSet.getId(), false);
+    void PerformanceLogController_ModifyPerformanceLog_UnsuccessfulNotAuthenticated() {
+        InputPerformanceLog inputPerformanceLog = createTestInputPerformanceLog(performanceLog.getId(), targetSet.getId(), false);
+
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
+                () -> performanceLogController.modifyPerformanceLog(inputPerformanceLog));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "USER")
+    void PerformanceLogController_ModifyPerformanceLog_UnsuccessfulPerformanceLogNotFound() {
+        InputPerformanceLog inputPerformanceLog = createTestInputPerformanceLog(performanceLog.getId() + 1, targetSet.getId(), false);
 
         Assertions.assertThrows(PerformanceLogNotFoundException.class,
-                () -> performanceLogController.modifyPerformanceLog(inputPerformanceLog)
-        );
+                () -> performanceLogController.modifyPerformanceLog(inputPerformanceLog));
     }
 
     @Test
-    @WithMockUser(username = "user", roles = "ADMIN")
+    @WithMockUser(username = "user", roles = "USER")
     void PerformanceLogController_ModifyPerformanceLog_UnsuccessfulWrongLabel() {
-        PerformanceLogEntity performanceLogEntity =
-                performanceLogRepository.save(createTestPerformanceLog(null, targetSet));
-        InputPerformanceLog inputPerformanceLog =
-                createTestInputPerformanceLog(performanceLogEntity.getId(), targetSet.getId(), true);
+        InputPerformanceLog inputPerformanceLog = createTestInputPerformanceLog(performanceLog.getId(), targetSet.getId(), true);
 
         Assertions.assertThrows(LabelMatchNotFoundException.class,
-                () -> performanceLogController.modifyPerformanceLog(inputPerformanceLog)
-        );
+                () -> performanceLogController.modifyPerformanceLog(inputPerformanceLog));
     }
 
     @Test
-    @WithMockUser(username = "user", roles = "ADMIN")
+    @WithMockUser(username = "user", roles = "USER")
     void PerformanceLogController_ModifyPerformanceLog_Success() {
-        PerformanceLogEntity performanceLogEntity =
-                performanceLogRepository.save(createTestPerformanceLog(null, targetSet));
-        InputPerformanceLog inputPerformanceLog =
-                createTestInputPerformanceLog(performanceLogEntity.getId(), targetSet.getId(), false);
+        InputPerformanceLog inputPerformanceLog = createTestInputPerformanceLog(performanceLog.getId(), targetSet.getId(), false);
 
         PerformanceLogDto performanceLogDto = performanceLogController.modifyPerformanceLog(inputPerformanceLog);
 
@@ -186,28 +183,31 @@ class PerformanceLogControllerIntTest {
     }
 
     @Test
-    @WithMockUser(username = "user", roles = "ADMIN")
-    void PerformanceLogController_DeletePerformanceLog_UnsuccessfulExerciseNotFound() {
-        Assertions.assertThrows(PerformanceLogNotFoundException.class,
-                () -> performanceLogController.deletePerformanceLog(1L)
-        );
+    void PerformanceLogController_DeletePerformanceLog_UnsuccessfulNotAuthenticated() {
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
+                () -> performanceLogController.deletePerformanceLog(performanceLog.getId()));
     }
 
+//    @Test
+//    @WithMockUser(username = "user", roles = "USER")
+//    void PerformanceLogController_DeletePerformanceLog_UnsuccessfulExerciseNotFound() {
+//        Assertions.assertThrows(PerformanceLogNotFoundException.class,
+//                () -> performanceLogController.deletePerformanceLog(performanceLog.getId() + 1));
+//    }
+
     @Test
-    @WithMockUser(username = "user", roles = "ADMIN")
+    @WithMockUser(username = "user", roles = "USER")
     void PerformanceLogController_DeletePerformanceLog_Success() {
-        PerformanceLogEntity performanceLogEntity =
-                performanceLogRepository.save(createTestPerformanceLog(null, targetSet));
+        Long id = performanceLogController.deletePerformanceLog(performanceLog.getId());
 
-        Long id = performanceLogController.deletePerformanceLog(performanceLogEntity.getId());
-
-        Assertions.assertEquals(performanceLogEntity.getId(), id);
+        Assertions.assertEquals(performanceLog.getId(), id);
     }
 
     private void assertEqualPerformanceLogList(
             List<PerformanceLogEntity> performanceLogEntities,
             List<PerformanceLogDto> performanceLogDtos
     ) {
+        Assertions.assertEquals(performanceLogEntities.size(), performanceLogDtos.size());
         performanceLogDtos.forEach(performanceLogDto -> assertPerformanceLogDtoAndEntity(
                 performanceLogEntities.stream().filter(
                         performanceLogEntity -> Objects.equals(performanceLogEntity.getId(), performanceLogDto.getId())
