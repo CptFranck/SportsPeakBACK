@@ -26,7 +26,7 @@ import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.*;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-class ExerciseTypeControllerDGSIntTest {
+class ExerciseTypeApiIntTest {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -52,51 +52,46 @@ class ExerciseTypeControllerDGSIntTest {
     }
 
     @Test
-    void ExerciseTypeController_GetExerciseTypes_Success() {
-        List<LinkedHashMap<String, Object>> response =
-                dgsQueryExecutor.executeAndExtractJsonPath(getExerciseTypesQuery, "data.getExerciseTypes");
+    void ExerciseTypeApi_GetExerciseTypes_Success() {
+        List<LinkedHashMap<String, Object>> response = dgsQueryExecutor.executeAndExtractJsonPath(getExerciseTypesQuery,
+                "data.getExerciseTypes");
 
-        List<ExerciseTypeDto> exerciseTypeDtos = objectMapper.convertValue(response, new TypeReference<List<ExerciseTypeDto>>() {
+        List<ExerciseTypeDto> exerciseTypeDtos = objectMapper.convertValue(response, new TypeReference<>() {
         });
         assertEqualExerciseList(List.of(exerciseType), exerciseTypeDtos);
     }
 
     @Test
-    void ExerciseTypeController_GetExerciseTypeById_Unsuccessful() {
+    void ExerciseTypeApi_GetExerciseTypeById_Unsuccessful() {
         variables.put("id", exerciseType.getId() + 1);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(getExerciseTypeByIdQuery, "data.getExerciseTypeById", variables)
-        );
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(getExerciseTypeByIdQuery, "data.getExerciseTypeById", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("ExerciseTypeNotFoundException"));
         Assertions.assertTrue(exception.getMessage().contains(String.format("The exerciseType with the id %s has not been found", exerciseType.getId() + 1)));
     }
 
     @Test
-    void ExerciseTypeController_GetExerciseTypeById_Success() {
+    void ExerciseTypeApi_GetExerciseTypeById_Success() {
         variables.put("id", exerciseType.getId());
 
-        LinkedHashMap<String, Object> response =
-                dgsQueryExecutor.executeAndExtractJsonPath(getExerciseTypeByIdQuery, "data.getExerciseTypeById", variables);
+        LinkedHashMap<String, Object> response = dgsQueryExecutor.executeAndExtractJsonPath(getExerciseTypeByIdQuery,
+                "data.getExerciseTypeById", variables);
 
         ExerciseTypeDto exerciseTypeDto = objectMapper.convertValue(response, ExerciseTypeDto.class);
         assertExerciseTypeDtoValid(exerciseType, exerciseTypeDto);
     }
 
     @Test
-    void ExerciseTypeController_AddExerciseType_UnsuccessfulNotAuthenticated() {
+    void ExerciseTypeApi_AddExerciseType_UnsuccessfulNotAuthenticated() {
         InputNewExerciseType inputNewExerciseType = createTestInputNewExerciseType();
-        variables.put("inputNewExerciseType", objectMapper.convertValue(
-                        inputNewExerciseType,
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
+        variables.put("inputNewExerciseType", objectMapper.convertValue(inputNewExerciseType,
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(addExerciseTypeQuery, "data.addExerciseType", variables)
-        );
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(addExerciseTypeQuery, "data.addExerciseType", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("AuthenticationCredentialsNotFoundException"));
         Assertions.assertTrue(exception.getMessage().contains("An Authentication object was not found in the SecurityContext"));
@@ -104,34 +99,27 @@ class ExerciseTypeControllerDGSIntTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void ExerciseTypeController_AddExerciseType_Success() {
+    void ExerciseTypeApi_AddExerciseType_Success() {
         InputNewExerciseType inputNewExerciseType = createTestInputNewExerciseType();
         variables.put("inputNewExerciseType", objectMapper.convertValue(
-                inputNewExerciseType,
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
+                inputNewExerciseType, new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
 
-        LinkedHashMap<String, Object> response =
-                dgsQueryExecutor.executeAndExtractJsonPath(addExerciseTypeQuery, "data.addExerciseType", variables);
+        LinkedHashMap<String, Object> response = dgsQueryExecutor.executeAndExtractJsonPath(addExerciseTypeQuery,
+                "data.addExerciseType", variables);
 
         ExerciseTypeDto exerciseTypeDto = objectMapper.convertValue(response, ExerciseTypeDto.class);
         assertExerciseTypeDtoValidInput(inputNewExerciseType, exerciseTypeDto);
     }
 
     @Test
-    void ExerciseTypeController_ModifyExerciseType_UnsuccessfulNotAuthenticated() {
+    void ExerciseTypeApi_ModifyExerciseType_UnsuccessfulNotAuthenticated() {
         variables.put("inputExerciseType", objectMapper.convertValue(
-                createTestInputExerciseType(exerciseType.getId()),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
+                createTestInputExerciseType(exerciseType.getId()), new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyExerciseTypeQuery, "data.modifyExerciseType", variables)
-        );
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyExerciseTypeQuery, "data.modifyExerciseType", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("AuthenticationCredentialsNotFoundException"));
         Assertions.assertTrue(exception.getMessage().contains("An Authentication object was not found in the SecurityContext"));
@@ -139,17 +127,13 @@ class ExerciseTypeControllerDGSIntTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void ExerciseTypeController_ModifyExerciseType_UnsuccessfulExerciseNotFound() {
+    void ExerciseTypeApi_ModifyExerciseType_UnsuccessfulExerciseNotFound() {
         variables.put("inputExerciseType", objectMapper.convertValue(
-                        createTestInputExerciseType(exerciseType.getId() + 1),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
+                createTestInputExerciseType(exerciseType.getId() + 1), new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyExerciseTypeQuery, "data.modifyExerciseType", variables)
-        );
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyExerciseTypeQuery, "data.modifyExerciseType", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("ExerciseTypeNotFoundException"));
         Assertions.assertTrue(exception.getMessage().contains(String.format("The exerciseType with the id %s has not been found", exerciseType.getId() + 1)));
@@ -157,30 +141,25 @@ class ExerciseTypeControllerDGSIntTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void ExerciseTypeController_ModifyExerciseType_Success() {
+    void ExerciseTypeApi_ModifyExerciseType_Success() {
         InputNewExerciseType inputNewExerciseType = createTestInputExerciseType(exerciseType.getId());
         variables.put("inputExerciseType", objectMapper.convertValue(
-                inputNewExerciseType,
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
+                inputNewExerciseType, new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
 
-        LinkedHashMap<String, Object> response =
-                dgsQueryExecutor.executeAndExtractJsonPath(modifyExerciseTypeQuery, "data.modifyExerciseType", variables);
+        LinkedHashMap<String, Object> response = dgsQueryExecutor.executeAndExtractJsonPath(modifyExerciseTypeQuery,
+                "data.modifyExerciseType", variables);
 
         ExerciseTypeDto exerciseTypeDto = objectMapper.convertValue(response, ExerciseTypeDto.class);
         assertExerciseTypeDtoValidInput(inputNewExerciseType, exerciseTypeDto);
     }
 
     @Test
-    void ExerciseTypeController_DeleteExercise_UnsuccessfulNotAuthenticated() {
+    void ExerciseTypeApi_DeleteExercise_UnsuccessfulNotAuthenticated() {
         variables.put("exerciseTypeId", exerciseType.getId());
 
-
         QueryException exception = Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(deleteExerciseTypeQuery, "data.deleteExerciseType", variables)
-        );
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(deleteExerciseTypeQuery, "data.deleteExerciseType", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("AuthenticationCredentialsNotFoundException"));
         Assertions.assertTrue(exception.getMessage().contains("An Authentication object was not found in the SecurityContext"));
@@ -188,7 +167,7 @@ class ExerciseTypeControllerDGSIntTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void ExerciseTypeController_DeleteExercise_Success() {
+    void ExerciseTypeApi_DeleteExercise_Success() {
         variables.put("exerciseTypeId", exerciseType.getId());
 
         Integer id = dgsQueryExecutor.executeAndExtractJsonPath(deleteExerciseTypeQuery, "data.deleteExerciseType", variables);
