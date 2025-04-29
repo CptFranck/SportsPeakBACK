@@ -21,7 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import static com.CptFranck.SportsPeak.controller.IntegrationTest.graphqlQuery.ExerciseQuery.*;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.*;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.*;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
