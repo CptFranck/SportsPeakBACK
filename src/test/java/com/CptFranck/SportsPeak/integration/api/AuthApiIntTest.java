@@ -31,7 +31,7 @@ import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserBis;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-public class AuthControllerDGSIntTest {
+public class AuthApiIntTest {
 
     @Autowired
     private DgsQueryExecutor dgsQueryExecutor;
@@ -71,13 +71,11 @@ public class AuthControllerDGSIntTest {
     }
 
     @Test
-    public void AuthController_Login_UnsuccessfulEmailUnknown() {
+    public void AuthApi_Login_UnsuccessfulEmailUnknown() {
         variables.put("inputCredentials", objectMapper.convertValue(
-                        new InputCredentials("user.getEmail()", rawPassword),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
+                new InputCredentials("user.getEmail()", rawPassword),
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(loginQuery, "data.login", variables));
@@ -87,13 +85,11 @@ public class AuthControllerDGSIntTest {
     }
 
     @Test
-    public void AuthController_Login_UnsuccessfulIncorrectPass() {
+    public void AuthApi_Login_UnsuccessfulIncorrectPass() {
         variables.put("inputCredentials", objectMapper.convertValue(
-                        new InputCredentials(user.getEmail(), "rawPassword"),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
+                new InputCredentials(user.getEmail(), "rawPassword"),
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(loginQuery, "data.login", variables));
@@ -103,22 +99,20 @@ public class AuthControllerDGSIntTest {
     }
 
     @Test
-    public void AuthController_Login_ReturnAuthDto() {
+    public void AuthApi_Login_ReturnAuthDto() {
         variables.put("inputCredentials", objectMapper.convertValue(
                         new InputCredentials(user.getEmail(), rawPassword),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
 
-        LinkedHashMap<String, Object> response =
-                dgsQueryExecutor.executeAndExtractJsonPath(loginQuery, "data.login", variables);
+        LinkedHashMap<String, Object> response = dgsQueryExecutor.executeAndExtractJsonPath(loginQuery,
+                "data.login", variables);
 
         assertAuthDtoValid(user, response, true);
     }
 
     @Test
-    public void AuthController_Register_UnsuccessfulEmailAlreadyUsed() {
+    public void AuthApi_Register_UnsuccessfulEmailAlreadyUsed() {
         variables.put("inputRegisterNewUser", objectMapper.convertValue(
                         new InputRegisterNewUser(
                                 user.getEmail(),
@@ -127,10 +121,8 @@ public class AuthControllerDGSIntTest {
                                 user.getLastName(),
                                 user.getPassword()
                         ),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(registerQuery, "data.register", variables));
@@ -140,7 +132,7 @@ public class AuthControllerDGSIntTest {
     }
 
     @Test
-    public void AuthController_Register_UnsuccessfulUsernameExists() {
+    public void AuthApi_Register_UnsuccessfulUsernameExists() {
         UserEntity userBis = createTestUserBis(null);
         variables.put("inputRegisterNewUser", objectMapper.convertValue(
                         new InputRegisterNewUser(
@@ -150,10 +142,8 @@ public class AuthControllerDGSIntTest {
                                 user.getUsername(),
                                 userBis.getPassword()
                         ),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(registerQuery, "data.register", variables));
@@ -163,7 +153,7 @@ public class AuthControllerDGSIntTest {
     }
 
     @Test
-    public void AuthController_Register_ReturnAuthDto() {
+    public void AuthApi_Register_ReturnAuthDto() {
         UserEntity userBis = createTestUserBis(null);
         variables.put("inputRegisterNewUser", objectMapper.convertValue(
                         new InputRegisterNewUser(
@@ -173,10 +163,8 @@ public class AuthControllerDGSIntTest {
                                 userBis.getUsername(),
                                 userBis.getPassword()
                         ),
-                        new TypeReference<LinkedHashMap<String, Object>>() {
-                        }
-                )
-        );
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
 
         LinkedHashMap<String, Object> response =
                 dgsQueryExecutor.executeAndExtractJsonPath(registerQuery, "data.register", variables);
@@ -189,7 +177,6 @@ public class AuthControllerDGSIntTest {
         Assertions.assertTrue(jwtProvider.validateToken((String) response.get("accessToken")));
 
         UserDto userDto = objectMapper.convertValue(response.get("user"), UserDto.class);
-
         Assertions.assertEquals(userEntity.getEmail(), userDto.getEmail());
         Assertions.assertEquals(userEntity.getFirstName(), userDto.getFirstName());
         Assertions.assertEquals(userEntity.getLastName(), userDto.getLastName());
