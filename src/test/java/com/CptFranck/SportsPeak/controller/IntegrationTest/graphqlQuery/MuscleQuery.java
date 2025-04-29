@@ -12,6 +12,7 @@ public class MuscleQuery {
                      name
                      latinName
                      function
+                     description
                      exercises {
                          id
                          name
@@ -29,6 +30,7 @@ public class MuscleQuery {
                       name
                       latinName
                       function
+                      description
                       exercises {
                           id
                           name
@@ -46,6 +48,7 @@ public class MuscleQuery {
                        name
                        latinName
                        function
+                       description
                        exercises {
                            id
                            name
@@ -63,6 +66,7 @@ public class MuscleQuery {
                        name
                        latinName
                        function
+                       description
                        exercises {
                            id
                            name
