@@ -154,6 +154,15 @@ class PerformanceLogControllerIntTest {
                 () -> performanceLogController.modifyPerformanceLog(inputPerformanceLog));
     }
 
+//    @Test
+//    @WithMockUser(username = "user", roles = "USER")
+//    void PerformanceLogController_ModifyPerformanceLog_UnsuccessfulTargetSetNotFound() {
+//        InputPerformanceLog inputPerformanceLog = createTestInputPerformanceLog(performanceLog.getId(), targetSet.getId() + 1, false);
+//
+//        Assertions.assertThrows(TargetSetNotFoundException.class,
+//                () -> performanceLogController.modifyPerformanceLog(inputPerformanceLog));
+//    }
+
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void PerformanceLogController_ModifyPerformanceLog_UnsuccessfulPerformanceLogNotFound() {
