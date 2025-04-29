@@ -74,7 +74,7 @@ class PrivilegeControllerIntTest {
     void PrivilegeController_GetPrivilegeById_Success() {
         PrivilegeDto performanceLogDto = privilegeController.getPrivilegeById(privilege.getId());
 
-        assertExerciseDtoAndEntity(privilege, performanceLogDto);
+        assertPrivilegeDtoAndEntity(privilege, performanceLogDto);
     }
 
     @Test
@@ -91,7 +91,7 @@ class PrivilegeControllerIntTest {
 
         PrivilegeDto exerciseDto = privilegeController.addPrivilege(inputNewPrivilege);
 
-        assertExerciseDtoAndInput(inputNewPrivilege, exerciseDto);
+        assertPrivilegeDtoAndInput(inputNewPrivilege, exerciseDto);
     }
 
 
@@ -118,7 +118,7 @@ class PrivilegeControllerIntTest {
 
         PrivilegeDto exerciseDto = privilegeController.modifyPrivilege(inputExercise);
 
-        assertExerciseDtoAndInput(inputExercise, exerciseDto);
+        assertPrivilegeDtoAndInput(inputExercise, exerciseDto);
     }
 
     @Test
@@ -146,7 +146,7 @@ class PrivilegeControllerIntTest {
             List<PrivilegeDto> privilegeDtos
     ) {
         Assertions.assertEquals(privilegeEntities.size(), privilegeDtos.size());
-        privilegeDtos.forEach(exerciseDto -> assertExerciseDtoAndEntity(
+        privilegeDtos.forEach(exerciseDto -> assertPrivilegeDtoAndEntity(
                 privilegeEntities.stream().filter(
                         privilegeEntity -> Objects.equals(privilegeEntity.getId(), exerciseDto.getId())
                 ).toList().getFirst(),
@@ -154,13 +154,13 @@ class PrivilegeControllerIntTest {
         );
     }
 
-    private void assertExerciseDtoAndEntity(PrivilegeEntity privilegeEntity, PrivilegeDto privilegeDto) {
+    private void assertPrivilegeDtoAndEntity(PrivilegeEntity privilegeEntity, PrivilegeDto privilegeDto) {
         Assertions.assertNotNull(privilegeDto);
         Assertions.assertEquals(privilegeEntity.getId(), privilegeDto.getId());
         Assertions.assertEquals(privilegeEntity.getName(), privilegeDto.getName());
     }
 
-    private void assertExerciseDtoAndInput(InputNewPrivilege inputNewPrivilege, PrivilegeDto privilegeDto) {
+    private void assertPrivilegeDtoAndInput(InputNewPrivilege inputNewPrivilege, PrivilegeDto privilegeDto) {
         Assertions.assertNotNull(privilegeDto);
         Assertions.assertEquals(inputNewPrivilege.getName(), privilegeDto.getName());
     }
