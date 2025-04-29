@@ -62,7 +62,7 @@ class ExerciseTypeApiIntTest {
     }
 
     @Test
-    void ExerciseTypeApi_GetExerciseTypeById_Unsuccessful() {
+    void ExerciseTypeApi_GetExerciseTypeById_UnsuccessfulExerciseTypeNotFound() {
         variables.put("id", exerciseType.getId() + 1);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
@@ -127,7 +127,7 @@ class ExerciseTypeApiIntTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void ExerciseTypeApi_ModifyExerciseType_UnsuccessfulExerciseNotFound() {
+    void ExerciseTypeApi_ModifyExerciseType_UnsuccessfulExerciseTypeNotFound() {
         variables.put("inputExerciseType", objectMapper.convertValue(
                 createTestInputExerciseType(exerciseType.getId() + 1), new TypeReference<LinkedHashMap<String, Object>>() {
                 }));

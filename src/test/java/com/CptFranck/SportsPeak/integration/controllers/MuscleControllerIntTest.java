@@ -53,9 +53,7 @@ class MuscleControllerIntTest {
 
     @Test
     void MuscleController_GetMuscleById_UnsuccessfulMuscleNotFound() {
-        Assertions.assertThrows(MuscleNotFoundException.class,
-                () -> muscleController.getMuscleById(muscle.getId() + 1)
-        );
+        Assertions.assertThrows(MuscleNotFoundException.class, () -> muscleController.getMuscleById(muscle.getId() + 1));
     }
 
     @Test
@@ -69,9 +67,7 @@ class MuscleControllerIntTest {
     void MuscleController_AddMuscle_UnsuccessfulNotAuthenticated() {
         InputNewMuscle inputNewExercise = createTestInputNewMuscle();
 
-        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
-                () -> muscleController.addMuscle(inputNewExercise)
-        );
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> muscleController.addMuscle(inputNewExercise));
     }
 
     @Test
@@ -88,19 +84,15 @@ class MuscleControllerIntTest {
     void MuscleController_ModifyMuscle_UnsuccessfulNotAuthenticated() {
         InputMuscle inputMuscle = createTestInputMuscle(muscle.getId());
 
-        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
-                () -> muscleController.modifyMuscle(inputMuscle)
-        );
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> muscleController.modifyMuscle(inputMuscle));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void MuscleController_ModifyMuscle_UnsuccessfulDoesNotExist() {
+    void MuscleController_ModifyMuscle_UnsuccessfulMuscleNotFound() {
         InputMuscle inputMuscle = createTestInputMuscle(muscle.getId() + 1);
 
-        Assertions.assertThrows(MuscleNotFoundException.class,
-                () -> muscleController.modifyMuscle(inputMuscle)
-        );
+        Assertions.assertThrows(MuscleNotFoundException.class, () -> muscleController.modifyMuscle(inputMuscle));
     }
 
     @Test
@@ -115,14 +107,12 @@ class MuscleControllerIntTest {
 
     @Test
     void MuscleController_DeleteMuscle_UnsuccessfulNotAuthenticated() {
-        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
-                () -> muscleController.deleteMuscle(muscle.getId())
-        );
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> muscleController.deleteMuscle(muscle.getId()));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void MuscleController_DeleteMuscle_UnsuccessfulExerciseNotFound() {
+    void MuscleController_DeleteMuscle_UnsuccessfulMuscleNotFound() {
         Assertions.assertThrows(MuscleNotFoundException.class,
                 () -> muscleController.deleteMuscle(muscle.getId() + 1)
         );
