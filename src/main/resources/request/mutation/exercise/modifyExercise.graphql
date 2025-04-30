@@ -3,6 +3,7 @@ mutation ($inputExercise : InputExercise!){
         id
         name
         goal
+        description
         muscles {
             id
             name
