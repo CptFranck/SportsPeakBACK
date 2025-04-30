@@ -43,11 +43,13 @@ public class TargetSetController {
     }
 
     @DgsQuery
+    @PreAuthorize("hasRole('ROLE_USER')")
     public List<TargetSetDto> getTargetSets() {
         return targetSetService.findAll().stream().map(targetSetMapper::mapTo).toList();
     }
 
     @DgsQuery
+    @PreAuthorize("hasRole('ROLE_USER')")
     public TargetSetDto getTargetSetById(@InputArgument Long id) {
         TargetSetEntity targetSet = targetSetService.findOne(id).orElseThrow(() -> new TargetSetNotFoundException(id));
         return targetSetMapper.mapTo(targetSet);
