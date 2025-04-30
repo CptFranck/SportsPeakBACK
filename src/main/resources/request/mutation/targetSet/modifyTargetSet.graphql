@@ -1,6 +1,7 @@
 mutation ($inputTargetSet: InputTargetSet!){
     modifyTargetSet(inputTargetSet: $inputTargetSet) {
         id
+        index
         setNumber
         repetitionNumber
         weight
