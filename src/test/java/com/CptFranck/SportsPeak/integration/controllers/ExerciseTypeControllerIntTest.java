@@ -64,7 +64,7 @@ class ExerciseTypeControllerIntTest {
     void ExerciseTypeController_GetExerciseTypeById_Success() {
         ExerciseTypeDto exerciseTypeDto = exerciseTypeController.getExerciseTypeById(exerciseType.getId());
 
-        assertExerciseDtoAndEntity(exerciseType, exerciseTypeDto);
+        assertExerciseTypeDtoAndEntity(exerciseType, exerciseTypeDto);
     }
 
     @Test
@@ -83,7 +83,7 @@ class ExerciseTypeControllerIntTest {
 
         ExerciseTypeDto exerciseTypeDto = exerciseTypeController.addExerciseType(inputNewExerciseType);
 
-        assertExerciseDtoAndInput(inputNewExerciseType, exerciseTypeDto);
+        assertExerciseTypeDtoAndInput(inputNewExerciseType, exerciseTypeDto);
     }
 
     @Test
@@ -112,7 +112,7 @@ class ExerciseTypeControllerIntTest {
 
         ExerciseTypeDto exerciseTypeDto = exerciseTypeController.addExerciseType(inputNewExerciseType);
 
-        assertExerciseDtoAndInput(inputNewExerciseType, exerciseTypeDto);
+        assertExerciseTypeDtoAndInput(inputNewExerciseType, exerciseTypeDto);
     }
 
     @Test
@@ -141,7 +141,7 @@ class ExerciseTypeControllerIntTest {
 
     private void assertEqualExerciseList(List<ExerciseTypeEntity> exerciseTypeEntities, List<ExerciseTypeDto> exerciseTypeDtos) {
         Assertions.assertEquals(exerciseTypeEntities.size(), exerciseTypeDtos.size());
-        exerciseTypeDtos.forEach(exerciseTypeDto -> assertExerciseDtoAndEntity(
+        exerciseTypeDtos.forEach(exerciseTypeDto -> assertExerciseTypeDtoAndEntity(
                 exerciseTypeEntities.stream().filter(
                         exerciseTypeEntity -> Objects.equals(exerciseTypeEntity.getId(), exerciseTypeDto.getId())
                 ).toList().getFirst(),
@@ -149,7 +149,7 @@ class ExerciseTypeControllerIntTest {
         );
     }
 
-    private void assertExerciseDtoAndEntity(ExerciseTypeEntity exerciseType, ExerciseTypeDto exerciseTypeDto) {
+    private void assertExerciseTypeDtoAndEntity(ExerciseTypeEntity exerciseType, ExerciseTypeDto exerciseTypeDto) {
         Assertions.assertNotNull(exerciseTypeDto);
         Assertions.assertEquals(exerciseType.getId(), exerciseTypeDto.getId());
         Assertions.assertEquals(exerciseType.getName(), exerciseTypeDto.getName());
@@ -157,7 +157,7 @@ class ExerciseTypeControllerIntTest {
         Assertions.assertEquals(exerciseType.getExercises().size(), exerciseTypeDto.getExercises().size());
     }
 
-    private void assertExerciseDtoAndInput(InputNewExerciseType inputNewExerciseType, ExerciseTypeDto exerciseTypeDto) {
+    private void assertExerciseTypeDtoAndInput(InputNewExerciseType inputNewExerciseType, ExerciseTypeDto exerciseTypeDto) {
         Assertions.assertNotNull(exerciseTypeDto);
         Assertions.assertEquals(inputNewExerciseType.getName(), exerciseTypeDto.getName());
         Assertions.assertEquals(inputNewExerciseType.getGoal(), exerciseTypeDto.getGoal());

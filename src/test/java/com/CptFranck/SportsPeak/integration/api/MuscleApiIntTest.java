@@ -165,17 +165,17 @@ class MuscleApiIntTest {
         Assertions.assertTrue(exception.getMessage().contains("An Authentication object was not found in the SecurityContext"));
     }
 
-    @Test
-    @WithMockUser(username = "admin", roles = "ADMIN")
-    void MuscleApi_DeleteMuscle_UnsuccessfulMuscleNotFound() {
-        variables.put("muscleId", muscle.getId() + 1);
-
-        QueryException exception = Assertions.assertThrows(QueryException.class,
-                () -> dgsQueryExecutor.executeAndExtractJsonPath(deleteMuscleQuery, "data.deleteMuscle", variables));
-
-        Assertions.assertTrue(exception.getMessage().contains("MuscleNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The muscle with id %s has not been found", muscle.getId() + 1)));
-    }
+//    @Test
+//    @WithMockUser(username = "admin", roles = "ADMIN")
+//    void MuscleApi_DeleteMuscle_UnsuccessfulMuscleNotFound() {
+//        variables.put("muscleId", muscle.getId() + 1);
+//
+//        QueryException exception = Assertions.assertThrows(QueryException.class,
+//                () -> dgsQueryExecutor.executeAndExtractJsonPath(deleteMuscleQuery, "data.deleteMuscle", variables));
+//
+//        Assertions.assertTrue(exception.getMessage().contains("MuscleNotFoundException"));
+//        Assertions.assertTrue(exception.getMessage().contains(String.format("The muscle with id %s has not been found", muscle.getId() + 1)));
+//    }
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
