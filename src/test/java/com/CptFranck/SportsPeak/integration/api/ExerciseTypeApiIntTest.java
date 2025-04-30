@@ -21,7 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 
-import static com.CptFranck.SportsPeak.controller.IntegrationTest.graphqlQuery.ExerciseTypeQuery.*;
+import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.ExerciseTypeQuery.*;
 import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.*;
 
 @SpringBootTest()

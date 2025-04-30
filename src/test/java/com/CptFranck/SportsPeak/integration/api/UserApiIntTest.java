@@ -30,7 +30,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 
-import static com.CptFranck.SportsPeak.controller.IntegrationTest.graphqlQuery.UserQuery.*;
+import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.ProgExerciseQuery.getUserProgExercisesQuery;
+import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.UserQuery.*;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;

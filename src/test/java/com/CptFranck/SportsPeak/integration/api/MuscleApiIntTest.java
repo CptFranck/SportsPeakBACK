@@ -22,7 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 
-import static com.CptFranck.SportsPeak.controller.IntegrationTest.graphqlQuery.MuscleQuery.*;
+import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.MuscleQuery.*;
 import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.*;
 
 @SpringBootTest()
