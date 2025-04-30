@@ -120,6 +120,7 @@ public class TargetSetQuery {
             mutation ($inputNewTargetSet: InputNewTargetSet!){
                 addTargetSet(inputNewTargetSet: $inputNewTargetSet) {
                     id
+                    index
                     setNumber
                     repetitionNumber
                     weight
@@ -156,6 +157,7 @@ public class TargetSetQuery {
             mutation ($inputTargetSet: InputTargetSet!){
                  modifyTargetSet(inputTargetSet: $inputTargetSet) {
                      id
+                     index
                      setNumber
                      repetitionNumber
                      weight
@@ -192,6 +194,7 @@ public class TargetSetQuery {
             mutation ($inputTargetSetState: InputTargetSetState!){
                 modifyTargetSetState(inputTargetSetState: $inputTargetSetState) {
                     id
+                    index
                     setNumber
                     repetitionNumber
                     weight
