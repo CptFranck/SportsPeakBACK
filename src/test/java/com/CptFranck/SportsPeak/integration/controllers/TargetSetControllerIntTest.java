@@ -19,20 +19,22 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
 import java.util.Objects;
 
-import static com.CptFranck.SportsPeak.domain.utils.TestDateTimeUtils.assertDatetimeWithTimestamp;
-import static com.CptFranck.SportsPeak.domain.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestPerformanceLogUtils.createTestPerformanceLog;
-import static com.CptFranck.SportsPeak.domain.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.domain.utils.TestTargetSetUtils.*;
-import static com.CptFranck.SportsPeak.domain.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.TestDateTimeUtils.assertDatetimeWithTimestamp;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestInputDuration.assertInputDuration;
+import static com.CptFranck.SportsPeak.utils.TestPerformanceLogUtils.createTestPerformanceLog;
+import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.TestTargetSetUtils.*;
+import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 class TargetSetControllerIntTest {
 
@@ -52,6 +54,7 @@ class TargetSetControllerIntTest {
     private TargetSetController targetSetController;
 
     private ProgExerciseEntity progExercise;
+    private TargetSetEntity targetSet;
 
 
     @BeforeEach
@@ -59,6 +62,7 @@ class TargetSetControllerIntTest {
         UserEntity user = userRepository.save(createTestUser(null));
         ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
         progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
+        targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
     }
 
     @AfterEach
@@ -70,49 +74,68 @@ class TargetSetControllerIntTest {
     }
 
     @Test
-    void TargetSetController_GetTargetSets_Success() {
-        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
+    void TargetSetController_GetTargetSets_UnsuccessfulNotAuthenticated() {
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> targetSetController.getTargetSets());
+    }
 
+    @Test
+    @WithMockUser(username = "user", roles = "USER")
+    void TargetSetController_GetTargetSets_Success() {
         List<TargetSetDto> targetSetDtos = targetSetController.getTargetSets();
 
-        assertEqualExerciseList(List.of(targetSet), targetSetDtos);
+        assertEqualTargeSetList(List.of(targetSet), targetSetDtos);
     }
 
     @Test
-    void TargetSetController_GetTargetSetById_UnsuccessfulDoesNotExist() {
-        Assertions.assertThrows(TargetSetNotFoundException.class,
-                () -> targetSetController.getTargetSetById(1L)
-        );
+    void TargetSetController_GetTargetSetById_UnsuccessfulNotAuthenticated() {
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> targetSetController.getTargetSetById(targetSet.getId() + 1));
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
+    void TargetSetController_GetTargetSetById_UnsuccessfulTargetSetNotFound() {
+        Assertions.assertThrows(TargetSetNotFoundException.class, () -> targetSetController.getTargetSetById(targetSet.getId() + 1));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "USER")
     void TargetSetController_GetTargetSetById_Success() {
-        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
-
         TargetSetDto targetSetDto = targetSetController.getTargetSetById(targetSet.getId());
 
-        assertExerciseDtoAndEntity(targetSet, targetSetDto);
+        assertTargetSetDtoAndEntity(targetSet, targetSetDto);
+    }
+
+    @Test
+    void TargetSetController_GetTargetSetsByTargetId_UnsuccessfulNotAuthenticated() {
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
+                () -> targetSetController.getTargetSetsByProgExerciseId(progExercise.getId()));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void TargetSetController_GetTargetSetsByTargetId_Success() {
-        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
-
         List<TargetSetDto> targetSetDtos = targetSetController.getTargetSetsByProgExerciseId(progExercise.getId());
 
-        assertEqualExerciseList(List.of(targetSet), targetSetDtos);
+        assertEqualTargeSetList(List.of(targetSet), targetSetDtos);
+    }
+
+    @Test
+    void TargetSetController_AddTargetSet_UnsuccessfulNotAuthenticated() {
+        InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), null);
+        targetSetRepository.delete(targetSet);
+        progExerciseRepository.delete(progExercise);
+
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> targetSetController.addTargetSet(inputNewTargetSet));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void TargetSetController_AddTargetSet_UnsuccessfulProgExerciseNotFound() {
         InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), null);
+        targetSetRepository.delete(targetSet);
         progExerciseRepository.delete(progExercise);
 
-        Assertions.assertThrows(ProgExerciseNotFoundException.class,
-                () -> targetSetController.addTargetSet(inputNewTargetSet)
-        );
+        Assertions.assertThrows(ProgExerciseNotFoundException.class, () -> targetSetController.addTargetSet(inputNewTargetSet));
     }
 
     @Test
@@ -122,108 +145,108 @@ class TargetSetControllerIntTest {
 
         TargetSetDto targetSetDto = targetSetController.addTargetSet(inputNewTargetSet);
 
-        assertExerciseDtoAndInputNew(inputNewTargetSet, targetSetDto);
+        assertTargetSetDtoAndInputNew(inputNewTargetSet, targetSetDto);
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void TargetSetController_AddTargetSetWithUpdate_UnsuccessfulTargetSetNotFound() {
-        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
         InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), targetSet.getId());
         targetSetRepository.delete(targetSet);
 
-        Assertions.assertThrows(TargetSetNotFoundException.class,
-                () -> targetSetController.addTargetSet(inputNewTargetSet)
-        );
+        Assertions.assertThrows(TargetSetNotFoundException.class, () -> targetSetController.addTargetSet(inputNewTargetSet));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void TargetSetController_AddTargetSetWithUpdate_Success() {
-        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
-        targetSet = targetSetRepository.findById(targetSet.getId()).orElseThrow();
         InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), targetSet.getId());
 
         TargetSetDto targetSetDto = targetSetController.addTargetSet(inputNewTargetSet);
 
         targetSet = targetSetRepository.findById(targetSet.getId()).orElseThrow();
-        assertExerciseDtoAndInputNew(inputNewTargetSet, targetSetDto);
+        assertTargetSetDtoAndInputNew(inputNewTargetSet, targetSetDto);
         Assertions.assertEquals(targetSet.getTargetSetUpdate().getId(), targetSetDto.getId());
+    }
+
+    @Test
+    void TargetSetController_ModifyTargetSet_UnsuccessfulNotAuthenticated() {
+        InputTargetSet inputNewTargetSet = createTestInputTargetSet(targetSet.getId());
+        targetSetRepository.delete(targetSet);
+
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> targetSetController.modifyTargetSet(inputNewTargetSet));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void TargetSetController_ModifyTargetSet_UnsuccessfulTargetSetNotFound() {
-        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
         InputTargetSet inputNewTargetSet = createTestInputTargetSet(targetSet.getId());
         targetSetRepository.delete(targetSet);
 
-        Assertions.assertThrows(TargetSetNotFoundException.class,
-                () -> targetSetController.modifyTargetSet(inputNewTargetSet)
-        );
+        Assertions.assertThrows(TargetSetNotFoundException.class, () -> targetSetController.modifyTargetSet(inputNewTargetSet));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void TargetSetController_ModifyTargetSet_Success() {
-        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
         InputTargetSet inputTargetSet = createTestInputTargetSet(targetSet.getId());
 
         TargetSetDto targetSetDto = targetSetController.modifyTargetSet(inputTargetSet);
 
-        assertExerciseDtoAndInput(inputTargetSet, targetSetDto);
+        assertTargetSetDtoAndInput(inputTargetSet, targetSetDto);
 
+    }
+
+    @Test
+    void TargetSetController_ModifyTargetSetState_UnsuccessfulNotAuthenticated() {
+        InputTargetSetState inputTargetSetState = createTestInputInputTargetSetState(targetSet.getId(), false);
+        targetSetRepository.delete(targetSet);
+
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> targetSetController.modifyTargetSetState(inputTargetSetState));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void TargetSetController_ModifyTargetSetState_UnsuccessfulTargetSetNotFound() {
-        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
         InputTargetSetState inputTargetSetState = createTestInputInputTargetSetState(targetSet.getId(), false);
         targetSetRepository.delete(targetSet);
 
-        Assertions.assertThrows(TargetSetNotFoundException.class,
-                () -> targetSetController.modifyTargetSetState(inputTargetSetState)
-        );
+        Assertions.assertThrows(TargetSetNotFoundException.class, () -> targetSetController.modifyTargetSetState(inputTargetSetState));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void TargetSetController_ModifyTargetSetState_UnsuccessfulWrongLabel() {
-        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
         InputTargetSetState inputTargetSetState = createTestInputInputTargetSetState(targetSet.getId(), true);
 
-        Assertions.assertThrows(LabelMatchNotFoundException.class,
-                () -> targetSetController.modifyTargetSetState(inputTargetSetState)
-        );
+        Assertions.assertThrows(LabelMatchNotFoundException.class, () -> targetSetController.modifyTargetSetState(inputTargetSetState));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void TargetSetController_ModifyTargetSetState_Success() {
-        TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
         InputTargetSetState inputTargetSetState = createTestInputInputTargetSetState(targetSet.getId(), false);
 
         List<TargetSetDto> targetSetDtos = targetSetController.modifyTargetSetState(inputTargetSetState);
 
-        targetSetDtos.forEach(targetSetDto ->
-                Assertions.assertEquals(targetSetDto.getState(), inputTargetSetState.getState())
-        );
+        targetSetDtos.forEach(targetSetDto -> Assertions.assertEquals(targetSetDto.getState(), inputTargetSetState.getState()));
+    }
+
+    @Test
+    void TargetSetController_DeleteExercise_UnsuccessfulNotAuthenticated() {
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> targetSetController.deleteTargetSet(targetSet.getId()));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void TargetSetController_DeleteExercise_UnsuccessfulExerciseNotFound() {
-        Assertions.assertThrows(TargetSetNotFoundException.class,
-                () -> targetSetController.deleteTargetSet(1L)
-        );
+        Assertions.assertThrows(TargetSetNotFoundException.class, () -> targetSetController.deleteTargetSet(targetSet.getId() + 1));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void TargetSetController_DeleteTargetSet_Success() {
-        TargetSetEntity targetSet1 = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
-        TargetSetEntity targetSet2 = targetSetRepository.save(createTestTargetSet(null, progExercise, targetSet1));
+        TargetSetEntity targetSet2 = targetSetRepository.save(createTestTargetSet(null, progExercise, targetSet));
         TargetSetEntity targetSet3 = targetSetRepository.save(createTestTargetSet(null, progExercise, targetSet2));
         PerformanceLogEntity performanceLog = createTestPerformanceLog(null, targetSet2);
         targetSet2.getPerformanceLogs().add(performanceLog);
@@ -231,17 +254,18 @@ class TargetSetControllerIntTest {
 
         Long id = targetSetController.deleteTargetSet(targetSet2.getId());
 
-        targetSet1 = targetSetRepository.findById(targetSet1.getId()).orElseThrow();
+        targetSet = targetSetRepository.findById(targetSet.getId()).orElseThrow();
         targetSet3 = targetSetRepository.findById(targetSet3.getId()).orElseThrow();
         Assertions.assertEquals(targetSet2.getId(), id);
-        Assertions.assertEquals(targetSet3.getTargetSetUpdate().getId(), targetSet1.getId());
+        Assertions.assertEquals(targetSet3.getTargetSetUpdate().getId(), targetSet.getId());
     }
 
-    private void assertEqualExerciseList(
+    private void assertEqualTargeSetList(
             List<TargetSetEntity> targetSetEntities,
             List<TargetSetDto> targetSetDtos
     ) {
-        targetSetDtos.forEach(targetSetDto -> assertExerciseDtoAndEntity(
+        Assertions.assertEquals(targetSetEntities.size(), targetSetDtos.size());
+        targetSetDtos.forEach(targetSetDto -> assertTargetSetDtoAndEntity(
                 targetSetEntities.stream().filter(
                         targetSetEntity -> Objects.equals(targetSetEntity.getId(), targetSetDto.getId())
                 ).toList().getFirst(),
@@ -249,8 +273,9 @@ class TargetSetControllerIntTest {
         );
     }
 
-    private void assertExerciseDtoAndEntity(TargetSetEntity targetSetEntity, TargetSetDto targetSetDto) {
+    private void assertTargetSetDtoAndEntity(TargetSetEntity targetSetEntity, TargetSetDto targetSetDto) {
         Assertions.assertNotNull(targetSetDto);
+        Assertions.assertEquals(targetSetEntity.getId(), targetSetDto.getId());
         Assertions.assertEquals(targetSetEntity.getIndex(), targetSetDto.getIndex());
         Assertions.assertEquals(targetSetEntity.getSetNumber(), targetSetDto.getSetNumber());
         Assertions.assertEquals(targetSetEntity.getRepetitionNumber(), targetSetDto.getRepetitionNumber());
@@ -258,29 +283,34 @@ class TargetSetControllerIntTest {
         Assertions.assertEquals(targetSetEntity.getWeightUnit().label, targetSetDto.getWeightUnit());
         Assertions.assertEquals(targetSetEntity.getPhysicalExertionUnitTime(), targetSetDto.getPhysicalExertionUnitTime().InputDurationToDuration());
         Assertions.assertEquals(targetSetEntity.getRestTime(), targetSetDto.getRestTime().InputDurationToDuration());
+        assertDatetimeWithTimestamp(targetSetEntity.getCreationDate(), targetSetDto.getCreationDate());
         Assertions.assertEquals(targetSetEntity.getState().label, targetSetDto.getState());
+        if (Objects.nonNull(targetSetEntity.getTargetSetUpdate()) || Objects.nonNull(targetSetDto.getTargetSetUpdate()))
+            Assertions.assertEquals(targetSetEntity.getTargetSetUpdate().getId(), targetSetDto.getTargetSetUpdate().getId());
+        Assertions.assertEquals(targetSetEntity.getPerformanceLogs().size(), targetSetDto.getPerformanceLogs().size());
     }
 
-    private void assertExerciseDtoAndInputNew(InputNewTargetSet inputNewTargetSet, TargetSetDto targetSetDto) {
+    private void assertTargetSetDtoAndInputNew(InputNewTargetSet inputNewTargetSet, TargetSetDto targetSetDto) {
         Assertions.assertNotNull(targetSetDto);
         Assertions.assertEquals(inputNewTargetSet.getIndex(), targetSetDto.getIndex());
         Assertions.assertEquals(inputNewTargetSet.getSetNumber(), targetSetDto.getSetNumber());
         Assertions.assertEquals(inputNewTargetSet.getRepetitionNumber(), targetSetDto.getRepetitionNumber());
         Assertions.assertEquals(inputNewTargetSet.getWeight(), targetSetDto.getWeight());
         Assertions.assertEquals(inputNewTargetSet.getWeightUnit(), targetSetDto.getWeightUnit());
-        Assertions.assertEquals(inputNewTargetSet.getPhysicalExertionUnitTime().getHours(), targetSetDto.getPhysicalExertionUnitTime().getHours());
-        Assertions.assertEquals(inputNewTargetSet.getRestTime().getHours(), targetSetDto.getRestTime().getHours());
+        assertInputDuration(inputNewTargetSet.getPhysicalExertionUnitTime(), targetSetDto.getPhysicalExertionUnitTime());
+        assertInputDuration(inputNewTargetSet.getRestTime(), targetSetDto.getRestTime());
         assertDatetimeWithTimestamp(inputNewTargetSet.getCreationDate(), targetSetDto.getCreationDate());
     }
 
-    private void assertExerciseDtoAndInput(InputTargetSet targetSetEntity, TargetSetDto targetSetDto) {
+    private void assertTargetSetDtoAndInput(InputTargetSet targetSetEntity, TargetSetDto targetSetDto) {
         Assertions.assertNotNull(targetSetDto);
+        Assertions.assertEquals(targetSetEntity.getId(), targetSetDto.getId());
         Assertions.assertEquals(targetSetEntity.getIndex(), targetSetDto.getIndex());
         Assertions.assertEquals(targetSetEntity.getSetNumber(), targetSetDto.getSetNumber());
         Assertions.assertEquals(targetSetEntity.getRepetitionNumber(), targetSetDto.getRepetitionNumber());
         Assertions.assertEquals(targetSetEntity.getWeight(), targetSetDto.getWeight());
         Assertions.assertEquals(targetSetEntity.getWeightUnit(), targetSetDto.getWeightUnit());
-        Assertions.assertEquals(targetSetEntity.getPhysicalExertionUnitTime().getHours(), targetSetDto.getPhysicalExertionUnitTime().getHours());
-        Assertions.assertEquals(targetSetEntity.getRestTime().getHours(), targetSetDto.getRestTime().getHours());
+        assertInputDuration(targetSetEntity.getPhysicalExertionUnitTime(), targetSetDto.getPhysicalExertionUnitTime());
+        assertInputDuration(targetSetEntity.getRestTime(), targetSetDto.getRestTime());
     }
 }
