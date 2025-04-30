@@ -6,8 +6,5 @@ query ($targetSetId : Int!){
         weight
         weightUnit
         logDate
-        targetSet {
-            id
-        }
     }
 }
