@@ -79,7 +79,7 @@ class PerformanceLogApiIntTest {
     }
 
     @Test
-    void PerformanceLogController_GetPerformanceLogs_Success() {
+    void PerformanceLogApi_GetPerformanceLogs_Success() {
         List<LinkedHashMap<String, Object>> response = dgsQueryExecutor.executeAndExtractJsonPath(getPerformanceLogsQuery,
                 "data.getPerformanceLogs");
 
@@ -89,7 +89,7 @@ class PerformanceLogApiIntTest {
     }
 
     @Test
-    void PerformanceLogController_GetPerformanceLogById_Unsuccessful() {
+    void PerformanceLogApi_GetPerformanceLogById_Unsuccessful() {
         variables.put("id", performanceLog.getId() + 1);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
@@ -100,7 +100,7 @@ class PerformanceLogApiIntTest {
     }
 
     @Test
-    void PerformanceLogController_GetPerformanceLogById_Success() {
+    void PerformanceLogApi_GetPerformanceLogById_Success() {
         variables.put("id", performanceLog.getId());
 
         LinkedHashMap<String, Object> response = dgsQueryExecutor.executeAndExtractJsonPath(getPerformanceLogByIdQuery,
@@ -111,7 +111,7 @@ class PerformanceLogApiIntTest {
     }
 
     @Test
-    void PerformanceLogController_GetPerformanceLogsByTargetId_UnsuccessfulNotAuthenticated() {
+    void PerformanceLogApi_GetPerformanceLogsByTargetId_UnsuccessfulNotAuthenticated() {
         variables.put("targetSetId", performanceLog.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
@@ -123,8 +123,8 @@ class PerformanceLogApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void PerformanceLogController_GetPerformanceLogsByTargetId_Success() {
-        variables.put("targetSetId", performanceLog.getId());
+    void PerformanceLogApi_GetPerformanceLogsByTargetId_Success() {
+        variables.put("targetSetId", targetSet.getId());
 
         List<LinkedHashMap<String, Object>> response = dgsQueryExecutor.executeAndExtractJsonPath(getPerformanceLogsByTargetSetsIdQuery,
                 "data.getPerformanceLogsByTargetSetsId", variables);
@@ -135,7 +135,7 @@ class PerformanceLogApiIntTest {
     }
 
     @Test
-    void PerformanceLogController_AddPerformanceLog_UnsuccessfulNotAuthenticated() {
+    void PerformanceLogApi_AddPerformanceLog_UnsuccessfulNotAuthenticated() {
         variables.put("inputNewPerformanceLog", objectMapper.convertValue(
                 createTestInputNewPerformanceLog(targetSet.getId() + 1, false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -150,7 +150,7 @@ class PerformanceLogApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void PerformanceLogController_AddPerformanceLog_UnsuccessfulTargetSetNotFound() {
+    void PerformanceLogApi_AddPerformanceLog_UnsuccessfulTargetSetNotFound() {
         variables.put("inputNewPerformanceLog", objectMapper.convertValue(
                 createTestInputNewPerformanceLog(targetSet.getId() + 1, false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -165,7 +165,7 @@ class PerformanceLogApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void PerformanceLogController_AddPerformanceLog_UnsuccessfulWrongLabel() {
+    void PerformanceLogApi_AddPerformanceLog_UnsuccessfulWrongLabel() {
         InputNewPerformanceLog inputNewPerformanceLog = createTestInputNewPerformanceLog(targetSet.getId(), true);
         variables.put("inputNewPerformanceLog", objectMapper.convertValue(
                 inputNewPerformanceLog, new TypeReference<LinkedHashMap<String, Object>>() {
@@ -180,7 +180,7 @@ class PerformanceLogApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void PerformanceLogController_AddPerformanceLog_Success() {
+    void PerformanceLogApi_AddPerformanceLog_Success() {
         InputNewPerformanceLog inputNewPerformanceLog = createTestInputNewPerformanceLog(targetSet.getId(), false);
         variables.put("inputNewPerformanceLog", objectMapper.convertValue(
                 inputNewPerformanceLog, new TypeReference<LinkedHashMap<String, Object>>() {
@@ -194,7 +194,7 @@ class PerformanceLogApiIntTest {
     }
 
     @Test
-    void PerformanceLogController_ModifyPerformanceLog_UnsuccessfulNotAuthenticated() {
+    void PerformanceLogApi_ModifyPerformanceLog_UnsuccessfulNotAuthenticated() {
         InputPerformanceLog inputPerformanceLog = createTestInputPerformanceLog(performanceLog.getId(), targetSet.getId(), false);
         variables.put("inputPerformanceLog", objectMapper.convertValue(inputPerformanceLog, new TypeReference<LinkedHashMap<String, Object>>() {
         }));
@@ -208,7 +208,7 @@ class PerformanceLogApiIntTest {
 
 //    @Test
 //    @WithMockUser(username = "user", roles = "USER")
-//    void PerformanceLogController_ModifyPerformanceLog_UnsuccessfulTargetSetNotFound() {
+//    void PerformanceLogApi_ModifyPerformanceLog_UnsuccessfulTargetSetNotFound() {
 //        InputPerformanceLog inputPerformanceLog = createTestInputPerformanceLog(performanceLog.getId(), targetSet.getId() + 1, false);
 //        variables.put("inputPerformanceLog", objectMapper.convertValue(inputPerformanceLog, new TypeReference<LinkedHashMap<String, Object>>() {}));
 //
@@ -221,7 +221,7 @@ class PerformanceLogApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void PerformanceLogController_ModifyPerformanceLog_UnsuccessfulPerformanceLogNotFound() {
+    void PerformanceLogApi_ModifyPerformanceLog_UnsuccessfulPerformanceLogNotFound() {
         InputPerformanceLog inputPerformanceLog = createTestInputPerformanceLog(performanceLog.getId() + 1, targetSet.getId(), false);
         variables.put("inputPerformanceLog", objectMapper.convertValue(inputPerformanceLog, new TypeReference<LinkedHashMap<String, Object>>() {
         }));
@@ -235,7 +235,7 @@ class PerformanceLogApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void PerformanceLogController_ModifyPerformanceLog_UnsuccessfulWrongLabel() {
+    void PerformanceLogApi_ModifyPerformanceLog_UnsuccessfulWrongLabel() {
         InputPerformanceLog inputPerformanceLog = createTestInputPerformanceLog(performanceLog.getId(), targetSet.getId(), true);
         variables.put("inputPerformanceLog", objectMapper.convertValue(inputPerformanceLog, new TypeReference<LinkedHashMap<String, Object>>() {
         }));
@@ -249,7 +249,7 @@ class PerformanceLogApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void PerformanceLogController_ModifyPerformanceLog_Success() {
+    void PerformanceLogApi_ModifyPerformanceLog_Success() {
         InputPerformanceLog inputPerformanceLog = createTestInputPerformanceLog(performanceLog.getId(), targetSet.getId(), false);
         variables.put("inputPerformanceLog", objectMapper.convertValue(inputPerformanceLog, new TypeReference<LinkedHashMap<String, Object>>() {
         }));
@@ -263,7 +263,7 @@ class PerformanceLogApiIntTest {
 
 
     @Test
-    void PerformanceLogController_DeletePerformanceLog_Success() {
+    void PerformanceLogApi_DeletePerformanceLog_Success() {
         variables.put("performanceLogId", performanceLog.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
@@ -276,7 +276,7 @@ class PerformanceLogApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void PerformanceLogController_DeletePerformanceLog_UnsuccessfulNotAuthenticated() {
+    void PerformanceLogApi_DeletePerformanceLog_UnsuccessfulNotAuthenticated() {
         variables.put("performanceLogId", performanceLog.getId());
 
         Integer id = dgsQueryExecutor.executeAndExtractJsonPath(deletePerformanceLogQuery, "data.deletePerformanceLog", variables);
