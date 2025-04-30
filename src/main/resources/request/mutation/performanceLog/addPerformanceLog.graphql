@@ -6,8 +6,5 @@ mutation ($inputNewPerformanceLog: InputNewPerformanceLog!){
         weight
         weightUnit
         logDate
-        targetSet {
-            id
-        }
     }
 }
