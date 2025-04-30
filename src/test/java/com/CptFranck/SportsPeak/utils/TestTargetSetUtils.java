@@ -1,8 +1,6 @@
 package com.CptFranck.SportsPeak.utils;
 
-import com.CptFranck.SportsPeak.domain.dto.PerformanceLogDto;
 import com.CptFranck.SportsPeak.domain.dto.TargetSetDto;
-import com.CptFranck.SportsPeak.domain.entity.PerformanceLogEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
@@ -37,7 +35,7 @@ public class TestTargetSetUtils {
                 TargetSetState.USED,
                 progExercise,
                 update,
-                new HashSet<PerformanceLogEntity>()
+                new HashSet<>()
         );
     }
 
@@ -70,7 +68,7 @@ public class TestTargetSetUtils {
                 creationDate,
                 TargetSetState.USED.label,
                 update,
-                new HashSet<PerformanceLogDto>()
+                new HashSet<>()
         );
     }
 

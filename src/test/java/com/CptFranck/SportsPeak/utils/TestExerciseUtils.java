@@ -1,13 +1,7 @@
 package com.CptFranck.SportsPeak.utils;
 
 import com.CptFranck.SportsPeak.domain.dto.ExerciseDto;
-import com.CptFranck.SportsPeak.domain.dto.ExerciseTypeDto;
-import com.CptFranck.SportsPeak.domain.dto.MuscleDto;
-import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
-import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
-import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
-import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.input.exercise.InputExercise;
 import com.CptFranck.SportsPeak.domain.input.exercise.InputNewExercise;
 
@@ -23,9 +17,9 @@ public class TestExerciseUtils {
                 "Exercise name",
                 "Exercise description",
                 "Exercise goal",
-                new HashSet<MuscleEntity>(),
-                new HashSet<ExerciseTypeEntity>(),
-                new HashSet<ProgExerciseEntity>()
+                new HashSet<>(),
+                new HashSet<>(),
+                new HashSet<>()
         );
     }
 
@@ -42,9 +36,9 @@ public class TestExerciseUtils {
                 "Exercise name",
                 "Exercise description",
                 "Exercise goal",
-                new HashSet<MuscleDto>(),
-                new HashSet<ExerciseTypeDto>(),
-                new HashSet<ProgExerciseDto>()
+                new HashSet<>(),
+                new HashSet<>(),
+                new HashSet<>()
         );
     }
 
@@ -53,8 +47,8 @@ public class TestExerciseUtils {
                 "name",
                 "description",
                 "goal",
-                new ArrayList<Long>(),
-                new ArrayList<Long>()
+                new ArrayList<>(),
+                new ArrayList<>()
         );
     }
 
@@ -64,8 +58,8 @@ public class TestExerciseUtils {
                 "name",
                 "description",
                 "goal",
-                new ArrayList<Long>(),
-                new ArrayList<Long>()
+                new ArrayList<>(),
+                new ArrayList<>()
         );
     }
 }

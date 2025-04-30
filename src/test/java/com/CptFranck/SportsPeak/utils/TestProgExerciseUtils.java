@@ -2,11 +2,9 @@ package com.CptFranck.SportsPeak.utils;
 
 import com.CptFranck.SportsPeak.domain.dto.ExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
-import com.CptFranck.SportsPeak.domain.dto.TargetSetDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
-import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.enumType.TrustLabel;
 import com.CptFranck.SportsPeak.domain.enumType.VisibilityLabel;
@@ -26,10 +24,10 @@ public class TestProgExerciseUtils {
                 "Prog Exercise note",
                 VisibilityLabel.PRIVATE,
                 TrustLabel.UNVERIFIED,
-                new HashSet<UserEntity>(),
+                new HashSet<>(),
                 creator,
                 exercise,
-                new HashSet<TargetSetEntity>()
+                new HashSet<>()
         );
     }
 
@@ -49,7 +47,7 @@ public class TestProgExerciseUtils {
                 TrustLabel.UNVERIFIED.label,
                 creator,
                 exercise,
-                new HashSet<TargetSetDto>()
+                new HashSet<>()
         );
     }
 

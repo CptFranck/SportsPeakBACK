@@ -1,9 +1,6 @@
 package com.CptFranck.SportsPeak.utils;
 
-import com.CptFranck.SportsPeak.domain.dto.RoleDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
-import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
-import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.user.*;
 import org.junit.jupiter.api.Assertions;
@@ -31,9 +28,9 @@ public class TestUserUtils {
                 "Doe",
                 "John_Doe",
                 "password",
-                new HashSet<RoleEntity>(),
-                new HashSet<ProgExerciseEntity>(),
-                new HashSet<ProgExerciseEntity>()
+                new HashSet<>(),
+                new HashSet<>(),
+                new HashSet<>()
         );
     }
 
@@ -45,9 +42,9 @@ public class TestUserUtils {
                 "Doe",
                 "Jane_Doe",
                 "password",
-                new HashSet<RoleEntity>(),
-                new HashSet<ProgExerciseEntity>(),
-                new HashSet<ProgExerciseEntity>()
+                new HashSet<>(),
+                new HashSet<>(),
+                new HashSet<>()
         );
     }
 
@@ -65,7 +62,7 @@ public class TestUserUtils {
                 "John",
                 "Doe",
                 "John_Doe",
-                new HashSet<RoleDto>()
+                new HashSet<>()
         );
     }
 
@@ -80,7 +77,7 @@ public class TestUserUtils {
     public static InputUserRoles createTestInputUserRoles(Long id) {
         return new InputUserRoles(
                 id,
-                new ArrayList<Long>()
+                new ArrayList<>()
 
         );
     }

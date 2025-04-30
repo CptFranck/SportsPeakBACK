@@ -1,8 +1,6 @@
 package com.CptFranck.SportsPeak.utils;
 
-import com.CptFranck.SportsPeak.domain.dto.ExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.MuscleDto;
-import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
 import com.CptFranck.SportsPeak.domain.input.muscle.InputMuscle;
 import com.CptFranck.SportsPeak.domain.input.muscle.InputNewMuscle;
@@ -21,7 +19,7 @@ public class TestMuscleUtils {
                 "Muscle description",
                 "Muscle function",
                 "Muscle illustration path",
-                new HashSet<ExerciseEntity>()
+                new HashSet<>()
         );
     }
 
@@ -40,7 +38,7 @@ public class TestMuscleUtils {
                 "Muscle description",
                 "Muscle function",
                 "Muscle illustration path",
-                new HashSet<ExerciseDto>()
+                new HashSet<>()
         );
     }
 
@@ -50,7 +48,7 @@ public class TestMuscleUtils {
                 "latinName",
                 "function",
                 "description",
-                new ArrayList<Long>()
+                new ArrayList<>()
         );
     }
 
@@ -61,7 +59,7 @@ public class TestMuscleUtils {
                 "latinName",
                 "function",
                 "description",
-                new ArrayList<Long>()
+                new ArrayList<>()
         );
     }
 }

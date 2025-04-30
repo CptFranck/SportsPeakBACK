@@ -1,8 +1,6 @@
 package com.CptFranck.SportsPeak.utils;
 
-import com.CptFranck.SportsPeak.domain.dto.ExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.ExerciseTypeDto;
-import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.input.exerciseType.InputExerciseType;
 import com.CptFranck.SportsPeak.domain.input.exerciseType.InputNewExerciseType;
@@ -18,7 +16,7 @@ public class TestExerciseTypeUtils {
                 id,
                 "Exercise type name",
                 "Exercise type goal",
-                new HashSet<ExerciseEntity>()
+                new HashSet<>()
         );
     }
 
@@ -34,7 +32,7 @@ public class TestExerciseTypeUtils {
                 id,
                 "Exercise type name",
                 "Exercise type goal",
-                new HashSet<ExerciseDto>()
+                new HashSet<>()
         );
     }
 
@@ -43,7 +41,7 @@ public class TestExerciseTypeUtils {
         return new InputNewExerciseType(
                 "name",
                 "goal",
-                new ArrayList<Long>()
+                new ArrayList<>()
         );
     }
 
@@ -52,7 +50,7 @@ public class TestExerciseTypeUtils {
                 id,
                 "name",
                 "goal",
-                new ArrayList<Long>()
+                new ArrayList<>()
         );
     }
 }

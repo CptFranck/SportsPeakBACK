@@ -1,10 +1,7 @@
 package com.CptFranck.SportsPeak.utils;
 
-import com.CptFranck.SportsPeak.domain.dto.PrivilegeDto;
 import com.CptFranck.SportsPeak.domain.dto.RoleDto;
-import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
-import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.role.InputNewRole;
 import com.CptFranck.SportsPeak.domain.input.role.InputRole;
 
@@ -24,8 +21,8 @@ public class TestRoleUtils {
         return new RoleEntity(
                 id,
                 roleName,
-                new HashSet<UserEntity>(),
-                new HashSet<PrivilegeEntity>()
+                new HashSet<>(),
+                new HashSet<>()
         );
     }
 
@@ -40,15 +37,15 @@ public class TestRoleUtils {
         return new RoleDto(
                 id,
                 "Role name",
-                new HashSet<PrivilegeDto>()
+                new HashSet<>()
         );
     }
 
     public static InputNewRole createTestInputNewRole() {
         return new InputNewRole(
                 "name",
-                new ArrayList<Long>(),
-                new ArrayList<Long>()
+                new ArrayList<>(),
+                new ArrayList<>()
         );
     }
 
@@ -56,8 +53,8 @@ public class TestRoleUtils {
         return new InputRole(
                 id,
                 "name",
-                new ArrayList<Long>(),
-                new ArrayList<Long>()
+                new ArrayList<>(),
+                new ArrayList<>()
         );
     }
 }

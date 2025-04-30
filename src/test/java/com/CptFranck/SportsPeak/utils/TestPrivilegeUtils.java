@@ -1,9 +1,7 @@
 package com.CptFranck.SportsPeak.utils;
 
 import com.CptFranck.SportsPeak.domain.dto.PrivilegeDto;
-import com.CptFranck.SportsPeak.domain.dto.RoleDto;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
-import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.input.privilege.InputNewPrivilege;
 import com.CptFranck.SportsPeak.domain.input.privilege.InputPrivilege;
 
@@ -23,7 +21,7 @@ public class TestPrivilegeUtils {
         return new PrivilegeEntity(
                 id,
                 privilegeName,
-                new HashSet<RoleEntity>()
+                new HashSet<>()
         );
     }
 
@@ -39,14 +37,14 @@ public class TestPrivilegeUtils {
         return new PrivilegeDto(
                 id,
                 "Privilege name",
-                new HashSet<RoleDto>()
+                new HashSet<>()
         );
     }
 
     public static InputNewPrivilege createTestInputNewPrivilege() {
         return new InputNewPrivilege(
                 "name",
-                new ArrayList<Long>()
+                new ArrayList<>()
         );
     }
 
@@ -54,7 +52,7 @@ public class TestPrivilegeUtils {
         return new InputPrivilege(
                 id,
                 "name",
-                new ArrayList<Long>()
+                new ArrayList<>()
         );
     }
 }
