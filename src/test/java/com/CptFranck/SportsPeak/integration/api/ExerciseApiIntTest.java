@@ -57,7 +57,7 @@ class ExerciseApiIntTest {
         List<LinkedHashMap<String, Object>> response =
                 dgsQueryExecutor.executeAndExtractJsonPath(getExercisesQuery, "data.getExercises");
 
-        List<ExerciseDto> exerciseDtos = objectMapper.convertValue(response, new TypeReference<List<ExerciseDto>>() {
+        List<ExerciseDto> exerciseDtos = objectMapper.convertValue(response, new TypeReference<>() {
         });
         assertEqualExerciseList(List.of(exercise), exerciseDtos);
     }
