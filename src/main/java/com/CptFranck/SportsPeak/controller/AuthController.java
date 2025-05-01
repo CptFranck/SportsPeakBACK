@@ -8,7 +8,6 @@ import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.AuthService;
-import com.CptFranck.SportsPeak.service.RoleService;
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsMutation;
 import com.netflix.graphql.dgs.InputArgument;
@@ -27,7 +26,6 @@ public class AuthController {
 
     public AuthController(AuthenticationManager authenticationManager,
                           AuthService authService,
-                          RoleService roleService,
                           JwtProvider userAuthProvider,
                           Mapper<UserEntity, UserDto> userMapper) {
         this.userMapper = userMapper;
