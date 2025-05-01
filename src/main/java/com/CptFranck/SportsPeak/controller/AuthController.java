@@ -3,9 +3,7 @@ package com.CptFranck.SportsPeak.controller;
 import com.CptFranck.SportsPeak.config.security.JwtProvider;
 import com.CptFranck.SportsPeak.domain.dto.AuthDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
-import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
-import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
 import com.CptFranck.SportsPeak.mappers.Mapper;
@@ -19,15 +17,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-
 @DgsComponent
 public class AuthController {
 
     private final AuthService authService;
-    private final RoleService roleService;
     private final JwtProvider userAuthProvider;
     private final Mapper<UserEntity, UserDto> userMapper;
     private final AuthenticationManager authenticationManager;
@@ -39,7 +32,6 @@ public class AuthController {
                           Mapper<UserEntity, UserDto> userMapper) {
         this.userMapper = userMapper;
         this.authService = authService;
-        this.roleService = roleService;
         this.userAuthProvider = userAuthProvider;
         this.authenticationManager = authenticationManager;
     }
@@ -55,28 +47,10 @@ public class AuthController {
 
     @DgsMutation
     public AuthDto register(@InputArgument InputRegisterNewUser inputRegisterNewUser) {
-        UserDto user = userMapper.mapTo(this.inputToEntity(inputRegisterNewUser));
+        UserDto user = userMapper.mapTo(authService.register(inputRegisterNewUser));
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(inputRegisterNewUser.getEmail(), inputRegisterNewUser.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return new AuthDto(userAuthProvider.generateToken(authentication), user);
-    }
-
-    private UserEntity inputToEntity(InputRegisterNewUser inputRegisterNewUser) {
-        Optional<RoleEntity> userRole = roleService.findByName("ROLE_USER");
-        Set<RoleEntity> roles = Set.of(userRole.orElseThrow(() -> new RoleNotFoundException("ROLE_USER")));
-
-        UserEntity userEntity = new UserEntity(
-                null,
-                inputRegisterNewUser.getEmail(),
-                inputRegisterNewUser.getFirstName(),
-                inputRegisterNewUser.getLastName(),
-                inputRegisterNewUser.getUsername(),
-                inputRegisterNewUser.getPassword(),
-                roles,
-                new HashSet<>(),
-                new HashSet<>()
-        );
-        return authService.register(userEntity);
     }
 }
