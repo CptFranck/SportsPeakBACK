@@ -5,13 +5,15 @@ import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
+import com.CptFranck.SportsPeak.domain.input.exercise.InputExercise;
+import com.CptFranck.SportsPeak.domain.input.exercise.InputNewExercise;
 import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
+import com.CptFranck.SportsPeak.resolvers.ExerciseInputResolver;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -19,10 +21,26 @@ import java.util.stream.StreamSupport;
 @Service
 public class ExerciseServiceImpl implements ExerciseService {
 
-    ExerciseRepository exerciseRepository;
+    private final ExerciseRepository exerciseRepository;
 
-    public ExerciseServiceImpl(ExerciseRepository exerciseRepository) {
+    private final ExerciseInputResolver exerciseInputResolver;
+
+    public ExerciseServiceImpl(ExerciseRepository exerciseRepository, ExerciseInputResolver exerciseInputResolver) {
         this.exerciseRepository = exerciseRepository;
+        this.exerciseInputResolver = exerciseInputResolver;
+    }
+
+    @Override
+    public ExerciseEntity create(InputNewExercise inputNewExercise) {
+        ExerciseEntity exercise = exerciseInputResolver.resolveInput(inputNewExercise);
+        return exerciseRepository.save(exercise);
+    }
+
+    @Override
+    public ExerciseEntity update(InputExercise inputExercise) {
+        ExerciseEntity oldExercise = this.findOne(inputExercise.getId());
+        ExerciseEntity updatedExercise = exerciseInputResolver.resolveInput(inputExercise, oldExercise);
+        return exerciseRepository.save(updatedExercise);
     }
 
     @Override
@@ -40,8 +58,8 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
-    public Optional<ExerciseEntity> findOne(Long id) {
-        return exerciseRepository.findById(id);
+    public ExerciseEntity findOne(Long id) {
+        return exerciseRepository.findById(id).orElseThrow(() -> new ExerciseNotFoundException(id));
     }
 
     @Override
@@ -57,12 +75,12 @@ public class ExerciseServiceImpl implements ExerciseService {
     public void updateExerciseTypeRelation(Set<Long> newIds, Set<Long> oldIds, ExerciseTypeEntity exerciseType) {
         this.findMany(oldIds).forEach(e -> {
             e.getExerciseTypes().removeIf(et -> Objects.equals(et.getId(), exerciseType.getId()));
-            this.save(e);
+            exerciseRepository.save(e);
         });
 
         this.findMany(newIds).forEach(e -> {
             e.getExerciseTypes().add(exerciseType);
-            this.save(e);
+            exerciseRepository.save(e);
         });
     }
 
@@ -70,12 +88,12 @@ public class ExerciseServiceImpl implements ExerciseService {
     public void updateMuscleRelation(Set<Long> newIds, Set<Long> oldIds, MuscleEntity muscle) {
         this.findMany(oldIds).forEach(e -> {
             e.getMuscles().removeIf(et -> Objects.equals(et.getId(), muscle.getId()));
-            this.save(e);
+            exerciseRepository.save(e);
         });
 
         this.findMany(newIds).forEach(e -> {
             e.getMuscles().add(muscle);
-            this.save(e);
+            exerciseRepository.save(e);
         });
     }
 
@@ -83,8 +101,8 @@ public class ExerciseServiceImpl implements ExerciseService {
     public void updateProgExerciseRelation(ExerciseEntity newExercise, ExerciseEntity oldExercise, ProgExerciseEntity progExercise) {
         oldExercise.getProgExercises().removeIf(progEx -> progEx.getId().equals(progExercise.getId()));
         newExercise.getProgExercises().add(progExercise);
-        this.save(oldExercise);
-        this.save(newExercise);
+        exerciseRepository.save(oldExercise);
+        exerciseRepository.save(newExercise);
     }
 
     @Override
