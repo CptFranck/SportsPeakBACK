@@ -1,7 +1,6 @@
 package com.CptFranck.SportsPeak.config.graphql;
 
 import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
-import com.netflix.graphql.dgs.autoconfig.DgsExtendedScalarsAutoConfiguration;
 import graphql.language.StringValue;
 import graphql.language.Value;
 import graphql.schema.CoercingParseLiteralException;
@@ -18,7 +17,6 @@ import java.time.format.DateTimeParseException;
 @SpringBootTest(classes = {
         LocalDateTimeScalar.class,
         DgsAutoConfiguration.class,
-        DgsExtendedScalarsAutoConfiguration.class
 })
 public class LocalDateTimeScalarIntTest {
 
