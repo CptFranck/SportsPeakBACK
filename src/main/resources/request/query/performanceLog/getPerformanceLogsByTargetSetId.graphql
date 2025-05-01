@@ -1,4 +1,4 @@
-query ($targetSetId : Int!){
+query ($targetSetId : ID!){
     getPerformanceLogsByTargetSetsId(targetSetId: $targetSetId) {
         id
         setIndex

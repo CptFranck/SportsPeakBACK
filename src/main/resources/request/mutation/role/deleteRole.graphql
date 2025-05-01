@@ -1,3 +1,3 @@
-mutation ($roleId : Int!){
+mutation ($roleId : ID!){
     deleteRole(roleId: $roleId)
 }

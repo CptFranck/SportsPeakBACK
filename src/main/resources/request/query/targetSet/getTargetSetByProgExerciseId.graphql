@@ -1,4 +1,4 @@
-query ($progExerciseId : Int!){
+query ($progExerciseId : ID!){
     getTargetSetsByProgExerciseId(progExerciseId: $progExerciseId) {
         id
         index

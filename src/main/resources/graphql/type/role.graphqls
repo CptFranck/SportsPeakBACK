@@ -1,18 +1,18 @@
 type Role {
-    id: Int!
+    id: ID!
     name: String!
     privileges: [Privilege]!
 }
 
 input InputNewRole {
     name: String!
-    userIds: [Int]!
-    privilegeIds: [Int]!
+    userIds: [ID]!
+    privilegeIds: [ID]!
 }
 
 input InputRole {
-    id: Int!
+    id: ID!
     name: String!
-    userIds: [Int]!
-    privilegeIds: [Int]!
+    userIds: [ID]!
+    privilegeIds: [ID]!
 }

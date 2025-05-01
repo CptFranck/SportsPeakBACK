@@ -1,5 +1,5 @@
 type User {
-    id: Int!
+    id: ID!
     email: String!
     firstName: String!
     lastName: String!
@@ -16,29 +16,29 @@ input InputRegisterNewUser {
 }
 
 input InputUserIdentity {
-    id: Int!
+    id: ID!
     firstName: String!
     lastName: String!
 }
 
 input InputUserRoles {
-    id: Int!
-    roleIds: [Int]!
+    id: ID!
+    roleIds: [ID]!
 }
 
 input InputUserEmail {
-    id: Int!
+    id: ID!
     password: String!
     newEmail: String!
 }
 
 input InputUserUsername {
-    id: Int!
+    id: ID!
     newUsername: String!
 }
 
 input InputUserPassword {
-    id: Int!
+    id: ID!
     oldPassword: String!
     newPassword: String!
 }

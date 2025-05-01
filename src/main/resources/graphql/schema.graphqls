@@ -1,33 +1,33 @@
 type Query {
     getUsers: [User]!
-    getUserById(id: Int!): User!
-    getUserProgExercises(userId: Int!): [ProgExercise]!
+    getUserById(id: ID!): User!
+    getUserProgExercises(userId: ID!): [ProgExercise]!
 
     getRoles: [Role]!
-    getRoleById(id: Int!): Role!
+    getRoleById(id: ID!): Role!
 
     getPrivileges: [Privilege]!
-    getPrivilegeById(id: Int!): Privilege!
+    getPrivilegeById(id: ID!): Privilege!
 
     getProgExercises: [ProgExercise]!
-    getProgExerciseById(id: Int!): ProgExercise!
+    getProgExerciseById(id: ID!): ProgExercise!
 
     getTargetSets: [TargetSet]!
-    getTargetSetById(id: Int!): TargetSet!
-    getTargetSetsByProgExerciseId(progExerciseId: Int!): [TargetSet]!
+    getTargetSetById(id: ID!): TargetSet!
+    getTargetSetsByProgExerciseId(progExerciseId: ID!): [TargetSet]!
 
     getPerformanceLogs: [PerformanceLog]!
-    getPerformanceLogById(id: Int!): PerformanceLog!
-    getPerformanceLogsByTargetSetsId(targetSetId: Int!): [PerformanceLog]!
+    getPerformanceLogById(id: ID!): PerformanceLog!
+    getPerformanceLogsByTargetSetsId(targetSetId: ID!): [PerformanceLog]!
 
     getExercises: [Exercise]!
-    getExerciseById(id: Int!): Exercise!
+    getExerciseById(id: ID!): Exercise!
 
     getExerciseTypes: [ExerciseType]!
-    getExerciseTypeById(id: Int!): ExerciseType!
+    getExerciseTypeById(id: ID!): ExerciseType!
 
     getMuscles: [Muscle]!
-    getMuscleById(id: Int!): Muscle!
+    getMuscleById(id: ID!): Muscle!
 }
 
 type Mutation {
@@ -39,39 +39,39 @@ type Mutation {
     modifyUserEmail(inputUserEmail: InputUserEmail!): Auth!
     modifyUserUsername(inputUserUsername: InputUserUsername!): User!
     modifyUserPassword(inputUserPassword: InputUserPassword!): User!
-    deleteUser(userId: Int!): Int!
+    deleteUser(userId: ID!): ID!
 
     addRole(inputNewRole: InputNewRole!): Role!
     modifyRole(inputRole: InputRole!): Role!
-    deleteRole(roleId: Int!): Int!
+    deleteRole(roleId: ID!): ID!
 
     addPrivilege(inputNewPrivilege: InputNewPrivilege!): Privilege!
     modifyPrivilege(inputPrivilege: InputPrivilege!): Privilege!
-    deletePrivilege(privilegeId: Int!): Int!
+    deletePrivilege(privilegeId: ID!): ID!
 
     addProgExercise(inputNewProgExercise: InputNewProgExercise!): ProgExercise!
     modifyProgExercise(inputProgExercise: InputProgExercise!): ProgExercise!
     modifyProgExerciseTrustLabel(inputProgExerciseTrustLabel: InputProgExerciseTrustLabel!): ProgExercise!
-    deleteProgExercise(progExerciseId: Int!): Int!
+    deleteProgExercise(progExerciseId: ID!): ID!
 
     addTargetSet(inputNewTargetSet: InputNewTargetSet!): TargetSet!
     modifyTargetSet(inputTargetSet: InputTargetSet!): TargetSet
     modifyTargetSetState(inputTargetSetState: InputTargetSetState!): [TargetSet]!
-    deleteTargetSet(targetSetId: Int!): Int!
+    deleteTargetSet(targetSetId: ID!): ID!
 
     addPerformanceLog(inputNewPerformanceLog: InputNewPerformanceLog!): PerformanceLog!
     modifyPerformanceLog(inputPerformanceLog: InputPerformanceLog!): PerformanceLog!
-    deletePerformanceLog(performanceLogId: Int!): Int!
+    deletePerformanceLog(performanceLogId: ID!): ID!
 
     addExercise(inputNewExercise: InputNewExercise!): Exercise!
     modifyExercise(inputExercise: InputExercise!): Exercise!
-    deleteExercise(exerciseId: Int!): Int!
+    deleteExercise(exerciseId: ID!): ID!
 
     addExerciseType(inputNewExerciseType: InputNewExerciseType!): ExerciseType!
     modifyExerciseType(inputExerciseType: InputExerciseType!): ExerciseType!
-    deleteExerciseType(exerciseTypeId: Int!): Int!
+    deleteExerciseType(exerciseTypeId: ID!): ID!
 
     addMuscle(inputNewMuscle: InputNewMuscle!): Muscle!
     modifyMuscle(inputMuscle: InputMuscle!): Muscle!
-    deleteMuscle(muscleId: Int!): Int!
+    deleteMuscle(muscleId: ID!): ID!
 }

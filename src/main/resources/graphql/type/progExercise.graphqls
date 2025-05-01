@@ -1,5 +1,5 @@
 type ProgExercise {
-    id: Int!
+    id: ID!
     name: String!
     note: String!
     visibility: String!
@@ -13,19 +13,19 @@ input InputNewProgExercise {
     name: String!
     note: String!
     visibility: String!
-    creatorId: Int!
-    exerciseId: Int!
+    creatorId: ID!
+    exerciseId: ID!
 }
 
 input InputProgExercise {
-    id: Int!
+    id: ID!
     name: String!
     note: String!
-    exerciseId: Int!
+    exerciseId: ID!
     visibility: String!
 }
 
 input InputProgExerciseTrustLabel{
-    id: Int!
+    id: ID!
     trustLabel: String!
 }

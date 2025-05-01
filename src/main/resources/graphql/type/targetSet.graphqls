@@ -1,5 +1,5 @@
 type TargetSet {
-    id: Int!
+    id: ID!
     index: Int!
     setNumber: Int!
     repetitionNumber: Int!
@@ -14,7 +14,7 @@ type TargetSet {
 }
 
 input InputNewTargetSet {
-    index: Int!
+    index: ID!
     setNumber: Int!
     repetitionNumber: Int!
     weight: Float!
@@ -22,12 +22,12 @@ input InputNewTargetSet {
     physicalExertionUnitTime: InputDuration!
     restTime: InputDuration!
     creationDate: LocalDateTime!
-    progExerciseId: Int!
-    targetSetUpdateId: Int
+    progExerciseId: ID!
+    targetSetUpdateId: ID
 }
 
 input InputTargetSet {
-    id: Int!
+    id: ID!
     index: Int!
     setNumber: Int!
     repetitionNumber: Int!
@@ -38,6 +38,6 @@ input InputTargetSet {
 }
 
 input InputTargetSetState {
-    id: Int!
+    id: ID!
     state: String!
 }

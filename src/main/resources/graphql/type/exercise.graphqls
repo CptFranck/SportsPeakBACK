@@ -1,5 +1,5 @@
 type Exercise {
-    id: Int!
+    id: ID!
     name: String!
     description: String!
     goal: String!
@@ -12,15 +12,15 @@ input InputNewExercise {
     name: String!
     description: String!
     goal: String!
-    muscleIds: [Int]!
-    exerciseTypeIds: [Int]!
+    muscleIds: [ID]!
+    exerciseTypeIds: [ID]!
 }
 
 input InputExercise {
-    id: Int!
+    id: ID!
     name: String!
     description: String!
     goal: String!
-    muscleIds: [Int]!
-    exerciseTypeIds: [Int]!
+    muscleIds: [ID]!
+    exerciseTypeIds: [ID]!
 }

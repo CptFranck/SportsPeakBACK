@@ -1,4 +1,4 @@
-query ($id : Int!){
+query ($id : ID!){
     getExerciseTypeById (id : $id){
         id
         exercises {

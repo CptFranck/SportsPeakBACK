@@ -1,4 +1,4 @@
-query ($id : Int!) {
+query ($id : ID!) {
     getPrivilegeById (id: $id) {
         id
         name

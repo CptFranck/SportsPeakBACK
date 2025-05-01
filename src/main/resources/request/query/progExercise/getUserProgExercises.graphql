@@ -1,4 +1,4 @@
-query ($userId : Int!){
+query ($userId : ID!){
     getUserProgExercises(userId: $userId) {
         id
         name

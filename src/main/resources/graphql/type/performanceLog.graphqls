@@ -1,5 +1,5 @@
 type PerformanceLog {
-    id: Int!
+    id: ID!
     setIndex: Int!
     repetitionNumber: Int!
     weight: Float!
@@ -13,15 +13,15 @@ input InputNewPerformanceLog {
     weight: Float!
     weightUnit: String!
     logDate: LocalDateTime!
-    targetSetId: Int!
+    targetSetId: ID!
 }
 
 input InputPerformanceLog {
-    id: Int!
+    id: ID!
     setIndex: Int!
     repetitionNumber: Int!
     weight: Float!
     weightUnit: String!
     logDate: LocalDateTime!
-    targetSetId: Int!
+    targetSetId: ID!
 }

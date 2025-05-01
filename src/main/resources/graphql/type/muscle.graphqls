@@ -1,5 +1,5 @@
 type Muscle {
-    id: Int!
+    id: ID!
     name: String!
     latinName: String!
     description: String!
@@ -13,14 +13,14 @@ input InputNewMuscle {
     latinName: String!
     description: String!
     function: String!
-    exerciseIds: [Int]!
+    exerciseIds: [ID]!
 }
 
 input InputMuscle {
-    id: Int!
+    id: ID!
     name: String!
     latinName: String!
     description: String!
     function: String!
-    exerciseIds: [Int]!
+    exerciseIds: [ID]!
 }

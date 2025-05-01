@@ -1,4 +1,4 @@
-query ($id : Int!){
+query ($id : ID!){
     getPerformanceLogById(id: $id) {
         id
         setIndex

@@ -1,16 +1,16 @@
 type Privilege {
-    id: Int!
+    id: ID!
     name: String!
     roles: [Role]!
 }
 
 input InputNewPrivilege {
     name: String!
-    roleIds: [Int]!
+    roleIds: [ID]!
 }
 
 input InputPrivilege {
-    id: Int!
+    id: ID!
     name: String!
-    roleIds: [Int]!
+    roleIds: [ID]!
 }
