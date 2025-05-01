@@ -170,9 +170,9 @@ class ExerciseTypeApiIntTest {
     void ExerciseTypeApi_DeleteExercise_Success() {
         variables.put("exerciseTypeId", exerciseType.getId());
 
-        Integer id = dgsQueryExecutor.executeAndExtractJsonPath(deleteExerciseTypeQuery, "data.deleteExerciseType", variables);
+        String id = dgsQueryExecutor.executeAndExtractJsonPath(deleteExerciseTypeQuery, "data.deleteExerciseType", variables);
 
-        Assertions.assertEquals(id, exerciseType.getId().intValue());
+        Assertions.assertEquals(exerciseType.getId(), Long.valueOf(id));
     }
 
     private void assertEqualExerciseList(List<ExerciseTypeEntity> exerciseTypeEntities, List<ExerciseTypeDto> exerciseTypeDtos) {

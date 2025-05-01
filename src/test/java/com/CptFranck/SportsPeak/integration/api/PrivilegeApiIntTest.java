@@ -194,9 +194,9 @@ class PrivilegeApiIntTest {
     void PrivilegeApi_DeletePrivilege_Success() {
         variables.put("privilegeId", privilege.getId());
 
-        Integer id = dgsQueryExecutor.executeAndExtractJsonPath(deletePrivilegeQuery, "data.deletePrivilege", variables);
+        String id = dgsQueryExecutor.executeAndExtractJsonPath(deletePrivilegeQuery, "data.deletePrivilege", variables);
 
-        Assertions.assertEquals(privilege.getId().intValue(), id);
+        Assertions.assertEquals(privilege.getId(), Long.valueOf(id));
     }
 
     private void assertEqualPrivilegeList(

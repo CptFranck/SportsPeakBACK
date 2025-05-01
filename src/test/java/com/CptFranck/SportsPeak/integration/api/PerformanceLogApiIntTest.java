@@ -279,9 +279,9 @@ class PerformanceLogApiIntTest {
     void PerformanceLogApi_DeletePerformanceLog_UnsuccessfulNotAuthenticated() {
         variables.put("performanceLogId", performanceLog.getId());
 
-        Integer id = dgsQueryExecutor.executeAndExtractJsonPath(deletePerformanceLogQuery, "data.deletePerformanceLog", variables);
+        String id = dgsQueryExecutor.executeAndExtractJsonPath(deletePerformanceLogQuery, "data.deletePerformanceLog", variables);
 
-        Assertions.assertEquals(performanceLog.getId().intValue(), id);
+        Assertions.assertEquals(performanceLog.getId(), Long.valueOf(id));
     }
 
     private void assertEqualPerformanceLogList(

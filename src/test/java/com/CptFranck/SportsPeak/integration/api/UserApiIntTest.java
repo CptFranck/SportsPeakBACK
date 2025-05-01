@@ -373,9 +373,9 @@ class UserApiIntTest {
     void UserApi_DeleteUser_Success() {
         variables.put("userId", user.getId());
 
-        Integer id = dgsQueryExecutor.executeAndExtractJsonPath(deleteUserQuery, "data.deleteUser", variables);
+        String id = dgsQueryExecutor.executeAndExtractJsonPath(deleteUserQuery, "data.deleteUser", variables);
 
-        Assertions.assertEquals(user.getId().intValue(), id);
+        Assertions.assertEquals(user.getId(), Long.valueOf(id));
     }
 
     private void assertEqualUserList(

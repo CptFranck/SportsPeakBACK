@@ -201,9 +201,9 @@ class RoleApiIntTest {
     void RoleApi_DeleteRole_Success() {
         variables.put("roleId", role.getId());
 
-        Integer id = dgsQueryExecutor.executeAndExtractJsonPath(deleteRoleQuery, "data.deleteRole", variables);
+        String id = dgsQueryExecutor.executeAndExtractJsonPath(deleteRoleQuery, "data.deleteRole", variables);
 
-        Assertions.assertEquals(role.getId().intValue(), id);
+        Assertions.assertEquals(role.getId(), Long.valueOf(id));
     }
 
     private void assertEqualRoleList(

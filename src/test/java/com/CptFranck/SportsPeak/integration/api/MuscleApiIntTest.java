@@ -182,9 +182,9 @@ class MuscleApiIntTest {
     void MuscleApi_DeleteMuscle_Success() {
         variables.put("muscleId", muscle.getId());
 
-        Integer id = dgsQueryExecutor.executeAndExtractJsonPath(deleteMuscleQuery, "data.deleteMuscle", variables);
+        String id = dgsQueryExecutor.executeAndExtractJsonPath(deleteMuscleQuery, "data.deleteMuscle", variables);
 
-        Assertions.assertEquals(id, muscle.getId().intValue());
+        Assertions.assertEquals(muscle.getId(), Long.valueOf(id));
     }
 
     private void assertEqualMuscleList(

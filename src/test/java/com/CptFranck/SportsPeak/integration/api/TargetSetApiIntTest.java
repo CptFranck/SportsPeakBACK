@@ -359,9 +359,9 @@ class TargetSetApiIntTest {
     void TargetSetApi_DeleteTargetSet_Success() {
         variables.put("targetSetId", targetSet.getId());
 
-        Integer id = dgsQueryExecutor.executeAndExtractJsonPath(deleteTargetSetQuery, "data.deleteTargetSet", variables);
+        String id = dgsQueryExecutor.executeAndExtractJsonPath(deleteTargetSetQuery, "data.deleteTargetSet", variables);
 
-        Assertions.assertEquals(targetSet.getId().intValue(), id);
+        Assertions.assertEquals(targetSet.getId(), Long.valueOf(id));
     }
 
     private void assertEqualTargeSetList(

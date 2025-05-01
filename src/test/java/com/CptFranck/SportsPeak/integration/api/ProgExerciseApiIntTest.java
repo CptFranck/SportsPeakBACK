@@ -349,9 +349,9 @@ class ProgExerciseApiIntTest {
     void ProgExerciseApi_DeleteProgExercise_Success() {
         variables.put("progExerciseId", progExercise.getId());
 
-        Integer id = dgsQueryExecutor.executeAndExtractJsonPath(deleteProgExerciseQuery, "data.deleteProgExercise", variables);
+        String id = dgsQueryExecutor.executeAndExtractJsonPath(deleteProgExerciseQuery, "data.deleteProgExercise", variables);
 
-        Assertions.assertEquals(progExercise.getId().intValue(), id);
+        Assertions.assertEquals(progExercise.getId(), Long.valueOf(id));
     }
 
     private void assertEqualProgExerciseList(
