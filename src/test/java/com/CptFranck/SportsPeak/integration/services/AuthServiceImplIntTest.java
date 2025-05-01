@@ -46,7 +46,7 @@ public class AuthServiceImplIntTest {
 
     @BeforeEach
     void setUp() {
-        roleRepository.save(createTestRole(1L, 0));
+        roleRepository.save(createTestRole(null, 0));
         user = createTestUser(null);
         rawPassword = user.getPassword();
         user.setPassword(passwordEncoder.encode("password"));

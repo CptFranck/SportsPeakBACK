@@ -105,7 +105,7 @@ public class RoleServiceImplIntTest {
 
     @Test
     void exerciseService_UpdatePrivilegeRelation_Success() {
-        PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(1L, 0));
+        PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(null, 0));
         Set<Long> oldRoleIds = Set.of(role.getId());
         Set<Long> newRoleIds = Set.of(roleBis.getId());
 

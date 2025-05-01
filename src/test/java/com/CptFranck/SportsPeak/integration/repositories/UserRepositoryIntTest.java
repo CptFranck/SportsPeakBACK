@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,6 +43,12 @@ public class UserRepositoryIntTest {
 
     @AfterEach
     public void afterEach() {
+        userRepository.findAll().forEach(user -> {
+            user.setSubscribedProgExercises(new HashSet<>());
+            userRepository.save(user);
+        });
+        progExerciseRepository.deleteAll();
+        exerciseRepository.deleteAll();
         userRepository.deleteAll();
     }
 
@@ -67,7 +74,7 @@ public class UserRepositoryIntTest {
     public void userRepository_FindAllBySubscribedProgExercisesContaining_ReturnUser() {
         UserEntity subscriber = userRepository.save(createTestUserBis(null));
         ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
-        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(exercise.getId(), user, exercise));
+        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
         user.getSubscribedProgExercises().add(progExercise);
         user.getProgExercisesCreated().add(progExercise);
         subscriber.getSubscribedProgExercises().add(progExercise);
