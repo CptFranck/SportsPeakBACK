@@ -1,11 +1,14 @@
 package com.CptFranck.SportsPeak.integration.services;
 
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailAlreadyUsedException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailUnknownException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.IncorrectPasswordException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UsernameExistsException;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
+import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
+import com.CptFranck.SportsPeak.repositories.RoleRepository;
 import com.CptFranck.SportsPeak.repositories.UserRepository;
 import com.CptFranck.SportsPeak.service.impl.AuthServiceImpl;
 import org.junit.jupiter.api.AfterEach;
@@ -17,6 +20,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
 
+import static com.CptFranck.SportsPeak.utils.AuthUtils.createInputRegisterNewUser;
+import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -26,6 +31,9 @@ public class AuthServiceImplIntTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -38,6 +46,7 @@ public class AuthServiceImplIntTest {
 
     @BeforeEach
     void setUp() {
+        roleRepository.save(createTestRole(1L, 0));
         user = createTestUser(null);
         rawPassword = user.getPassword();
         user.setPassword(passwordEncoder.encode("password"));
@@ -46,11 +55,12 @@ public class AuthServiceImplIntTest {
 
     @AfterEach
     public void afterEach() {
-        this.userRepository.deleteAll();
+        userRepository.deleteAll();
+        roleRepository.deleteAll();
     }
 
     @Test
-    void authService_Login_UnsuccessfulEmailUnknown() {
+    void login_EmailNotFound_ThrowEmailUnknownException() {
         InputCredentials wrongEmailInputCredentials =
                 new InputCredentials("wrong@email.test", rawPassword);
 
@@ -58,7 +68,7 @@ public class AuthServiceImplIntTest {
     }
 
     @Test
-    void authService_Login_UnsuccessfulIncorrectPassword() {
+    void login_IncorrectPassword_ThrowIncorrectPasswordException() {
         InputCredentials wrongPasswordInputCredentials =
                 new InputCredentials(user.getEmail(), "wrongPassword");
 
@@ -66,7 +76,7 @@ public class AuthServiceImplIntTest {
     }
 
     @Test
-    void authService_Login_Successful() {
+    void login_CorrectCredentials_ReturnUserEntity() {
         InputCredentials wrongPasswordInputCredentials =
                 new InputCredentials(user.getEmail(), rawPassword);
 
@@ -76,28 +86,45 @@ public class AuthServiceImplIntTest {
     }
 
     @Test
-    void authService_Register_UnsuccessfulEmailAlreadyUsed() {
+    void register_MissingUserRoleInDB_ThrowRoleNotFoundException() {
         UserEntity userToRegister = createTestUserBis(null);
-        userToRegister.setEmail(user.getEmail());
+        InputRegisterNewUser inputRegisterNewUser = createInputRegisterNewUser(userToRegister);
+        roleRepository.deleteAll();
 
-        Assertions.assertThrows(EmailAlreadyUsedException.class, () -> authServiceImpl.register(userToRegister));
+        Assertions.assertThrows(RoleNotFoundException.class, () -> authServiceImpl.register(inputRegisterNewUser));
     }
 
     @Test
-    void authService_Register_UnsuccessfulUsernameAlreadyUsed() {
+    void register_UserEmailAlreadyTaken_ThrowEmailAlreadyUsedException() {
+        UserEntity userToRegister = createTestUserBis(null);
+        InputRegisterNewUser inputRegisterNewUser = createInputRegisterNewUser(userToRegister);
+        inputRegisterNewUser.setEmail(user.getEmail());
+
+        Assertions.assertThrows(EmailAlreadyUsedException.class, () -> authServiceImpl.register(inputRegisterNewUser));
+    }
+
+    @Test
+    void register_UserUsernameAlreadyUsed_ThrowUsernameExistsException() {
         UserEntity userToRegister = createTestUserBis(null);
         userToRegister.setUsername(user.getUsername());
+        InputRegisterNewUser inputRegisterNewUser = createInputRegisterNewUser(userToRegister);
 
-        Assertions.assertThrows(UsernameExistsException.class, () -> authServiceImpl.register(userToRegister));
+        Assertions.assertThrows(UsernameExistsException.class, () -> authServiceImpl.register(inputRegisterNewUser));
     }
 
     @Test
-    void authService_Register_Success() {
-        UserEntity userToRegister = createTestUserBis(null);
-        userToRegister.setPassword(passwordEncoder.encode("password"));
+    void register_CorrectCredentials_ReturnUserEntity() {
+        UserEntity userToRegister = createTestUserBis(user.getId() + 1);
+        InputRegisterNewUser inputRegisterNewUser = createInputRegisterNewUser(userToRegister);
 
-        UserEntity registeredUser = authServiceImpl.register(userToRegister);
+        UserEntity registeredUser = authServiceImpl.register(inputRegisterNewUser);
 
-        assertEqualsUser(userToRegister, registeredUser);
+        Assertions.assertEquals(userToRegister.getId(), registeredUser.getId());
+        Assertions.assertEquals(userToRegister.getEmail(), registeredUser.getEmail());
+        Assertions.assertEquals(userToRegister.getFirstName(), registeredUser.getFirstName());
+        Assertions.assertEquals(userToRegister.getLastName(), registeredUser.getLastName());
+        Assertions.assertEquals(userToRegister.getUsername(), registeredUser.getUsername());
+        Assertions.assertTrue(passwordEncoder.matches(userToRegister.getPassword(), registeredUser.getPassword()));
+
     }
 }
