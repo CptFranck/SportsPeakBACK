@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 
 import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.AuthQuery.loginQuery;
 import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.AuthQuery.registerQuery;
+import static com.CptFranck.SportsPeak.utils.AuthUtils.createInputRegisterNewUser;
 import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserBis;
@@ -57,10 +58,10 @@ public class AuthApiIntTest {
 
     @BeforeEach
     public void init() {
+        roleRepository.save(createTestRole(null, 0));
         user = createTestUser(null);
         rawPassword = user.getPassword();
-        user = authService.register(user);
-        roleRepository.save(createTestRole(null, 0));
+        user = authService.register(createInputRegisterNewUser(user));
         variables = new LinkedHashMap<>();
     }
 
@@ -71,7 +72,7 @@ public class AuthApiIntTest {
     }
 
     @Test
-    public void AuthApi_Login_UnsuccessfulEmailUnknown() {
+    public void login_EmailNotFound_ThrowEmailUnknownException() {
         variables.put("inputCredentials", objectMapper.convertValue(
                 new InputCredentials("user.getEmail()", rawPassword),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -85,7 +86,7 @@ public class AuthApiIntTest {
     }
 
     @Test
-    public void AuthApi_Login_UnsuccessfulIncorrectPass() {
+    public void login_IncorrectPassword_ThrowIncorrectPasswordException() {
         variables.put("inputCredentials", objectMapper.convertValue(
                 new InputCredentials(user.getEmail(), "rawPassword"),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -99,7 +100,7 @@ public class AuthApiIntTest {
     }
 
     @Test
-    public void AuthApi_Login_ReturnAuthDto() {
+    public void login_CorrectCredentials_ReturnAuthDto() {
         variables.put("inputCredentials", objectMapper.convertValue(
                         new InputCredentials(user.getEmail(), rawPassword),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -112,15 +113,26 @@ public class AuthApiIntTest {
     }
 
     @Test
-    public void AuthApi_Register_UnsuccessfulEmailAlreadyUsed() {
+    public void register_MissingUserRoleInDB_ThrowRoleNotFoundException() {
         variables.put("inputRegisterNewUser", objectMapper.convertValue(
-                        new InputRegisterNewUser(
-                                user.getEmail(),
-                                user.getFirstName(),
-                                user.getLastName(),
-                                user.getLastName(),
-                                user.getPassword()
-                        ),
+                createInputRegisterNewUser(user),
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
+
+        userRepository.deleteAll();
+        roleRepository.deleteAll();
+
+        QueryException exception = Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(registerQuery, "data.register", variables));
+
+        Assertions.assertTrue(exception.getMessage().contains("RoleNotFoundException"));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The role the id or the name %s has not been found", "ROLE_USER")));
+    }
+
+    @Test
+    public void register_UserEmailAlreadyTaken_ThrowEmailAlreadyUsedException() {
+        variables.put("inputRegisterNewUser", objectMapper.convertValue(
+                createInputRegisterNewUser(user),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
 
@@ -132,16 +144,12 @@ public class AuthApiIntTest {
     }
 
     @Test
-    public void AuthApi_Register_UnsuccessfulUsernameExists() {
+    public void register_UserUsernameAlreadyUsed_ThrowUsernameExistsException() {
         UserEntity userBis = createTestUserBis(null);
+        InputRegisterNewUser inputRegisterNewUser = createInputRegisterNewUser(userBis);
+        inputRegisterNewUser.setUsername(user.getUsername());
         variables.put("inputRegisterNewUser", objectMapper.convertValue(
-                        new InputRegisterNewUser(
-                                userBis.getEmail(),
-                                userBis.getFirstName(),
-                                userBis.getLastName(),
-                                user.getUsername(),
-                                userBis.getPassword()
-                        ),
+                inputRegisterNewUser,
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
 
@@ -153,21 +161,16 @@ public class AuthApiIntTest {
     }
 
     @Test
-    public void AuthApi_Register_ReturnAuthDto() {
+    public void register_CorrectCredentials_ReturnAuthDto() {
         UserEntity userBis = createTestUserBis(null);
+        InputRegisterNewUser inputRegisterNewUser = createInputRegisterNewUser(userBis);
         variables.put("inputRegisterNewUser", objectMapper.convertValue(
-                        new InputRegisterNewUser(
-                                userBis.getEmail(),
-                                userBis.getFirstName(),
-                                userBis.getLastName(),
-                                userBis.getUsername(),
-                                userBis.getPassword()
-                        ),
+                inputRegisterNewUser,
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
 
-        LinkedHashMap<String, Object> response =
-                dgsQueryExecutor.executeAndExtractJsonPath(registerQuery, "data.register", variables);
+        LinkedHashMap<String, Object> response = dgsQueryExecutor.executeAndExtractJsonPath(registerQuery,
+                "data.register", variables);
 
         assertAuthDtoValid(userBis, response, false);
     }
