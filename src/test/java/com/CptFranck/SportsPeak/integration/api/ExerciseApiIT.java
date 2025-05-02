@@ -85,7 +85,7 @@ class ExerciseApiIT {
     }
 
     @Test
-    void ExerciseApi_AddExercise_UnsuccessfulNotAuthenticated() {
+    void addExercise_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         variables.put("inputNewExercise", objectMapper.convertValue(
                 createTestInputNewExercise(), new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
@@ -113,7 +113,7 @@ class ExerciseApiIT {
     }
 
     @Test
-    void ExerciseApi_ModifyExercise_UnsuccessfulNotAuthenticated() {
+    void modifyExercise_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         variables.put("inputExercise", objectMapper.convertValue(
                 createTestInputExercise(exercise.getId()), new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
@@ -154,7 +154,7 @@ class ExerciseApiIT {
     }
 
     @Test
-    void ExerciseApi_DeleteExercise_UnsuccessfulNotAuthenticated() {
+    void deleteExercise_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         variables.put("exerciseId", exercise.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,

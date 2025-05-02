@@ -24,7 +24,7 @@ import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.*;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-class ExerciseControllerIntTest {
+class ExerciseControllerIT {
 
     @Autowired
     private ExerciseController exerciseController;
@@ -45,38 +45,35 @@ class ExerciseControllerIntTest {
     }
 
     @Test
-    void ExerciseController_GetExercises_Success() {
+    void getExercises_ValidUse_ReturnExerciseDtos() {
         List<ExerciseDto> exerciseDtos = exerciseController.getExercises();
 
         assertEqualExerciseList(List.of(exercise), exerciseDtos);
     }
 
     @Test
-    void ExerciseController_GetExerciseById_UnsuccessfulExerciseNotFound() {
-        Assertions.assertThrows(ExerciseNotFoundException.class,
-                () -> exerciseController.getExerciseById(exercise.getId() + 1)
-        );
+    void getExerciseById_InvalidExerciseId_ThrowExerciseNotFoundException() {
+        Assertions.assertThrows(ExerciseNotFoundException.class, () -> exerciseController.getExerciseById(exercise.getId() + 1));
     }
 
     @Test
-    void ExerciseController_GetExerciseById_Success() {
+    void getExerciseById_ValidInput_ReturnExerciseDto() {
         ExerciseDto exerciseDto = exerciseController.getExerciseById(exercise.getId());
 
         assertExerciseDtoAndEntity(exercise, exerciseDto);
     }
 
     @Test
-    void ExerciseController_AddExercise_UnsuccessfulNotAuthenticated() {
+    void addExercise_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         InputNewExercise inputNewExercise = createTestInputNewExercise();
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
-                () -> exerciseController.addExercise(inputNewExercise)
-        );
+                () -> exerciseController.addExercise(inputNewExercise));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void ExerciseController_AddExercise_Success() {
+    void addExercise_ValidInput_ReturnExerciseDto() {
         InputNewExercise inputNewExercise = createTestInputNewExercise();
 
         ExerciseDto exerciseDto = exerciseController.addExercise(inputNewExercise);
@@ -85,27 +82,25 @@ class ExerciseControllerIntTest {
     }
 
     @Test
-    void ExerciseController_ModifyExercise_UnsuccessfulNotAuthenticated() {
+    void modifyExercise_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         InputExercise inputExercise = createTestInputExercise(exercise.getId());
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
-                () -> exerciseController.modifyExercise(inputExercise)
-        );
+                () -> exerciseController.modifyExercise(inputExercise));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void ExerciseController_ModifyExercise_UnsuccessfulExerciseNotFound() {
+    void modifyExercise_InvalidExerciseId_ThrowExerciseNotFoundException() {
         InputExercise inputExercise = createTestInputExercise(exercise.getId() + 1);
 
         Assertions.assertThrows(ExerciseNotFoundException.class,
-                () -> exerciseController.modifyExercise(inputExercise)
-        );
+                () -> exerciseController.modifyExercise(inputExercise));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void ExerciseController_ModifyExercise_Success() {
+    void modifyExercise_ValidInput_ReturnExerciseDto() {
         InputExercise inputExercise = createTestInputExercise(exercise.getId());
 
         ExerciseDto exerciseDto = exerciseController.modifyExercise(inputExercise);
@@ -114,23 +109,21 @@ class ExerciseControllerIntTest {
     }
 
     @Test
-    void ExerciseController_DeleteExercise_UnsuccessfulNotAuthenticated() {
+    void deleteExercise_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
-                () -> exerciseController.deleteExercise(exercise.getId())
-        );
+                () -> exerciseController.deleteExercise(exercise.getId()));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void ExerciseController_DeleteExercise_UnsuccessfulExerciseNotFound() {
+    void deleteExercise_InvalidExerciseId_ThrowExerciseNotFoundException() {
         Assertions.assertThrows(ExerciseNotFoundException.class,
-                () -> exerciseController.deleteExercise(exercise.getId() + 1)
-        );
+                () -> exerciseController.deleteExercise(exercise.getId() + 1));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void ExerciseController_DeleteExercise_Success() {
+    void deleteExercise_ValidInput_ReturnExerciseId() {
         Long id = exerciseController.deleteExercise(exercise.getId());
 
         Assertions.assertEquals(exercise.getId(), id);
