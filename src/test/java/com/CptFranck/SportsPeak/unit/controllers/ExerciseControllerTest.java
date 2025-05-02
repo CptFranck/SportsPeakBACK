@@ -3,11 +3,11 @@ package com.CptFranck.SportsPeak.unit.controllers;
 import com.CptFranck.SportsPeak.controller.ExerciseController;
 import com.CptFranck.SportsPeak.domain.dto.ExerciseDto;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
-import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
+import com.CptFranck.SportsPeak.domain.input.exercise.InputExercise;
+import com.CptFranck.SportsPeak.domain.input.exercise.InputNewExercise;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import com.CptFranck.SportsPeak.service.ExerciseTypeService;
-import com.CptFranck.SportsPeak.service.MuscleService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Optional;
 
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.*;
 import static org.mockito.Mockito.when;
@@ -32,9 +31,6 @@ class ExerciseControllerTest {
 
     @Mock
     private Mapper<ExerciseEntity, ExerciseDto> exerciseMapper;
-
-    @Mock
-    private MuscleService muscleService;
 
     @Mock
     private ExerciseService exerciseService;
@@ -53,7 +49,7 @@ class ExerciseControllerTest {
     }
 
     @Test
-    void ExerciseController_GetExercises_Success() {
+    void getExercises_ValidUse_ReturnExerciseDtos() {
         when(exerciseService.findAll()).thenReturn(List.of(exercise));
         when(exerciseMapper.mapTo(Mockito.any(ExerciseEntity.class))).thenReturn(exerciseDto);
 
@@ -63,17 +59,8 @@ class ExerciseControllerTest {
     }
 
     @Test
-    void ExerciseController_GetExerciseById_Unsuccessful() {
-        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-
-        Assertions.assertThrows(ExerciseNotFoundException.class,
-                () -> exerciseController.getExerciseById(1L)
-        );
-    }
-
-    @Test
-    void ExerciseController_GetExerciseById_Success() {
-        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(exercise));
+    void getExerciseById_ValidInput_ReturnExerciseDto() {
+        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(exercise);
         when(exerciseMapper.mapTo(Mockito.any(ExerciseEntity.class))).thenReturn(exerciseDto);
 
         ExerciseDto exerciseDto = exerciseController.getExerciseById(1L);
@@ -82,8 +69,8 @@ class ExerciseControllerTest {
     }
 
     @Test
-    void ExerciseController_AddExercise_Success() {
-        when(exerciseService.save(Mockito.any(ExerciseEntity.class))).thenReturn(exercise);
+    void addExercise_ValidInput_ReturnExerciseDto() {
+        when(exerciseService.create(Mockito.any(InputNewExercise.class))).thenReturn(exercise);
         when(exerciseMapper.mapTo(Mockito.any(ExerciseEntity.class))).thenReturn(exerciseDto);
 
         ExerciseDto exerciseDto = exerciseController.addExercise(createTestInputNewExercise());
@@ -92,16 +79,8 @@ class ExerciseControllerTest {
     }
 
     @Test
-    void ExerciseController_ModifyExercise_UnsuccessfulDoesNotExist() {
-        Assertions.assertThrows(ExerciseNotFoundException.class,
-                () -> exerciseController.modifyExercise(createTestInputExercise(1L))
-        );
-    }
-
-    @Test
-    void ExerciseController_ModifyExercise_Success() {
-        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(exercise));
-        when(exerciseService.save(Mockito.any(ExerciseEntity.class))).thenReturn(exercise);
+    void modifyExercise_ValidInput_ReturnExerciseDto() {
+        when(exerciseService.update(Mockito.any(InputExercise.class))).thenReturn(exercise);
         when(exerciseMapper.mapTo(Mockito.any(ExerciseEntity.class))).thenReturn(exerciseDto);
 
         ExerciseDto exerciseDto = exerciseController.modifyExercise(createTestInputExercise(1L));
@@ -110,7 +89,7 @@ class ExerciseControllerTest {
     }
 
     @Test
-    void ExerciseController_DeleteExercise_Success() {
+    void DeleteExercise_ValidInput_ReturnExerciseId() {
         Long id = exerciseController.deleteExercise(1L);
 
         Assertions.assertEquals(1L, id);
