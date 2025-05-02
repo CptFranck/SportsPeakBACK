@@ -26,6 +26,8 @@ spring:
         enable_lazy_load_no_trans: true
         type:
           preferred_duration_jdbc_type: INTERVAL_SECOND
+        show_sql: false
+
     database-platform: org.hibernate.dialect.H2Dialect
     defer-datasource-initialization: true
   sql:
