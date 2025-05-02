@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-public class AuthServiceImplIntTest {
+public class AuthServiceImplIT {
 
     @Autowired
     private UserRepository userRepository;

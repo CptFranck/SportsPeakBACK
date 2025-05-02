@@ -32,7 +32,7 @@ import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserBis;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-public class AuthApiIntTest {
+public class AuthApiIT {
 
     @Autowired
     private DgsQueryExecutor dgsQueryExecutor;

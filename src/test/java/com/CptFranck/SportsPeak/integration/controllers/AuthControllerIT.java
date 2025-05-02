@@ -29,7 +29,7 @@ import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserBis;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-public class AuthControllerIntTest {
+public class AuthControllerIT {
 
     @Autowired
     private AuthController authController;
