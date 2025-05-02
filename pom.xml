@@ -43,15 +43,6 @@
             <groupId>com.netflix.graphql.dgs</groupId>
             <artifactId>graphql-dgs-spring-graphql-starter</artifactId>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>com.netflix.graphql.dgs</groupId>-->
-        <!--            <artifactId>graphql-dgs-spring-boot-starter</artifactId>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>com.netflix.graphql.dgs</groupId>-->
-        <!--            <artifactId>graphql-dgs-extended-scalars</artifactId>-->
-        <!--            <version>10.1.2</version>-->
-        <!--        </dependency>-->
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
@@ -131,36 +122,97 @@
                 </configuration>
             </plugin>
             <!-- Jacoco -->
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.12</version>
-                <executions>
-                    <execution>
-                        <id>prepare-agent</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                        <configuration>
-                            <append>true</append>
-                            <destFile>${project.build.directory}/jacoco.exec</destFile>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--            <plugin>-->
+            <!--                <groupId>org.jacoco</groupId>-->
+            <!--                <artifactId>jacoco-maven-plugin</artifactId>-->
+            <!--                <version>0.8.12</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <id>report</id>-->
+            <!--                        <goals>-->
+            <!--                            <goal>report</goal>-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                    <execution>-->
+            <!--                        <id>pre-unit-test</id>-->
+            <!--                        <goals>-->
+            <!--                            <goal>prepare-agent</goal>-->
+            <!--                        </goals>-->
+            <!--                        <configuration>-->
+            <!--                            <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>-->
+            <!--                            <propertyName>surefireArgLine</propertyName>-->
+            <!--                        </configuration>-->
+            <!--                    </execution>-->
+            <!--                    <execution>-->
+            <!--                        <id>post-unit-test</id>-->
+            <!--                        <phase>test</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>report</goal>-->
+            <!--                        </goals>-->
+            <!--                        <configuration>-->
+            <!--                            <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>-->
+            <!--                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>-->
+            <!--                        </configuration>-->
+            <!--                    </execution>-->
+            <!--                    <execution>-->
+            <!--                        <id>pre-integration-test</id>-->
+            <!--                        <phase>pre-integration-test</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>prepare-agent</goal>-->
+            <!--                        </goals>-->
+            <!--                        <configuration>-->
+            <!--                            <destFile>${project.build.directory}/coverage-reports/jacoco-it.exec</destFile>-->
+            <!--                            <propertyName>failsafeArgLine</propertyName>-->
+            <!--                        </configuration>-->
+            <!--                    </execution>-->
+            <!--                    <execution>-->
+            <!--                        <id>post-integration-test</id>-->
+            <!--                        <phase>post-integration-test</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>report</goal>-->
+            <!--                        </goals>-->
+            <!--                        <configuration>-->
+            <!--                            <dataFile>${project.build.directory}/coverage-reports/jacoco-it.exec</dataFile>-->
+            <!--                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>-->
+            <!--                        </configuration>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
             <!-- maven surefire -->
+            <!-- Used for unit tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>@{argLine} -XX:+EnableDynamicAgentLoading</argLine>
+                    <!--                    <argLine>@{surefireArgLine}</argLine>-->
+                    <skipTests>${skipUnitTests}</skipTests>
+                    <excludes>
+                        <exclude>**/*IntTest.java</exclude>
+                        <exclude>**/*IT.java</exclude>
+                    </excludes>
                 </configuration>
+            </plugin>
+            <!-- maven failsafe -->
+            <!-- Used for integration tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <!--                    <argLine>${failsafeArgLine}</argLine>-->
+                    <includes>
+                        <include>**/*IT.java</include>
+                        <include>**/*IntTest.java</include>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-tests</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
