@@ -7,7 +7,6 @@ import com.CptFranck.SportsPeak.domain.input.exercise.InputExercise;
 import com.CptFranck.SportsPeak.domain.input.exercise.InputNewExercise;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.ExerciseService;
-import com.CptFranck.SportsPeak.service.ExerciseTypeService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,9 +33,6 @@ class ExerciseControllerTest {
 
     @Mock
     private ExerciseService exerciseService;
-
-    @Mock
-    private ExerciseTypeService exerciseTypeService;
 
     private ExerciseEntity exercise;
     private ExerciseDto exerciseDto;
