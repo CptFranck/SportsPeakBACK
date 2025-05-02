@@ -27,7 +27,7 @@ import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.*;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-class ExerciseApiIntTest {
+class ExerciseApiIT {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -53,7 +53,7 @@ class ExerciseApiIntTest {
     }
 
     @Test
-    void ExerciseApi_GetExercises_Success() {
+    void getExercises_ValidUse_ReturnExerciseDtos() {
         List<LinkedHashMap<String, Object>> response =
                 dgsQueryExecutor.executeAndExtractJsonPath(getExercisesQuery, "data.getExercises");
 
@@ -63,7 +63,7 @@ class ExerciseApiIntTest {
     }
 
     @Test
-    void ExerciseApi_GetExerciseById_UnsuccessfulExerciseNotFound() {
+    void getExerciseById_InvalidExerciseId_ThrowsQueryExceptionExerciseNotFound() {
         variables.put("id", exercise.getId() + 1);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
@@ -74,7 +74,7 @@ class ExerciseApiIntTest {
     }
 
     @Test
-    void ExerciseApi_GetExerciseById_Success() {
+    void getExerciseById_ValidInput_ReturnExerciseDto() {
         variables.put("id", exercise.getId());
 
         LinkedHashMap<String, Object> response = dgsQueryExecutor.executeAndExtractJsonPath(getExerciseByIdQuery,
@@ -99,7 +99,7 @@ class ExerciseApiIntTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void ExerciseApi_AddExercise_Success() {
+    void addExercise_ValidInput_ReturnExerciseDto() {
         InputNewExercise inputNewExercise = createTestInputNewExercise();
         variables.put("inputNewExercise", objectMapper.convertValue(
                 inputNewExercise, new TypeReference<LinkedHashMap<String, Object>>() {
@@ -127,7 +127,7 @@ class ExerciseApiIntTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void ExerciseApi_ModifyExercise_UnsuccessfulExerciseNotFound() {
+    void modifyExercise_InvalidExerciseId_ThrowsQueryExceptionExerciseNotFound() {
         variables.put("inputExercise", objectMapper.convertValue(
                 createTestInputExercise(exercise.getId() + 1), new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
@@ -141,7 +141,7 @@ class ExerciseApiIntTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void ExerciseApi_ModifyExercise_Success() {
+    void modifyExercise_ValidInput_ReturnExerciseDto() {
         InputExercise inputExercise = createTestInputExercise(exercise.getId());
         variables.put("inputExercise", objectMapper.convertValue(inputExercise, new TypeReference<LinkedHashMap<String, Object>>() {
         }));
@@ -166,7 +166,19 @@ class ExerciseApiIntTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void ExerciseApi_DeleteExercise_Success() {
+    void deleteExercise_InvalidExerciseId_ThrowsQueryExceptionExerciseNotFound() {
+        variables.put("exerciseId", exercise.getId() + 1);
+
+        QueryException exception = Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(deleteExerciseQuery, "data.deleteExercise", variables));
+
+        Assertions.assertTrue(exception.getMessage().contains("ExerciseNotFoundException"));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The exercise with the id %s has not been found", exercise.getId() + 1)));
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    void deleteExercise_ValidInput_ReturnExerciseId() {
         variables.put("exerciseId", exercise.getId());
 
         String id = dgsQueryExecutor.executeAndExtractJsonPath(deleteExerciseQuery, "data.deleteExercise", variables);
