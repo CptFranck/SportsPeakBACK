@@ -2,6 +2,8 @@ package com.CptFranck.SportsPeak.integration.services;
 
 import com.CptFranck.SportsPeak.domain.entity.*;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
+import com.CptFranck.SportsPeak.domain.input.exercise.InputExercise;
+import com.CptFranck.SportsPeak.domain.input.exercise.InputNewExercise;
 import com.CptFranck.SportsPeak.repositories.*;
 import com.CptFranck.SportsPeak.service.impl.ExerciseServiceImpl;
 import org.junit.jupiter.api.AfterEach;
@@ -15,7 +17,7 @@ import org.springframework.test.context.TestPropertySource;
 import java.util.*;
 
 import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseType;
-import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.*;
 import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.createTestMuscle;
 import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
@@ -23,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-public class ExerciseServiceImplIntTest {
+public class ExerciseServiceImplIT {
 
     @Autowired
     private ExerciseRepository exerciseRepository;
@@ -62,7 +64,32 @@ public class ExerciseServiceImplIntTest {
     }
 
     @Test
-    void exerciseService_Save_Success() {
+    void create_ValidInputNewExercise_ReturnExerciseEntity() {
+        InputNewExercise inputNewExercise = createTestInputNewExercise();
+
+        ExerciseEntity exerciseSaved = exerciseServiceImpl.create(inputNewExercise);
+
+        assertEqualInputNewExercise(inputNewExercise, exerciseSaved);
+    }
+
+    @Test
+    void update_ExerciseNotFound_ThrowExerciseNotFoundException() {
+        InputExercise inputExercise = createTestInputExercise(exercise.getId() + exerciseBis.getId() + 1);
+
+        Assertions.assertThrows(ExerciseNotFoundException.class, () -> exerciseServiceImpl.update(inputExercise));
+    }
+
+    @Test
+    void update_ValidInputExercise_ReturnExerciseEntity() {
+        InputExercise inputExercise = createTestInputExercise(exercise.getId() + 1);
+
+        ExerciseEntity exerciseSaved = exerciseServiceImpl.update(inputExercise);
+
+        assertEqualInputNewExercise(inputExercise, exerciseSaved);
+    }
+
+    @Test
+    void save_ValidExerciseEntity_ReturnExerciseEntity() {
         ExerciseEntity unsavedExercise = createTestExercise(null);
 
         ExerciseEntity exerciseSaved = exerciseServiceImpl.save(unsavedExercise);
@@ -71,29 +98,33 @@ public class ExerciseServiceImplIntTest {
     }
 
     @Test
-    void exerciseService_FindAll_Success() {
+    void findAll_Valid_ReturnListOfExerciseEntity() {
         List<ExerciseEntity> exercisesFound = exerciseServiceImpl.findAll();
 
         assertEqualExerciseList(List.of(exercise, exerciseBis), exercisesFound.stream().toList());
     }
 
     @Test
-    void exerciseService_FindOne_Success() {
-        Optional<ExerciseEntity> exerciseFound = exerciseServiceImpl.findOne(exercise.getId());
-
-        Assertions.assertTrue(exerciseFound.isPresent());
-        assertEqualExercise(exercise, exerciseFound.get());
+    void findOne_ExerciseNotFound_ThrowExerciseNotFoundException() {
+        Assertions.assertThrows(ExerciseNotFoundException.class, () -> exerciseServiceImpl.findOne(exercise.getId() + exerciseBis.getId() + 1));
     }
 
     @Test
-    void exerciseService_FindMany_Success() {
+    void findOne_ValidExerciseId_ReturnExerciseEntity() {
+        ExerciseEntity exerciseFound = exerciseServiceImpl.findOne(exercise.getId());
+
+        assertEqualExercise(exercise, exerciseFound);
+    }
+
+    @Test
+    void findMany_ValidExerciseIds_ReturnSetOfExerciseEntity() {
         Set<ExerciseEntity> exercisesFound = exerciseServiceImpl.findMany(Set.of(exercise.getId(), exerciseBis.getId()));
 
         assertEqualExerciseList(List.of(exercise, exerciseBis), exercisesFound.stream().toList());
     }
 
     @Test
-    void exerciseService_UpdateExerciseTypeRelation_Success() {
+    void updateExerciseTypeRelation_ValidInputs_Void() {
         ExerciseTypeEntity exerciseType = exerciseTypeRepository.save(createTestExerciseType(null));
         Set<Long> oldExerciseIds = Set.of(exercise.getId());
         Set<Long> newExerciseIds = Set.of(exerciseBis.getId());
@@ -112,7 +143,7 @@ public class ExerciseServiceImplIntTest {
     }
 
     @Test
-    void exerciseService_UpdateMuscleRelation_Success() {
+    void updateMuscleRelation_ValidInputs_Void() {
         MuscleEntity muscle = muscleRepository.save(createTestMuscle(null));
         Set<Long> oldExerciseIds = new HashSet<>();
         Set<Long> newExerciseIds = new HashSet<>();
@@ -133,7 +164,7 @@ public class ExerciseServiceImplIntTest {
     }
 
     @Test
-    void exerciseService_UpdateProgExerciseRelation_Success() {
+    void updateProgExerciseRelation_ValidInputs_Void() {
         UserEntity user = userRepository.save(createTestUser(null));
         ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
         exercise.getProgExercises().add(progExercise);
@@ -147,22 +178,22 @@ public class ExerciseServiceImplIntTest {
     }
 
     @Test
-    void exerciseService_Exists_Success() {
+    void exists_ValidInput_ReturnTrue() {
         boolean ExerciseFound = exerciseServiceImpl.exists(exercise.getId());
 
         Assertions.assertTrue(ExerciseFound);
     }
 
     @Test
-    void exerciseService_Delete_Success() {
-        assertAll(() -> exerciseServiceImpl.delete(exercise.getId()));
-    }
-
-    @Test
-    void exerciseService_Delete_Unsuccessful() {
+    void delete_ExerciseNotFound_ThrowExerciseNotFoundException() {
         exerciseRepository.delete(exercise);
 
         assertThrows(ExerciseNotFoundException.class, () -> exerciseServiceImpl.delete(exercise.getId()));
+    }
+
+    @Test
+    void delete_ValidInput_Void() {
+        assertAll(() -> exerciseServiceImpl.delete(exercise.getId()));
     }
 
     private void assertEqualExerciseList(
@@ -176,6 +207,14 @@ public class ExerciseServiceImplIntTest {
                 ).toList().getFirst(),
                 exerciseFound)
         );
+    }
+
+    private void assertEqualInputNewExercise(InputNewExercise expected, ExerciseEntity actual) {
+        Assertions.assertEquals(expected.getName(), actual.getName());
+        Assertions.assertEquals(expected.getDescription(), actual.getDescription());
+        Assertions.assertEquals(expected.getGoal(), actual.getGoal());
+        Assertions.assertEquals(expected.getMuscleIds().size(), actual.getMuscles().size());
+        Assertions.assertEquals(expected.getExerciseTypeIds().size(), actual.getExerciseTypes().size());
     }
 
     private void assertEqualExercise(ExerciseEntity expected, ExerciseEntity actual) {
