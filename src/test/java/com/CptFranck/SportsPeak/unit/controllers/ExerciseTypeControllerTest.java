@@ -2,11 +2,11 @@ package com.CptFranck.SportsPeak.unit.controllers;
 
 import com.CptFranck.SportsPeak.controller.ExerciseTypeController;
 import com.CptFranck.SportsPeak.domain.dto.ExerciseTypeDto;
-import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
-import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseTypeNotFoundException;
+import com.CptFranck.SportsPeak.domain.input.exerciseType.InputExerciseType;
+import com.CptFranck.SportsPeak.domain.input.exerciseType.InputNewExerciseType;
 import com.CptFranck.SportsPeak.mappers.Mapper;
-import com.CptFranck.SportsPeak.service.ExerciseService;
+import com.CptFranck.SportsPeak.resolvers.ExerciseTypeInputResolver;
 import com.CptFranck.SportsPeak.service.ExerciseTypeService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,10 +17,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.*;
 import static org.mockito.Mockito.when;
@@ -35,7 +32,7 @@ class ExerciseTypeControllerTest {
     private Mapper<ExerciseTypeEntity, ExerciseTypeDto> exerciseTypeMapper;
 
     @Mock
-    private ExerciseService exerciseService;
+    private ExerciseTypeInputResolver exerciseTypeInputResolver;
 
     @Mock
     private ExerciseTypeService exerciseTypeService;
@@ -50,7 +47,7 @@ class ExerciseTypeControllerTest {
     }
 
     @Test
-    void ExerciseTypeController_GetExerciseTypes_Success() {
+    void getExerciseTypes_ValidUse_ReturnExerciseTypeDtos() {
         when(exerciseTypeService.findAll()).thenReturn(List.of(exerciseType));
         when(exerciseTypeMapper.mapTo(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseTypeDto);
 
@@ -60,17 +57,8 @@ class ExerciseTypeControllerTest {
     }
 
     @Test
-    void ExerciseTypeController_GetExerciseTypeById_Unsuccessful() {
-        when(exerciseTypeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-
-        Assertions.assertThrows(ExerciseTypeNotFoundException.class,
-                () -> exerciseTypeController.getExerciseTypeById(1L)
-        );
-    }
-
-    @Test
-    void ExerciseTypeController_GetExerciseTypeById_Success() {
-        when(exerciseTypeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(exerciseType));
+    void getExerciseTypeById_ValidInput_ReturnExerciseTypeDto() {
+        when(exerciseTypeService.findOne(Mockito.any(Long.class))).thenReturn(exerciseType);
         when(exerciseTypeMapper.mapTo(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseTypeDto);
 
         ExerciseTypeDto exerciseTypeDto = exerciseTypeController.getExerciseTypeById(1L);
@@ -79,10 +67,9 @@ class ExerciseTypeControllerTest {
     }
 
     @Test
-    void ExerciseTypeController_AddExerciseType_Success() {
-        Set<ExerciseEntity> exercises = new HashSet<>();
-        when(exerciseService.findMany(Mockito.anySet())).thenReturn(exercises);
-        when(exerciseTypeService.save(Mockito.any(ExerciseTypeEntity.class))).thenReturn(this.exerciseType);
+    void addExerciseType_ValidInput_ReturnExerciseTypeDto() {
+        when(exerciseTypeInputResolver.resolveInput(Mockito.any(InputNewExerciseType.class))).thenReturn(this.exerciseType);
+        when(exerciseTypeService.create(Mockito.any(ExerciseTypeEntity.class))).thenReturn(this.exerciseType);
         when(exerciseTypeMapper.mapTo(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseTypeDto);
 
         ExerciseTypeDto exerciseTypeDto = exerciseTypeController.addExerciseType(createTestInputNewExerciseType());
@@ -91,18 +78,9 @@ class ExerciseTypeControllerTest {
     }
 
     @Test
-    void ExerciseTypeController_ModifyExerciseType_Unsuccessful() {
-        Assertions.assertThrows(ExerciseTypeNotFoundException.class,
-                () -> exerciseTypeController.modifyExerciseType(createTestInputExerciseType(1L))
-        );
-    }
-
-    @Test
-    void ExerciseTypeController_ModifyExerciseType_Success() {
-        Set<ExerciseEntity> exercises = new HashSet<>();
-        when(exerciseService.findMany(Mockito.anySet())).thenReturn(exercises);
-        when(exerciseTypeService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(exerciseType));
-        when(exerciseTypeService.save(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseType);
+    void modifyExerciseType_ValidInput_ReturnExerciseTypeDto() {
+        when(exerciseTypeInputResolver.resolveInput(Mockito.any(InputExerciseType.class))).thenReturn(this.exerciseType);
+        when(exerciseTypeService.update(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseType);
         when(exerciseTypeMapper.mapTo(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseTypeDto);
 
         ExerciseTypeDto exerciseTypeDto = exerciseTypeController.modifyExerciseType(createTestInputExerciseType(1L));
