@@ -1,8 +1,6 @@
 package com.CptFranck.SportsPeak.service;
 
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
-import com.CptFranck.SportsPeak.domain.input.exerciseType.InputExerciseType;
-import com.CptFranck.SportsPeak.domain.input.exerciseType.InputNewExerciseType;
 
 import java.util.List;
 import java.util.Set;
@@ -15,11 +13,9 @@ public interface ExerciseTypeService {
 
     Set<ExerciseTypeEntity> findMany(Set<Long> ids);
 
-    ExerciseTypeEntity create(InputNewExerciseType inputNewExercise);
+    ExerciseTypeEntity create(ExerciseTypeEntity newExerciseType);
 
-    ExerciseTypeEntity update(InputExerciseType inputExercise);
-
-    ExerciseTypeEntity save(ExerciseTypeEntity exercise);
+    ExerciseTypeEntity update(ExerciseTypeEntity updatedExerciseType);
 
     void delete(Long id);
 
