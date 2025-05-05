@@ -23,19 +23,18 @@ public class ExerciseTypeInputResolver {
 
         Set<ExerciseEntity> exercises = exerciseService.findMany(newExerciseIds);
 
+        Long id;
+        if (input instanceof InputExerciseType) {
+            id = ((InputExerciseType) input).getId();
+        } else {
+            id = null;
+        }
+
         return new ExerciseTypeEntity(
-                null,
+                id,
                 input.getName(),
                 input.getGoal(),
                 exercises
         );
-    }
-
-    public ExerciseTypeEntity resolveInput(InputExerciseType input, ExerciseTypeEntity exerciseTypeEntity) {
-        ExerciseTypeEntity base = resolveInput(input);
-
-        base.setId(exerciseTypeEntity.getId());
-
-        return base;
     }
 }
