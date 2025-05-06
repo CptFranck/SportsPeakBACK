@@ -12,6 +12,7 @@ import java.util.Set;
 
 @Component
 public class ExerciseTypeInputResolver {
+
     private final ExerciseService exerciseService;
 
     public ExerciseTypeInputResolver(ExerciseService exerciseService) {

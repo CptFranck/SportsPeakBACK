@@ -25,8 +25,8 @@ public class ExerciseTypeController {
     private final Mapper<ExerciseTypeEntity, ExerciseTypeDto> exerciseTypeMapper;
 
     public ExerciseTypeController(ExerciseTypeService exerciseTypeService, ExerciseTypeInputResolver exerciseTypeInputResolver, Mapper<ExerciseTypeEntity, ExerciseTypeDto> exerciseMapper) {
-        this.exerciseTypeService = exerciseTypeService;
         this.exerciseTypeMapper = exerciseMapper;
+        this.exerciseTypeService = exerciseTypeService;
         this.exerciseTypeInputResolver = exerciseTypeInputResolver;
     }
 
@@ -44,14 +44,14 @@ public class ExerciseTypeController {
     @DgsMutation
     public ExerciseTypeDto addExerciseType(@InputArgument InputNewExerciseType inputNewExerciseType) {
         ExerciseTypeEntity exerciseType = exerciseTypeInputResolver.resolveInput(inputNewExerciseType);
-        return exerciseTypeMapper.mapTo(exerciseTypeService.create(exerciseType));
+        return exerciseTypeMapper.mapTo(exerciseTypeService.save(exerciseType));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
     public ExerciseTypeDto modifyExerciseType(@InputArgument InputExerciseType inputExerciseType) {
         ExerciseTypeEntity exerciseType = exerciseTypeInputResolver.resolveInput(inputExerciseType);
-        return exerciseTypeMapper.mapTo(exerciseTypeService.update(exerciseType));
+        return exerciseTypeMapper.mapTo(exerciseTypeService.save(exerciseType));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
