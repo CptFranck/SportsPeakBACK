@@ -2,10 +2,7 @@ package com.CptFranck.SportsPeak.unit.services;
 
 import com.CptFranck.SportsPeak.domain.entity.*;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
-import com.CptFranck.SportsPeak.domain.input.exercise.InputExercise;
-import com.CptFranck.SportsPeak.domain.input.exercise.InputNewExercise;
 import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
-import com.CptFranck.SportsPeak.resolvers.ExerciseInputResolver;
 import com.CptFranck.SportsPeak.service.impl.ExerciseServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +20,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseType;
-import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.*;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExerciseList;
 import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.createTestMuscle;
 import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
@@ -37,9 +35,6 @@ public class ExerciseServiceImplTest {
     @Mock
     private ExerciseRepository exerciseRepository;
 
-    @Mock
-    private ExerciseInputResolver exerciseInputResolver;
-
     @InjectMocks
     private ExerciseServiceImpl exerciseServiceImpl;
 
@@ -48,47 +43,6 @@ public class ExerciseServiceImplTest {
     @BeforeEach
     void setUp() {
         exercise = createTestExercise(1L);
-    }
-
-    @Test
-    void create_ValidInputNewExercise_ReturnExerciseEntity() {
-        InputNewExercise inputNewExercise = createTestInputNewExercise();
-        when(exerciseInputResolver.resolveInput(Mockito.any(InputNewExercise.class))).thenReturn(exercise);
-        when(exerciseRepository.save(Mockito.any(ExerciseEntity.class))).thenReturn(exercise);
-
-        ExerciseEntity exerciseSaved = exerciseServiceImpl.create(inputNewExercise);
-
-        Assertions.assertEquals(exerciseSaved, exercise);
-    }
-
-    @Test
-    void update_ExerciseNotFound_ThrowExerciseNotFoundException() {
-        InputExercise inputExercise = createTestInputExercise(exercise.getId() + 1);
-        when(exerciseRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
-
-        Assertions.assertThrows(ExerciseNotFoundException.class, () -> exerciseServiceImpl.update(inputExercise));
-    }
-
-    @Test
-    void update_ValidInputExercise_ReturnExerciseEntity() {
-        InputExercise inputExercise = createTestInputExercise(exercise.getId() + 1);
-        when(exerciseRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(exercise));
-        when(exerciseInputResolver.resolveInput(Mockito.any(InputExercise.class), Mockito.any(ExerciseEntity.class))).thenReturn(exercise);
-        when(exerciseRepository.save(Mockito.any(ExerciseEntity.class))).thenReturn(exercise);
-
-        ExerciseEntity exerciseSaved = exerciseServiceImpl.update(inputExercise);
-
-        Assertions.assertEquals(exerciseSaved, exercise);
-    }
-
-    @Test
-    void save_ValidExerciseEntity_ReturnExerciseEntity() {
-        ExerciseEntity unsavedExercise = createTestExercise(null);
-        when(exerciseRepository.save(Mockito.any(ExerciseEntity.class))).thenReturn(exercise);
-
-        ExerciseEntity exerciseSaved = exerciseServiceImpl.save(unsavedExercise);
-
-        Assertions.assertEquals(exerciseSaved, exercise);
     }
 
     @Test
@@ -102,7 +56,7 @@ public class ExerciseServiceImplTest {
     }
 
     @Test
-    void findOne_ExerciseNotFound_ThrowExerciseNotFoundException() {
+    void findOne_InvalidExerciseIdThrowExerciseNotFoundException() {
         when(exerciseRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
         Assertions.assertThrows(ExerciseNotFoundException.class, () -> exerciseServiceImpl.findOne(exercise.getId() + 1));
@@ -126,6 +80,33 @@ public class ExerciseServiceImplTest {
         Set<ExerciseEntity> exerciseFound = exerciseServiceImpl.findMany(ExerciseIds);
 
         Assertions.assertEquals(new HashSet<>(exerciseList), exerciseFound);
+    }
+
+    @Test
+    void save_AddExerciseEntity_ReturnExerciseEntity() {
+        ExerciseEntity unsavedExercise = createTestExercise(null);
+        when(exerciseRepository.save(Mockito.any(ExerciseEntity.class))).thenReturn(exercise);
+
+        ExerciseEntity exerciseSaved = exerciseServiceImpl.save(unsavedExercise);
+
+        Assertions.assertEquals(exerciseSaved, exercise);
+    }
+
+    @Test
+    void save_UpdateExerciseEntityNotExisting_ThrowExerciseNotFoundException() {
+        when(exerciseRepository.existsById(Mockito.any(Long.class))).thenReturn(false);
+
+        Assertions.assertThrows(ExerciseNotFoundException.class, () -> exerciseServiceImpl.save(exercise));
+    }
+
+    @Test
+    void save_UpdateExerciseEntity_ReturnExerciseEntity() {
+        when(exerciseRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
+        when(exerciseRepository.save(Mockito.any(ExerciseEntity.class))).thenReturn(exercise);
+
+        ExerciseEntity exerciseSaved = exerciseServiceImpl.save(exercise);
+
+        Assertions.assertEquals(exerciseSaved, exercise);
     }
 
     @Test
@@ -184,7 +165,7 @@ public class ExerciseServiceImplTest {
     }
 
     @Test
-    void delete_ExerciseNotFound_ThrowExerciseNotFoundException() {
+    void delete_InvalidExerciseIdThrowExerciseNotFoundException() {
         when(exerciseRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
         assertThrows(ExerciseNotFoundException.class, () -> exerciseServiceImpl.delete(exercise.getId()));
