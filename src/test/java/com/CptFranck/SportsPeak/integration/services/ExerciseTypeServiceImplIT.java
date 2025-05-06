@@ -2,7 +2,7 @@ package com.CptFranck.SportsPeak.integration.services;
 
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
-import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseTypeNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.exerciseType.ExerciseTypeNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.exerciseType.ExerciseTypeStillUsedInExerciseException;
 import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
 import com.CptFranck.SportsPeak.repositories.ExerciseTypeRepository;

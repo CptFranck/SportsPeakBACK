@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.domain.exception.exercise;
+package com.CptFranck.SportsPeak.domain.exception.exerciseType;
 
 public class ExerciseTypeNotFoundException extends RuntimeException {
     public ExerciseTypeNotFoundException(Long id) {

@@ -3,7 +3,7 @@ package com.CptFranck.SportsPeak.integration.controllers;
 import com.CptFranck.SportsPeak.controller.ExerciseTypeController;
 import com.CptFranck.SportsPeak.domain.dto.ExerciseTypeDto;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
-import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseTypeNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.exerciseType.ExerciseTypeNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.exerciseType.InputExerciseType;
 import com.CptFranck.SportsPeak.domain.input.exerciseType.InputNewExerciseType;
 import com.CptFranck.SportsPeak.repositories.ExerciseTypeRepository;
