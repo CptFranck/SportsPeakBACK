@@ -88,7 +88,7 @@ public class ExerciseServiceImplIT {
     }
 
     @Test
-    void save_AddExerciseEntity_ReturnExerciseEntity() {
+    void save_AddExercise_ReturnExerciseEntity() {
         ExerciseEntity unsavedExercise = createTestExercise(null);
 
         ExerciseEntity exerciseSaved = exerciseServiceImpl.save(unsavedExercise);

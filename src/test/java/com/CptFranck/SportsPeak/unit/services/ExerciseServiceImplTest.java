@@ -83,7 +83,7 @@ public class ExerciseServiceImplTest {
     }
 
     @Test
-    void save_AddExerciseEntity_ReturnExerciseEntity() {
+    void save_AddExercise_ReturnExerciseEntity() {
         ExerciseEntity unsavedExercise = createTestExercise(null);
         when(exerciseRepository.save(Mockito.any(ExerciseEntity.class))).thenReturn(exercise);
 
@@ -93,14 +93,14 @@ public class ExerciseServiceImplTest {
     }
 
     @Test
-    void save_UpdateExerciseEntityNotExisting_ThrowExerciseNotFoundException() {
+    void save_UpdateExerciseNotExisting_ThrowExerciseNotFoundException() {
         when(exerciseRepository.existsById(Mockito.any(Long.class))).thenReturn(false);
 
         Assertions.assertThrows(ExerciseNotFoundException.class, () -> exerciseServiceImpl.save(exercise));
     }
 
     @Test
-    void save_UpdateExerciseEntity_ReturnExerciseEntity() {
+    void save_UpdateExercise_ReturnExerciseEntity() {
         when(exerciseRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
         when(exerciseRepository.save(Mockito.any(ExerciseEntity.class))).thenReturn(exercise);
 
