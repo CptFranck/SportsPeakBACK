@@ -81,7 +81,7 @@ public class ExerciseTypeServiceImpl implements ExerciseTypeService {
 
     @Override
     public void delete(Long id) {
-        ExerciseTypeEntity muscle = exerciseTypeRepository.findById(id).orElseThrow(() -> new ExerciseTypeNotFoundException(id));
-        exerciseTypeRepository.delete(muscle);
+        ExerciseTypeEntity exerciseType = exerciseTypeRepository.findById(id).orElseThrow(() -> new ExerciseTypeNotFoundException(id));
+        exerciseTypeRepository.delete(exerciseType);
     }
 }
