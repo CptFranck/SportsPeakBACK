@@ -70,27 +70,27 @@ public class ExerciseTypeServiceImplIT {
     }
 
     @Test
-    void create_ValidInputNewExerciseType_ReturnExerciseTypeEntity() {
+    void save_AddNewExerciseType_ReturnExerciseTypeEntity() {
         ExerciseTypeEntity unsavedExerciseType = createTestExerciseType(null);
 
-        ExerciseTypeEntity exerciseTypeSaved = exerciseTypeTypeServiceImpl.create(unsavedExerciseType);
+        ExerciseTypeEntity exerciseTypeSaved = exerciseTypeTypeServiceImpl.save(unsavedExerciseType);
 
         asserEqualExerciseType(unsavedExerciseType, exerciseTypeSaved);
     }
 
     @Test
-    void update_InvalidExerciseTypeId_ThrowExerciseTypeNotFoundException() {
+    void save_UpdateExerciseTypeWithInvalidId_ThrowExerciseTypeNotFoundException() {
         ExerciseTypeEntity unsavedExerciseType = createTestExerciseType(exerciseType.getId() + 1);
 
-        Assertions.assertThrows(ExerciseTypeNotFoundException.class, () -> exerciseTypeTypeServiceImpl.update(unsavedExerciseType));
+        Assertions.assertThrows(ExerciseTypeNotFoundException.class, () -> exerciseTypeTypeServiceImpl.save(unsavedExerciseType));
     }
 
 
     @Test
-    void update_ValidInputExerciseType_ReturnExerciseTypeEntity() {
+    void save_UpdateExerciseType_ReturnExerciseTypeEntity() {
         ExerciseTypeEntity unsavedExerciseType = createTestExerciseType(exerciseType.getId());
 
-        ExerciseTypeEntity exerciseTypeSaved = exerciseTypeTypeServiceImpl.update(unsavedExerciseType);
+        ExerciseTypeEntity exerciseTypeSaved = exerciseTypeTypeServiceImpl.save(unsavedExerciseType);
 
         asserEqualExerciseType(unsavedExerciseType, exerciseTypeSaved);
     }
