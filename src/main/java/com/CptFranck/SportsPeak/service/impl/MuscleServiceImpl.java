@@ -80,6 +80,7 @@ public class MuscleServiceImpl implements MuscleService {
         MuscleEntity muscle = this.findOne(id);
         if (muscle.getExercises().isEmpty())
             muscleRepository.delete(muscle);
-        throw new MuscleStillUsedInExerciseException(id, (long) muscle.getExercises().size());
+        else
+            throw new MuscleStillUsedInExerciseException(id, (long) muscle.getExercises().size());
     }
 }
