@@ -6,6 +6,7 @@ import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.input.exercise.InputExercise;
 import com.CptFranck.SportsPeak.domain.input.exercise.InputNewExercise;
 import com.CptFranck.SportsPeak.mappers.Mapper;
+import com.CptFranck.SportsPeak.resolvers.ExerciseInputResolver;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +28,10 @@ class ExerciseControllerTest {
 
     @InjectMocks
     private ExerciseController exerciseController;
+
+    @Mock
+    private ExerciseInputResolver exerciseInputResolver;
+    ;
 
     @Mock
     private Mapper<ExerciseEntity, ExerciseDto> exerciseMapper;
@@ -66,7 +71,8 @@ class ExerciseControllerTest {
 
     @Test
     void addExercise_ValidInput_ReturnExerciseDto() {
-        when(exerciseService.create(Mockito.any(InputNewExercise.class))).thenReturn(exercise);
+        when(exerciseInputResolver.resolveInput(Mockito.any(InputNewExercise.class))).thenReturn(exercise);
+        when(exerciseService.save(Mockito.any(ExerciseEntity.class))).thenReturn(exercise);
         when(exerciseMapper.mapTo(Mockito.any(ExerciseEntity.class))).thenReturn(exerciseDto);
 
         ExerciseDto exerciseDto = exerciseController.addExercise(createTestInputNewExercise());
@@ -76,7 +82,8 @@ class ExerciseControllerTest {
 
     @Test
     void modifyExercise_ValidInput_ReturnExerciseDto() {
-        when(exerciseService.update(Mockito.any(InputExercise.class))).thenReturn(exercise);
+        when(exerciseInputResolver.resolveInput(Mockito.any(InputExercise.class))).thenReturn(exercise);
+        when(exerciseService.save(Mockito.any(ExerciseEntity.class))).thenReturn(exercise);
         when(exerciseMapper.mapTo(Mockito.any(ExerciseEntity.class))).thenReturn(exerciseDto);
 
         ExerciseDto exerciseDto = exerciseController.modifyExercise(createTestInputExercise(1L));
