@@ -46,7 +46,7 @@ public class ExerciseTypeServiceImplTest {
     }
 
     @Test
-    void findAll_Valid_ReturnListOfExerciseTypeEntity() {
+    void findAll_ValidUse_ReturnListOfExerciseTypeEntity() {
         List<ExerciseTypeEntity> exerciseTypeList = createTestExerciseTypeList(false);
         when(exerciseTypeRepository.findAll()).thenReturn(exerciseTypeList);
 

@@ -44,7 +44,7 @@ public class ExerciseTypeServiceImplIT {
     }
 
     @Test
-    void findAll_Valid_ReturnListOfExerciseTypeEntity() {
+    void findAll_ValidUse_ReturnListOfExerciseTypeEntity() {
         List<ExerciseTypeEntity> exerciseTypeFound = exerciseTypeTypeServiceImpl.findAll();
 
         assertEqualExerciseList(List.of(exerciseType), exerciseTypeFound);

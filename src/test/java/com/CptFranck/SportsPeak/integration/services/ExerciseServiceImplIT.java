@@ -62,7 +62,7 @@ public class ExerciseServiceImplIT {
     }
 
     @Test
-    void findAll_Valid_ReturnListOfExerciseEntity() {
+    void findAll_ValidUse_ReturnListOfExerciseEntity() {
         List<ExerciseEntity> exercisesFound = exerciseServiceImpl.findAll();
 
         assertEqualExerciseList(List.of(exercise, exerciseBis), exercisesFound.stream().toList());
