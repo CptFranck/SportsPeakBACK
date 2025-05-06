@@ -26,7 +26,7 @@ import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.*;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-class ExerciseTypeApiIntTest {
+class ExerciseTypeApiIT {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -52,7 +52,7 @@ class ExerciseTypeApiIntTest {
     }
 
     @Test
-    void ExerciseTypeApi_GetExerciseTypes_Success() {
+    void getExerciseTypes_ValidUse_ReturnExerciseTypeDtos() {
         List<LinkedHashMap<String, Object>> response = dgsQueryExecutor.executeAndExtractJsonPath(getExerciseTypesQuery,
                 "data.getExerciseTypes");
 
@@ -62,7 +62,7 @@ class ExerciseTypeApiIntTest {
     }
 
     @Test
-    void ExerciseTypeApi_GetExerciseTypeById_UnsuccessfulExerciseTypeNotFound() {
+    void getExerciseTypeById_InvalidExerciseTypeId_ThrowExerciseTypeNotFoundException() {
         variables.put("id", exerciseType.getId() + 1);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
@@ -73,7 +73,7 @@ class ExerciseTypeApiIntTest {
     }
 
     @Test
-    void ExerciseTypeApi_GetExerciseTypeById_Success() {
+    void getExerciseTypeById_ValidInput_ReturnExerciseTypeDto() {
         variables.put("id", exerciseType.getId());
 
         LinkedHashMap<String, Object> response = dgsQueryExecutor.executeAndExtractJsonPath(getExerciseTypeByIdQuery,
@@ -84,7 +84,7 @@ class ExerciseTypeApiIntTest {
     }
 
     @Test
-    void ExerciseTypeApi_AddExerciseType_UnsuccessfulNotAuthenticated() {
+    void addExerciseType_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         InputNewExerciseType inputNewExerciseType = createTestInputNewExerciseType();
         variables.put("inputNewExerciseType", objectMapper.convertValue(inputNewExerciseType,
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -99,7 +99,7 @@ class ExerciseTypeApiIntTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void ExerciseTypeApi_AddExerciseType_Success() {
+    void addExerciseType_ValidInput_ReturnExerciseTypeDto() {
         InputNewExerciseType inputNewExerciseType = createTestInputNewExerciseType();
         variables.put("inputNewExerciseType", objectMapper.convertValue(
                 inputNewExerciseType, new TypeReference<LinkedHashMap<String, Object>>() {
@@ -113,7 +113,7 @@ class ExerciseTypeApiIntTest {
     }
 
     @Test
-    void ExerciseTypeApi_ModifyExerciseType_UnsuccessfulNotAuthenticated() {
+    void modifyExerciseType_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         variables.put("inputExerciseType", objectMapper.convertValue(
                 createTestInputExerciseType(exerciseType.getId()), new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
@@ -127,7 +127,7 @@ class ExerciseTypeApiIntTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void ExerciseTypeApi_ModifyExerciseType_UnsuccessfulExerciseTypeNotFound() {
+    void modifyExerciseType_InvalidExerciseTypeId_ThrowExerciseTypeNotFoundException() {
         variables.put("inputExerciseType", objectMapper.convertValue(
                 createTestInputExerciseType(exerciseType.getId() + 1), new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
@@ -141,7 +141,7 @@ class ExerciseTypeApiIntTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void ExerciseTypeApi_ModifyExerciseType_Success() {
+    void modifyExerciseType_ValidInput_ReturnExerciseTypeDto() {
         InputNewExerciseType inputNewExerciseType = createTestInputExerciseType(exerciseType.getId());
         variables.put("inputExerciseType", objectMapper.convertValue(
                 inputNewExerciseType, new TypeReference<LinkedHashMap<String, Object>>() {
@@ -155,7 +155,7 @@ class ExerciseTypeApiIntTest {
     }
 
     @Test
-    void ExerciseTypeApi_DeleteExercise_UnsuccessfulNotAuthenticated() {
+    void deleteExerciseType_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         variables.put("exerciseTypeId", exerciseType.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
@@ -167,7 +167,19 @@ class ExerciseTypeApiIntTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void ExerciseTypeApi_DeleteExercise_Success() {
+    void deleteExerciseType_InvalidExerciseTypeId_ThrowExerciseTypeNotFoundException() {
+        variables.put("exerciseTypeId", exerciseType.getId() + 1);
+
+        QueryException exception = Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(deleteExerciseTypeQuery, "data.deleteExerciseType", variables));
+
+        Assertions.assertTrue(exception.getMessage().contains("ExerciseTypeNotFoundException"));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The exerciseType with the id %s has not been found", exerciseType.getId() + 1)));
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    void deleteExerciseType_ValidInput_Void() {
         variables.put("exerciseTypeId", exerciseType.getId());
 
         String id = dgsQueryExecutor.executeAndExtractJsonPath(deleteExerciseTypeQuery, "data.deleteExerciseType", variables);
