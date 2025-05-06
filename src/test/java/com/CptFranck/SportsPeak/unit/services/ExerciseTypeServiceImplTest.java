@@ -3,6 +3,7 @@ package com.CptFranck.SportsPeak.unit.services;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseTypeNotFoundException;
 import com.CptFranck.SportsPeak.repositories.ExerciseTypeRepository;
+import com.CptFranck.SportsPeak.service.ExerciseService;
 import com.CptFranck.SportsPeak.service.impl.ExerciseTypeServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +28,9 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ExerciseTypeServiceImplTest {
+
+    @Mock
+    private ExerciseService exerciseService;
 
     @Mock
     private ExerciseTypeRepository exerciseTypeRepository;
@@ -78,30 +82,30 @@ public class ExerciseTypeServiceImplTest {
     }
 
     @Test
-    void create_ValidInputNewExerciseType_ReturnExerciseTypeEntity() {
+    void save_AddNewExerciseType_ReturnExerciseTypeEntity() {
         ExerciseTypeEntity unsavedExerciseType = createTestExerciseType(null);
         when(exerciseTypeRepository.save(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseType);
 
-        ExerciseTypeEntity exerciseTypeSaved = exerciseTypeServiceImpl.create(unsavedExerciseType);
+        ExerciseTypeEntity exerciseTypeSaved = exerciseTypeServiceImpl.save(unsavedExerciseType);
 
         Assertions.assertEquals(exerciseTypeSaved, exerciseType);
     }
 
     @Test
-    void update_InvalidExerciseTypeId_ThrowExerciseTypeNotFoundException() {
+    void save_UpdateExerciseTypeWithInvalidId_ThrowExerciseTypeNotFoundException() {
         ExerciseTypeEntity unsavedExerciseType = createTestExerciseType(exerciseType.getId() + 1);
         when(exerciseTypeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(ExerciseTypeNotFoundException.class, () -> exerciseTypeServiceImpl.update(unsavedExerciseType));
+        Assertions.assertThrows(ExerciseTypeNotFoundException.class, () -> exerciseTypeServiceImpl.save(unsavedExerciseType));
     }
 
     @Test
-    void update_ValidInputExerciseType_ReturnExerciseTypeEntity() {
+    void save_UpdateExerciseType_ReturnExerciseTypeEntity() {
         ExerciseTypeEntity unsavedExerciseType = createTestExerciseType(exerciseType.getId());
         when(exerciseTypeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(exerciseType));
         when(exerciseTypeRepository.save(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseType);
 
-        ExerciseTypeEntity exerciseTypeSaved = exerciseTypeServiceImpl.update(unsavedExerciseType);
+        ExerciseTypeEntity exerciseTypeSaved = exerciseTypeServiceImpl.save(unsavedExerciseType);
 
         Assertions.assertEquals(exerciseTypeSaved, exerciseType);
     }
