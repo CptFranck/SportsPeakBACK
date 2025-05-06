@@ -5,10 +5,7 @@ import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
-import com.CptFranck.SportsPeak.domain.input.exercise.InputExercise;
-import com.CptFranck.SportsPeak.domain.input.exercise.InputNewExercise;
 import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
-import com.CptFranck.SportsPeak.resolvers.ExerciseInputResolver;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import org.springframework.stereotype.Service;
 
@@ -23,29 +20,8 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     private final ExerciseRepository exerciseRepository;
 
-    private final ExerciseInputResolver exerciseInputResolver;
-
-    public ExerciseServiceImpl(ExerciseRepository exerciseRepository, ExerciseInputResolver exerciseInputResolver) {
+    public ExerciseServiceImpl(ExerciseRepository exerciseRepository) {
         this.exerciseRepository = exerciseRepository;
-        this.exerciseInputResolver = exerciseInputResolver;
-    }
-
-    @Override
-    public ExerciseEntity create(InputNewExercise inputNewExercise) {
-        ExerciseEntity exercise = exerciseInputResolver.resolveInput(inputNewExercise);
-        return exerciseRepository.save(exercise);
-    }
-
-    @Override
-    public ExerciseEntity update(InputExercise inputExercise) {
-        ExerciseEntity oldExercise = this.findOne(inputExercise.getId());
-        ExerciseEntity updatedExercise = exerciseInputResolver.resolveInput(inputExercise, oldExercise);
-        return exerciseRepository.save(updatedExercise);
-    }
-
-    @Override
-    public ExerciseEntity save(ExerciseEntity exercise) {
-        return exerciseRepository.save(exercise);
     }
 
     @Override
@@ -69,6 +45,15 @@ public class ExerciseServiceImpl implements ExerciseService {
                                 .spliterator(),
                         false)
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public ExerciseEntity save(ExerciseEntity exercise) {
+        if (exercise.getId() == null)
+            return exerciseRepository.save(exercise);
+        if (exists(exercise.getId()))
+            return exerciseRepository.save(exercise);
+        throw new ExerciseNotFoundException(exercise.getId());
     }
 
     @Override
