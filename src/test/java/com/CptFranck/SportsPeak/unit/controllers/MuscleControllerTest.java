@@ -2,11 +2,11 @@ package com.CptFranck.SportsPeak.unit.controllers;
 
 import com.CptFranck.SportsPeak.controller.MuscleController;
 import com.CptFranck.SportsPeak.domain.dto.MuscleDto;
-import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
-import com.CptFranck.SportsPeak.domain.exception.muscle.MuscleNotFoundException;
+import com.CptFranck.SportsPeak.domain.input.muscle.InputMuscle;
+import com.CptFranck.SportsPeak.domain.input.muscle.InputNewMuscle;
 import com.CptFranck.SportsPeak.mappers.Mapper;
-import com.CptFranck.SportsPeak.service.ExerciseService;
+import com.CptFranck.SportsPeak.resolvers.MuscleInputResolver;
 import com.CptFranck.SportsPeak.service.MuscleService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,10 +17,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.*;
 import static org.mockito.Mockito.when;
@@ -32,13 +29,14 @@ class MuscleControllerTest {
     private MuscleController muscleController;
 
     @Mock
-    private Mapper<MuscleEntity, MuscleDto> muscleMapper;
-
-    @Mock
     private MuscleService muscleService;
 
     @Mock
-    private ExerciseService exerciseService;
+    private MuscleInputResolver muscleInputResolver;
+    ;
+
+    @Mock
+    private Mapper<MuscleEntity, MuscleDto> muscleMapper;
 
     private MuscleEntity muscle;
     private MuscleDto muscleDto;
@@ -50,7 +48,7 @@ class MuscleControllerTest {
     }
 
     @Test
-    void MuscleController_GetMuscles_Success() {
+    void findAll_ValidUse_ReturnListOfMuscleDto() {
         when(muscleService.findAll()).thenReturn(List.of(muscle));
         when(muscleMapper.mapTo(Mockito.any(MuscleEntity.class))).thenReturn(muscleDto);
 
@@ -60,18 +58,8 @@ class MuscleControllerTest {
     }
 
     @Test
-    void MuscleController_GetMuscleById_Unsuccessful() {
-        when(muscleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.empty());
-
-        Assertions.assertThrows(MuscleNotFoundException.class,
-                () -> muscleController.modifyMuscle(createTestInputMuscle(1L)
-                )
-        );
-    }
-
-    @Test
-    void MuscleController_GetMuscleById_Success() {
-        when(muscleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(muscle));
+    void findOne_ValidMuscleId_ReturnMuscleDto() {
+        when(muscleService.findOne(Mockito.any(Long.class))).thenReturn(muscle);
         when(muscleMapper.mapTo(Mockito.any(MuscleEntity.class))).thenReturn(muscleDto);
 
         MuscleDto muscleDto = muscleController.getMuscleById(1L);
@@ -80,9 +68,8 @@ class MuscleControllerTest {
     }
 
     @Test
-    void MuscleController_AddMuscle_Success() {
-        Set<ExerciseEntity> exercises = new HashSet<>();
-        when(exerciseService.findMany(Mockito.anySet())).thenReturn(exercises);
+    void addMuscle_ValidInput_ReturnMuscleDto() {
+        when(muscleInputResolver.resolveInput(Mockito.any(InputNewMuscle.class))).thenReturn(muscle);
         when(muscleService.save(Mockito.any(MuscleEntity.class))).thenReturn(muscle);
         when(muscleMapper.mapTo(Mockito.any(MuscleEntity.class))).thenReturn(muscleDto);
 
@@ -92,18 +79,8 @@ class MuscleControllerTest {
     }
 
     @Test
-    void MuscleController_ModifyMuscle_UnsuccessfulDoesNotExist() {
-        Assertions.assertThrows(MuscleNotFoundException.class,
-                () -> muscleController.modifyMuscle(createTestInputMuscle(1L)
-                )
-        );
-    }
-
-    @Test
-    void MuscleController_ModifyMuscle_Success() {
-        Set<ExerciseEntity> exercises = new HashSet<>();
-        when(exerciseService.findMany(Mockito.anySet())).thenReturn(exercises);
-        when(muscleService.findOne(Mockito.any(Long.class))).thenReturn(Optional.of(muscle));
+    void modifyMuscle_ValidInput_ReturnMuscleDto() {
+        when(muscleInputResolver.resolveInput(Mockito.any(InputMuscle.class))).thenReturn(muscle);
         when(muscleService.save(Mockito.any(MuscleEntity.class))).thenReturn(muscle);
         when(muscleMapper.mapTo(Mockito.any(MuscleEntity.class))).thenReturn(muscleDto);
 
@@ -115,7 +92,6 @@ class MuscleControllerTest {
     @Test
     void MuscleController_DeleteMuscle_Success() {
         Long id = muscleController.deleteMuscle(1L);
-
         Assertions.assertEquals(1L, id);
     }
 }
