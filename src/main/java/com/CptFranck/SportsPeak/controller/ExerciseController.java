@@ -5,6 +5,7 @@ import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.input.exercise.InputExercise;
 import com.CptFranck.SportsPeak.domain.input.exercise.InputNewExercise;
 import com.CptFranck.SportsPeak.mappers.Mapper;
+import com.CptFranck.SportsPeak.resolvers.ExerciseInputResolver;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsMutation;
@@ -18,12 +19,16 @@ import java.util.List;
 public class ExerciseController {
 
     private final ExerciseService exerciseService;
+
+    private final ExerciseInputResolver exerciseInputResolver;
+
     private final Mapper<ExerciseEntity, ExerciseDto> exerciseMapper;
 
-    public ExerciseController(ExerciseService exerciseService,
+    public ExerciseController(ExerciseService exerciseService, ExerciseInputResolver exerciseInputResolver,
                               Mapper<ExerciseEntity, ExerciseDto> exerciseMapper) {
-        this.exerciseService = exerciseService;
         this.exerciseMapper = exerciseMapper;
+        this.exerciseService = exerciseService;
+        this.exerciseInputResolver = exerciseInputResolver;
     }
 
     @DgsQuery
@@ -39,13 +44,15 @@ public class ExerciseController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsMutation
     public ExerciseDto addExercise(@InputArgument InputNewExercise inputNewExercise) {
-        return exerciseMapper.mapTo(exerciseService.create(inputNewExercise));
+        ExerciseEntity exercise = exerciseInputResolver.resolveInput(inputNewExercise);
+        return exerciseMapper.mapTo(exerciseService.save(exercise));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsMutation
     public ExerciseDto modifyExercise(@InputArgument InputExercise inputExercise) {
-        return exerciseMapper.mapTo(exerciseService.update(inputExercise));
+        ExerciseEntity exercise = exerciseInputResolver.resolveInput(inputExercise);
+        return exerciseMapper.mapTo(exerciseService.save(exercise));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
