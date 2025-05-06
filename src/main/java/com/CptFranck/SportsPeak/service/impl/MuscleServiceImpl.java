@@ -71,16 +71,16 @@ public class MuscleServiceImpl implements MuscleService {
     }
 
     @Override
-    public boolean exists(Long id) {
-        return muscleRepository.existsById(id);
-    }
-
-    @Override
     public void delete(Long id) {
         MuscleEntity muscle = this.findOne(id);
         if (muscle.getExercises().isEmpty())
             muscleRepository.delete(muscle);
         else
             throw new MuscleStillUsedInExerciseException(id, (long) muscle.getExercises().size());
+    }
+
+    @Override
+    public boolean exists(Long id) {
+        return muscleRepository.existsById(id);
     }
 }

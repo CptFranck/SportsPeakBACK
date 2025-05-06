@@ -73,13 +73,13 @@ public class ExerciseTypeServiceImpl implements ExerciseTypeService {
     }
 
     @Override
-    public boolean exists(Long id) {
-        return exerciseTypeRepository.existsById(id);
+    public void delete(Long id) {
+        ExerciseTypeEntity exerciseType = this.findOne(id);
+        exerciseTypeRepository.delete(exerciseType);
     }
 
     @Override
-    public void delete(Long id) {
-        ExerciseTypeEntity exerciseType = exerciseTypeRepository.findById(id).orElseThrow(() -> new ExerciseTypeNotFoundException(id));
-        exerciseTypeRepository.delete(exerciseType);
+    public boolean exists(Long id) {
+        return exerciseTypeRepository.existsById(id);
     }
 }

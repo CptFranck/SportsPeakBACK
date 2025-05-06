@@ -57,6 +57,12 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
+    public void delete(Long id) {
+        ExerciseEntity exercise = this.findOne(id);
+        exerciseRepository.delete(exercise);
+    }
+
+    @Override
     public void updateExerciseTypeRelation(Set<Long> newIds, Set<Long> oldIds, ExerciseTypeEntity exerciseType) {
         this.findMany(oldIds).forEach(e -> {
             e.getExerciseTypes().removeIf(et -> Objects.equals(et.getId(), exerciseType.getId()));
@@ -93,11 +99,5 @@ public class ExerciseServiceImpl implements ExerciseService {
     @Override
     public boolean exists(Long id) {
         return exerciseRepository.existsById(id);
-    }
-
-    @Override
-    public void delete(Long id) {
-        ExerciseEntity exercise = exerciseRepository.findById(id).orElseThrow(() -> new ExerciseNotFoundException(id));
-        exerciseRepository.delete(exercise);
     }
 }
