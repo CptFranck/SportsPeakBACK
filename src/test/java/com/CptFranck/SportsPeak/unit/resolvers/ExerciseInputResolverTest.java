@@ -4,6 +4,7 @@ import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.input.exercise.InputExercise;
 import com.CptFranck.SportsPeak.domain.input.exercise.InputNewExercise;
 import com.CptFranck.SportsPeak.resolvers.ExerciseInputResolver;
+import com.CptFranck.SportsPeak.service.ExerciseService;
 import com.CptFranck.SportsPeak.service.ExerciseTypeService;
 import com.CptFranck.SportsPeak.service.MuscleService;
 import org.junit.jupiter.api.Assertions;
@@ -24,6 +25,9 @@ public class ExerciseInputResolverTest {
 
     @Mock
     private MuscleService muscleService;
+
+    @Mock
+    private ExerciseService exerciseService;
 
     @Mock
     private ExerciseTypeService exerciseTypeService;
@@ -53,8 +57,9 @@ public class ExerciseInputResolverTest {
         InputExercise inputExercise = createTestInputExercise(1L);
         when(muscleService.findMany(Mockito.anySet())).thenReturn(new HashSet<>());
         when(exerciseTypeService.findMany(Mockito.anySet())).thenReturn(new HashSet<>());
+        when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(exercise);
 
-        ExerciseEntity exerciseSaved = exerciseInputResolver.resolveInput(inputExercise, exercise);
+        ExerciseEntity exerciseSaved = exerciseInputResolver.resolveInput(inputExercise);
 
         Assertions.assertEquals(inputExercise.getId(), exerciseSaved.getId());
         Assertions.assertEquals(inputExercise.getName(), exerciseSaved.getName());
