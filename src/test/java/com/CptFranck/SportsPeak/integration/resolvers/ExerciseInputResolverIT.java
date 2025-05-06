@@ -41,7 +41,7 @@ public class ExerciseInputResolverIT {
         ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
         InputExercise inputExercise = createTestInputExercise(exercise.getId());
 
-        ExerciseEntity exerciseSaved = exerciseInputResolver.resolveInput(inputExercise, exercise);
+        ExerciseEntity exerciseSaved = exerciseInputResolver.resolveInput(inputExercise);
 
         Assertions.assertEquals(inputExercise.getId(), exerciseSaved.getId());
         Assertions.assertEquals(inputExercise.getName(), exerciseSaved.getName());
