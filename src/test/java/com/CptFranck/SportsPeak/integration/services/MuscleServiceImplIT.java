@@ -17,7 +17,6 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
@@ -27,8 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-public class MuscleServiceImplIntTest {
-
+public class MuscleServiceImplIT {
 
     @Autowired
     private MuscleRepository muscleRepository;
@@ -53,7 +51,33 @@ public class MuscleServiceImplIntTest {
     }
 
     @Test
-    void muscleService_Save_Success() {
+    void findAll_ValidUse_ReturnListOfMuscleEntity() {
+        List<MuscleEntity> muscleFound = muscleServiceImpl.findAll();
+
+        assertEqualMuscleList(List.of(muscle), muscleFound);
+    }
+
+    @Test
+    void findOne_InvalidMuscleId_ThrowMuscleNotFoundException() {
+        assertThrows(MuscleNotFoundException.class, () -> muscleServiceImpl.findOne(muscle.getId() + 1));
+    }
+
+    @Test
+    void findOne_ValidMuscleId_ReturnMuscleEntity() {
+        MuscleEntity muscleFound = muscleServiceImpl.findOne(muscle.getId());
+
+        assertEqualMuscle(muscle, muscleFound);
+    }
+
+    @Test
+    void findMany_ValidMuscleIds_ReturnSetOfMuscleEntity() {
+        Set<MuscleEntity> muscleFound = muscleServiceImpl.findMany(Set.of(muscle.getId()));
+
+        assertEqualMuscleList(List.of(muscle), muscleFound.stream().toList());
+    }
+
+    @Test
+    void save_AddNewMuscle_ReturnMuscleEntity() {
         MuscleEntity unsavedMuscle = createTestMuscle(null);
 
         MuscleEntity muscleSaved = muscleServiceImpl.save(unsavedMuscle);
@@ -62,43 +86,28 @@ public class MuscleServiceImplIntTest {
     }
 
     @Test
-    void muscleService_FindAll_Success() {
-        List<MuscleEntity> muscleFound = muscleServiceImpl.findAll();
+    void save_UpdateMuscleWithInvalidId_ThrowExerciseTypeNotFoundException() {
+        MuscleEntity unsavedMuscle = createTestMuscle(muscle.getId() + 1);
 
-        assertEqualMuscleList(List.of(muscle), muscleFound);
+        Assertions.assertThrows(MuscleNotFoundException.class, () -> muscleServiceImpl.save(unsavedMuscle));
     }
 
     @Test
-    void muscleService_FindOne_Success() {
-        Optional<MuscleEntity> muscleFound = muscleServiceImpl.findOne(muscle.getId());
+    void save_UpdateMuscle_ReturnMuscleEntity() {
+        MuscleEntity muscleSaved = muscleServiceImpl.save(muscle);
 
-        Assertions.assertTrue(muscleFound.isPresent());
-        assertEqualMuscle(muscle, muscleFound.get());
+        assertEqualMuscle(muscle, muscleSaved);
     }
 
     @Test
-    void muscleService_FindMany_Success() {
-        Set<MuscleEntity> muscleFound = muscleServiceImpl.findMany(Set.of(muscle.getId()));
-
-        assertEqualMuscleList(List.of(muscle), muscleFound.stream().toList());
-    }
-
-    @Test
-    void muscleService_Exists_Success() {
-        boolean muscleFound = muscleServiceImpl.exists(muscle.getId());
-
-        Assertions.assertTrue(muscleFound);
-    }
-
-    @Test
-    void muscleService_Delete_Unsuccessful() {
+    void delete_InvalidMuscleTypeId_ThrowMuscleTypeNotFoundException() {
         muscleRepository.delete(muscle);
 
         assertThrows(MuscleNotFoundException.class, () -> muscleServiceImpl.delete(muscle.getId()));
     }
 
     @Test
-    void muscleService_Delete_Unsuccessful_Exception() {
+    void delete_MuscleStillUsedByExercise_ThrowMuscleStillUsedInExerciseException() {
         ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
         exercise.getMuscles().add(muscle);
         exerciseRepository.save(exercise);
@@ -107,8 +116,15 @@ public class MuscleServiceImplIntTest {
     }
 
     @Test
-    void muscleService_Delete_Success() {
+    void delete_ValidInput_Void() {
         assertAll(() -> muscleServiceImpl.delete(muscle.getId()));
+    }
+
+    @Test
+    void exists_ValidInput_ReturnTrue() {
+        boolean muscleFound = muscleServiceImpl.exists(muscle.getId());
+
+        Assertions.assertTrue(muscleFound);
     }
 
     private void assertEqualMuscleList(
