@@ -42,35 +42,6 @@ public class ExerciseTypeServiceImplTest {
     }
 
     @Test
-    void create_ValidInputNewExerciseType_ReturnExerciseTypeEntity() {
-        ExerciseTypeEntity unsavedExerciseType = createTestExerciseType(null);
-        when(exerciseTypeRepository.save(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseType);
-
-        ExerciseTypeEntity exerciseTypeSaved = exerciseTypeServiceImpl.create(unsavedExerciseType);
-
-        Assertions.assertEquals(exerciseTypeSaved, exerciseType);
-    }
-
-    @Test
-    void update_ExerciseTypeNotFound_ThrowExerciseTypeNotFoundException() {
-        ExerciseTypeEntity unsavedExerciseType = createTestExerciseType(exerciseType.getId() + 1);
-        when(exerciseTypeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
-
-        Assertions.assertThrows(ExerciseTypeNotFoundException.class, () -> exerciseTypeServiceImpl.update(unsavedExerciseType));
-    }
-
-    @Test
-    void update_ValidInputExerciseType_ReturnExerciseTypeEntity() {
-        ExerciseTypeEntity unsavedExerciseType = createTestExerciseType(exerciseType.getId() + 1);
-        when(exerciseTypeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(exerciseType));
-        when(exerciseTypeRepository.save(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseType);
-
-        ExerciseTypeEntity exerciseTypeSaved = exerciseTypeServiceImpl.update(unsavedExerciseType);
-
-        Assertions.assertEquals(exerciseTypeSaved, exerciseType);
-    }
-
-    @Test
     void findAll_Valid_ReturnListOfExerciseTypeEntity() {
         List<ExerciseTypeEntity> exerciseTypeList = createTestExerciseTypeList(false);
         when(exerciseTypeRepository.findAll()).thenReturn(exerciseTypeList);
@@ -107,12 +78,32 @@ public class ExerciseTypeServiceImplTest {
     }
 
     @Test
-    void exists_ValidInput_ReturnTrue() {
-        when(exerciseTypeRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
+    void create_ValidInputNewExerciseType_ReturnExerciseTypeEntity() {
+        ExerciseTypeEntity unsavedExerciseType = createTestExerciseType(null);
+        when(exerciseTypeRepository.save(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseType);
 
-        boolean exerciseTypeFound = exerciseTypeServiceImpl.exists(exerciseType.getId());
+        ExerciseTypeEntity exerciseTypeSaved = exerciseTypeServiceImpl.create(unsavedExerciseType);
 
-        Assertions.assertTrue(exerciseTypeFound);
+        Assertions.assertEquals(exerciseTypeSaved, exerciseType);
+    }
+
+    @Test
+    void update_ExerciseTypeNotFound_ThrowExerciseTypeNotFoundException() {
+        ExerciseTypeEntity unsavedExerciseType = createTestExerciseType(exerciseType.getId() + 1);
+        when(exerciseTypeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(ExerciseTypeNotFoundException.class, () -> exerciseTypeServiceImpl.update(unsavedExerciseType));
+    }
+
+    @Test
+    void update_ValidInputExerciseType_ReturnExerciseTypeEntity() {
+        ExerciseTypeEntity unsavedExerciseType = createTestExerciseType(exerciseType.getId());
+        when(exerciseTypeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(exerciseType));
+        when(exerciseTypeRepository.save(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseType);
+
+        ExerciseTypeEntity exerciseTypeSaved = exerciseTypeServiceImpl.update(unsavedExerciseType);
+
+        Assertions.assertEquals(exerciseTypeSaved, exerciseType);
     }
 
     @Test
@@ -127,5 +118,14 @@ public class ExerciseTypeServiceImplTest {
         when(exerciseTypeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(exerciseType));
 
         assertAll(() -> exerciseTypeServiceImpl.delete(exerciseType.getId()));
+    }
+
+    @Test
+    void exists_ValidInput_ReturnTrue() {
+        when(exerciseTypeRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
+
+        boolean exerciseTypeFound = exerciseTypeServiceImpl.exists(exerciseType.getId());
+
+        Assertions.assertTrue(exerciseTypeFound);
     }
 }
