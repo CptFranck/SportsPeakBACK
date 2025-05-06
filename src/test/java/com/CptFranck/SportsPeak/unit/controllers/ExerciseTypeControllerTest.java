@@ -69,7 +69,7 @@ class ExerciseTypeControllerTest {
     @Test
     void addExerciseType_ValidInput_ReturnExerciseTypeDto() {
         when(exerciseTypeInputResolver.resolveInput(Mockito.any(InputNewExerciseType.class))).thenReturn(this.exerciseType);
-        when(exerciseTypeService.create(Mockito.any(ExerciseTypeEntity.class))).thenReturn(this.exerciseType);
+        when(exerciseTypeService.save(Mockito.any(ExerciseTypeEntity.class))).thenReturn(this.exerciseType);
         when(exerciseTypeMapper.mapTo(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseTypeDto);
 
         ExerciseTypeDto exerciseTypeDto = exerciseTypeController.addExerciseType(createTestInputNewExerciseType());
@@ -80,7 +80,7 @@ class ExerciseTypeControllerTest {
     @Test
     void modifyExerciseType_ValidInput_ReturnExerciseTypeDto() {
         when(exerciseTypeInputResolver.resolveInput(Mockito.any(InputExerciseType.class))).thenReturn(this.exerciseType);
-        when(exerciseTypeService.update(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseType);
+        when(exerciseTypeService.save(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseType);
         when(exerciseTypeMapper.mapTo(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseTypeDto);
 
         ExerciseTypeDto exerciseTypeDto = exerciseTypeController.modifyExerciseType(createTestInputExerciseType(1L));
