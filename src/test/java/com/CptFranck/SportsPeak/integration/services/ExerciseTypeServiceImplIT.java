@@ -51,7 +51,7 @@ public class ExerciseTypeServiceImplIT {
     }
 
     @Test
-    void findOne_ExerciseTypeNotFound_ThrowExerciseTypeNotFoundException() {
+    void findOne_InvalidExerciseTypeId_ThrowExerciseTypeNotFoundException() {
         Assertions.assertThrows(ExerciseTypeNotFoundException.class, () -> exerciseTypeTypeServiceImpl.findOne(exerciseType.getId() + 1));
     }
 
@@ -79,7 +79,7 @@ public class ExerciseTypeServiceImplIT {
     }
 
     @Test
-    void update_ExerciseTypeNotFound_ThrowExerciseTypeNotFoundException() {
+    void update_InvalidExerciseTypeId_ThrowExerciseTypeNotFoundException() {
         ExerciseTypeEntity unsavedExerciseType = createTestExerciseType(exerciseType.getId() + 1);
 
         Assertions.assertThrows(ExerciseTypeNotFoundException.class, () -> exerciseTypeTypeServiceImpl.update(unsavedExerciseType));
@@ -96,7 +96,7 @@ public class ExerciseTypeServiceImplIT {
     }
 
     @Test
-    void delete_ExerciseTypeNotFound_ThrowExerciseTypeNotFoundException() {
+    void delete_InvalidExerciseTypeId_ThrowExerciseTypeNotFoundException() {
         exerciseTypeRepository.delete(exerciseType);
 
         assertThrows(ExerciseTypeNotFoundException.class, () -> exerciseTypeTypeServiceImpl.delete(exerciseType.getId()));
