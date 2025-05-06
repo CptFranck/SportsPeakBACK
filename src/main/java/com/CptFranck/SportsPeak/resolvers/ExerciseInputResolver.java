@@ -9,7 +9,6 @@ import com.CptFranck.SportsPeak.domain.input.exercise.InputNewExercise;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import com.CptFranck.SportsPeak.service.ExerciseTypeService;
 import com.CptFranck.SportsPeak.service.MuscleService;
-import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import graphql.com.google.common.collect.Sets;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +24,7 @@ public class ExerciseInputResolver {
 
     private final ExerciseTypeService exerciseTypeService;
 
-    public ExerciseInputResolver(MuscleService muscleService, ExerciseTypeService exerciseTypeService, ProgExerciseService progExerciseService, ExerciseService exerciseService) {
+    public ExerciseInputResolver(MuscleService muscleService, ExerciseTypeService exerciseTypeService, ExerciseService exerciseService) {
         this.muscleService = muscleService;
         this.exerciseService = exerciseService;
         this.exerciseTypeService = exerciseTypeService;

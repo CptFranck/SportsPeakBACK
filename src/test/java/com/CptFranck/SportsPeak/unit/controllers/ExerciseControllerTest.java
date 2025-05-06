@@ -17,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.*;
@@ -31,7 +30,6 @@ class ExerciseControllerTest {
 
     @Mock
     private ExerciseInputResolver exerciseInputResolver;
-    ;
 
     @Mock
     private Mapper<ExerciseEntity, ExerciseDto> exerciseMapper;
@@ -41,7 +39,6 @@ class ExerciseControllerTest {
 
     private ExerciseEntity exercise;
     private ExerciseDto exerciseDto;
-    private LinkedHashMap<String, Object> variables;
 
     @BeforeEach
     void init() {
