@@ -89,7 +89,7 @@ class ExerciseTypeControllerTest {
     }
 
     @Test
-    void ExerciseTypeController_DeleteExercise_Success() {
+    void deleteExerciseType_ValidInput_Void() {
         Long id = exerciseTypeController.deleteExerciseType(1L);
 
         Assertions.assertEquals(1L, id);
