@@ -1,11 +1,14 @@
 package com.CptFranck.SportsPeak.service.impl;
 
+import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseTypeNotFoundException;
 import com.CptFranck.SportsPeak.repositories.ExerciseTypeRepository;
+import com.CptFranck.SportsPeak.service.ExerciseService;
 import com.CptFranck.SportsPeak.service.ExerciseTypeService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -14,41 +17,14 @@ import java.util.stream.StreamSupport;
 @Service
 public class ExerciseTypeServiceImpl implements ExerciseTypeService {
 
-//    private final ExerciseService exerciseService;
+    private final ExerciseService exerciseService;
 
     private final ExerciseTypeRepository exerciseTypeRepository;
 
 
-    public ExerciseTypeServiceImpl(
-//            ExerciseService exerciseService,
-            ExerciseTypeRepository exerciseTypeRepository) {
-//        this.exerciseService = exerciseService;
+    public ExerciseTypeServiceImpl(ExerciseService exerciseService, ExerciseTypeRepository exerciseTypeRepository) {
+        this.exerciseService = exerciseService;
         this.exerciseTypeRepository = exerciseTypeRepository;
-    }
-
-    @Override
-    public ExerciseTypeEntity create(ExerciseTypeEntity newExerciseType) {
-        ExerciseTypeEntity exerciseTypeSaved = exerciseTypeRepository.save(newExerciseType);
-
-//        exerciseService.updateExerciseTypeRelation(
-//                newExerciseType.getExercises().stream().map(ExerciseEntity::getId).collect(Collectors.toSet()),
-//                Collections.emptySet(),
-//                exerciseTypeSaved);
-
-        return exerciseTypeSaved;
-    }
-
-    @Override
-    public ExerciseTypeEntity update(ExerciseTypeEntity updatedExerciseType) {
-        ExerciseTypeEntity oldExerciseType = this.findOne(updatedExerciseType.getId());
-        ExerciseTypeEntity exerciseTypeSaved = exerciseTypeRepository.save(updatedExerciseType);
-
-//        exerciseService.updateExerciseTypeRelation(
-//                updatedExerciseType.getExercises().stream().map(ExerciseEntity::getId).collect(Collectors.toSet()),
-//                oldExerciseType.getExercises().stream().map(ExerciseEntity::getId).collect(Collectors.toSet()),
-//                exerciseTypeSaved);
-
-        return exerciseTypeSaved;
     }
 
     @Override
@@ -72,6 +48,28 @@ public class ExerciseTypeServiceImpl implements ExerciseTypeService {
                                 .spliterator(),
                         false)
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public ExerciseTypeEntity save(ExerciseTypeEntity exerciseType) {
+        Set<Long> oldExerciseType;
+        if (exerciseType.getId() == null)
+            oldExerciseType = Collections.emptySet();
+        else
+            oldExerciseType = this.findOne(exerciseType.getId()).getExercises()
+                    .stream().map(ExerciseEntity::getId).collect(Collectors.toSet());
+
+        Set<Long> newExerciseType = exerciseType.getExercises()
+                .stream().map(ExerciseEntity::getId).collect(Collectors.toSet());
+
+        ExerciseTypeEntity exerciseTypeSaved = exerciseTypeRepository.save(exerciseType);
+
+        exerciseService.updateExerciseTypeRelation(
+                newExerciseType,
+                oldExerciseType,
+                exerciseTypeSaved);
+
+        return exerciseTypeSaved;
     }
 
     @Override
