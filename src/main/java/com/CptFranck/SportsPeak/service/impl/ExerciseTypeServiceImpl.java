@@ -3,6 +3,7 @@ package com.CptFranck.SportsPeak.service.impl;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseTypeNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.exerciseType.ExerciseTypeStillUsedInExerciseException;
 import com.CptFranck.SportsPeak.repositories.ExerciseTypeRepository;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import com.CptFranck.SportsPeak.service.ExerciseTypeService;
@@ -75,7 +76,10 @@ public class ExerciseTypeServiceImpl implements ExerciseTypeService {
     @Override
     public void delete(Long id) {
         ExerciseTypeEntity exerciseType = this.findOne(id);
-        exerciseTypeRepository.delete(exerciseType);
+        if (exerciseType.getExercises().isEmpty())
+            exerciseTypeRepository.delete(exerciseType);
+        else
+            throw new ExerciseTypeStillUsedInExerciseException(id, (long) exerciseType.getExercises().size());
     }
 
     @Override
