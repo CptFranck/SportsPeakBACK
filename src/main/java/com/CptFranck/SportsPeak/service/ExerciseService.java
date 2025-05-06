@@ -4,8 +4,6 @@ import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
-import com.CptFranck.SportsPeak.domain.input.exercise.InputExercise;
-import com.CptFranck.SportsPeak.domain.input.exercise.InputNewExercise;
 
 import java.util.List;
 import java.util.Set;
@@ -17,10 +15,6 @@ public interface ExerciseService {
     ExerciseEntity findOne(Long id);
 
     Set<ExerciseEntity> findMany(Set<Long> ids);
-
-    ExerciseEntity create(InputNewExercise inputNewExercise);
-
-    ExerciseEntity update(InputExercise inputExercise);
 
     ExerciseEntity save(ExerciseEntity exercise);
 
