@@ -14,7 +14,6 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseType;
@@ -24,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-public class ExerciseTypeServiceImplIntTest {
+public class ExerciseTypeServiceImplIT {
 
     @Autowired
     private ExerciseTypeRepository exerciseTypeRepository;
@@ -45,53 +44,74 @@ public class ExerciseTypeServiceImplIntTest {
     }
 
     @Test
-    void exerciseTypeService_Save_Success() {
-        ExerciseTypeEntity unsavedExerciseType = createTestExerciseType(null);
-
-        ExerciseTypeEntity exerciseTypeSaved = exerciseTypeTypeServiceImpl.save(unsavedExerciseType);
-
-        asserEqualExerciseType(unsavedExerciseType, exerciseTypeSaved);
-    }
-
-    @Test
-    void exerciseTypeService_FindAll_Success() {
+    void findAll_Valid_ReturnListOfExerciseTypeEntity() {
         List<ExerciseTypeEntity> exerciseTypeFound = exerciseTypeTypeServiceImpl.findAll();
 
         assertEqualExerciseList(List.of(exerciseType), exerciseTypeFound);
     }
 
     @Test
-    void exerciseTypeService_FindOne_Success() {
-        Optional<ExerciseTypeEntity> exerciseTypeFound = exerciseTypeTypeServiceImpl.findOne(exerciseType.getId());
-
-        Assertions.assertTrue(exerciseTypeFound.isPresent());
-        asserEqualExerciseType(exerciseType, exerciseTypeFound.get());
+    void findOne_ExerciseTypeNotFound_ThrowExerciseTypeNotFoundException() {
+        Assertions.assertThrows(ExerciseTypeNotFoundException.class, () -> exerciseTypeTypeServiceImpl.findOne(exerciseType.getId() + 1));
     }
 
     @Test
-    void exerciseTypeService_FindMany_Success() {
+    void findOne_ValidExerciseTypeId_ReturnExerciseTypeEntity() {
+        ExerciseTypeEntity exerciseTypeFound = exerciseTypeTypeServiceImpl.findOne(exerciseType.getId());
+
+        asserEqualExerciseType(exerciseType, exerciseTypeFound);
+    }
+
+    @Test
+    void findMany_ValidExerciseTypeIds_ReturnSetOfExerciseTypeEntity() {
         Set<ExerciseTypeEntity> exerciseTypeFound = exerciseTypeTypeServiceImpl.findMany(Set.of(exerciseType.getId()));
 
         assertEqualExerciseList(List.of(exerciseType), exerciseTypeFound.stream().toList());
     }
 
     @Test
-    void exerciseTypeService_Exists_Success() {
-        boolean exerciseTypeFound = exerciseTypeTypeServiceImpl.exists(exerciseType.getId());
+    void create_ValidInputNewExerciseType_ReturnExerciseTypeEntity() {
+        ExerciseTypeEntity unsavedExerciseType = createTestExerciseType(null);
 
-        Assertions.assertTrue(exerciseTypeFound);
+        ExerciseTypeEntity exerciseTypeSaved = exerciseTypeTypeServiceImpl.create(unsavedExerciseType);
+
+        asserEqualExerciseType(unsavedExerciseType, exerciseTypeSaved);
     }
 
     @Test
-    void exerciseTypeService_Delete_Success() {
+    void update_ExerciseTypeNotFound_ThrowExerciseTypeNotFoundException() {
+        ExerciseTypeEntity unsavedExerciseType = createTestExerciseType(exerciseType.getId() + 1);
+
+        Assertions.assertThrows(ExerciseTypeNotFoundException.class, () -> exerciseTypeTypeServiceImpl.update(unsavedExerciseType));
+    }
+
+
+    @Test
+    void update_ValidInputExerciseType_ReturnExerciseTypeEntity() {
+        ExerciseTypeEntity unsavedExerciseType = createTestExerciseType(exerciseType.getId());
+
+        ExerciseTypeEntity exerciseTypeSaved = exerciseTypeTypeServiceImpl.update(unsavedExerciseType);
+
+        asserEqualExerciseType(unsavedExerciseType, exerciseTypeSaved);
+    }
+
+    @Test
+    void delete_ExerciseTypeNotFound_ThrowExerciseTypeNotFoundException() {
+        exerciseTypeRepository.delete(exerciseType);
+
+        assertThrows(ExerciseTypeNotFoundException.class, () -> exerciseTypeTypeServiceImpl.delete(exerciseType.getId()));
+    }
+
+    @Test
+    void delete_ValidInput_Void() {
         assertAll(() -> exerciseTypeTypeServiceImpl.delete(exerciseType.getId()));
     }
 
     @Test
-    void exerciseTypeService_Delete_Unsuccessful() {
-        exerciseTypeRepository.delete(exerciseType);
+    void exists_ValidInput_ReturnTrue() {
+        boolean exerciseTypeFound = exerciseTypeTypeServiceImpl.exists(exerciseType.getId());
 
-        assertThrows(ExerciseTypeNotFoundException.class, () -> exerciseTypeTypeServiceImpl.delete(exerciseType.getId()));
+        Assertions.assertTrue(exerciseTypeFound);
     }
 
     private void assertEqualExerciseList(
