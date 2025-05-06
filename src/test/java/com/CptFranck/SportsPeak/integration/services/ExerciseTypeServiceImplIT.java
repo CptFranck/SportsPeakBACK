@@ -1,7 +1,10 @@
 package com.CptFranck.SportsPeak.integration.services;
 
+import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseTypeNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.exerciseType.ExerciseTypeStillUsedInExerciseException;
+import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
 import com.CptFranck.SportsPeak.repositories.ExerciseTypeRepository;
 import com.CptFranck.SportsPeak.service.impl.ExerciseTypeServiceImpl;
 import org.junit.jupiter.api.AfterEach;
@@ -17,6 +20,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseType;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -24,6 +28,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
 public class ExerciseTypeServiceImplIT {
+
+    @Autowired
+    private ExerciseRepository exerciseRepository;
 
     @Autowired
     private ExerciseTypeRepository exerciseTypeRepository;
@@ -40,6 +47,7 @@ public class ExerciseTypeServiceImplIT {
 
     @AfterEach
     public void afterEach() {
+        this.exerciseRepository.deleteAll();
         this.exerciseTypeRepository.deleteAll();
     }
 
@@ -100,6 +108,15 @@ public class ExerciseTypeServiceImplIT {
         exerciseTypeRepository.delete(exerciseType);
 
         assertThrows(ExerciseTypeNotFoundException.class, () -> exerciseTypeServiceImpl.delete(exerciseType.getId()));
+    }
+
+    @Test
+    void delete_ExerciseTypeStillUsed_ThrowMuscleNotFoundException() {
+        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
+        exercise.getExerciseTypes().add(exerciseType);
+        exerciseRepository.save(exercise);
+
+        assertThrows(ExerciseTypeStillUsedInExerciseException.class, () -> exerciseTypeServiceImpl.delete(exerciseType.getId()));
     }
 
     @Test
