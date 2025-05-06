@@ -69,7 +69,7 @@ public class ExerciseServiceImplIT {
     }
 
     @Test
-    void findOne_InvalidExerciseIdThrowExerciseNotFoundException() {
+    void findOne_InvalidExerciseId_ThrowExerciseNotFoundException() {
         Assertions.assertThrows(ExerciseNotFoundException.class, () -> exerciseServiceImpl.findOne(exercise.getId() + exerciseBis.getId() + 1));
     }
 
@@ -109,6 +109,18 @@ public class ExerciseServiceImplIT {
         ExerciseEntity exerciseSaved = exerciseServiceImpl.save(exercise);
 
         assertEqualExercise(exercise, exerciseSaved);
+    }
+
+    @Test
+    void delete_InvalidExerciseId_ThrowExerciseNotFoundException() {
+        exerciseRepository.delete(exercise);
+
+        assertThrows(ExerciseNotFoundException.class, () -> exerciseServiceImpl.delete(exercise.getId()));
+    }
+
+    @Test
+    void delete_ValidInput_Void() {
+        assertAll(() -> exerciseServiceImpl.delete(exercise.getId()));
     }
 
     @Test
@@ -170,18 +182,6 @@ public class ExerciseServiceImplIT {
         boolean ExerciseFound = exerciseServiceImpl.exists(exercise.getId());
 
         Assertions.assertTrue(ExerciseFound);
-    }
-
-    @Test
-    void delete_InvalidExerciseIdThrowExerciseNotFoundException() {
-        exerciseRepository.delete(exercise);
-
-        assertThrows(ExerciseNotFoundException.class, () -> exerciseServiceImpl.delete(exercise.getId()));
-    }
-
-    @Test
-    void delete_ValidInput_Void() {
-        assertAll(() -> exerciseServiceImpl.delete(exercise.getId()));
     }
 
     private void assertEqualExerciseList(
