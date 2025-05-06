@@ -13,9 +13,7 @@ public interface ExerciseTypeService {
 
     Set<ExerciseTypeEntity> findMany(Set<Long> ids);
 
-    ExerciseTypeEntity create(ExerciseTypeEntity newExerciseType);
-
-    ExerciseTypeEntity update(ExerciseTypeEntity updatedExerciseType);
+    ExerciseTypeEntity save(ExerciseTypeEntity exerciseType);
 
     void delete(Long id);
 
