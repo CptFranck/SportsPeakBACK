@@ -2,6 +2,7 @@ package com.CptFranck.SportsPeak.unit.services;
 
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseTypeNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.exerciseType.ExerciseTypeStillUsedInExerciseException;
 import com.CptFranck.SportsPeak.repositories.ExerciseTypeRepository;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import com.CptFranck.SportsPeak.service.impl.ExerciseTypeServiceImpl;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseType;
 import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseTypeList;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -115,6 +117,14 @@ public class ExerciseTypeServiceImplTest {
         when(exerciseTypeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
         assertThrows(ExerciseTypeNotFoundException.class, () -> exerciseTypeServiceImpl.delete(exerciseType.getId()));
+    }
+
+    @Test
+    void delete_ExerciseTypeStillUsed_ThrowMuscleNotFoundException() {
+        exerciseType.getExercises().add(createTestExercise(1L));
+        when(exerciseTypeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(exerciseType));
+
+        assertThrows(ExerciseTypeStillUsedInExerciseException.class, () -> exerciseTypeServiceImpl.delete(exerciseType.getId()));
     }
 
     @Test

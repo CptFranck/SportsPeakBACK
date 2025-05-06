@@ -94,6 +94,13 @@ public class MuscleServiceImplTest {
     }
 
     @Test
+    void save_UpdateMuscleWithInvalidId_ReturnMuscleEntity() {
+        when(muscleRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(MuscleNotFoundException.class, () -> muscleServiceImpl.save(muscle));
+    }
+
+    @Test
     void save_UpdateMuscle_ReturnMuscleEntity() {
         when(muscleRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(muscle));
         when(muscleRepository.save(Mockito.any(MuscleEntity.class))).thenReturn(muscle);
@@ -102,7 +109,6 @@ public class MuscleServiceImplTest {
 
         Assertions.assertEquals(muscle, muscleSaved);
     }
-
 
     @Test
     void delete_InvalidMuscleId_ThrowMuscleNotFoundException() {

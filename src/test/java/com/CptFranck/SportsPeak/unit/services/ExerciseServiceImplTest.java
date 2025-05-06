@@ -156,15 +156,6 @@ public class ExerciseServiceImplTest {
     }
 
     @Test
-    void exists_ValidInput_ReturnTrue() {
-        when(exerciseRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
-
-        boolean ExerciseFound = exerciseServiceImpl.exists(exercise.getId());
-
-        Assertions.assertTrue(ExerciseFound);
-    }
-
-    @Test
     void delete_InvalidExerciseIdThrowExerciseNotFoundException() {
         when(exerciseRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
@@ -176,5 +167,14 @@ public class ExerciseServiceImplTest {
         when(exerciseRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(exercise));
 
         assertAll(() -> exerciseServiceImpl.delete(exercise.getId()));
+    }
+
+    @Test
+    void exists_ValidInput_ReturnTrue() {
+        when(exerciseRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
+
+        boolean ExerciseFound = exerciseServiceImpl.exists(exercise.getId());
+
+        Assertions.assertTrue(ExerciseFound);
     }
 }
