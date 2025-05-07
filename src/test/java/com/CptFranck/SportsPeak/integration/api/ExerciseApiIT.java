@@ -53,7 +53,7 @@ class ExerciseApiIT {
     }
 
     @Test
-    void getExercises_ValidUse_ReturnExerciseDtos() {
+    void getExercises_ValidUse_ReturnListOfExerciseDto() {
         List<LinkedHashMap<String, Object>> response =
                 dgsQueryExecutor.executeAndExtractJsonPath(getExercisesQuery, "data.getExercises");
 

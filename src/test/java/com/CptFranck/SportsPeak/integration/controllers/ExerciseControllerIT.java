@@ -45,7 +45,7 @@ class ExerciseControllerIT {
     }
 
     @Test
-    void getExercises_ValidUse_ReturnExerciseDtos() {
+    void getExercises_ValidUse_ReturnListOfExerciseDto() {
         List<ExerciseDto> exerciseDtos = exerciseController.getExercises();
 
         assertEqualExerciseList(List.of(exercise), exerciseDtos);

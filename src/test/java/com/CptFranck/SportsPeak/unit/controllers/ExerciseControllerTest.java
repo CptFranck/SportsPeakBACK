@@ -47,7 +47,7 @@ class ExerciseControllerTest {
     }
 
     @Test
-    void getExercises_ValidUse_ReturnExerciseDtos() {
+    void getExercises_ValidUse_ReturnListOfExerciseDto() {
         when(exerciseService.findAll()).thenReturn(List.of(exercise));
         when(exerciseMapper.mapTo(Mockito.any(ExerciseEntity.class))).thenReturn(exerciseDto);
 
