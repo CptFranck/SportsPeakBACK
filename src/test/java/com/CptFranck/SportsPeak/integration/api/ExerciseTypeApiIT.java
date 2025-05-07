@@ -1,8 +1,10 @@
 package com.CptFranck.SportsPeak.integration.api;
 
 import com.CptFranck.SportsPeak.domain.dto.ExerciseTypeDto;
+import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.input.exerciseType.InputNewExerciseType;
+import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
 import com.CptFranck.SportsPeak.repositories.ExerciseTypeRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +25,7 @@ import java.util.Objects;
 
 import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.ExerciseTypeQuery.*;
 import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.*;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
@@ -33,6 +36,9 @@ class ExerciseTypeApiIT {
 
     @Autowired
     private DgsQueryExecutor dgsQueryExecutor;
+
+    @Autowired
+    private ExerciseRepository exerciseRepository;
 
     @Autowired
     private ExerciseTypeRepository exerciseTypeRepository;
@@ -48,11 +54,12 @@ class ExerciseTypeApiIT {
 
     @AfterEach
     void afterEach() {
+        exerciseRepository.deleteAll();
         exerciseTypeRepository.deleteAll();
     }
 
     @Test
-    void getExerciseTypes_ValidUse_ReturnExerciseTypeDtos() {
+    void getExerciseTypes_ValidUse_ReturnListOfExerciseTypeDto() {
         List<LinkedHashMap<String, Object>> response = dgsQueryExecutor.executeAndExtractJsonPath(getExerciseTypesQuery,
                 "data.getExerciseTypes");
 
@@ -175,6 +182,21 @@ class ExerciseTypeApiIT {
 
         Assertions.assertTrue(exception.getMessage().contains("ExerciseTypeNotFoundException"));
         Assertions.assertTrue(exception.getMessage().contains(String.format("The exerciseType with the id %s has not been found", exerciseType.getId() + 1)));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void deleteExerciseType_ExerciseTypeStillUsedByExercise_ThrowExerciseTypeStillUsedInExerciseException() {
+        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
+        exercise.getExerciseTypes().add(exerciseType);
+        exerciseRepository.save(exercise);
+        variables.put("exerciseTypeId", exerciseType.getId());
+
+        QueryException exception = Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(deleteExerciseTypeQuery, "data.deleteExerciseType", variables));
+
+        Assertions.assertTrue(exception.getMessage().contains("ExerciseTypeStillUsedInExerciseException"));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The exercise type with id %s always used by %s exercise(s)", exerciseType.getId().toString(), Long.valueOf(exercise.getExerciseTypes().size()).toString())));
     }
 
     @Test
