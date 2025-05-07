@@ -2,10 +2,13 @@ package com.CptFranck.SportsPeak.integration.controllers;
 
 import com.CptFranck.SportsPeak.controller.MuscleController;
 import com.CptFranck.SportsPeak.domain.dto.MuscleDto;
+import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
 import com.CptFranck.SportsPeak.domain.exception.muscle.MuscleNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.muscle.MuscleStillUsedInExerciseException;
 import com.CptFranck.SportsPeak.domain.input.muscle.InputMuscle;
 import com.CptFranck.SportsPeak.domain.input.muscle.InputNewMuscle;
+import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
 import com.CptFranck.SportsPeak.repositories.MuscleRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -20,17 +23,21 @@ import org.springframework.test.context.TestPropertySource;
 import java.util.List;
 import java.util.Objects;
 
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.*;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-class MuscleControllerIntTest {
+class MuscleControllerIT {
 
     @Autowired
     private MuscleController muscleController;
 
     @Autowired
     private MuscleRepository muscleRepository;
+
+    @Autowired
+    private ExerciseRepository exerciseRepository;
 
     private MuscleEntity muscle;
 
@@ -41,30 +48,31 @@ class MuscleControllerIntTest {
 
     @AfterEach
     void afterEach() {
+        exerciseRepository.deleteAll();
         muscleRepository.deleteAll();
     }
 
     @Test
-    void MuscleController_GetMuscles_Success() {
+    void getMuscles_ValidUse_ReturnListOfMuscleDto() {
         List<MuscleDto> muscleDtos = muscleController.getMuscles();
 
         assertEqualMuscleList(List.of(muscle), muscleDtos);
     }
 
     @Test
-    void MuscleController_GetMuscleById_UnsuccessfulMuscleNotFound() {
+    void getMuscleById_InvalidMuscleId_ThrowMuscleNotFoundException() {
         Assertions.assertThrows(MuscleNotFoundException.class, () -> muscleController.getMuscleById(muscle.getId() + 1));
     }
 
     @Test
-    void MuscleController_GetMuscleById_Success() {
+    void getMuscleById_ValidMuscleId_ReturnMuscleDto() {
         MuscleDto muscleDto = muscleController.getMuscleById(muscle.getId());
 
         assertMuscleDtoAndEntity(muscle, muscleDto);
     }
 
     @Test
-    void MuscleController_AddMuscle_UnsuccessfulNotAuthenticated() {
+    void addMuscle_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         InputNewMuscle inputNewExercise = createTestInputNewMuscle();
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> muscleController.addMuscle(inputNewExercise));
@@ -72,7 +80,7 @@ class MuscleControllerIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void MuscleController_AddMuscle_Success() {
+    void addMuscle_ValidInput_ReturnMuscleDto() {
         InputNewMuscle inputNewExercise = createTestInputNewMuscle();
 
         MuscleDto muscleDto = muscleController.addMuscle(inputNewExercise);
@@ -81,7 +89,7 @@ class MuscleControllerIntTest {
     }
 
     @Test
-    void MuscleController_ModifyMuscle_UnsuccessfulNotAuthenticated() {
+    void modifyMuscle_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         InputMuscle inputMuscle = createTestInputMuscle(muscle.getId());
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> muscleController.modifyMuscle(inputMuscle));
@@ -89,7 +97,7 @@ class MuscleControllerIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void MuscleController_ModifyMuscle_UnsuccessfulMuscleNotFound() {
+    void modifyMuscle_InvalidMuscleId_ThrowMuscleNotFoundException() {
         InputMuscle inputMuscle = createTestInputMuscle(muscle.getId() + 1);
 
         Assertions.assertThrows(MuscleNotFoundException.class, () -> muscleController.modifyMuscle(inputMuscle));
@@ -97,7 +105,7 @@ class MuscleControllerIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void MuscleController_ModifyMuscle_Success() {
+    void modifyMuscle_ValidInput_ReturnMuscleDto() {
         InputMuscle testInputMuscle = createTestInputMuscle(muscle.getId());
 
         MuscleDto exerciseDto = muscleController.modifyMuscle(testInputMuscle);
@@ -106,21 +114,29 @@ class MuscleControllerIntTest {
     }
 
     @Test
-    void MuscleController_DeleteMuscle_UnsuccessfulNotAuthenticated() {
+    void deleteMuscle_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> muscleController.deleteMuscle(muscle.getId()));
     }
 
-//    @Test
-//    @WithMockUser(username = "user", roles = "ADMIN")
-//    void MuscleController_DeleteMuscle_UnsuccessfulMuscleNotFound() {
-//        Assertions.assertThrows(MuscleNotFoundException.class,
-//                () -> muscleController.deleteMuscle(muscle.getId() + 1)
-//        );
-//    }
+    @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void deleteMuscle_MuscleStillUsedByExercise_ThrowMuscleStillUsedInExerciseException() {
+        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
+        exercise.getMuscles().add(muscle);
+        exerciseRepository.save(exercise);
+
+        Assertions.assertThrows(MuscleStillUsedInExerciseException.class, () -> muscleController.deleteMuscle(muscle.getId()));
+    }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void MuscleController_DeleteMuscle_Success() {
+    void deleteMuscle_InvalidMuscleId_ThrowMuscleNotFoundException() {
+        Assertions.assertThrows(MuscleNotFoundException.class, () -> muscleController.deleteMuscle(muscle.getId() + 1));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void deleteMuscle_ValidInput_ReturnMuscleId() {
         Long id = muscleController.deleteMuscle(muscle.getId());
 
         Assertions.assertEquals(muscle.getId(), id);
