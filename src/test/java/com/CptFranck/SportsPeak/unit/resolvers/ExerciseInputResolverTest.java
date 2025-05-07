@@ -44,11 +44,7 @@ public class ExerciseInputResolverTest {
 
         ExerciseEntity exerciseSaved = exerciseInputResolver.resolveInput(inputNewExercise);
 
-        Assertions.assertEquals(inputNewExercise.getName(), exerciseSaved.getName());
-        Assertions.assertEquals(inputNewExercise.getDescription(), exerciseSaved.getDescription());
-        Assertions.assertEquals(inputNewExercise.getGoal(), exerciseSaved.getGoal());
-        Assertions.assertEquals(inputNewExercise.getMuscleIds().size(), exerciseSaved.getMuscles().size());
-        Assertions.assertEquals(inputNewExercise.getExerciseTypeIds().size(), exerciseSaved.getExerciseTypes().size());
+        assertExerciseInputAndEntity(inputNewExercise, exerciseSaved);
     }
 
     @Test
@@ -62,11 +58,15 @@ public class ExerciseInputResolverTest {
         ExerciseEntity exerciseSaved = exerciseInputResolver.resolveInput(inputExercise);
 
         Assertions.assertEquals(inputExercise.getId(), exerciseSaved.getId());
-        Assertions.assertEquals(inputExercise.getName(), exerciseSaved.getName());
-        Assertions.assertEquals(inputExercise.getDescription(), exerciseSaved.getDescription());
-        Assertions.assertEquals(inputExercise.getGoal(), exerciseSaved.getGoal());
-        Assertions.assertEquals(inputExercise.getMuscleIds().size(), exerciseSaved.getMuscles().size());
-        Assertions.assertEquals(inputExercise.getExerciseTypeIds().size(), exerciseSaved.getExerciseTypes().size());
+        assertExerciseInputAndEntity(inputExercise, exerciseSaved);
         Assertions.assertEquals(exercise.getProgExercises().size(), exerciseSaved.getProgExercises().size());
+    }
+
+    private void assertExerciseInputAndEntity(InputNewExercise expectedExercise, ExerciseEntity actualExercise) {
+        Assertions.assertEquals(expectedExercise.getName(), actualExercise.getName());
+        Assertions.assertEquals(expectedExercise.getDescription(), actualExercise.getDescription());
+        Assertions.assertEquals(expectedExercise.getGoal(), actualExercise.getGoal());
+        Assertions.assertEquals(expectedExercise.getMuscleIds().size(), actualExercise.getMuscles().size());
+        Assertions.assertEquals(expectedExercise.getExerciseTypeIds().size(), actualExercise.getExerciseTypes().size());
     }
 }
