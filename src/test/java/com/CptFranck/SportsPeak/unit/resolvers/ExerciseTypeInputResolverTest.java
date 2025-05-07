@@ -36,7 +36,7 @@ public class ExerciseTypeInputResolverTest {
 
         ExerciseTypeEntity exerciseTypeSaved = exerciseTypeInputResolver.resolveInput(inputNewExercise);
 
-        assertExerciseInputAndEntity(inputNewExercise, exerciseTypeSaved);
+        assertExerciseTypeInputAndEntity(inputNewExercise, exerciseTypeSaved);
     }
 
     @Test
@@ -48,10 +48,10 @@ public class ExerciseTypeInputResolverTest {
         ExerciseTypeEntity exerciseTypeSaved = exerciseTypeInputResolver.resolveInput(inputExerciseType);
 
         Assertions.assertEquals(inputExerciseType.getId(), exerciseTypeSaved.getId());
-        assertExerciseInputAndEntity(inputExerciseType, exerciseTypeSaved);
+        assertExerciseTypeInputAndEntity(inputExerciseType, exerciseTypeSaved);
     }
 
-    private void assertExerciseInputAndEntity(InputNewExerciseType expectedExerciseType, ExerciseTypeEntity actualExerciseType) {
+    private void assertExerciseTypeInputAndEntity(InputNewExerciseType expectedExerciseType, ExerciseTypeEntity actualExerciseType) {
         Assertions.assertEquals(expectedExerciseType.getName(), actualExerciseType.getName());
         Assertions.assertEquals(expectedExerciseType.getGoal(), actualExerciseType.getGoal());
         Assertions.assertEquals(expectedExerciseType.getExerciseIds().size(), actualExerciseType.getExercises().size());
