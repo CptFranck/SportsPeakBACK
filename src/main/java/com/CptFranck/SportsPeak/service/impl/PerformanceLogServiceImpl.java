@@ -55,13 +55,16 @@ public class PerformanceLogServiceImpl implements PerformanceLogService {
 
     @Override
     public PerformanceLogEntity save(PerformanceLogEntity performanceLog) {
-        PerformanceLogEntity performanceLogSaved = performanceLogRepository.save(performanceLog);
-        if (performanceLogSaved.getId() == null) {
+        if (performanceLog.getId() == null) {
+            PerformanceLogEntity performanceLogSaved = performanceLogRepository.save(performanceLog);
             TargetSetEntity targetSet = performanceLogSaved.getTargetSet();
             targetSet.getPerformanceLogs().add(performanceLogSaved);
             targetSetService.save(targetSet);
+            return performanceLogSaved;
         }
-        return performanceLogSaved;
+        if (exists(performanceLog.getId()))
+            return performanceLogRepository.save(performanceLog);
+        throw new PerformanceLogNotFoundException(performanceLog.getId());
     }
 
     @Override
