@@ -22,5 +22,4 @@ public class InputNewPerformanceLog {
     private LocalDateTime logDate;
 
     private Long targetSetId;
-
 }

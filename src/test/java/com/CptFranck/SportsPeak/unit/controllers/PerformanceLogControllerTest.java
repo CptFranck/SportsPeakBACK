@@ -43,14 +43,13 @@ class PerformanceLogControllerTest {
 
     private PerformanceLogEntity performanceLog;
     private PerformanceLogDto performanceLogDto;
-    private TargetSetEntity targetSet;
 
     @BeforeEach
     void init() {
         UserEntity user = createTestUser(1L);
         ExerciseEntity exercise = createTestExercise(1L);
         ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
-        targetSet = createTestTargetSet(1L, progExercise, null);
+        TargetSetEntity targetSet = createTestTargetSet(1L, progExercise, null);
         performanceLog = createTestPerformanceLog(1L, targetSet);
         performanceLogDto = createTestPerformanceLogDto(1L);
     }
