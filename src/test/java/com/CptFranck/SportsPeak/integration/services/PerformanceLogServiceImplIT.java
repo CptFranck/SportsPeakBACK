@@ -14,7 +14,6 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 import static com.CptFranck.SportsPeak.utils.TestDateTimeUtils.assertDatetimeWithTimestamp;
@@ -28,8 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-public class PerformanceLogServiceImplIntTest {
-
+public class PerformanceLogServiceImplIT {
 
     @Autowired
     private UserRepository userRepository;
@@ -71,7 +69,40 @@ public class PerformanceLogServiceImplIntTest {
     }
 
     @Test
-    void performanceLogService_Save_Success() {
+    void findAll_ValidUse_ReturnListOfPerformanceLogEntity() {
+        List<PerformanceLogEntity> performanceLogFound = performanceLogServiceImpl.findAll();
+
+        assertEqualPerformanceLogList(List.of(performanceLog), performanceLogFound);
+    }
+
+    @Test
+    void findOne_InvalidPerformanceLogId_ThrowPerformanceLogNotFoundException() {
+        assertThrows(PerformanceLogNotFoundException.class, () -> performanceLogServiceImpl.findOne(performanceLog.getId() + 1));
+    }
+
+    @Test
+    void findOne_ValidPerformanceLogId_ReturnPerformanceLogEntity() {
+        PerformanceLogEntity performanceLogFound = performanceLogServiceImpl.findOne(performanceLog.getId());
+
+        assertEqualPerformanceLog(performanceLog, performanceLogFound);
+    }
+
+    @Test
+    void findMany_ValidPerformanceLogIds_ReturnSetOfPerformanceLogEntity() {
+        Set<PerformanceLogEntity> PerformanceLogFound = performanceLogServiceImpl.findMany(Set.of(performanceLog.getId()));
+
+        assertEqualPerformanceLogList(List.of(performanceLog), PerformanceLogFound.stream().toList());
+    }
+
+    @Test
+    void findAllByTargetSetId_ValidPerformanceLogIds_ReturnSetOfPerformanceLogEntity() {
+        List<PerformanceLogEntity> performanceLogFound = performanceLogServiceImpl.findAllByTargetSetId(targetSet.getId());
+
+        assertEqualPerformanceLogList(List.of(performanceLog), performanceLogFound);
+    }
+
+    @Test
+    void save_AddNewPerformanceLog_ReturnPerformanceLogEntity() {
         PerformanceLogEntity performanceLog = createTestPerformanceLog(null, targetSet);
 
         PerformanceLogEntity performanceLogSaved = performanceLogServiceImpl.save(performanceLog);
@@ -80,51 +111,38 @@ public class PerformanceLogServiceImplIntTest {
     }
 
     @Test
-    void performanceLogService_FindAll_Success() {
-        List<PerformanceLogEntity> performanceLogFound = performanceLogServiceImpl.findAll();
+    void save_UpdatePerformanceLogWithInvalidId_ReturnPerformanceLogEntity() {
+        PerformanceLogEntity unsavedPerformanceLog = createTestPerformanceLog(performanceLog.getId() + 1, targetSet);
 
-        assertEqualPerformanceLogList(List.of(performanceLog), performanceLogFound);
+        assertThrows(PerformanceLogNotFoundException.class, () -> performanceLogServiceImpl.save(unsavedPerformanceLog));
     }
 
     @Test
-    void performanceLogService_FindOne_Success() {
-        Optional<PerformanceLogEntity> performanceLogFound = performanceLogServiceImpl.findOne(performanceLog.getId());
+    void save_UpdatePerformanceLog_ReturnPerformanceLogEntity() {
+        PerformanceLogEntity unsavedPerformanceLog = createTestPerformanceLog(performanceLog.getId(), targetSet);
 
-        Assertions.assertTrue(performanceLogFound.isPresent());
-        assertEqualPerformanceLog(performanceLog, performanceLogFound.get());
+        PerformanceLogEntity performanceLogSaved = performanceLogServiceImpl.save(unsavedPerformanceLog);
+
+        assertEqualPerformanceLog(performanceLog, performanceLogSaved);
     }
 
     @Test
-    void performanceLogService_FindMany_Success() {
-        Set<PerformanceLogEntity> PerformanceLogFound = performanceLogServiceImpl.findMany(Set.of(performanceLog.getId()));
+    void delete_InvalidPerformanceLogId_ThrowPerformanceLogNotFoundException() {
+        performanceLogRepository.delete(performanceLog);
 
-        assertEqualPerformanceLogList(List.of(performanceLog), PerformanceLogFound.stream().toList());
+        assertThrows(PerformanceLogNotFoundException.class, () -> performanceLogServiceImpl.delete(performanceLog.getId()));
     }
 
     @Test
-    void performanceLogService_FindAllByTargetSetId_Success() {
-        List<PerformanceLogEntity> performanceLogFound = performanceLogServiceImpl.findAllByTargetSetId(targetSet.getId());
-
-        assertEqualPerformanceLogList(List.of(performanceLog), performanceLogFound);
-    }
-
-    @Test
-    void PerformanceLogService_Exists_Success() {
-        boolean performanceLogFound = performanceLogServiceImpl.exists(performanceLog.getId());
-
-        Assertions.assertTrue(performanceLogFound);
-    }
-
-    @Test
-    void PerformanceLogService_Delete_Success() {
+    void delete_ValidInput_Void() {
         assertAll(() -> performanceLogServiceImpl.delete(performanceLog.getId()));
     }
 
     @Test
-    void PerformanceLogService_Delete_Unsuccessful() {
-        performanceLogRepository.delete(performanceLog);
+    void exists_ValidInput_ReturnTrue() {
+        boolean performanceLogFound = performanceLogServiceImpl.exists(performanceLog.getId());
 
-        assertThrows(PerformanceLogNotFoundException.class, () -> performanceLogServiceImpl.delete(performanceLog.getId()));
+        Assertions.assertTrue(performanceLogFound);
     }
 
     private void assertEqualPerformanceLogList(
