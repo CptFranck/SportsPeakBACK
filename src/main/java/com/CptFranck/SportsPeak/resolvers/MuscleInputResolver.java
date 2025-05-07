@@ -31,8 +31,7 @@ public class MuscleInputResolver {
         String illustrationPath;
         if (inputNewMuscle instanceof InputMuscle) {
             id = ((InputMuscle) inputNewMuscle).getId();
-            MuscleEntity muscleEntity = muscleService.findOne(id);
-            illustrationPath = muscleEntity.getIllustrationPath();
+            illustrationPath = muscleService.findOne(id).getIllustrationPath();
         } else {
             id = null;
             illustrationPath = "";

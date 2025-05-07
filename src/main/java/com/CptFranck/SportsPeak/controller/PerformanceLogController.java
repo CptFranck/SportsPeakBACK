@@ -39,7 +39,6 @@ public class PerformanceLogController {
         return performanceLogMapper.mapTo(performanceLog);
     }
 
-
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsQuery
     public List<PerformanceLogDto> getPerformanceLogsByTargetSetsId(@InputArgument Long targetSetId) {
