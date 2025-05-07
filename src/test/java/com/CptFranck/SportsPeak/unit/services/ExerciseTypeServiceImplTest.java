@@ -120,7 +120,7 @@ public class ExerciseTypeServiceImplTest {
     }
 
     @Test
-    void delete_ExerciseTypeStillUsed_ThrowMuscleNotFoundException() {
+    void delete_ExerciseTypeStillUsed_ThrowExerciseTypeStillUsedInExerciseException() {
         exerciseType.getExercises().add(createTestExercise(1L));
         when(exerciseTypeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(exerciseType));
 

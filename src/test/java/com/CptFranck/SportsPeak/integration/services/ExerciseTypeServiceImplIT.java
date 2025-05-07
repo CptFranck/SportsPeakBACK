@@ -111,7 +111,7 @@ public class ExerciseTypeServiceImplIT {
     }
 
     @Test
-    void delete_ExerciseTypeStillUsed_ThrowMuscleNotFoundException() {
+    void delete_ExerciseTypeStillUsed_ThrowExerciseTypeStillUsedInExerciseException() {
         ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
         exercise.getExerciseTypes().add(exerciseType);
         exerciseRepository.save(exercise);
