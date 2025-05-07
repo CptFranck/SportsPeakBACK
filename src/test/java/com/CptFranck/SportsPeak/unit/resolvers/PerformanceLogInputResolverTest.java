@@ -42,7 +42,7 @@ public class PerformanceLogInputResolverTest {
     }
 
     @Test
-    void resolveInput_ValidInputNewMuscle_ReturnMuscleEntity() {
+    void resolveInput_ValidInputNewPerformanceLog_ReturnMuscleEntity() {
         InputNewPerformanceLog newPerformanceLog = createTestInputNewPerformanceLog(targetSet.getId(), false);
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(targetSet);
 
@@ -52,7 +52,7 @@ public class PerformanceLogInputResolverTest {
     }
 
     @Test
-    void resolveInput_ValidInputMuscle_ReturnMuscleEntity() {
+    void resolveInput_ValidInputPerformanceLog_ReturnMuscleEntity() {
         InputPerformanceLog newPerformanceLog = createTestInputPerformanceLog(1L, targetSet.getId(), false);
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(targetSet);
 
