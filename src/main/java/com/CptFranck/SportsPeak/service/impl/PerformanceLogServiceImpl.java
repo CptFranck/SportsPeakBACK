@@ -1,13 +1,14 @@
 package com.CptFranck.SportsPeak.service.impl;
 
 import com.CptFranck.SportsPeak.domain.entity.PerformanceLogEntity;
+import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.exception.performanceLog.PerformanceLogNotFoundException;
 import com.CptFranck.SportsPeak.repositories.PerformanceLogRepository;
 import com.CptFranck.SportsPeak.service.PerformanceLogService;
+import com.CptFranck.SportsPeak.service.TargetSetService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -15,15 +16,13 @@ import java.util.stream.StreamSupport;
 @Service
 public class PerformanceLogServiceImpl implements PerformanceLogService {
 
-    PerformanceLogRepository performanceLogRepository;
+    private final TargetSetService targetSetService;
 
-    public PerformanceLogServiceImpl(PerformanceLogRepository performanceLogRepository) {
+    private final PerformanceLogRepository performanceLogRepository;
+
+    public PerformanceLogServiceImpl(TargetSetService targetSetService, PerformanceLogRepository performanceLogRepository) {
+        this.targetSetService = targetSetService;
         this.performanceLogRepository = performanceLogRepository;
-    }
-
-    @Override
-    public PerformanceLogEntity save(PerformanceLogEntity exerciseTypeEntity) {
-        return performanceLogRepository.save(exerciseTypeEntity);
     }
 
     @Override
@@ -36,8 +35,8 @@ public class PerformanceLogServiceImpl implements PerformanceLogService {
     }
 
     @Override
-    public Optional<PerformanceLogEntity> findOne(Long id) {
-        return performanceLogRepository.findById(id);
+    public PerformanceLogEntity findOne(Long id) {
+        return performanceLogRepository.findById(id).orElseThrow(() -> new PerformanceLogNotFoundException(id));
     }
 
     @Override
@@ -55,13 +54,24 @@ public class PerformanceLogServiceImpl implements PerformanceLogService {
     }
 
     @Override
-    public boolean exists(Long id) {
-        return performanceLogRepository.existsById(id);
+    public PerformanceLogEntity save(PerformanceLogEntity performanceLog) {
+        PerformanceLogEntity performanceLogSaved = performanceLogRepository.save(performanceLog);
+        if (performanceLogSaved.getId() == null) {
+            TargetSetEntity targetSet = performanceLogSaved.getTargetSet();
+            targetSet.getPerformanceLogs().add(performanceLogSaved);
+            targetSetService.save(targetSet);
+        }
+        return performanceLogSaved;
     }
 
     @Override
     public void delete(Long id) {
-        PerformanceLogEntity performanceLog = performanceLogRepository.findById(id).orElseThrow(() -> new PerformanceLogNotFoundException(id));
+        PerformanceLogEntity performanceLog = this.findOne(id);
         performanceLogRepository.delete(performanceLog);
+    }
+
+    @Override
+    public boolean exists(Long id) {
+        return performanceLogRepository.existsById(id);
     }
 }
