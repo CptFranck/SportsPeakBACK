@@ -48,7 +48,7 @@ class MuscleControllerTest {
     }
 
     @Test
-    void findAll_ValidUse_ReturnListOfMuscleDto() {
+    void getMuscles_ValidUse_ReturnListOfMuscleDto() {
         when(muscleService.findAll()).thenReturn(List.of(muscle));
         when(muscleMapper.mapTo(Mockito.any(MuscleEntity.class))).thenReturn(muscleDto);
 
@@ -58,7 +58,7 @@ class MuscleControllerTest {
     }
 
     @Test
-    void findOne_ValidMuscleId_ReturnMuscleDto() {
+    void getMuscleById_ValidMuscleId_ReturnMuscleDto() {
         when(muscleService.findOne(Mockito.any(Long.class))).thenReturn(muscle);
         when(muscleMapper.mapTo(Mockito.any(MuscleEntity.class))).thenReturn(muscleDto);
 
@@ -90,7 +90,7 @@ class MuscleControllerTest {
     }
 
     @Test
-    void MuscleController_DeleteMuscle_Success() {
+    void deleteMuscle_ValidInput_ReturnMuscleId() {
         Long id = muscleController.deleteMuscle(1L);
         Assertions.assertEquals(1L, id);
     }

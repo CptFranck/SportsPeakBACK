@@ -118,7 +118,7 @@ public class MuscleServiceImplTest {
     }
 
     @Test
-    void delete_MuscleStillUsed_ThrowMuscleNotFoundException() {
+    void delete_MuscleStillUsed_ThrowMuscleStillUsedInExerciseException() {
         muscle.getExercises().add(createTestExercise(1L));
         when(muscleRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(muscle));
 
