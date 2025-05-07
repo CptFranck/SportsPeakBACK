@@ -2,10 +2,13 @@ package com.CptFranck.SportsPeak.integration.controllers;
 
 import com.CptFranck.SportsPeak.controller.ExerciseTypeController;
 import com.CptFranck.SportsPeak.domain.dto.ExerciseTypeDto;
+import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.exception.exerciseType.ExerciseTypeNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.exerciseType.ExerciseTypeStillUsedInExerciseException;
 import com.CptFranck.SportsPeak.domain.input.exerciseType.InputExerciseType;
 import com.CptFranck.SportsPeak.domain.input.exerciseType.InputNewExerciseType;
+import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
 import com.CptFranck.SportsPeak.repositories.ExerciseTypeRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -21,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.*;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 
 
 @SpringBootTest()
@@ -33,6 +37,9 @@ class ExerciseTypeControllerIT {
     @Autowired
     private ExerciseTypeRepository exerciseTypeRepository;
 
+    @Autowired
+    private ExerciseRepository exerciseRepository;
+
     private ExerciseTypeEntity exerciseType;
 
     @BeforeEach
@@ -42,11 +49,12 @@ class ExerciseTypeControllerIT {
 
     @AfterEach
     void afterEach() {
+        exerciseRepository.deleteAll();
         exerciseTypeRepository.deleteAll();
     }
 
     @Test
-    void getExerciseTypes_ValidUse_ReturnExerciseTypeDtos() {
+    void getExerciseTypes_ValidUse_ReturnListOfExerciseTypeDto() {
         List<ExerciseTypeDto> exerciseTypeDtos = exerciseTypeController.getExerciseTypes();
 
         assertEqualExerciseList(List.of(exerciseType), exerciseTypeDtos);
@@ -115,6 +123,16 @@ class ExerciseTypeControllerIT {
     void deleteExerciseType_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
                 () -> exerciseTypeController.deleteExerciseType(exerciseType.getId()));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void deleteExerciseType_ExerciseTypeStillUsedByExercise_ThrowExerciseTypeStillUsedInExerciseException() {
+        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
+        exercise.getExerciseTypes().add(exerciseType);
+        exerciseRepository.save(exercise);
+
+        Assertions.assertThrows(ExerciseTypeStillUsedInExerciseException.class, () -> exerciseTypeController.deleteExerciseType(exerciseType.getId()));
     }
 
     @Test
