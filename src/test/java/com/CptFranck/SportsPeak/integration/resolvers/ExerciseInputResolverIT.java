@@ -29,7 +29,7 @@ public class ExerciseInputResolverIT {
 
         ExerciseEntity exerciseSaved = exerciseInputResolver.resolveInput(inputNewExercise);
 
-        assertMuscleInputAndEntity(inputNewExercise, exerciseSaved);
+        assertExerciseInputAndEntity(inputNewExercise, exerciseSaved);
     }
 
     @Test
@@ -40,11 +40,11 @@ public class ExerciseInputResolverIT {
         ExerciseEntity exerciseSaved = exerciseInputResolver.resolveInput(inputExercise);
 
         Assertions.assertEquals(inputExercise.getId(), exerciseSaved.getId());
-        assertMuscleInputAndEntity(inputExercise, exerciseSaved);
+        assertExerciseInputAndEntity(inputExercise, exerciseSaved);
         Assertions.assertEquals(exercise.getProgExercises().size(), exerciseSaved.getProgExercises().size());
     }
 
-    private void assertMuscleInputAndEntity(InputNewExercise expectedExercise, ExerciseEntity actualExercise) {
+    private void assertExerciseInputAndEntity(InputNewExercise expectedExercise, ExerciseEntity actualExercise) {
         Assertions.assertEquals(expectedExercise.getName(), actualExercise.getName());
         Assertions.assertEquals(expectedExercise.getDescription(), actualExercise.getDescription());
         Assertions.assertEquals(expectedExercise.getGoal(), actualExercise.getGoal());
