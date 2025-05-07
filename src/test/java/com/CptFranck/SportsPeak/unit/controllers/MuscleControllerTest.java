@@ -33,7 +33,6 @@ class MuscleControllerTest {
 
     @Mock
     private MuscleInputResolver muscleInputResolver;
-    ;
 
     @Mock
     private Mapper<MuscleEntity, MuscleDto> muscleMapper;
