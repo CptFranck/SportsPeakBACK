@@ -1,6 +1,7 @@
 package com.CptFranck.SportsPeak.integration.resolvers;
 
 import com.CptFranck.SportsPeak.domain.entity.*;
+import com.CptFranck.SportsPeak.domain.exception.LabelMatchNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputNewPerformanceLog;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputPerformanceLog;
@@ -62,6 +63,13 @@ public class PerformanceLogInputResolverIT {
     }
 
     @Test
+    void resolveInput_InvalidNewInputLabel_ThrowLabelMatchNotFoundException() {
+        InputNewPerformanceLog newPerformanceLog = createTestInputNewPerformanceLog(targetSet.getId(), true);
+
+        Assertions.assertThrows(LabelMatchNotFoundException.class, () -> performanceLogInputResolver.resolveInput(newPerformanceLog));
+    }
+
+    @Test
     void resolveInput_ValidInputNewPerformanceLog_ReturnExerciseTypeEntity() {
         InputNewPerformanceLog newPerformanceLog = createTestInputNewPerformanceLog(targetSet.getId(), false);
 
@@ -71,7 +79,14 @@ public class PerformanceLogInputResolverIT {
     }
 
     @Test
-    void resolveInput_InvalidTargetSetId_ReturnExerciseTypeEntity() {
+    void resolveInput_InvalidInputLabel_ThrowLabelMatchNotFoundException() {
+        InputPerformanceLog newPerformanceLog = createTestInputPerformanceLog(1L, targetSet.getId() + 1, true);
+
+        Assertions.assertThrows(LabelMatchNotFoundException.class, () -> performanceLogInputResolver.resolveInput(newPerformanceLog));
+    }
+
+    @Test
+    void resolveInput_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
         InputPerformanceLog newPerformanceLog = createTestInputPerformanceLog(1L, targetSet.getId() + 1, false);
 
         Assertions.assertThrows(TargetSetNotFoundException.class, () -> performanceLogInputResolver.resolveInput(newPerformanceLog));
