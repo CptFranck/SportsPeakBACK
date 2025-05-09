@@ -4,14 +4,13 @@ import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 public interface TargetSetService {
 
     List<TargetSetEntity> findAll();
 
-    Optional<TargetSetEntity> findOne(Long id);
+    TargetSetEntity findOne(Long id);
 
     List<TargetSetEntity> findAllByProgExerciseId(Long progExerciseId);
 
