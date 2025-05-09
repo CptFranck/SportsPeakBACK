@@ -69,7 +69,7 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 
         roleService.updatePrivilegeRelation(newRoleIds, oldRoleIds, privilegeSave);
 
-        return privilege;
+        return privilegeSave;
     }
 
     @Override
