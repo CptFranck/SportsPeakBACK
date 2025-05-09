@@ -17,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.*;
@@ -40,7 +39,6 @@ class PrivilegeControllerTest {
 
     private PrivilegeEntity privilegeEntity;
     private PrivilegeDto privilegeDto;
-    private LinkedHashMap<String, Object> variables;
 
     @BeforeEach
     void init() {
