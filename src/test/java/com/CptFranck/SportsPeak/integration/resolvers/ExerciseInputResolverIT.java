@@ -1,6 +1,7 @@
 package com.CptFranck.SportsPeak.integration.resolvers;
 
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
+import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.exercise.InputExercise;
 import com.CptFranck.SportsPeak.domain.input.exercise.InputNewExercise;
 import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
@@ -30,6 +31,14 @@ public class ExerciseInputResolverIT {
         ExerciseEntity exerciseSaved = exerciseInputResolver.resolveInput(inputNewExercise);
 
         assertExerciseInputAndEntity(inputNewExercise, exerciseSaved);
+    }
+
+    @Test
+    void resolveInput_InvalidExerciseId_ReturnExerciseEntity() {
+        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
+        InputExercise inputExercise = createTestInputExercise(exercise.getId() + 1);
+
+        Assertions.assertThrows(ExerciseNotFoundException.class, () -> exerciseInputResolver.resolveInput(inputExercise));
     }
 
     @Test

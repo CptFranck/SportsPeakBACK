@@ -25,7 +25,7 @@ public class MuscleInputResolverIT {
     private MuscleRepository muscleRepository;
 
     @Test
-    void resolveInput_ValidInputNewExerciseType_ReturnMuscleEntity() {
+    void resolveInput_ValidInputNewMuscle_ReturnMuscleEntity() {
         InputNewMuscle inputNewMuscle = createTestInputNewMuscle();
 
         MuscleEntity muscleSaved = muscleInputResolver.resolveInput(inputNewMuscle);
@@ -42,7 +42,7 @@ public class MuscleInputResolverIT {
     }
 
     @Test
-    void resolveInput_ValidInputExerciseType_ReturnMuscleEntity() {
+    void resolveInput_ValidInputMuscle_ReturnMuscleEntity() {
         MuscleEntity muscle = muscleRepository.save(createTestMuscle(null));
         InputMuscle inputMuscle = createTestInputMuscle(muscle.getId());
 
