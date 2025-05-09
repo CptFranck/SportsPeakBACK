@@ -83,7 +83,7 @@ public class PrivilegeServiceImplTest {
     }
 
     @Test
-    void save_AddNewPrivilegeWithNameAlreadyTaken_ReturnPrivilegeEntity() {
+    void save_AddNewPrivilegeWithNameAlreadyTaken_ThrowPrivilegeExistsException() {
         PrivilegeEntity unsavedPrivilege = createTestPrivilege(null, 0);
         when(privilegeRepository.findByName(Mockito.any(String.class))).thenReturn(Optional.of(privilege));
 
@@ -110,6 +110,7 @@ public class PrivilegeServiceImplTest {
 
     @Test
     void save_UpdatePrivilege_ReturnPrivilegeEntity() {
+        when(privilegeRepository.findByName(Mockito.any(String.class))).thenReturn(Optional.of(privilege));
         when(privilegeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(privilege));
         when(privilegeRepository.save(Mockito.any(PrivilegeEntity.class))).thenReturn(privilege);
 
