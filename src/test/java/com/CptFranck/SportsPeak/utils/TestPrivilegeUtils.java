@@ -43,7 +43,7 @@ public class TestPrivilegeUtils {
 
     public static InputNewPrivilege createTestInputNewPrivilege() {
         return new InputNewPrivilege(
-                "name",
+                "Privilege name",
                 new ArrayList<>()
         );
     }
@@ -51,7 +51,7 @@ public class TestPrivilegeUtils {
     public static InputPrivilege createTestInputPrivilege(Long id) {
         return new InputPrivilege(
                 id,
-                "name",
+                "Privilege name",
                 new ArrayList<>()
         );
     }
