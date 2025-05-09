@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -52,11 +53,12 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 
     @Override
     public PrivilegeEntity save(PrivilegeEntity privilege) {
+        privilegeRepository.findByName(privilege.getName()).ifPresent((p) -> {
+            if (!Objects.equals(p.getId(), privilege.getId())) throw new PrivilegeExistsException();
+        });
+
         Set<Long> oldRoleIds;
         if (privilege.getId() == null) {
-            privilegeRepository.findByName(privilege.getName()).ifPresent((p) -> {
-                throw new PrivilegeExistsException();
-            });
             oldRoleIds = Collections.emptySet();
         } else {
             oldRoleIds = this.findOne(privilege.getId()).getRoles()
