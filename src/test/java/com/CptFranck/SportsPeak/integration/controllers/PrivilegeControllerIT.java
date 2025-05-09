@@ -124,7 +124,6 @@ class PrivilegeControllerIT {
     @WithMockUser(username = "user", roles = "ADMIN")
     void modifyPrivilege_InvalidPrivilegeId_ThrowPrivilegeNotFoundException() {
         InputPrivilege inputExercise = createTestInputPrivilege(privilege.getId() + 1);
-        privilege.setId(privilege.getId());
         privilege.setName("name");
         privilegeRepository.save(privilege);
 

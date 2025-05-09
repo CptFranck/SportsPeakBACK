@@ -27,7 +27,7 @@ import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.*;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-class PrivilegeApiIntTest {
+class PrivilegeApiIT {
 
     @Autowired
     private DgsQueryExecutor dgsQueryExecutor;
@@ -53,7 +53,7 @@ class PrivilegeApiIntTest {
     }
 
     @Test
-    void PrivilegeApi_GetPrivileges_UnsuccessfulNotAuthenticated() {
+    void getPrivileges_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(getPrivilegeQuery, "data.getPrivileges"));
 
@@ -63,7 +63,7 @@ class PrivilegeApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void PrivilegeApi_GetPrivileges_Success() {
+    void getPrivileges_ValidUse_ReturnListOfPrivilegeDto() {
         List<LinkedHashMap<String, Object>> response = dgsQueryExecutor.executeAndExtractJsonPath(getPrivilegeQuery,
                 "data.getPrivileges");
 
@@ -73,7 +73,7 @@ class PrivilegeApiIntTest {
     }
 
     @Test
-    void PrivilegeApi_GetPrivilegeById_UnsuccessfulNotAuthenticated() {
+    void getPrivilegeById_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         variables.put("id", privilege.getId());
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(getPrivilegeByIdQuery, "data.getPrivilegeById", variables));
@@ -84,7 +84,7 @@ class PrivilegeApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void PrivilegeApi_GetPrivilegeById_UnsuccessfulPrivilegeNotFound() {
+    void getPrivilegeById_InvalidPrivilegeId_ThrowPrivilegeNotFoundException() {
         variables.put("id", privilege.getId() + 1);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
@@ -96,7 +96,7 @@ class PrivilegeApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void PrivilegeApi_GetPrivilegeById_Success() {
+    void getPrivilegeById_ValidPrivilegeId_ReturnPrivilegeDto() {
         variables.put("id", privilege.getId());
 
         LinkedHashMap<String, Object> response = dgsQueryExecutor.executeAndExtractJsonPath(getPrivilegeByIdQuery,
@@ -107,7 +107,7 @@ class PrivilegeApiIntTest {
     }
 
     @Test
-    void PrivilegeApi_AddPrivilege_UnsuccessfulNotAuthenticated() {
+    void addPrivilege_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         variables.put("inputNewPrivilege", objectMapper.convertValue(
                 createTestInputNewPrivilege(), new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
@@ -121,8 +121,24 @@ class PrivilegeApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
+    void addPrivilege_AddNewPrivilegeWithNameAlreadyTaken_ThrowPrivilegeExistsException() {
+        InputNewPrivilege inputNewPrivilege = createTestInputNewPrivilege();
+        variables.put("inputNewPrivilege", objectMapper.convertValue(
+                inputNewPrivilege, new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
+
+        QueryException exception = Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(addPrivilegeQuery, "data.addPrivilege", variables));
+
+        Assertions.assertTrue(exception.getMessage().contains("PrivilegeExistsException"));
+        Assertions.assertTrue(exception.getMessage().contains("A privilege with this name already exists"));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
     void PrivilegeApi_AddPrivilege_Success() {
         InputNewPrivilege inputNewPrivilege = createTestInputNewPrivilege();
+        inputNewPrivilege.setName("name");
         variables.put("inputNewPrivilege", objectMapper.convertValue(
                 inputNewPrivilege, new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
@@ -135,7 +151,7 @@ class PrivilegeApiIntTest {
     }
 
     @Test
-    void PrivilegeApi_ModifyPrivilege_UnsuccessfulNotAuthenticated() {
+    void modifyPrivilege_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         variables.put("inputPrivilege", objectMapper.convertValue(
                 createTestInputPrivilege(privilege.getId()), new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
@@ -149,10 +165,26 @@ class PrivilegeApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void PrivilegeApi_ModifyPrivilege_UnsuccessfulDoesNotExist() {
+    void modifyPrivilege_UpdatePrivilegeWithNameAlreadyTaken_ThrowPrivilegeExistsException() {
         variables.put("inputPrivilege", objectMapper.convertValue(
                 createTestInputPrivilege(privilege.getId() + 1), new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
+
+        QueryException exception = Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyPrivilegeQuery, "data.getPrivilegeById", variables));
+
+        Assertions.assertTrue(exception.getMessage().contains("PrivilegeExistsException"));
+        Assertions.assertTrue(exception.getMessage().contains("A privilege with this name already exists"));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void modifyPrivilege_InvalidPrivilegeId_ThrowPrivilegeNotFoundException() {
+        variables.put("inputPrivilege", objectMapper.convertValue(
+                createTestInputPrivilege(privilege.getId() + 1), new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
+        privilege.setName("name");
+        privilegeRepository.save(privilege);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyPrivilegeQuery, "data.getPrivilegeById", variables));
@@ -163,7 +195,7 @@ class PrivilegeApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void PrivilegeApi_ModifyPrivilege_Success() {
+    void modifyPrivilege_UpdatePrivilege_ReturnPrivilegeDto() {
         InputPrivilege inputPrivilege = createTestInputPrivilege(privilege.getId());
         variables.put("inputPrivilege", objectMapper.convertValue(
                 inputPrivilege, new TypeReference<LinkedHashMap<String, Object>>() {
@@ -178,7 +210,7 @@ class PrivilegeApiIntTest {
     }
 
     @Test
-    void PrivilegeApi_DeletePrivilege_UnsuccessfulNotAuthenticated() {
+    void deletePrivilege_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         variables.put("privilegeId", privilege.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
@@ -191,7 +223,20 @@ class PrivilegeApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void PrivilegeApi_DeletePrivilege_Success() {
+    void deletePrivilege_InvalidPrivilegeId_ThrowPrivilegeNotFoundException() {
+        variables.put("privilegeId", privilege.getId() + 1);
+
+        QueryException exception = Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(deletePrivilegeQuery, "data.deletePrivilege", variables));
+
+        Assertions.assertTrue(exception.getMessage().contains("PrivilegeNotFoundException"));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The privilege with the id %s has not been found", privilege.getId() + 1)));
+
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void deletePrivilege_ValidInput_Void() {
         variables.put("privilegeId", privilege.getId());
 
         String id = dgsQueryExecutor.executeAndExtractJsonPath(deletePrivilegeQuery, "data.deletePrivilege", variables);
