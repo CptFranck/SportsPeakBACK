@@ -3,6 +3,7 @@ package com.CptFranck.SportsPeak.integration.controllers;
 import com.CptFranck.SportsPeak.controller.PrivilegeController;
 import com.CptFranck.SportsPeak.domain.dto.PrivilegeDto;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
+import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeExistsException;
 import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.privilege.InputNewPrivilege;
 import com.CptFranck.SportsPeak.domain.input.privilege.InputPrivilege;
@@ -21,11 +22,12 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-class PrivilegeControllerIntTest {
+class PrivilegeControllerIT {
 
     @Autowired
     private PrivilegeController privilegeController;
@@ -46,39 +48,39 @@ class PrivilegeControllerIntTest {
     }
 
     @Test
-    void PrivilegeController_GetPrivileges_UnsuccessfulNotAuthenticated() {
+    void getPrivileges_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> privilegeController.getPrivileges());
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void PrivilegeController_GetPrivileges_Success() {
+    void getPrivileges_ValidUse_ReturnListOfPrivilegeDto() {
         List<PrivilegeDto> PerformanceLogDtos = privilegeController.getPrivileges();
 
         assertEqualExerciseList(List.of(privilege), PerformanceLogDtos);
     }
 
     @Test
-    void PrivilegeController_GetPrivilegeById_UnsuccessfulNotAuthenticated() {
+    void getPrivilegeById_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> privilegeController.getPrivilegeById(privilege.getId()));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void PrivilegeController_GetPrivilegeById_UnsuccessfulPrivilegeNotFound() {
+    void getPrivilegeById_InvalidPrivilegeId_ThrowPrivilegeNotFoundException() {
         Assertions.assertThrows(PrivilegeNotFoundException.class, () -> privilegeController.getPrivilegeById(privilege.getId() + 1));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void PrivilegeController_GetPrivilegeById_Success() {
+    void getPrivilegeById_ValidPrivilegeId_ReturnPrivilegeDto() {
         PrivilegeDto performanceLogDto = privilegeController.getPrivilegeById(privilege.getId());
 
         assertPrivilegeDtoAndEntity(privilege, performanceLogDto);
     }
 
     @Test
-    void PrivilegeController_AddPrivilege_UnsuccessfulNotAuthenticated() {
+    void addPrivilege_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         InputNewPrivilege inputNewPrivilege = createTestInputNewPrivilege();
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> privilegeController.addPrivilege(inputNewPrivilege));
@@ -86,9 +88,17 @@ class PrivilegeControllerIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void PrivilegeController_AddPrivilege_Success() {
+    void addPrivilege_AddNewPrivilegeWithNameAlreadyTaken_ThrowPrivilegeExistsException() {
         InputNewPrivilege inputNewPrivilege = createTestInputNewPrivilege();
 
+        assertThrows(PrivilegeExistsException.class, () -> privilegeController.addPrivilege(inputNewPrivilege));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void addPrivilege_AddNewPrivilege_ReturnPrivilegeDto() {
+        InputNewPrivilege inputNewPrivilege = createTestInputNewPrivilege();
+        inputNewPrivilege.setName("name");
         PrivilegeDto exerciseDto = privilegeController.addPrivilege(inputNewPrivilege);
 
         assertPrivilegeDtoAndInput(inputNewPrivilege, exerciseDto);
@@ -96,7 +106,7 @@ class PrivilegeControllerIntTest {
 
 
     @Test
-    void PrivilegeController_ModifyPrivilege_UnsuccessfulNotAuthenticated() {
+    void modifyPrivilege_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         InputPrivilege inputExercise = createTestInputPrivilege(privilege.getId());
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> privilegeController.modifyPrivilege(inputExercise));
@@ -104,16 +114,26 @@ class PrivilegeControllerIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void PrivilegeController_ModifyPrivilege_UnsuccessfulDoesNotExist() {
+    void modifyPrivilege_UpdatePrivilegeWithNameAlreadyTaken_ThrowPrivilegeExistsException() {
         InputPrivilege inputExercise = createTestInputPrivilege(privilege.getId() + 1);
 
-        Assertions.assertThrows(PrivilegeNotFoundException.class,
-                () -> privilegeController.modifyPrivilege(inputExercise));
+        Assertions.assertThrows(PrivilegeExistsException.class, () -> privilegeController.modifyPrivilege(inputExercise));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void PrivilegeController_ModifyPrivilege_Success() {
+    void modifyPrivilege_InvalidPrivilegeId_ThrowPrivilegeNotFoundException() {
+        InputPrivilege inputExercise = createTestInputPrivilege(privilege.getId() + 1);
+        privilege.setId(privilege.getId());
+        privilege.setName("name");
+        privilegeRepository.save(privilege);
+
+        Assertions.assertThrows(PrivilegeNotFoundException.class, () -> privilegeController.modifyPrivilege(inputExercise));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void modifyPrivilege_UpdatePrivilege_ReturnPrivilegeDto() {
         InputPrivilege inputExercise = createTestInputPrivilege(privilege.getId());
 
         PrivilegeDto exerciseDto = privilegeController.modifyPrivilege(inputExercise);
@@ -122,20 +142,20 @@ class PrivilegeControllerIntTest {
     }
 
     @Test
-    void PrivilegeController_DeletePrivilege_UnsuccessfulNotAuthenticated() {
+    void deletePrivilege_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> privilegeController.deletePrivilege(privilege.getId()));
     }
 
-//    @Test
-//    @WithMockUser(username = "user", roles = "ADMIN")
-//    void PrivilegeController_DeletePrivilege_UnsuccessfulExerciseNotFound() {
-//        Assertions.assertThrows(PrivilegeNotFoundException.class,
-//                () -> privilegeController.deletePrivilege(privilege.getId() + 1));
-//    }
+    @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void deletePrivilege_InvalidPrivilegeId_ThrowPrivilegeNotFoundException() {
+        Assertions.assertThrows(PrivilegeNotFoundException.class,
+                () -> privilegeController.deletePrivilege(privilege.getId() + 1));
+    }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void PrivilegeController_DeletePrivilege_Success() {
+    void deletePrivilege_ValidInput_Void() {
         Long id = privilegeController.deletePrivilege(privilege.getId());
 
         Assertions.assertEquals(privilege.getId(), id);

@@ -86,6 +86,13 @@ public class PrivilegeServiceImplIT {
     }
 
     @Test
+    void save_UpdatePrivilegeWithNameAlreadyTaken_ThrowPrivilegeExistsException() {
+        privilege.setId(privilege.getId() + 1);
+
+        assertThrows(PrivilegeExistsException.class, () -> privilegeServiceImpl.save(privilege));
+    }
+
+    @Test
     void save_UpdatePrivilegeWithInvalidId_ThrowPrivilegeNotFoundException() {
         privilege.setId(privilege.getId() + 1);
         privilege.setName("name");
