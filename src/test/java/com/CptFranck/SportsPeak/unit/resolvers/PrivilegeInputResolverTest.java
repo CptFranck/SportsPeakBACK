@@ -29,7 +29,7 @@ public class PrivilegeInputResolverTest {
     private RoleService roleService;
 
     @Test
-    void resolveInput_ValidInputNewMuscle_ReturnMuscleEntity() {
+    void resolveInput_ValidInputNewPrivilege_ReturnPrivilegeEntity() {
         InputNewPrivilege inputNewPrivilege = createTestInputNewPrivilege();
         when(roleService.findMany(Mockito.anySet())).thenReturn(new HashSet<>());
 
@@ -39,7 +39,7 @@ public class PrivilegeInputResolverTest {
     }
 
     @Test
-    void resolveInput_ValidInputMuscle_ReturnMuscleEntity() {
+    void resolveInput_ValidInputPrivilege_ReturnPrivilegeEntity() {
         InputPrivilege inputPrivilege = createTestInputPrivilege(1L);
         when(roleService.findMany(Mockito.anySet())).thenReturn(new HashSet<>());
 
