@@ -70,7 +70,7 @@ public class PrivilegeServiceImplIT {
     }
 
     @Test
-    void save_AddNewPrivilegeWithNameAlreadyTaken_ReturnPrivilegeEntity() {
+    void save_AddNewPrivilegeWithNameAlreadyTaken_ThrowPrivilegeExistsException() {
         PrivilegeEntity unsavedPrivilege = createTestPrivilege(null, 0);
 
         assertThrows(PrivilegeExistsException.class, () -> privilegeServiceImpl.save(unsavedPrivilege));
@@ -88,6 +88,8 @@ public class PrivilegeServiceImplIT {
     @Test
     void save_UpdatePrivilegeWithInvalidId_ThrowPrivilegeNotFoundException() {
         privilege.setId(privilege.getId() + 1);
+        privilege.setName("name");
+
         assertThrows(PrivilegeNotFoundException.class, () -> privilegeServiceImpl.save(privilege));
     }
 
