@@ -63,9 +63,7 @@ public class MuscleServiceImpl implements MuscleService {
 
         MuscleEntity muscleSaved = muscleRepository.save(muscle);
 
-        exerciseService.updateMuscleRelation(newExerciseIds,
-                oldExerciseIds,
-                muscleSaved);
+        exerciseService.updateMuscleRelation(newExerciseIds, oldExerciseIds, muscleSaved);
 
         return muscleSaved;
     }
