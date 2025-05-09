@@ -102,7 +102,7 @@ public class PrivilegeServiceImplTest {
     }
 
     @Test
-    void save_UpdatePrivilegeWithInvalidId_ReturnPrivilegeEntity() {
+    void save_UpdatePrivilegeWithInvalidId_ThrowPrivilegeNotFoundException() {
         when(privilegeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
         assertThrows(PrivilegeNotFoundException.class, () -> privilegeServiceImpl.save(privilege));
