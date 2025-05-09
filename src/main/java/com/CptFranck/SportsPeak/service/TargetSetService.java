@@ -16,11 +16,11 @@ public interface TargetSetService {
 
     Set<TargetSetEntity> findMany(Set<Long> ids);
 
-    boolean exists(Long id);
-
-    TargetSetEntity save(TargetSetEntity targetExerciseSet);
+    TargetSetEntity save(TargetSetEntity targetSet, Long targetSetUpdatedId);
 
     void delete(Long id);
 
     void updatePreviousUpdateState(Long id, TargetSetState state);
+
+    boolean exists(Long id);
 }
