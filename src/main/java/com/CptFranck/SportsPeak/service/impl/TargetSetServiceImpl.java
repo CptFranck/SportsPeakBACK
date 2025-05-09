@@ -1,9 +1,13 @@
 package com.CptFranck.SportsPeak.service.impl;
 
+import com.CptFranck.SportsPeak.domain.entity.PerformanceLogEntity;
+import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
 import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
 import com.CptFranck.SportsPeak.repositories.TargetSetRepository;
+import com.CptFranck.SportsPeak.service.PerformanceLogService;
+import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import com.CptFranck.SportsPeak.service.TargetSetService;
 import org.springframework.stereotype.Service;
 
@@ -16,15 +20,16 @@ import java.util.stream.StreamSupport;
 @Service
 public class TargetSetServiceImpl implements TargetSetService {
 
-    TargetSetRepository targetSetRepository;
+    private final TargetSetRepository targetSetRepository;
 
-    public TargetSetServiceImpl(TargetSetRepository targetExerciseSetRepository) {
-        this.targetSetRepository = targetExerciseSetRepository;
-    }
+    private final ProgExerciseService progExerciseService;
 
-    @Override
-    public TargetSetEntity save(TargetSetEntity targetExerciseSet) {
-        return targetSetRepository.save(targetExerciseSet);
+    private final PerformanceLogService performanceLogService;
+
+    public TargetSetServiceImpl(TargetSetRepository targetSetRepository, ProgExerciseService progExerciseService, PerformanceLogService performanceLogService) {
+        this.progExerciseService = progExerciseService;
+        this.targetSetRepository = targetSetRepository;
+        this.performanceLogService = performanceLogService;
     }
 
     @Override
@@ -37,8 +42,8 @@ public class TargetSetServiceImpl implements TargetSetService {
     }
 
     @Override
-    public Optional<TargetSetEntity> findOne(Long id) {
-        return targetSetRepository.findById(id);
+    public TargetSetEntity findOne(Long id) {
+        return targetSetRepository.findById(id).orElseThrow(() -> new TargetSetNotFoundException(id));
     }
 
     @Override
@@ -56,32 +61,55 @@ public class TargetSetServiceImpl implements TargetSetService {
     }
 
     @Override
-    public boolean exists(Long id) {
-        return targetSetRepository.existsById(id);
+    public TargetSetEntity save(TargetSetEntity targetSet) {
+        if (targetSet.getId() == null) {
+            TargetSetEntity targetSetSaved = targetSetRepository.save(targetSet);
+            ProgExerciseEntity progExercise = targetSet.getProgExercise();
+            progExercise.getTargetSets().add(targetSet);
+            progExerciseService.save(progExercise);
+            return targetSetSaved;
+        }
+
+        if (exists(targetSet.getId()))
+            return targetSetRepository.save(targetSet);
+
+        throw new TargetSetNotFoundException(targetSet.getId());
+    }
+
+    @Override
+    public void setTheUpdate(TargetSetEntity targetSet, Long targetSetUpdatedId) {
+        TargetSetEntity targetSetUpdated = this.findOne(targetSetUpdatedId);
+        targetSetUpdated.setTargetSetUpdate(targetSet);
+        targetSetRepository.save(targetSetUpdated);
     }
 
     @Override
     public void delete(Long id) {
-        TargetSetEntity currentTargetSet = targetSetRepository.findById(id).orElseThrow(() -> new TargetSetNotFoundException(id));
+        TargetSetEntity currentTargetSet = this.findOne(id);
+        List<PerformanceLogEntity> performanceLogs = performanceLogService.findAllByTargetSetId(id);
+        performanceLogs.forEach(performanceLog -> performanceLogService.delete(performanceLog.getId()));
+
         Optional<TargetSetEntity> targetSetUpdated = targetSetRepository.findByTargetSetUpdateId(currentTargetSet.getId());
         targetSetUpdated.ifPresent(targetSetEntity -> {
-            TargetSetEntity targetSetUpdatedBuCurrentTargetSet = currentTargetSet.getTargetSetUpdate();
-            currentTargetSet.setTargetSetUpdate(null);
-            targetSetRepository.save(currentTargetSet);
-            targetSetEntity.setTargetSetUpdate(targetSetUpdatedBuCurrentTargetSet);
+            targetSetEntity.setTargetSetUpdate(currentTargetSet.getTargetSetUpdate());
             targetSetRepository.save(targetSetEntity);
         });
         targetSetRepository.delete(currentTargetSet);
     }
 
     @Override
-    public void updatePreviousUpdateState(Long id, TargetSetState state) {
-        Optional<TargetSetEntity> optionalTargetSet = targetSetRepository.findByTargetSetUpdateId(id);
-        if (optionalTargetSet.isPresent()) {
-            TargetSetEntity targetSet = optionalTargetSet.get();
-            targetSet.setState(state);
-            targetSetRepository.save(targetSet);
-            this.updatePreviousUpdateState(targetSet.getId(), state);
-        }
+    public TargetSetEntity updateTargetStates(Long id, TargetSetState state) {
+        TargetSetEntity targetSet = this.findOne(id);
+        targetSet.setState(state);
+        TargetSetEntity targetSetSaved = targetSetRepository.save(targetSet);
+
+        Optional<TargetSetEntity> optionalTargetSet = targetSetRepository.findByTargetSetUpdateId(targetSetSaved.getId());
+        optionalTargetSet.ifPresent(oldTargetSet -> this.updateTargetStates(oldTargetSet.getId(), state));
+        return targetSetSaved;
+    }
+
+    @Override
+    public boolean exists(Long id) {
+        return targetSetRepository.existsById(id);
     }
 }
