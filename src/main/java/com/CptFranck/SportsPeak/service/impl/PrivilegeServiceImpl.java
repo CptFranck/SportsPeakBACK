@@ -1,15 +1,16 @@
 package com.CptFranck.SportsPeak.service.impl;
 
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
+import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeExistsException;
 import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeNotFoundException;
 import com.CptFranck.SportsPeak.repositories.PrivilegeRepository;
 import com.CptFranck.SportsPeak.service.PrivilegeService;
+import com.CptFranck.SportsPeak.service.RoleService;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -19,18 +20,11 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 
     private final PrivilegeRepository privilegeRepository;
 
-    public PrivilegeServiceImpl(PrivilegeRepository privilegeRepository) {
-        this.privilegeRepository = privilegeRepository;
-    }
+    private final RoleService roleService;
 
-    @Override
-    public PrivilegeEntity save(PrivilegeEntity privilege) {
-        Optional<PrivilegeEntity> privilegeOptional = privilegeRepository.findByName(privilege.getName());
-        if (privilegeOptional.isPresent() &&
-                !Objects.equals(privilegeOptional.get().getId(), privilege.getId())) {
-            throw new PrivilegeExistsException();
-        }
-        return privilegeRepository.save(privilege);
+    public PrivilegeServiceImpl(PrivilegeRepository privilegeRepository, RoleService roleService) {
+        this.privilegeRepository = privilegeRepository;
+        this.roleService = roleService;
     }
 
     @Override
@@ -43,8 +37,8 @@ public class PrivilegeServiceImpl implements PrivilegeService {
     }
 
     @Override
-    public Optional<PrivilegeEntity> findOne(Long id) {
-        return privilegeRepository.findById(id);
+    public PrivilegeEntity findOne(Long id) {
+        return privilegeRepository.findById(id).orElseThrow(() -> new PrivilegeNotFoundException(id));
     }
 
     @Override
@@ -57,13 +51,35 @@ public class PrivilegeServiceImpl implements PrivilegeService {
     }
 
     @Override
-    public boolean exists(Long id) {
-        return privilegeRepository.existsById(id);
+    public PrivilegeEntity save(PrivilegeEntity privilege) {
+        Set<Long> oldRoleIds;
+        if (privilege.getId() == null) {
+            privilegeRepository.findByName(privilege.getName()).ifPresent((p) -> {
+                throw new PrivilegeExistsException();
+            });
+            oldRoleIds = Collections.emptySet();
+        } else {
+            oldRoleIds = this.findOne(privilege.getId()).getRoles()
+                    .stream().map(RoleEntity::getId).collect(Collectors.toSet());
+        }
+        Set<Long> newRoleIds = privilege.getRoles()
+                .stream().map(RoleEntity::getId).collect(Collectors.toSet());
+
+        PrivilegeEntity privilegeSave = privilegeRepository.save(privilege);
+
+        roleService.updatePrivilegeRelation(newRoleIds, oldRoleIds, privilegeSave);
+
+        return privilege;
     }
 
     @Override
     public void delete(Long id) {
-        PrivilegeEntity exercise = privilegeRepository.findById(id).orElseThrow(() -> new PrivilegeNotFoundException(id));
+        PrivilegeEntity exercise = this.findOne(id);
         privilegeRepository.delete(exercise);
+    }
+
+    @Override
+    public boolean exists(Long id) {
+        return privilegeRepository.existsById(id);
     }
 }
