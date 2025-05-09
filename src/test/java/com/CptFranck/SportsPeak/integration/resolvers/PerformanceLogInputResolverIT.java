@@ -1,6 +1,7 @@
 package com.CptFranck.SportsPeak.integration.resolvers;
 
 import com.CptFranck.SportsPeak.domain.entity.*;
+import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputNewPerformanceLog;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputPerformanceLog;
 import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
@@ -67,6 +68,13 @@ public class PerformanceLogInputResolverIT {
         PerformanceLogEntity performanceLogSaved = performanceLogInputResolver.resolveInput(newPerformanceLog);
 
         assertPerformanceLogInputAndEntity(newPerformanceLog, performanceLogSaved);
+    }
+
+    @Test
+    void resolveInput_InvalidTargetSetId_ReturnExerciseTypeEntity() {
+        InputPerformanceLog newPerformanceLog = createTestInputPerformanceLog(1L, targetSet.getId() + 1, false);
+
+        Assertions.assertThrows(TargetSetNotFoundException.class, () -> performanceLogInputResolver.resolveInput(newPerformanceLog));
     }
 
     @Test
