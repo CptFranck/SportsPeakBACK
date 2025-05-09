@@ -1,6 +1,7 @@
 package com.CptFranck.SportsPeak.integration.resolvers;
 
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
+import com.CptFranck.SportsPeak.domain.exception.muscle.MuscleNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.muscle.InputMuscle;
 import com.CptFranck.SportsPeak.domain.input.muscle.InputNewMuscle;
 import com.CptFranck.SportsPeak.repositories.MuscleRepository;
@@ -24,7 +25,7 @@ public class MuscleInputResolverIT {
     private MuscleRepository muscleRepository;
 
     @Test
-    void resolveInput_ValidInputNewExerciseType_ReturnExerciseTypeEntity() {
+    void resolveInput_ValidInputNewExerciseType_ReturnMuscleEntity() {
         InputNewMuscle inputNewMuscle = createTestInputNewMuscle();
 
         MuscleEntity muscleSaved = muscleInputResolver.resolveInput(inputNewMuscle);
@@ -33,7 +34,15 @@ public class MuscleInputResolverIT {
     }
 
     @Test
-    void resolveInput_ValidInputExerciseType_ReturnExerciseTypeEntity() {
+    void resolveInput_InvalidMuscleId_ThrowMuscleNotFoundException() {
+        MuscleEntity muscle = muscleRepository.save(createTestMuscle(null));
+        InputMuscle inputMuscle = createTestInputMuscle(muscle.getId() + 1);
+
+        Assertions.assertThrows(MuscleNotFoundException.class, () -> muscleInputResolver.resolveInput(inputMuscle));
+    }
+
+    @Test
+    void resolveInput_ValidInputExerciseType_ReturnMuscleEntity() {
         MuscleEntity muscle = muscleRepository.save(createTestMuscle(null));
         InputMuscle inputMuscle = createTestInputMuscle(muscle.getId());
 
