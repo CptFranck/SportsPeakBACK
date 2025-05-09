@@ -58,12 +58,12 @@ public class PrivilegeServiceImpl implements PrivilegeService {
         });
 
         Set<Long> oldRoleIds;
-        if (privilege.getId() == null) {
+        if (privilege.getId() == null)
             oldRoleIds = Collections.emptySet();
-        } else {
+        else
             oldRoleIds = this.findOne(privilege.getId()).getRoles()
                     .stream().map(RoleEntity::getId).collect(Collectors.toSet());
-        }
+
         Set<Long> newRoleIds = privilege.getRoles()
                 .stream().map(RoleEntity::getId).collect(Collectors.toSet());
 
