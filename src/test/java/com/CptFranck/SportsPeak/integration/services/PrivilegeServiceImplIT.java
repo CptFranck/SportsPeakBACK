@@ -15,7 +15,6 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.createTestPrivilege;
@@ -24,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-public class PrivilegeServiceImplIntTest {
+public class PrivilegeServiceImplIT {
 
     @Autowired
     private PrivilegeRepository privilegeRepository;
@@ -45,7 +44,40 @@ public class PrivilegeServiceImplIntTest {
     }
 
     @Test
-    void PrivilegeService_Save_Success() {
+    void findAll_ValidUse_ReturnListOfPrivilegeEntity() {
+        List<PrivilegeEntity> privilegeFound = privilegeServiceImpl.findAll();
+
+        assertEqualPrivilegeList(List.of(privilege), privilegeFound);
+    }
+
+    @Test
+    void findOne_InvalidPrivilegeId_ThrowPrivilegeNotFoundException() {
+        assertThrows(PrivilegeNotFoundException.class, () -> privilegeServiceImpl.findOne(privilege.getId() + 1));
+    }
+
+    @Test
+    void findOne_ValidPrivilegeId_ReturnPrivilegeEntity() {
+        PrivilegeEntity privilegeFound = privilegeServiceImpl.findOne(privilege.getId());
+
+        assertEqualPrivilege(privilege, privilegeFound);
+    }
+
+    @Test
+    void findMany_ValidPrivilegeIds_ReturnSetOfPrivilegeEntity() {
+        Set<PrivilegeEntity> privilegeFound = privilegeServiceImpl.findMany(Set.of(privilege.getId()));
+
+        assertEqualPrivilegeList(List.of(privilege), privilegeFound.stream().toList());
+    }
+
+    @Test
+    void save_AddNewPrivilegeWithNameAlreadyTaken_ReturnPrivilegeEntity() {
+        PrivilegeEntity unsavedPrivilege = createTestPrivilege(null, 0);
+
+        assertThrows(PrivilegeExistsException.class, () -> privilegeServiceImpl.save(unsavedPrivilege));
+    }
+
+    @Test
+    void save_AddNewPrivilege_ReturnPrivilegeEntity() {
         PrivilegeEntity unsavedPrivilege = createTestPrivilege(null, 1);
 
         PrivilegeEntity privilegeSaved = privilegeServiceImpl.save(unsavedPrivilege);
@@ -54,7 +86,13 @@ public class PrivilegeServiceImplIntTest {
     }
 
     @Test
-    void PrivilegeService_Save_UpdateSuccess() {
+    void save_UpdatePrivilegeWithInvalidId_ThrowPrivilegeNotFoundException() {
+        privilege.setId(privilege.getId() + 1);
+        assertThrows(PrivilegeNotFoundException.class, () -> privilegeServiceImpl.save(privilege));
+    }
+
+    @Test
+    void save_UpdatePrivilege_ReturnPrivilegeEntity() {
         privilege.setName("other privilege name");
         privilegeRepository.save(privilege);
 
@@ -64,49 +102,22 @@ public class PrivilegeServiceImplIntTest {
     }
 
     @Test
-    void PrivilegeService_Save_UnSuccessful() {
-        assertThrows(PrivilegeExistsException.class, () -> privilegeServiceImpl.save(createTestPrivilege(null, 0)));
+    void delete_InvalidPrivilegeId_ThrowPrivilegeNotFoundException() {
+        privilegeRepository.delete(privilege);
+
+        assertThrows(PrivilegeNotFoundException.class, () -> privilegeServiceImpl.delete(privilege.getId()));
     }
 
     @Test
-    void PrivilegeService_FindAll_Success() {
-        List<PrivilegeEntity> privilegeFound = privilegeServiceImpl.findAll();
-
-        assertEqualPrivilegeList(List.of(privilege), privilegeFound);
-    }
-
-    @Test
-    void PrivilegeService_FindOne_Success() {
-        Optional<PrivilegeEntity> privilegeFound = privilegeServiceImpl.findOne(privilege.getId());
-
-        Assertions.assertTrue(privilegeFound.isPresent());
-        assertEqualPrivilege(privilege, privilegeFound.get());
-    }
-
-    @Test
-    void PrivilegeService_FindMany_Success() {
-        Set<PrivilegeEntity> privilegeFound = privilegeServiceImpl.findMany(Set.of(privilege.getId()));
-
-        assertEqualPrivilegeList(List.of(privilege), privilegeFound.stream().toList());
-    }
-
-    @Test
-    void PrivilegeService_Exists_Success() {
-        boolean privilegeFound = privilegeServiceImpl.exists(privilege.getId());
-
-        Assertions.assertTrue(privilegeFound);
-    }
-
-    @Test
-    void PrivilegeService_Delete_Success() {
+    void delete_ValidInput_Void() {
         assertAll(() -> privilegeServiceImpl.delete(privilege.getId()));
     }
 
     @Test
-    void PrivilegeService_Delete_Unsuccessful() {
-        privilegeRepository.delete(privilege);
+    void exists_ValidInput_ReturnTrue() {
+        boolean privilegeFound = privilegeServiceImpl.exists(privilege.getId());
 
-        assertThrows(PrivilegeNotFoundException.class, () -> privilegeServiceImpl.delete(privilege.getId()));
+        Assertions.assertTrue(privilegeFound);
     }
 
     private void assertEqualPrivilegeList(
