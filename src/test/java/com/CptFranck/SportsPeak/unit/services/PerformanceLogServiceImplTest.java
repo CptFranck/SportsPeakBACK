@@ -3,7 +3,6 @@ package com.CptFranck.SportsPeak.unit.services;
 import com.CptFranck.SportsPeak.domain.entity.*;
 import com.CptFranck.SportsPeak.domain.exception.performanceLog.PerformanceLogNotFoundException;
 import com.CptFranck.SportsPeak.repositories.PerformanceLogRepository;
-import com.CptFranck.SportsPeak.service.TargetSetService;
 import com.CptFranck.SportsPeak.service.impl.PerformanceLogServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,9 +34,6 @@ public class PerformanceLogServiceImplTest {
 
     @InjectMocks
     private PerformanceLogServiceImpl performanceLogServiceImpl;
-
-    @Mock
-    private TargetSetService targetSetService;
 
     @Mock
     private PerformanceLogRepository performanceLogRepository;
