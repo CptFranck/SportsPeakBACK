@@ -89,7 +89,7 @@ class ExerciseControllerTest {
     }
 
     @Test
-    void DeleteExercise_ValidInput_ReturnExerciseId() {
+    void deleteExercise_ValidInput_ReturnExerciseId() {
         Long id = exerciseController.deleteExercise(1L);
 
         Assertions.assertEquals(1L, id);
