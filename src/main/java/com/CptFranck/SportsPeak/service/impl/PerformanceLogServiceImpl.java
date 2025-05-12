@@ -1,11 +1,9 @@
 package com.CptFranck.SportsPeak.service.impl;
 
 import com.CptFranck.SportsPeak.domain.entity.PerformanceLogEntity;
-import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.exception.performanceLog.PerformanceLogNotFoundException;
 import com.CptFranck.SportsPeak.repositories.PerformanceLogRepository;
 import com.CptFranck.SportsPeak.service.PerformanceLogService;
-import com.CptFranck.SportsPeak.service.TargetSetService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,12 +14,10 @@ import java.util.stream.StreamSupport;
 @Service
 public class PerformanceLogServiceImpl implements PerformanceLogService {
 
-    private final TargetSetService targetSetService;
 
     private final PerformanceLogRepository performanceLogRepository;
 
-    public PerformanceLogServiceImpl(TargetSetService targetSetService, PerformanceLogRepository performanceLogRepository) {
-        this.targetSetService = targetSetService;
+    public PerformanceLogServiceImpl(PerformanceLogRepository performanceLogRepository) {
         this.performanceLogRepository = performanceLogRepository;
     }
 
@@ -55,13 +51,8 @@ public class PerformanceLogServiceImpl implements PerformanceLogService {
 
     @Override
     public PerformanceLogEntity save(PerformanceLogEntity performanceLog) {
-        if (performanceLog.getId() == null) {
-            PerformanceLogEntity performanceLogSaved = performanceLogRepository.save(performanceLog);
-            TargetSetEntity targetSet = performanceLogSaved.getTargetSet();
-            targetSet.getPerformanceLogs().add(performanceLogSaved);
-            targetSetService.save(targetSet);
-            return performanceLogSaved;
-        }
+        if (performanceLog.getId() == null)
+            return performanceLogRepository.save(performanceLog);
         if (exists(performanceLog.getId()))
             return performanceLogRepository.save(performanceLog);
         throw new PerformanceLogNotFoundException(performanceLog.getId());

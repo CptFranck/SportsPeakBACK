@@ -15,7 +15,7 @@ public interface PerformanceLogService {
 
     List<PerformanceLogEntity> findAllByTargetSetId(Long id);
 
-    PerformanceLogEntity save(PerformanceLogEntity targetExerciseSet);
+    PerformanceLogEntity save(PerformanceLogEntity performanceLog);
 
     void delete(Long id);
 
