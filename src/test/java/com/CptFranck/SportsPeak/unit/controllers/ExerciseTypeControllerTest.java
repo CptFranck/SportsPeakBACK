@@ -7,6 +7,7 @@ import com.CptFranck.SportsPeak.domain.input.exerciseType.InputExerciseType;
 import com.CptFranck.SportsPeak.domain.input.exerciseType.InputNewExerciseType;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.resolvers.ExerciseTypeInputResolver;
+import com.CptFranck.SportsPeak.service.ExerciseManager;
 import com.CptFranck.SportsPeak.service.ExerciseTypeService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +37,9 @@ class ExerciseTypeControllerTest {
 
     @Mock
     private ExerciseTypeService exerciseTypeService;
+
+    @Mock
+    private ExerciseManager exerciseManager;
 
     private ExerciseTypeEntity exerciseType;
     private ExerciseTypeDto exerciseTypeDto;
@@ -69,7 +73,7 @@ class ExerciseTypeControllerTest {
     @Test
     void addExerciseType_ValidInput_ReturnExerciseTypeDto() {
         when(exerciseTypeInputResolver.resolveInput(Mockito.any(InputNewExerciseType.class))).thenReturn(this.exerciseType);
-        when(exerciseTypeService.save(Mockito.any(ExerciseTypeEntity.class))).thenReturn(this.exerciseType);
+        when(exerciseManager.saveExerciseType(Mockito.any(ExerciseTypeEntity.class))).thenReturn(this.exerciseType);
         when(exerciseTypeMapper.mapTo(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseTypeDto);
 
         ExerciseTypeDto exerciseTypeDto = exerciseTypeController.addExerciseType(createTestInputNewExerciseType());
@@ -80,7 +84,7 @@ class ExerciseTypeControllerTest {
     @Test
     void modifyExerciseType_ValidInput_ReturnExerciseTypeDto() {
         when(exerciseTypeInputResolver.resolveInput(Mockito.any(InputExerciseType.class))).thenReturn(this.exerciseType);
-        when(exerciseTypeService.save(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseType);
+        when(exerciseManager.saveExerciseType(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseType);
         when(exerciseTypeMapper.mapTo(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseTypeDto);
 
         ExerciseTypeDto exerciseTypeDto = exerciseTypeController.modifyExerciseType(createTestInputExerciseType(1L));
