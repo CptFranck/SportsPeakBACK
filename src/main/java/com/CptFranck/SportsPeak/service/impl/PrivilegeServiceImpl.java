@@ -1,15 +1,12 @@
 package com.CptFranck.SportsPeak.service.impl;
 
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
-import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeExistsException;
 import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeNotFoundException;
 import com.CptFranck.SportsPeak.repositories.PrivilegeRepository;
 import com.CptFranck.SportsPeak.service.PrivilegeService;
-import com.CptFranck.SportsPeak.service.RoleService;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -21,11 +18,8 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 
     private final PrivilegeRepository privilegeRepository;
 
-    private final RoleService roleService;
-
-    public PrivilegeServiceImpl(PrivilegeRepository privilegeRepository, RoleService roleService) {
+    public PrivilegeServiceImpl(PrivilegeRepository privilegeRepository) {
         this.privilegeRepository = privilegeRepository;
-        this.roleService = roleService;
     }
 
     @Override
@@ -56,22 +50,11 @@ public class PrivilegeServiceImpl implements PrivilegeService {
         privilegeRepository.findByName(privilege.getName()).ifPresent((p) -> {
             if (!Objects.equals(p.getId(), privilege.getId())) throw new PrivilegeExistsException();
         });
-
-        Set<Long> oldRoleIds;
         if (privilege.getId() == null)
-            oldRoleIds = Collections.emptySet();
-        else
-            oldRoleIds = this.findOne(privilege.getId()).getRoles()
-                    .stream().map(RoleEntity::getId).collect(Collectors.toSet());
-
-        Set<Long> newRoleIds = privilege.getRoles()
-                .stream().map(RoleEntity::getId).collect(Collectors.toSet());
-
-        PrivilegeEntity privilegeSave = privilegeRepository.save(privilege);
-
-        roleService.updatePrivilegeRelation(newRoleIds, oldRoleIds, privilegeSave);
-
-        return privilegeSave;
+            return privilegeRepository.save(privilege);
+        if (exists(privilege.getId()))
+            return privilegeRepository.save(privilege);
+        throw new PrivilegeNotFoundException(privilege.getId());
     }
 
     @Override
