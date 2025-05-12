@@ -7,6 +7,7 @@ import com.CptFranck.SportsPeak.domain.input.muscle.InputMuscle;
 import com.CptFranck.SportsPeak.domain.input.muscle.InputNewMuscle;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.resolvers.MuscleInputResolver;
+import com.CptFranck.SportsPeak.service.ExerciseManager;
 import com.CptFranck.SportsPeak.service.MuscleService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +31,9 @@ class MuscleControllerTest {
 
     @Mock
     private MuscleService muscleService;
+
+    @Mock
+    private ExerciseManager exerciseManager;
 
     @Mock
     private MuscleInputResolver muscleInputResolver;
@@ -69,7 +73,7 @@ class MuscleControllerTest {
     @Test
     void addMuscle_ValidInput_ReturnMuscleDto() {
         when(muscleInputResolver.resolveInput(Mockito.any(InputNewMuscle.class))).thenReturn(muscle);
-        when(muscleService.save(Mockito.any(MuscleEntity.class))).thenReturn(muscle);
+        when(exerciseManager.saveMuscle(Mockito.any(MuscleEntity.class))).thenReturn(muscle);
         when(muscleMapper.mapTo(Mockito.any(MuscleEntity.class))).thenReturn(muscleDto);
 
         MuscleDto muscleDto = muscleController.addMuscle(createTestInputNewMuscle());
@@ -80,7 +84,7 @@ class MuscleControllerTest {
     @Test
     void modifyMuscle_ValidInput_ReturnMuscleDto() {
         when(muscleInputResolver.resolveInput(Mockito.any(InputMuscle.class))).thenReturn(muscle);
-        when(muscleService.save(Mockito.any(MuscleEntity.class))).thenReturn(muscle);
+        when(exerciseManager.saveMuscle(Mockito.any(MuscleEntity.class))).thenReturn(muscle);
         when(muscleMapper.mapTo(Mockito.any(MuscleEntity.class))).thenReturn(muscleDto);
 
         MuscleDto muscleDto = muscleController.modifyMuscle(createTestInputMuscle(1L));
