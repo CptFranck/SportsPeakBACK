@@ -1,7 +1,6 @@
 package com.CptFranck.SportsPeak.controller;
 
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
-import com.CptFranck.SportsPeak.domain.exception.muscle.MuscleNotFoundException;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import com.CptFranck.SportsPeak.service.ExerciseTypeService;
 import com.CptFranck.SportsPeak.service.MuscleService;
@@ -88,7 +87,7 @@ public class IllustrationController {
     }
 
     private void updateMuscleIllustrationPath(Long muscleId, String illustrationPath) {
-        MuscleEntity muscle = muscleService.findOne(muscleId).orElseThrow(() -> new MuscleNotFoundException(muscleId));
+        MuscleEntity muscle = muscleService.findOne(muscleId);
         muscle.setIllustrationPath(illustrationPath);
         muscleService.save(muscle);
     }
