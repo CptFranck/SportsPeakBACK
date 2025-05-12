@@ -7,7 +7,7 @@ import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
 import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
 import com.CptFranck.SportsPeak.repositories.TargetSetRepository;
-import com.CptFranck.SportsPeak.service.impl.TargetSetServiceImpl;
+import com.CptFranck.SportsPeak.service.serviceImpl.TargetSetServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,35 +41,20 @@ public class TargetSetServiceImplTest {
     @InjectMocks
     private TargetSetServiceImpl targetSetServiceImpl;
 
-    private UserEntity user;
-
-    private ExerciseEntity exercise;
-
     private ProgExerciseEntity progExercise;
 
     private TargetSetEntity targetSet;
 
     @BeforeEach
     void setUp() {
-        user = createTestUser(1L);
-        exercise = createTestExercise(1L);
+        UserEntity user = createTestUser(1L);
+        ExerciseEntity exercise = createTestExercise(1L);
         progExercise = createTestProgExercise(1L, user, exercise);
         targetSet = createTestTargetSet(1L, progExercise, null);
     }
 
-
     @Test
-    void TargetSetService_Save_Success() {
-        TargetSetEntity unsavedTargetSet = createTestTargetSet(null, progExercise, null);
-        when(targetSetRepository.save(Mockito.any(TargetSetEntity.class))).thenReturn(targetSet);
-
-        TargetSetEntity targetSetSaved = targetSetServiceImpl.save(unsavedTargetSet);
-
-        Assertions.assertEquals(targetSet, targetSetSaved);
-    }
-
-    @Test
-    void TargetSetService_FindAll_Success() {
+    void findAll_ValidUse_ReturnListOfPerformanceLogEntity() {
         List<TargetSetEntity> targetSetList = createTestTargetSetList(true, progExercise);
         when(targetSetRepository.findAll()).thenReturn(targetSetList);
 
@@ -79,17 +64,23 @@ public class TargetSetServiceImplTest {
     }
 
     @Test
-    void TargetSetService_FindOne_Success() {
-        when(targetSetRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
+    void findOne_InvalidPerformanceLogId_ThrowPerformanceLogNotFoundException() {
+        when(targetSetRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        Optional<TargetSetEntity> targetSetFound = targetSetServiceImpl.findOne(targetSet.getId());
-
-        Assertions.assertTrue(targetSetFound.isPresent());
-        Assertions.assertEquals(targetSet, targetSetFound.get());
+        assertThrows(TargetSetNotFoundException.class, () -> targetSetServiceImpl.findOne(targetSet.getId()));
     }
 
     @Test
-    void TargetSetService_FindMany_Success() {
+    void findOne_ValidPerformanceLogId_ReturnPerformanceLogEntity() {
+        when(targetSetRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
+
+        TargetSetEntity targetSetFound = targetSetServiceImpl.findOne(targetSet.getId());
+
+        Assertions.assertEquals(targetSet, targetSetFound);
+    }
+
+    @Test
+    void findMany_ValidPerformanceLogIds_ReturnSetOfPerformanceLogEntity() {
         List<TargetSetEntity> targetSetList = createTestTargetSetList(true, progExercise);
         Set<Long> targetSetIds = targetSetList.stream().map(TargetSetEntity::getId).collect(Collectors.toSet());
         when(targetSetRepository.findAllById(Mockito.anyIterable())).thenReturn(targetSetList);
@@ -99,7 +90,7 @@ public class TargetSetServiceImplTest {
     }
 
     @Test
-    void TargetSetService_FindAllByProgExerciseId_Success() {
+    void findAllByTargetSetId_ValidPerformanceLogIds_ReturnSetOfPerformanceLogEntity() {
         List<TargetSetEntity> targetSetList = createTestTargetSetList(true, progExercise);
         when(targetSetRepository.findAllByProgExerciseId(Mockito.any(Long.class))).thenReturn(targetSetList);
 
@@ -108,42 +99,87 @@ public class TargetSetServiceImplTest {
     }
 
     @Test
-    void TargetSetService_UpdatePreviousUpdateState_Success() {
-        TargetSetEntity targetSetUpdate = createTestTargetSet(2L, progExercise, null);
-        targetSet.setTargetSetUpdate(targetSetUpdate);
-        when(targetSetRepository.findByTargetSetUpdateId(targetSet.getId())).thenReturn(Optional.of(targetSetUpdate));
+    void save_AddNewPerformanceLog_ReturnPerformanceLogEntity() {
+        TargetSetEntity unsavedTargetSet = createTestTargetSet(null, progExercise, null);
+        when(targetSetRepository.save(Mockito.any(TargetSetEntity.class))).thenReturn(targetSet);
 
-        assertAll(() -> targetSetServiceImpl.updatePreviousUpdateState(targetSet.getId(), TargetSetState.HIDDEN));
+        TargetSetEntity targetSetSaved = targetSetServiceImpl.save(unsavedTargetSet);
+
+        Assertions.assertEquals(targetSet, targetSetSaved);
     }
 
     @Test
-    void TargetSetService_UpdatePreviousUpdateState_TargetSetNotFoundSuccess() {
-        TargetSetEntity targetSet = createTestTargetSet(2L, progExercise, null);
-        when(targetSetRepository.findByTargetSetUpdateId(Mockito.any(Long.class))).thenReturn(Optional.empty());
+    void save_UpdatePerformanceLogWithInvalidId_ReturnPerformanceLogEntity() {
+        TargetSetEntity unsavedTargetSet = createTestTargetSet(1L, progExercise, null);
+        when(targetSetRepository.existsById(Mockito.any(Long.class))).thenReturn(false);
 
-        assertAll(() -> targetSetServiceImpl.updatePreviousUpdateState(targetSet.getId(), TargetSetState.HIDDEN));
+        assertThrows(TargetSetNotFoundException.class, () -> targetSetServiceImpl.save(unsavedTargetSet));
     }
 
     @Test
-    void TargetSetService_Exists_Success() {
+    void save_UpdatePerformanceLog_ReturnPerformanceLogEntity() {
+        TargetSetEntity unsavedTargetSet = createTestTargetSet(1L, progExercise, null);
         when(targetSetRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
+        when(targetSetRepository.save(Mockito.any(TargetSetEntity.class))).thenReturn(targetSet);
 
-        boolean targetSetFound = targetSetServiceImpl.exists(targetSet.getId());
+        TargetSetEntity targetSetSaved = targetSetServiceImpl.save(unsavedTargetSet);
 
-        Assertions.assertTrue(targetSetFound);
+        Assertions.assertEquals(targetSet, targetSetSaved);
     }
 
     @Test
-    void TargetSetService_Delete_Success() {
+    void delete_InvalidPerformanceLogId_ThrowPerformanceLogNotFoundException() {
+        when(targetSetRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
+
+        assertThrows(TargetSetNotFoundException.class, () -> targetSetServiceImpl.delete(targetSet.getId()));
+    }
+
+    @Test
+    void delete_ValidInput_Void() {
+        TargetSetEntity targetSetBis = createTestTargetSet(2L, progExercise, null);
+        targetSet.setTargetSetUpdate(targetSetBis);
         when(targetSetRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
+        when(targetSetRepository.findByTargetSetUpdateId(Mockito.any(Long.class))).thenReturn(Optional.of(targetSetBis));
 
         assertAll(() -> targetSetServiceImpl.delete(targetSet.getId()));
     }
 
     @Test
-    void TargetSetService_Delete_Unsuccessful() {
+    void setTheUpdate_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
+        when(targetSetRepository.findById(targetSet.getId())).thenReturn(Optional.empty());
+
+        assertThrows(TargetSetNotFoundException.class, () -> targetSetServiceImpl.setTheUpdate(targetSet, 1L));
+    }
+
+    @Test
+    void setTheUpdate_UpdatePerformanceLog_Void() {
+        when(targetSetRepository.findById(targetSet.getId())).thenReturn(Optional.of(targetSet));
+
+        assertAll(() -> targetSetServiceImpl.setTheUpdate(targetSet, 1L));
+    }
+
+    @Test
+    void updateTargetStates_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
         when(targetSetRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
-        assertThrows(TargetSetNotFoundException.class, () -> targetSetServiceImpl.delete(targetSet.getId()));
+        assertThrows(TargetSetNotFoundException.class, () -> targetSetServiceImpl.updateTargetStates(targetSet.getId(), TargetSetState.HIDDEN));
+    }
+
+    @Test
+    void updateTargetStates_InvalidTargetSetId_() {
+        when(targetSetRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
+        when(targetSetRepository.save(Mockito.any(TargetSetEntity.class))).thenReturn(targetSet);
+        when(targetSetRepository.findByTargetSetUpdateId(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet)).thenReturn(Optional.empty());
+
+        assertAll(() -> targetSetServiceImpl.updateTargetStates(targetSet.getId(), TargetSetState.HIDDEN));
+    }
+
+    @Test
+    void exists_ValidInput_ReturnTrue() {
+        when(targetSetRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
+
+        boolean targetSetFound = targetSetServiceImpl.exists(targetSet.getId());
+
+        Assertions.assertTrue(targetSetFound);
     }
 }
