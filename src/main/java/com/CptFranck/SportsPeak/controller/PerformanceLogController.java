@@ -7,6 +7,7 @@ import com.CptFranck.SportsPeak.domain.input.performanceLog.InputPerformanceLog;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.resolvers.PerformanceLogInputResolver;
 import com.CptFranck.SportsPeak.service.PerformanceLogService;
+import com.CptFranck.SportsPeak.service.TargetSetManager;
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsMutation;
 import com.netflix.graphql.dgs.DgsQuery;
@@ -18,11 +19,16 @@ import java.util.List;
 @DgsComponent
 public class PerformanceLogController {
 
+    private final TargetSetManager targetSetManager;
+
     private final PerformanceLogService performanceLogService;
+
     private final PerformanceLogInputResolver performanceLogInputResolver;
+
     private final Mapper<PerformanceLogEntity, PerformanceLogDto> performanceLogMapper;
 
-    public PerformanceLogController(PerformanceLogService performanceLogService, PerformanceLogInputResolver performanceLogInputResolver, Mapper<PerformanceLogEntity, PerformanceLogDto> performanceLogMapper) {
+    public PerformanceLogController(TargetSetManager targetSetManager, PerformanceLogService performanceLogService, PerformanceLogInputResolver performanceLogInputResolver, Mapper<PerformanceLogEntity, PerformanceLogDto> performanceLogMapper) {
+        this.targetSetManager = targetSetManager;
         this.performanceLogMapper = performanceLogMapper;
         this.performanceLogService = performanceLogService;
         this.performanceLogInputResolver = performanceLogInputResolver;
@@ -49,7 +55,7 @@ public class PerformanceLogController {
     @DgsMutation
     public PerformanceLogDto addPerformanceLog(@InputArgument InputNewPerformanceLog inputNewPerformanceLog) {
         PerformanceLogEntity performanceLog = performanceLogInputResolver.resolveInput(inputNewPerformanceLog);
-        return performanceLogMapper.mapTo(performanceLogService.save(performanceLog));
+        return performanceLogMapper.mapTo(targetSetManager.savePerformanceLog(performanceLog));
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
