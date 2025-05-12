@@ -8,6 +8,7 @@ import com.CptFranck.SportsPeak.domain.input.privilege.InputPrivilege;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.resolvers.PrivilegeInputResolver;
 import com.CptFranck.SportsPeak.service.PrivilegeService;
+import com.CptFranck.SportsPeak.service.RoleManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,10 +33,14 @@ class PrivilegeControllerTest {
     private Mapper<PrivilegeEntity, PrivilegeDto> privilegeMapper;
 
     @Mock
+    private PrivilegeInputResolver privilegeInputResolver;
+
+    @Mock
     private PrivilegeService privilegeService;
 
     @Mock
-    private PrivilegeInputResolver privilegeInputResolver;
+    private RoleManager roleManager;
+
 
     private PrivilegeEntity privilegeEntity;
     private PrivilegeDto privilegeDto;
@@ -69,7 +74,7 @@ class PrivilegeControllerTest {
     @Test
     void addPrivilege_ValidInput_ReturnPrivilegeDto() {
         when(privilegeInputResolver.resolveInput(Mockito.any(InputNewPrivilege.class))).thenReturn(privilegeEntity);
-        when(privilegeService.save(Mockito.any(PrivilegeEntity.class))).thenReturn(privilegeEntity);
+        when(roleManager.savePrivilege(Mockito.any(PrivilegeEntity.class))).thenReturn(privilegeEntity);
         when(privilegeMapper.mapTo(Mockito.any(PrivilegeEntity.class))).thenReturn(privilegeDto);
 
         PrivilegeDto privilegeDto = privilegeController.addPrivilege(createTestInputNewPrivilege());
@@ -80,7 +85,7 @@ class PrivilegeControllerTest {
     @Test
     void modifyPrivilege_ValidInput_ReturnPrivilegeDto() {
         when(privilegeInputResolver.resolveInput(Mockito.any(InputPrivilege.class))).thenReturn(privilegeEntity);
-        when(privilegeService.save(Mockito.any(PrivilegeEntity.class))).thenReturn(privilegeEntity);
+        when(roleManager.savePrivilege(Mockito.any(PrivilegeEntity.class))).thenReturn(privilegeEntity);
         when(privilegeMapper.mapTo(Mockito.any(PrivilegeEntity.class))).thenReturn(privilegeDto);
 
         PrivilegeDto privilegeDto = privilegeController.modifyPrivilege(createTestInputPrivilege(1L));
