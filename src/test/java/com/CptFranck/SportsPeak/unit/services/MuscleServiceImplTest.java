@@ -4,7 +4,6 @@ import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
 import com.CptFranck.SportsPeak.domain.exception.muscle.MuscleNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.muscle.MuscleStillUsedInExerciseException;
 import com.CptFranck.SportsPeak.repositories.MuscleRepository;
-import com.CptFranck.SportsPeak.service.ExerciseService;
 import com.CptFranck.SportsPeak.service.impl.MuscleServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,9 +35,6 @@ public class MuscleServiceImplTest {
 
     @Mock
     private MuscleRepository muscleRepository;
-
-    @Mock
-    private ExerciseService exerciseService;
 
     private MuscleEntity muscle;
 
@@ -95,14 +91,12 @@ public class MuscleServiceImplTest {
 
     @Test
     void save_UpdateMuscleWithInvalidId_ReturnMuscleEntity() {
-        when(muscleRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
-
         Assertions.assertThrows(MuscleNotFoundException.class, () -> muscleServiceImpl.save(muscle));
     }
 
     @Test
     void save_UpdateMuscle_ReturnMuscleEntity() {
-        when(muscleRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(muscle));
+        when(muscleRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
         when(muscleRepository.save(Mockito.any(MuscleEntity.class))).thenReturn(muscle);
 
         MuscleEntity muscleSaved = muscleServiceImpl.save(muscle);
@@ -112,8 +106,6 @@ public class MuscleServiceImplTest {
 
     @Test
     void delete_InvalidMuscleId_ThrowMuscleNotFoundException() {
-        when(muscleRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
-
         assertThrows(MuscleNotFoundException.class, () -> muscleServiceImpl.delete(muscle.getId()));
     }
 
