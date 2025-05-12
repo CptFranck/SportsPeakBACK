@@ -7,6 +7,7 @@ import com.CptFranck.SportsPeak.domain.input.privilege.InputPrivilege;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.resolvers.PrivilegeInputResolver;
 import com.CptFranck.SportsPeak.service.PrivilegeService;
+import com.CptFranck.SportsPeak.service.RoleManager;
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsMutation;
 import com.netflix.graphql.dgs.DgsQuery;
@@ -18,13 +19,16 @@ import java.util.List;
 @DgsComponent
 public class PrivilegeController {
 
+    private final RoleManager roleManager;
+
     private final PrivilegeService privilegeService;
 
     private final PrivilegeInputResolver privilegeInputResolver;
 
     private final Mapper<PrivilegeEntity, PrivilegeDto> privilegeMapper;
 
-    public PrivilegeController(PrivilegeService privilegeService, PrivilegeInputResolver privilegeInputResolver, Mapper<PrivilegeEntity, PrivilegeDto> privilegeMapper) {
+    public PrivilegeController(RoleManager roleManager, PrivilegeService privilegeService, PrivilegeInputResolver privilegeInputResolver, Mapper<PrivilegeEntity, PrivilegeDto> privilegeMapper) {
+        this.roleManager = roleManager;
         this.privilegeMapper = privilegeMapper;
         this.privilegeService = privilegeService;
         this.privilegeInputResolver = privilegeInputResolver;
@@ -47,14 +51,14 @@ public class PrivilegeController {
     @DgsMutation
     public PrivilegeDto addPrivilege(@InputArgument InputNewPrivilege inputNewPrivilege) {
         PrivilegeEntity privilege = privilegeInputResolver.resolveInput(inputNewPrivilege);
-        return privilegeMapper.mapTo(privilegeService.save(privilege));
+        return privilegeMapper.mapTo(roleManager.savePrivilege(privilege));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsMutation
     public PrivilegeDto modifyPrivilege(@InputArgument InputPrivilege inputPrivilege) {
         PrivilegeEntity privilege = privilegeInputResolver.resolveInput(inputPrivilege);
-        return privilegeMapper.mapTo(privilegeService.save(privilege));
+        return privilegeMapper.mapTo(roleManager.savePrivilege(privilege));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
