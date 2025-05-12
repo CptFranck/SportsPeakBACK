@@ -4,7 +4,6 @@ import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.exception.exerciseType.ExerciseTypeNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.exerciseType.ExerciseTypeStillUsedInExerciseException;
 import com.CptFranck.SportsPeak.repositories.ExerciseTypeRepository;
-import com.CptFranck.SportsPeak.service.ExerciseService;
 import com.CptFranck.SportsPeak.service.impl.ExerciseTypeServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,9 +29,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ExerciseTypeServiceImplTest {
-
-    @Mock
-    private ExerciseService exerciseService;
 
     @Mock
     private ExerciseTypeRepository exerciseTypeRepository;
@@ -96,7 +92,6 @@ public class ExerciseTypeServiceImplTest {
     @Test
     void save_UpdateExerciseTypeWithInvalidId_ThrowExerciseTypeNotFoundException() {
         ExerciseTypeEntity unsavedExerciseType = createTestExerciseType(exerciseType.getId() + 1);
-        when(exerciseTypeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
         Assertions.assertThrows(ExerciseTypeNotFoundException.class, () -> exerciseTypeServiceImpl.save(unsavedExerciseType));
     }
@@ -104,7 +99,7 @@ public class ExerciseTypeServiceImplTest {
     @Test
     void save_UpdateExerciseType_ReturnExerciseTypeEntity() {
         ExerciseTypeEntity unsavedExerciseType = createTestExerciseType(exerciseType.getId());
-        when(exerciseTypeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(exerciseType));
+        when(exerciseTypeRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
         when(exerciseTypeRepository.save(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseType);
 
         ExerciseTypeEntity exerciseTypeSaved = exerciseTypeServiceImpl.save(unsavedExerciseType);
