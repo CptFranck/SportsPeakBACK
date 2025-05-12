@@ -9,6 +9,7 @@ import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSetState;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.resolvers.TargetSetInputResolver;
 import com.CptFranck.SportsPeak.service.PerformanceLogService;
+import com.CptFranck.SportsPeak.service.TargetSetManager;
 import com.CptFranck.SportsPeak.service.TargetSetService;
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsMutation;
@@ -21,14 +22,17 @@ import java.util.List;
 @DgsComponent
 public class TargetSetController {
 
+    private final TargetSetManager targetSetManager;
+
     private final TargetSetService targetSetService;
 
     private final TargetSetInputResolver targetSetInputResolver;
 
     private final Mapper<TargetSetEntity, TargetSetDto> targetSetMapper;
 
-    public TargetSetController(TargetSetService targetSetService, Mapper<TargetSetEntity, TargetSetDto> targetSetMapper, PerformanceLogService performanceLogService, TargetSetInputResolver targetSetInputResolver) {
+    public TargetSetController(TargetSetService targetSetService, Mapper<TargetSetEntity, TargetSetDto> targetSetMapper, PerformanceLogService performanceLogService, TargetSetManager targetSetManage, TargetSetInputResolver targetSetInputResolver) {
         this.targetSetMapper = targetSetMapper;
+        this.targetSetManager = targetSetManage;
         this.targetSetService = targetSetService;
         this.targetSetInputResolver = targetSetInputResolver;
     }
@@ -79,7 +83,7 @@ public class TargetSetController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
     public Long deleteTargetSet(@InputArgument Long targetSetId) {
-        targetSetService.delete(targetSetId);
+        targetSetManager.deleteTargetSet(targetSetId);
         return targetSetId;
     }
 }
