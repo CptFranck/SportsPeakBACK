@@ -1,11 +1,9 @@
-package com.CptFranck.SportsPeak.service.impl;
+package com.CptFranck.SportsPeak.service.serviceImpl;
 
-import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
 import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
 import com.CptFranck.SportsPeak.repositories.TargetSetRepository;
-import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import com.CptFranck.SportsPeak.service.TargetSetService;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +18,8 @@ public class TargetSetServiceImpl implements TargetSetService {
 
     private final TargetSetRepository targetSetRepository;
 
-    private final ProgExerciseService progExerciseService;
 
-    public TargetSetServiceImpl(TargetSetRepository targetSetRepository, ProgExerciseService progExerciseService) {
-        this.progExerciseService = progExerciseService;
+    public TargetSetServiceImpl(TargetSetRepository targetSetRepository) {
         this.targetSetRepository = targetSetRepository;
     }
 
@@ -57,17 +53,10 @@ public class TargetSetServiceImpl implements TargetSetService {
 
     @Override
     public TargetSetEntity save(TargetSetEntity targetSet) {
-        if (targetSet.getId() == null) {
-            TargetSetEntity targetSetSaved = targetSetRepository.save(targetSet);
-            ProgExerciseEntity progExercise = targetSet.getProgExercise();
-            progExercise.getTargetSets().add(targetSet);
-            progExerciseService.save(progExercise);
-            return targetSetSaved;
-        }
-
+        if (targetSet.getId() == null)
+            return targetSetRepository.save(targetSet);
         if (exists(targetSet.getId()))
             return targetSetRepository.save(targetSet);
-
         throw new TargetSetNotFoundException(targetSet.getId());
     }
 
