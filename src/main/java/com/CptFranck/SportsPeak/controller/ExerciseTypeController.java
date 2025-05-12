@@ -6,6 +6,7 @@ import com.CptFranck.SportsPeak.domain.input.exerciseType.InputExerciseType;
 import com.CptFranck.SportsPeak.domain.input.exerciseType.InputNewExerciseType;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.resolvers.ExerciseTypeInputResolver;
+import com.CptFranck.SportsPeak.service.ExerciseManager;
 import com.CptFranck.SportsPeak.service.ExerciseTypeService;
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsMutation;
@@ -18,13 +19,16 @@ import java.util.List;
 @DgsComponent
 public class ExerciseTypeController {
 
+    private final ExerciseManager exerciseManager;
+
     private final ExerciseTypeService exerciseTypeService;
 
     private final ExerciseTypeInputResolver exerciseTypeInputResolver;
 
     private final Mapper<ExerciseTypeEntity, ExerciseTypeDto> exerciseTypeMapper;
 
-    public ExerciseTypeController(ExerciseTypeService exerciseTypeService, ExerciseTypeInputResolver exerciseTypeInputResolver, Mapper<ExerciseTypeEntity, ExerciseTypeDto> exerciseMapper) {
+    public ExerciseTypeController(ExerciseManager exerciseManager, ExerciseTypeService exerciseTypeService, ExerciseTypeInputResolver exerciseTypeInputResolver, Mapper<ExerciseTypeEntity, ExerciseTypeDto> exerciseMapper) {
+        this.exerciseManager = exerciseManager;
         this.exerciseTypeMapper = exerciseMapper;
         this.exerciseTypeService = exerciseTypeService;
         this.exerciseTypeInputResolver = exerciseTypeInputResolver;
@@ -44,14 +48,14 @@ public class ExerciseTypeController {
     @DgsMutation
     public ExerciseTypeDto addExerciseType(@InputArgument InputNewExerciseType inputNewExerciseType) {
         ExerciseTypeEntity exerciseType = exerciseTypeInputResolver.resolveInput(inputNewExerciseType);
-        return exerciseTypeMapper.mapTo(exerciseTypeService.save(exerciseType));
+        return exerciseTypeMapper.mapTo(exerciseManager.saveExerciseType(exerciseType));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
     public ExerciseTypeDto modifyExerciseType(@InputArgument InputExerciseType inputExerciseType) {
         ExerciseTypeEntity exerciseType = exerciseTypeInputResolver.resolveInput(inputExerciseType);
-        return exerciseTypeMapper.mapTo(exerciseTypeService.save(exerciseType));
+        return exerciseTypeMapper.mapTo(exerciseManager.saveExerciseType(exerciseType));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
