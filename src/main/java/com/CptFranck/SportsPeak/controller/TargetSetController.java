@@ -8,7 +8,7 @@ import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSetState;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.resolvers.TargetSetInputResolver;
-import com.CptFranck.SportsPeak.service.PerformanceLogService;
+import com.CptFranck.SportsPeak.service.ProgExerciseManager;
 import com.CptFranck.SportsPeak.service.TargetSetManager;
 import com.CptFranck.SportsPeak.service.TargetSetService;
 import com.netflix.graphql.dgs.DgsComponent;
@@ -26,14 +26,17 @@ public class TargetSetController {
 
     private final TargetSetService targetSetService;
 
+    private final ProgExerciseManager progExerciseManager;
+
     private final TargetSetInputResolver targetSetInputResolver;
 
     private final Mapper<TargetSetEntity, TargetSetDto> targetSetMapper;
 
-    public TargetSetController(TargetSetService targetSetService, Mapper<TargetSetEntity, TargetSetDto> targetSetMapper, PerformanceLogService performanceLogService, TargetSetManager targetSetManage, TargetSetInputResolver targetSetInputResolver) {
+    public TargetSetController(TargetSetService targetSetService, Mapper<TargetSetEntity, TargetSetDto> targetSetMapper, TargetSetManager targetSetManage, ProgExerciseManager progExerciseManager, TargetSetInputResolver targetSetInputResolver) {
         this.targetSetMapper = targetSetMapper;
         this.targetSetManager = targetSetManage;
         this.targetSetService = targetSetService;
+        this.progExerciseManager = progExerciseManager;
         this.targetSetInputResolver = targetSetInputResolver;
     }
 
@@ -60,16 +63,14 @@ public class TargetSetController {
     @DgsMutation
     public TargetSetDto addTargetSet(@InputArgument InputNewTargetSet inputNewTargetSet) {
         TargetSetEntity targetSet = targetSetInputResolver.resolveInput(inputNewTargetSet);
-        TargetSetEntity targetSetSaved = targetSetService.save(targetSet);
-        targetSetService.setTheUpdate(targetSetSaved, inputNewTargetSet.getTargetSetUpdateId());
-        return targetSetMapper.mapTo(targetSetSaved);
+        return targetSetMapper.mapTo(progExerciseManager.saveTargetSet(targetSet, inputNewTargetSet.getTargetSetUpdateId()));
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
     public TargetSetDto modifyTargetSet(@InputArgument InputTargetSet inputTargetSet) {
         TargetSetEntity targetSet = targetSetInputResolver.resolveInput(inputTargetSet);
-        return targetSetMapper.mapTo(targetSetService.save(targetSet));
+        return targetSetMapper.mapTo(progExerciseManager.saveTargetSet(targetSet, null));
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
