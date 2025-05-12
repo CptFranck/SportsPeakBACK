@@ -54,7 +54,7 @@ public class TargetSetServiceImplTest {
     }
 
     @Test
-    void findAll_ValidUse_ReturnListOfPerformanceLogEntity() {
+    void findAll_ValidUse_ReturnListOfTargetSetEntity() {
         List<TargetSetEntity> targetSetList = createTestTargetSetList(true, progExercise);
         when(targetSetRepository.findAll()).thenReturn(targetSetList);
 
@@ -64,14 +64,14 @@ public class TargetSetServiceImplTest {
     }
 
     @Test
-    void findOne_InvalidPerformanceLogId_ThrowPerformanceLogNotFoundException() {
+    void findOne_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
         when(targetSetRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
         assertThrows(TargetSetNotFoundException.class, () -> targetSetServiceImpl.findOne(targetSet.getId()));
     }
 
     @Test
-    void findOne_ValidPerformanceLogId_ReturnPerformanceLogEntity() {
+    void findOne_ValidTargetSetId_ReturnTargetSetEntity() {
         when(targetSetRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
 
         TargetSetEntity targetSetFound = targetSetServiceImpl.findOne(targetSet.getId());
@@ -80,7 +80,7 @@ public class TargetSetServiceImplTest {
     }
 
     @Test
-    void findMany_ValidPerformanceLogIds_ReturnSetOfPerformanceLogEntity() {
+    void findMany_ValidTargetSetIds_ReturnSetOfTargetSetEntity() {
         List<TargetSetEntity> targetSetList = createTestTargetSetList(true, progExercise);
         Set<Long> targetSetIds = targetSetList.stream().map(TargetSetEntity::getId).collect(Collectors.toSet());
         when(targetSetRepository.findAllById(Mockito.anyIterable())).thenReturn(targetSetList);
@@ -90,7 +90,7 @@ public class TargetSetServiceImplTest {
     }
 
     @Test
-    void findAllByTargetSetId_ValidPerformanceLogIds_ReturnSetOfPerformanceLogEntity() {
+    void findAllByTargetSetId_ValidTargetSetIds_ReturnSetOfTargetSetEntity() {
         List<TargetSetEntity> targetSetList = createTestTargetSetList(true, progExercise);
         when(targetSetRepository.findAllByProgExerciseId(Mockito.any(Long.class))).thenReturn(targetSetList);
 
@@ -99,7 +99,7 @@ public class TargetSetServiceImplTest {
     }
 
     @Test
-    void save_AddNewPerformanceLog_ReturnPerformanceLogEntity() {
+    void save_AddNewTargetSet_ReturnTargetSetEntity() {
         TargetSetEntity unsavedTargetSet = createTestTargetSet(null, progExercise, null);
         when(targetSetRepository.save(Mockito.any(TargetSetEntity.class))).thenReturn(targetSet);
 
@@ -109,7 +109,7 @@ public class TargetSetServiceImplTest {
     }
 
     @Test
-    void save_UpdatePerformanceLogWithInvalidId_ReturnPerformanceLogEntity() {
+    void save_UpdateTargetSetWithInvalidId_ReturnTargetSetEntity() {
         TargetSetEntity unsavedTargetSet = createTestTargetSet(1L, progExercise, null);
         when(targetSetRepository.existsById(Mockito.any(Long.class))).thenReturn(false);
 
@@ -117,7 +117,7 @@ public class TargetSetServiceImplTest {
     }
 
     @Test
-    void save_UpdatePerformanceLog_ReturnPerformanceLogEntity() {
+    void save_UpdateTargetSet_ReturnTargetSetEntity() {
         TargetSetEntity unsavedTargetSet = createTestTargetSet(1L, progExercise, null);
         when(targetSetRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
         when(targetSetRepository.save(Mockito.any(TargetSetEntity.class))).thenReturn(targetSet);
@@ -128,7 +128,7 @@ public class TargetSetServiceImplTest {
     }
 
     @Test
-    void delete_InvalidPerformanceLogId_ThrowPerformanceLogNotFoundException() {
+    void delete_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
         when(targetSetRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
         assertThrows(TargetSetNotFoundException.class, () -> targetSetServiceImpl.delete(targetSet.getId()));
@@ -152,7 +152,7 @@ public class TargetSetServiceImplTest {
     }
 
     @Test
-    void setTheUpdate_UpdatePerformanceLog_Void() {
+    void setTheUpdate_UpdateTargetSet_Void() {
         when(targetSetRepository.findById(targetSet.getId())).thenReturn(Optional.of(targetSet));
 
         assertAll(() -> targetSetServiceImpl.setTheUpdate(targetSet, 1L));
