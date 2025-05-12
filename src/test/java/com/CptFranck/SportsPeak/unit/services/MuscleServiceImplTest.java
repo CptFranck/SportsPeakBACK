@@ -4,7 +4,7 @@ import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
 import com.CptFranck.SportsPeak.domain.exception.muscle.MuscleNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.muscle.MuscleStillUsedInExerciseException;
 import com.CptFranck.SportsPeak.repositories.MuscleRepository;
-import com.CptFranck.SportsPeak.service.impl.MuscleServiceImpl;
+import com.CptFranck.SportsPeak.service.serviceImpl.MuscleServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
