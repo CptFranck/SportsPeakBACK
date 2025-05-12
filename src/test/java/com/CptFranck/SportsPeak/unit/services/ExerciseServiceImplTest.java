@@ -3,7 +3,7 @@ package com.CptFranck.SportsPeak.unit.services;
 import com.CptFranck.SportsPeak.domain.entity.*;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
 import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
-import com.CptFranck.SportsPeak.service.impl.ExerciseServiceImpl;
+import com.CptFranck.SportsPeak.service.serviceImpl.ExerciseServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

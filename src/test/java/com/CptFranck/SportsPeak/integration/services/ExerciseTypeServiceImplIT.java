@@ -6,7 +6,7 @@ import com.CptFranck.SportsPeak.domain.exception.exerciseType.ExerciseTypeNotFou
 import com.CptFranck.SportsPeak.domain.exception.exerciseType.ExerciseTypeStillUsedInExerciseException;
 import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
 import com.CptFranck.SportsPeak.repositories.ExerciseTypeRepository;
-import com.CptFranck.SportsPeak.service.impl.ExerciseTypeServiceImpl;
+import com.CptFranck.SportsPeak.service.serviceImpl.ExerciseTypeServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

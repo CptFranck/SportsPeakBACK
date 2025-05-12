@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.service.impl;
+package com.CptFranck.SportsPeak.service.serviceImpl;
 
 import com.CptFranck.SportsPeak.config.storage.StorageProperties;
 import com.CptFranck.SportsPeak.domain.exception.StorageException;
