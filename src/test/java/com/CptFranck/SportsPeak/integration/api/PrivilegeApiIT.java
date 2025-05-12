@@ -173,8 +173,8 @@ class PrivilegeApiIT {
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyPrivilegeQuery, "data.getPrivilegeById", variables));
 
-        Assertions.assertTrue(exception.getMessage().contains("PrivilegeExistsException"));
-        Assertions.assertTrue(exception.getMessage().contains("A privilege with this name already exists"));
+        Assertions.assertTrue(exception.getMessage().contains("PrivilegeNotFoundException"));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The privilege with the id %s has not been found", privilege.getId() + 1)));
     }
 
     @Test
