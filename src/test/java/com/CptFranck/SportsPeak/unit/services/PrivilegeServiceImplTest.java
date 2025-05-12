@@ -5,7 +5,6 @@ import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeExistsExcept
 import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeNotFoundException;
 import com.CptFranck.SportsPeak.repositories.PrivilegeRepository;
 import com.CptFranck.SportsPeak.service.impl.PrivilegeServiceImpl;
-import com.CptFranck.SportsPeak.service.impl.RoleServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,9 +31,6 @@ public class PrivilegeServiceImplTest {
 
     @InjectMocks
     private PrivilegeServiceImpl privilegeServiceImpl;
-
-    @Mock
-    private RoleServiceImpl roleService;
 
     @Mock
     private PrivilegeRepository privilegeRepository;
@@ -103,7 +99,8 @@ public class PrivilegeServiceImplTest {
 
     @Test
     void save_UpdatePrivilegeWithInvalidId_ThrowPrivilegeNotFoundException() {
-        when(privilegeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
+        when(privilegeRepository.findByName(Mockito.any(String.class))).thenReturn(Optional.of(privilege));
+        when(privilegeRepository.existsById(Mockito.any(Long.class))).thenReturn(false);
 
         assertThrows(PrivilegeNotFoundException.class, () -> privilegeServiceImpl.save(privilege));
     }
@@ -111,7 +108,7 @@ public class PrivilegeServiceImplTest {
     @Test
     void save_UpdatePrivilege_ReturnPrivilegeEntity() {
         when(privilegeRepository.findByName(Mockito.any(String.class))).thenReturn(Optional.of(privilege));
-        when(privilegeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(privilege));
+        when(privilegeRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
         when(privilegeRepository.save(Mockito.any(PrivilegeEntity.class))).thenReturn(privilege);
 
         PrivilegeEntity privilegeSaved = privilegeServiceImpl.save(privilege);
