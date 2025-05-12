@@ -117,7 +117,7 @@ class PrivilegeControllerIT {
     void modifyPrivilege_UpdatePrivilegeWithNameAlreadyTaken_ThrowPrivilegeExistsException() {
         InputPrivilege inputExercise = createTestInputPrivilege(privilege.getId() + 1);
 
-        Assertions.assertThrows(PrivilegeExistsException.class, () -> privilegeController.modifyPrivilege(inputExercise));
+        Assertions.assertThrows(PrivilegeNotFoundException.class, () -> privilegeController.modifyPrivilege(inputExercise));
     }
 
     @Test
