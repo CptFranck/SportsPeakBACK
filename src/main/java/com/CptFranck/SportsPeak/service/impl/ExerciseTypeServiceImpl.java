@@ -1,15 +1,12 @@
 package com.CptFranck.SportsPeak.service.impl;
 
-import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.exception.exerciseType.ExerciseTypeNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.exerciseType.ExerciseTypeStillUsedInExerciseException;
 import com.CptFranck.SportsPeak.repositories.ExerciseTypeRepository;
-import com.CptFranck.SportsPeak.service.ExerciseService;
 import com.CptFranck.SportsPeak.service.ExerciseTypeService;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -18,13 +15,9 @@ import java.util.stream.StreamSupport;
 @Service
 public class ExerciseTypeServiceImpl implements ExerciseTypeService {
 
-    private final ExerciseService exerciseService;
-
     private final ExerciseTypeRepository exerciseTypeRepository;
 
-
-    public ExerciseTypeServiceImpl(ExerciseService exerciseService, ExerciseTypeRepository exerciseTypeRepository) {
-        this.exerciseService = exerciseService;
+    public ExerciseTypeServiceImpl(ExerciseTypeRepository exerciseTypeRepository) {
         this.exerciseTypeRepository = exerciseTypeRepository;
     }
 
@@ -53,24 +46,11 @@ public class ExerciseTypeServiceImpl implements ExerciseTypeService {
 
     @Override
     public ExerciseTypeEntity save(ExerciseTypeEntity exerciseType) {
-        Set<Long> oldExerciseType;
         if (exerciseType.getId() == null)
-            oldExerciseType = Collections.emptySet();
-        else
-            oldExerciseType = this.findOne(exerciseType.getId()).getExercises()
-                    .stream().map(ExerciseEntity::getId).collect(Collectors.toSet());
-
-        Set<Long> newExerciseType = exerciseType.getExercises()
-                .stream().map(ExerciseEntity::getId).collect(Collectors.toSet());
-
-        ExerciseTypeEntity exerciseTypeSaved = exerciseTypeRepository.save(exerciseType);
-
-        exerciseService.updateExerciseTypeRelation(
-                newExerciseType,
-                oldExerciseType,
-                exerciseTypeSaved);
-
-        return exerciseTypeSaved;
+            return exerciseTypeRepository.save(exerciseType);
+        if (this.exists(exerciseType.getId()))
+            return exerciseTypeRepository.save(exerciseType);
+        throw new ExerciseTypeNotFoundException(exerciseType.getId());
     }
 
     @Override
