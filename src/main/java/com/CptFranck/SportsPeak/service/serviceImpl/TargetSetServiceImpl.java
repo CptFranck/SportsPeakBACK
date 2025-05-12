@@ -18,7 +18,6 @@ public class TargetSetServiceImpl implements TargetSetService {
 
     private final TargetSetRepository targetSetRepository;
 
-
     public TargetSetServiceImpl(TargetSetRepository targetSetRepository) {
         this.targetSetRepository = targetSetRepository;
     }
@@ -61,13 +60,6 @@ public class TargetSetServiceImpl implements TargetSetService {
     }
 
     @Override
-    public void setTheUpdate(TargetSetEntity targetSet, Long targetSetUpdatedId) {
-        TargetSetEntity targetSetUpdated = this.findOne(targetSetUpdatedId);
-        targetSetUpdated.setTargetSetUpdate(targetSet);
-        targetSetRepository.save(targetSetUpdated);
-    }
-
-    @Override
     public void delete(Long id) {
         TargetSetEntity currentTargetSet = this.findOne(id);
         Optional<TargetSetEntity> targetSetUpdated = targetSetRepository.findByTargetSetUpdateId(currentTargetSet.getId());
@@ -76,6 +68,13 @@ public class TargetSetServiceImpl implements TargetSetService {
             targetSetRepository.save(targetSetEntity);
         });
         targetSetRepository.delete(currentTargetSet);
+    }
+
+    @Override
+    public void setTheUpdate(TargetSetEntity targetSet, Long targetSetUpdatedId) {
+        TargetSetEntity targetSetUpdated = this.findOne(targetSetUpdatedId);
+        targetSetUpdated.setTargetSetUpdate(targetSet);
+        targetSetRepository.save(targetSetUpdated);
     }
 
     @Override

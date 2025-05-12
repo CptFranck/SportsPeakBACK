@@ -18,9 +18,9 @@ public interface TargetSetService {
 
     TargetSetEntity save(TargetSetEntity targetSet);
 
-    void setTheUpdate(TargetSetEntity targetSet, Long targetSetUpdatedId);
-
     void delete(Long id);
+
+    void setTheUpdate(TargetSetEntity targetSet, Long targetSetUpdatedId);
 
     TargetSetEntity updateTargetStates(Long id, TargetSetState state);
 
