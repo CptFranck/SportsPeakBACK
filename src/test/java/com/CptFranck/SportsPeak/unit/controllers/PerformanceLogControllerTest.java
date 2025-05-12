@@ -8,6 +8,7 @@ import com.CptFranck.SportsPeak.domain.input.performanceLog.InputPerformanceLog;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.resolvers.PerformanceLogInputResolver;
 import com.CptFranck.SportsPeak.service.PerformanceLogService;
+import com.CptFranck.SportsPeak.service.TargetSetManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,9 @@ class PerformanceLogControllerTest {
 
     @Mock
     private PerformanceLogService performanceLogService;
+
+    @Mock
+    private TargetSetManager targetSetManager;
 
     private PerformanceLogEntity performanceLog;
     private PerformanceLogDto performanceLogDto;
@@ -87,7 +91,7 @@ class PerformanceLogControllerTest {
     @Test
     void addPerformanceLog_ValidInput_ReturnPerformanceLogDto() {
         when(performanceLogInputResolver.resolveInput(Mockito.any(InputNewPerformanceLog.class))).thenReturn(performanceLog);
-        when(performanceLogService.save(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLog);
+        when(targetSetManager.savePerformanceLog(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLog);
         when(performanceLogMapper.mapTo(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLogDto);
 
         PerformanceLogDto performanceLogDto = performanceLogController.addPerformanceLog(
