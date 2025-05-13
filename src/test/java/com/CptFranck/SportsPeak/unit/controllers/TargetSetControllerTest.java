@@ -102,7 +102,7 @@ class TargetSetControllerTest {
         when(progExerciseManager.saveTargetSet(Mockito.any(TargetSetEntity.class), Mockito.any(Long.class))).thenReturn(targetSet);
         when(TargetSetMapper.mapTo(Mockito.any(TargetSetEntity.class))).thenReturn(targetSetDto);
 
-        TargetSetDto targetSetDto = targetSetController.addTargetSet(createTestInputNewTargetSet(1L, 1L));
+        TargetSetDto targetSetDto = targetSetController.addTargetSet(createTestInputNewTargetSet(1L, 1L, false));
 
         Assertions.assertEquals(this.targetSetDto, targetSetDto);
     }
@@ -113,7 +113,7 @@ class TargetSetControllerTest {
         when(progExerciseManager.saveTargetSet(Mockito.any(TargetSetEntity.class), Mockito.isNull())).thenReturn(targetSet);
         when(TargetSetMapper.mapTo(Mockito.any(TargetSetEntity.class))).thenReturn(targetSetDto);
 
-        TargetSetDto targetSetDto = targetSetController.modifyTargetSet(createTestInputTargetSet(1L));
+        TargetSetDto targetSetDto = targetSetController.modifyTargetSet(createTestInputTargetSet(1L, false));
 
         Assertions.assertEquals(this.targetSetDto, targetSetDto);
     }
@@ -129,8 +129,7 @@ class TargetSetControllerTest {
         when(targetSetService.updateTargetStates(Mockito.any(Long.class), Mockito.any(TargetSetState.class))).thenReturn(targetSet);
         when(TargetSetMapper.mapTo(Mockito.any(TargetSetEntity.class))).thenReturn(targetSetDto);
 
-        List<TargetSetDto> targetSetDtos = targetSetController.modifyTargetSetState(
-                createTestInputInputTargetSetState(1L, false));
+        List<TargetSetDto> targetSetDtos = targetSetController.modifyTargetSetState(createTestInputInputTargetSetState(1L, false));
 
         Assertions.assertEquals(List.of(targetSetDto), targetSetDtos);
     }
