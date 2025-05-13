@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.integration.services;
+package com.CptFranck.SportsPeak.integration.services.managers;
 
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeExistsException;
