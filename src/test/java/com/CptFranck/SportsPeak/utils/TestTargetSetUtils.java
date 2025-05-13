@@ -72,16 +72,18 @@ public class TestTargetSetUtils {
         );
     }
 
-    public static InputNewTargetSet createTestInputNewTargetSet(Long progExerciseId, Long targetSetUpdateId) {
+    public static InputNewTargetSet createTestInputNewTargetSet(Long progExerciseId, Long targetSetUpdateId, boolean wrongLabel) {
         LocalDateTime creationDate = LocalDateTime.now();
         Duration effortTime = Duration.ofHours(0).plusMinutes(0).plusSeconds(5);
         Duration restTime = Duration.ofHours(0).plusMinutes(4).plusSeconds(0);
+        String label = wrongLabel ? VisibilityLabel.PRIVATE.label : WeightUnit.KILOGRAMME.label;
+
         return new InputNewTargetSet(
                 1,
                 5,
                 10,
                 0f,
-                WeightUnit.KILOGRAMME.label,
+                label,
                 InputDuration.DurationToInputDuration(effortTime),
                 InputDuration.DurationToInputDuration(restTime),
                 creationDate,
@@ -90,16 +92,18 @@ public class TestTargetSetUtils {
         );
     }
 
-    public static InputTargetSet createTestInputTargetSet(Long id) {
+    public static InputTargetSet createTestInputTargetSet(Long id, boolean wrongLabel) {
         Duration effortTime = Duration.ofHours(0).plusMinutes(0).plusSeconds(5);
         Duration restTime = Duration.ofHours(0).plusMinutes(4).plusSeconds(0);
+        String label = wrongLabel ? VisibilityLabel.PRIVATE.label : WeightUnit.KILOGRAMME.label;
+
         return new InputTargetSet(
                 id,
                 1,
                 5,
                 10,
                 0f,
-                WeightUnit.KILOGRAMME.label,
+                label,
                 InputDuration.DurationToInputDuration(effortTime),
                 InputDuration.DurationToInputDuration(restTime)
         );
