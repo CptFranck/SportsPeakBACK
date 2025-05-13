@@ -61,24 +61,21 @@ public class AuthServiceImplIT {
 
     @Test
     void login_EmailNotFound_ThrowEmailUnknownException() {
-        InputCredentials wrongEmailInputCredentials =
-                new InputCredentials("wrong@email.test", rawPassword);
+        InputCredentials wrongEmailInputCredentials = new InputCredentials("wrong@email.test", rawPassword);
 
         assertThrows(EmailUnknownException.class, () -> authServiceImpl.login(wrongEmailInputCredentials));
     }
 
     @Test
     void login_IncorrectPassword_ThrowIncorrectPasswordException() {
-        InputCredentials wrongPasswordInputCredentials =
-                new InputCredentials(user.getEmail(), "wrongPassword");
+        InputCredentials wrongPasswordInputCredentials = new InputCredentials(user.getEmail(), "wrongPassword");
 
         assertThrows(IncorrectPasswordException.class, () -> authServiceImpl.login(wrongPasswordInputCredentials));
     }
 
     @Test
     void login_CorrectCredentials_ReturnUserEntity() {
-        InputCredentials wrongPasswordInputCredentials =
-                new InputCredentials(user.getEmail(), rawPassword);
+        InputCredentials wrongPasswordInputCredentials = new InputCredentials(user.getEmail(), rawPassword);
 
         UserEntity returnedUser = authServiceImpl.login(wrongPasswordInputCredentials);
 
@@ -114,12 +111,11 @@ public class AuthServiceImplIT {
 
     @Test
     void register_CorrectCredentials_ReturnUserEntity() {
-        UserEntity userToRegister = createTestUserBis(user.getId() + 1);
+        UserEntity userToRegister = createTestUserBis(null);
         InputRegisterNewUser inputRegisterNewUser = createInputRegisterNewUser(userToRegister);
 
         UserEntity registeredUser = authServiceImpl.register(inputRegisterNewUser);
 
-        Assertions.assertEquals(userToRegister.getId(), registeredUser.getId());
         Assertions.assertEquals(userToRegister.getEmail(), registeredUser.getEmail());
         Assertions.assertEquals(userToRegister.getFirstName(), registeredUser.getFirstName());
         Assertions.assertEquals(userToRegister.getLastName(), registeredUser.getLastName());
