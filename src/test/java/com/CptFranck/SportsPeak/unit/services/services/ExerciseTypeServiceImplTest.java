@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.unit.services;
+package com.CptFranck.SportsPeak.unit.services.services;
 
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.exception.exerciseType.ExerciseTypeNotFoundException;
