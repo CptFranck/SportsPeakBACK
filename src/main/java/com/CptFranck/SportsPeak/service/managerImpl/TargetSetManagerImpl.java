@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.service.impl;
+package com.CptFranck.SportsPeak.service.managerImpl;
 
 import com.CptFranck.SportsPeak.domain.entity.PerformanceLogEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
