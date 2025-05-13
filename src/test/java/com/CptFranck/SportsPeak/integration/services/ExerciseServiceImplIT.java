@@ -70,7 +70,9 @@ public class ExerciseServiceImplIT {
 
     @Test
     void findOne_InvalidExerciseId_ThrowExerciseNotFoundException() {
-        Assertions.assertThrows(ExerciseNotFoundException.class, () -> exerciseServiceImpl.findOne(exercise.getId() + exerciseBis.getId() + 1));
+        exerciseRepository.delete(exercise);
+
+        Assertions.assertThrows(ExerciseNotFoundException.class, () -> exerciseServiceImpl.findOne(exercise.getId()));
     }
 
     @Test
@@ -99,7 +101,8 @@ public class ExerciseServiceImplIT {
     @Test
     void update_UpdateExerciseWithInvalidId_ThrowExerciseNotFoundException() {
         ExerciseEntity exercise = this.exercise;
-        exercise.setId(exercise.getId() + exerciseBis.getId() + 1);
+        exercise.setId(exercise.getId());
+        exerciseRepository.delete(exercise);
 
         Assertions.assertThrows(ExerciseNotFoundException.class, () -> exerciseServiceImpl.save(exercise));
     }

@@ -77,7 +77,9 @@ public class PerformanceLogServiceImplIT {
 
     @Test
     void findOne_InvalidPerformanceLogId_ThrowPerformanceLogNotFoundException() {
-        assertThrows(PerformanceLogNotFoundException.class, () -> performanceLogServiceImpl.findOne(performanceLog.getId() + 1));
+        performanceLogRepository.delete(performanceLog);
+
+        assertThrows(PerformanceLogNotFoundException.class, () -> performanceLogServiceImpl.findOne(performanceLog.getId()));
     }
 
     @Test
@@ -112,7 +114,8 @@ public class PerformanceLogServiceImplIT {
 
     @Test
     void save_UpdatePerformanceLogWithInvalidId_ReturnPerformanceLogEntity() {
-        PerformanceLogEntity unsavedPerformanceLog = createTestPerformanceLog(performanceLog.getId() + 1, targetSet);
+        PerformanceLogEntity unsavedPerformanceLog = createTestPerformanceLog(performanceLog.getId(), targetSet);
+        performanceLogRepository.delete(performanceLog);
 
         assertThrows(PerformanceLogNotFoundException.class, () -> performanceLogServiceImpl.save(unsavedPerformanceLog));
     }

@@ -59,7 +59,9 @@ public class MuscleServiceImplIT {
 
     @Test
     void findOne_InvalidMuscleId_ThrowMuscleNotFoundException() {
-        assertThrows(MuscleNotFoundException.class, () -> muscleServiceImpl.findOne(muscle.getId() + 1));
+        muscleRepository.delete(muscle);
+
+        assertThrows(MuscleNotFoundException.class, () -> muscleServiceImpl.findOne(muscle.getId()));
     }
 
     @Test
@@ -86,9 +88,9 @@ public class MuscleServiceImplIT {
     }
 
     @Test
-    void save_UpdateMuscleWithInvalidId_ThrowExerciseTypeNotFoundException() {
-        MuscleEntity unsavedMuscle = createTestMuscle(muscle.getId() + 1);
-
+    void save_UpdateMuscleWithInvalidId_ThrowMuscleNotFoundException() {
+        MuscleEntity unsavedMuscle = createTestMuscle(muscle.getId());
+        muscleRepository.delete(muscle);
         Assertions.assertThrows(MuscleNotFoundException.class, () -> muscleServiceImpl.save(unsavedMuscle));
     }
 

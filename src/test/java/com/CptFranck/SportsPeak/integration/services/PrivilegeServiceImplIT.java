@@ -52,7 +52,9 @@ public class PrivilegeServiceImplIT {
 
     @Test
     void findOne_InvalidPrivilegeId_ThrowPrivilegeNotFoundException() {
-        assertThrows(PrivilegeNotFoundException.class, () -> privilegeServiceImpl.findOne(privilege.getId() + 1));
+        privilegeRepository.delete(privilege);
+
+        assertThrows(PrivilegeNotFoundException.class, () -> privilegeServiceImpl.findOne(privilege.getId()));
     }
 
     @Test
@@ -94,8 +96,7 @@ public class PrivilegeServiceImplIT {
 
     @Test
     void save_UpdatePrivilegeWithInvalidId_ThrowPrivilegeNotFoundException() {
-        privilege.setId(privilege.getId() + 1);
-        privilege.setName("name");
+        privilegeRepository.delete(privilege);
 
         assertThrows(PrivilegeNotFoundException.class, () -> privilegeServiceImpl.save(privilege));
     }
