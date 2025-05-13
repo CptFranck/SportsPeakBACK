@@ -88,13 +88,15 @@ class TargetSetControllerIT {
 
     @Test
     void getTargetSetById_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
-        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> targetSetController.getTargetSetById(targetSet.getId() + 1));
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> targetSetController.getTargetSetById(targetSet.getId()));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void getTargetSetById_InvalidTargetSetId_ThrowsTargetSetNotFoundException() {
-        Assertions.assertThrows(TargetSetNotFoundException.class, () -> targetSetController.getTargetSetById(targetSet.getId() + 1));
+        targetSetRepository.delete(targetSet);
+
+        Assertions.assertThrows(TargetSetNotFoundException.class, () -> targetSetController.getTargetSetById(targetSet.getId()));
     }
 
     @Test
@@ -256,7 +258,9 @@ class TargetSetControllerIT {
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void deleteTargetSet_InvalidTargetSetId_ThrowsTargetSetNotFoundException() {
-        Assertions.assertThrows(TargetSetNotFoundException.class, () -> targetSetController.deleteTargetSet(targetSet.getId() + 1));
+        targetSetRepository.delete(targetSet);
+
+        Assertions.assertThrows(TargetSetNotFoundException.class, () -> targetSetController.deleteTargetSet(targetSet.getId()));
     }
 
     @Test
