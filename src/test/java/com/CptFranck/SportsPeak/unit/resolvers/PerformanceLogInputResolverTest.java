@@ -1,6 +1,7 @@
 package com.CptFranck.SportsPeak.unit.resolvers;
 
 import com.CptFranck.SportsPeak.domain.entity.*;
+import com.CptFranck.SportsPeak.domain.exception.LabelMatchNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputNewPerformanceLog;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputPerformanceLog;
 import com.CptFranck.SportsPeak.resolvers.PerformanceLogInputResolver;
@@ -42,7 +43,14 @@ public class PerformanceLogInputResolverTest {
     }
 
     @Test
-    void resolveInput_ValidInputNewPerformanceLog_ReturnMuscleEntity() {
+    void resolveInput_InvalidNewInputLabel_ThrowLabelMatchNotFoundException() {
+        InputNewPerformanceLog inputNewPerformanceLog = createTestInputNewPerformanceLog(targetSet.getId(), true);
+
+        Assertions.assertThrows(LabelMatchNotFoundException.class, () -> performanceLogInputResolver.resolveInput(inputNewPerformanceLog));
+    }
+
+    @Test
+    void resolveInput_ValidInputNewPerformanceLog_ReturnPerformanceLogEntity() {
         InputNewPerformanceLog inputNewPerformanceLog = createTestInputNewPerformanceLog(targetSet.getId(), false);
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(targetSet);
 
@@ -52,7 +60,14 @@ public class PerformanceLogInputResolverTest {
     }
 
     @Test
-    void resolveInput_ValidInputPerformanceLog_ReturnMuscleEntity() {
+    void resolveInput_InvalidInputLabel_ThrowLabelMatchNotFoundException() {
+        InputPerformanceLog inputNewPerformanceLog = createTestInputPerformanceLog(1L, targetSet.getId(), true);
+
+        Assertions.assertThrows(LabelMatchNotFoundException.class, () -> performanceLogInputResolver.resolveInput(inputNewPerformanceLog));
+    }
+
+    @Test
+    void resolveInput_ValidInputPerformanceLog_ReturnPerformanceLogEntity() {
         InputPerformanceLog inputPerformanceLog = createTestInputPerformanceLog(1L, targetSet.getId(), false);
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(targetSet);
 
