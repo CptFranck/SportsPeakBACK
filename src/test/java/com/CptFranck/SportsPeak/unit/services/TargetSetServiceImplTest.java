@@ -166,7 +166,7 @@ public class TargetSetServiceImplTest {
     }
 
     @Test
-    void updateTargetStates_InvalidTargetSetId_() {
+    void updateTargetStates_InvalidTargetSetId_ReturnTargetSetEntity() {
         when(targetSetRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet));
         when(targetSetRepository.save(Mockito.any(TargetSetEntity.class))).thenReturn(targetSet);
         when(targetSetRepository.findByTargetSetUpdateId(Mockito.any(Long.class))).thenReturn(Optional.of(targetSet)).thenReturn(Optional.empty());
