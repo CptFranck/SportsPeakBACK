@@ -29,7 +29,7 @@ public class ExerciseTypeInputResolverTest {
     private ExerciseTypeInputResolver exerciseTypeInputResolver;
 
     @Test
-    void resolveInput_ValidInputNewExerciseType_ReturnExerciseEntity() {
+    void resolveInput_ValidInputNewExerciseType_ReturnExerciseTypeEntity() {
         InputNewExerciseType inputNewExercise = createTestInputNewExerciseType();
 
         when(exerciseService.findMany(Mockito.anySet())).thenReturn(new HashSet<>());
@@ -40,7 +40,7 @@ public class ExerciseTypeInputResolverTest {
     }
 
     @Test
-    void resolveInput_ValidInputExerciseType_ReturnExerciseEntity() {
+    void resolveInput_ValidInputExerciseType_ReturnExerciseTypeEntity() {
         InputExerciseType inputExerciseType = createTestInputExerciseType(1L);
 
         when(exerciseService.findMany(Mockito.anySet())).thenReturn(new HashSet<>());
