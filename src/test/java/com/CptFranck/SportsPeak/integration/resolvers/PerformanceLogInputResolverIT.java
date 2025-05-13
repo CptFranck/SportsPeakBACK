@@ -63,6 +63,13 @@ public class PerformanceLogInputResolverIT {
     }
 
     @Test
+    void resolveInput_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
+        InputNewPerformanceLog newPerformanceLog = createTestInputPerformanceLog(null, targetSet.getId() + 1, false);
+
+        Assertions.assertThrows(TargetSetNotFoundException.class, () -> performanceLogInputResolver.resolveInput(newPerformanceLog));
+    }
+
+    @Test
     void resolveInput_InvalidNewInputLabel_ThrowLabelMatchNotFoundException() {
         InputNewPerformanceLog newPerformanceLog = createTestInputNewPerformanceLog(targetSet.getId(), true);
 
@@ -70,7 +77,7 @@ public class PerformanceLogInputResolverIT {
     }
 
     @Test
-    void resolveInput_ValidInputNewPerformanceLog_ReturnExerciseTypeEntity() {
+    void resolveInput_ValidInputNewPerformanceLog_ReturnPerformanceLogEntity() {
         InputNewPerformanceLog newPerformanceLog = createTestInputNewPerformanceLog(targetSet.getId(), false);
 
         PerformanceLogEntity performanceLogSaved = performanceLogInputResolver.resolveInput(newPerformanceLog);
@@ -86,14 +93,7 @@ public class PerformanceLogInputResolverIT {
     }
 
     @Test
-    void resolveInput_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
-        InputPerformanceLog newPerformanceLog = createTestInputPerformanceLog(1L, targetSet.getId() + 1, false);
-
-        Assertions.assertThrows(TargetSetNotFoundException.class, () -> performanceLogInputResolver.resolveInput(newPerformanceLog));
-    }
-
-    @Test
-    void resolveInput_ValidInputPerformanceLog_ReturnExerciseTypeEntity() {
+    void resolveInput_ValidInputPerformanceLog_ReturnPerformanceLogEntity() {
         InputPerformanceLog newPerformanceLog = createTestInputPerformanceLog(1L, targetSet.getId(), false);
 
         PerformanceLogEntity performanceLogSaved = performanceLogInputResolver.resolveInput(newPerformanceLog);
