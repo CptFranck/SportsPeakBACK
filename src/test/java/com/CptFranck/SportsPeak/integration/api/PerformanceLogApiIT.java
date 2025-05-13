@@ -90,13 +90,14 @@ class PerformanceLogApiIT {
 
     @Test
     void getPerformanceLogById_InvalidPerformanceLogId_ThrowPerformanceLogNotFoundException() {
-        variables.put("id", performanceLog.getId() + 1);
+        variables.put("id", performanceLog.getId());
+        performanceLogRepository.delete(performanceLog);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(getPerformanceLogByIdQuery, "data.getPerformanceLogById", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("PerformanceLogNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The performanceLog with the id %s has not been found", performanceLog.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The performanceLog with the id %s has not been found", performanceLog.getId())));
     }
 
     @Test
@@ -137,9 +138,10 @@ class PerformanceLogApiIT {
     @Test
     void addPerformanceLog_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         variables.put("inputNewPerformanceLog", objectMapper.convertValue(
-                createTestInputNewPerformanceLog(targetSet.getId() + 1, false),
+                createTestInputNewPerformanceLog(targetSet.getId(), false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
+        performanceLogRepository.delete(performanceLog);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(addPerformanceLogQuery, "data.addPerformanceLog", variables));
@@ -167,15 +169,17 @@ class PerformanceLogApiIT {
     @WithMockUser(username = "user", roles = "USER")
     void addPerformanceLog_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
         variables.put("inputNewPerformanceLog", objectMapper.convertValue(
-                createTestInputNewPerformanceLog(targetSet.getId() + 1, false),
+                createTestInputNewPerformanceLog(targetSet.getId(), false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
+        performanceLogRepository.delete(performanceLog);
+        targetSetRepository.delete(targetSet);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(addPerformanceLogQuery, "data.addPerformanceLog", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("TargetSetNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The targetSet with the id %s has not been found", targetSet.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The targetSet with the id %s has not been found", targetSet.getId())));
     }
 
     @Test
@@ -223,29 +227,32 @@ class PerformanceLogApiIT {
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void modifyPerformanceLog_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
-        InputPerformanceLog inputPerformanceLog = createTestInputPerformanceLog(performanceLog.getId(), targetSet.getId() + 1, false);
+        InputPerformanceLog inputPerformanceLog = createTestInputPerformanceLog(performanceLog.getId(), targetSet.getId(), false);
         variables.put("inputPerformanceLog", objectMapper.convertValue(inputPerformanceLog, new TypeReference<LinkedHashMap<String, Object>>() {
         }));
+        performanceLogRepository.delete(performanceLog);
+        targetSetRepository.delete(targetSet);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyPerformanceLogQuery, "data.modifyPerformanceLog", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("TargetSetNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The targetSet with the id %s has not been found", targetSet.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The targetSet with the id %s has not been found", targetSet.getId())));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void modifyPerformanceLog_InvalidPerformanceLogId_ThrowPerformanceLogNotFoundException() {
-        InputPerformanceLog inputPerformanceLog = createTestInputPerformanceLog(performanceLog.getId() + 1, targetSet.getId(), false);
+        InputPerformanceLog inputPerformanceLog = createTestInputPerformanceLog(performanceLog.getId(), targetSet.getId(), false);
         variables.put("inputPerformanceLog", objectMapper.convertValue(inputPerformanceLog, new TypeReference<LinkedHashMap<String, Object>>() {
         }));
+        performanceLogRepository.delete(performanceLog);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyPerformanceLogQuery, "data.modifyPerformanceLog", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("PerformanceLogNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The performanceLog with the id %s has not been found", performanceLog.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The performanceLog with the id %s has not been found", performanceLog.getId())));
     }
 
     @Test
@@ -277,13 +284,14 @@ class PerformanceLogApiIT {
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void deletePerformanceLog_InvalidPerformanceLogIf_ThrowPerformanceLogNotFoundException() {
-        variables.put("performanceLogId", performanceLog.getId() + 1);
+        variables.put("performanceLogId", performanceLog.getId());
+        performanceLogRepository.delete(performanceLog);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(deletePerformanceLogQuery, "data.deletePerformanceLog", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("PerformanceLogNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The performanceLog with the id %s has not been found", performanceLog.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The performanceLog with the id %s has not been found", performanceLog.getId())));
     }
 
     @Test

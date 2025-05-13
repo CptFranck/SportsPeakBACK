@@ -85,13 +85,14 @@ class PrivilegeApiIT {
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void getPrivilegeById_InvalidPrivilegeId_ThrowPrivilegeNotFoundException() {
-        variables.put("id", privilege.getId() + 1);
+        variables.put("id", privilege.getId());
+        privilegeRepository.delete(privilege);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(getPrivilegeByIdQuery, "data.getPrivilegeById", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("PrivilegeNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The privilege with the id %s has not been found", privilege.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The privilege with the id %s has not been found", privilege.getId())));
     }
 
     @Test
@@ -167,30 +168,30 @@ class PrivilegeApiIT {
     @WithMockUser(username = "user", roles = "ADMIN")
     void modifyPrivilege_UpdatePrivilegeWithNameAlreadyTaken_ThrowPrivilegeExistsException() {
         variables.put("inputPrivilege", objectMapper.convertValue(
-                createTestInputPrivilege(privilege.getId() + 1), new TypeReference<LinkedHashMap<String, Object>>() {
+                createTestInputPrivilege(privilege.getId()), new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
+        privilegeRepository.delete(privilege);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyPrivilegeQuery, "data.getPrivilegeById", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("PrivilegeNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The privilege with the id %s has not been found", privilege.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The privilege with the id %s has not been found", privilege.getId())));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void modifyPrivilege_InvalidPrivilegeId_ThrowPrivilegeNotFoundException() {
         variables.put("inputPrivilege", objectMapper.convertValue(
-                createTestInputPrivilege(privilege.getId() + 1), new TypeReference<LinkedHashMap<String, Object>>() {
+                createTestInputPrivilege(privilege.getId()), new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
-        privilege.setName("name");
-        privilegeRepository.save(privilege);
+        privilegeRepository.delete(privilege);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyPrivilegeQuery, "data.getPrivilegeById", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("PrivilegeNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The privilege with the id %s has not been found", privilege.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The privilege with the id %s has not been found", privilege.getId())));
     }
 
     @Test
@@ -224,13 +225,14 @@ class PrivilegeApiIT {
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void deletePrivilege_InvalidPrivilegeId_ThrowPrivilegeNotFoundException() {
-        variables.put("privilegeId", privilege.getId() + 1);
+        variables.put("privilegeId", privilege.getId());
+        privilegeRepository.delete(privilege);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(deletePrivilegeQuery, "data.deletePrivilege", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("PrivilegeNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The privilege with the id %s has not been found", privilege.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The privilege with the id %s has not been found", privilege.getId())));
 
     }
 

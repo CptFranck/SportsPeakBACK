@@ -70,13 +70,14 @@ class ExerciseTypeApiIT {
 
     @Test
     void getExerciseTypeById_InvalidExerciseTypeId_ThrowExerciseTypeNotFoundException() {
-        variables.put("id", exerciseType.getId() + 1);
+        variables.put("id", exerciseType.getId());
+        exerciseTypeRepository.delete(exerciseType);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(getExerciseTypeByIdQuery, "data.getExerciseTypeById", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("ExerciseTypeNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The exerciseType with the id %s has not been found", exerciseType.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The exerciseType with the id %s has not been found", exerciseType.getId())));
     }
 
     @Test
@@ -136,14 +137,15 @@ class ExerciseTypeApiIT {
     @WithMockUser(username = "admin", roles = "ADMIN")
     void modifyExerciseType_InvalidExerciseTypeId_ThrowExerciseTypeNotFoundException() {
         variables.put("inputExerciseType", objectMapper.convertValue(
-                createTestInputExerciseType(exerciseType.getId() + 1), new TypeReference<LinkedHashMap<String, Object>>() {
+                createTestInputExerciseType(exerciseType.getId()), new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
+        exerciseTypeRepository.delete(exerciseType);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyExerciseTypeQuery, "data.modifyExerciseType", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("ExerciseTypeNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The exerciseType with the id %s has not been found", exerciseType.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The exerciseType with the id %s has not been found", exerciseType.getId())));
     }
 
     @Test
@@ -175,13 +177,14 @@ class ExerciseTypeApiIT {
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
     void deleteExerciseType_InvalidExerciseTypeId_ThrowExerciseTypeNotFoundException() {
-        variables.put("exerciseTypeId", exerciseType.getId() + 1);
+        variables.put("exerciseTypeId", exerciseType.getId());
+        exerciseTypeRepository.delete(exerciseType);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(deleteExerciseTypeQuery, "data.deleteExerciseType", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("ExerciseTypeNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The exerciseType with the id %s has not been found", exerciseType.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The exerciseType with the id %s has not been found", exerciseType.getId())));
     }
 
     @Test

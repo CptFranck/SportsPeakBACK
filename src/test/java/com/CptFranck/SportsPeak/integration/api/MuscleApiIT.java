@@ -71,13 +71,14 @@ class MuscleApiIT {
 
     @Test
     void getMuscleById_InvalidMuscleId_ThrowMuscleNotFoundException() {
-        variables.put("id", muscle.getId() + 1);
+        variables.put("id", muscle.getId());
+        muscleRepository.delete(muscle);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(getMuscleByIdQuery, "data.getMuscleById", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("MuscleNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The muscle with id %s has not been found", muscle.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The muscle with id %s has not been found", muscle.getId())));
     }
 
     @Test
@@ -136,14 +137,15 @@ class MuscleApiIT {
     @WithMockUser(username = "admin", roles = "ADMIN")
     void modifyMuscle_InvalidMuscleId_ThrowMuscleNotFoundException() {
         variables.put("inputMuscle", objectMapper.convertValue(
-                createTestInputMuscle(muscle.getId() + 1), new TypeReference<LinkedHashMap<String, Object>>() {
+                createTestInputMuscle(muscle.getId()), new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
+        muscleRepository.delete(muscle);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyMuscleQuery, "data.modifyMuscle", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("MuscleNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The muscle with id %s has not been found", muscle.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The muscle with id %s has not been found", muscle.getId())));
     }
 
     @Test
@@ -175,13 +177,14 @@ class MuscleApiIT {
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
     void deleteMuscle_InvalidMuscleId_ThrowMuscleNotFoundException() {
-        variables.put("muscleId", muscle.getId() + 1);
+        variables.put("muscleId", muscle.getId());
+        muscleRepository.delete(muscle);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(deleteMuscleQuery, "data.deleteMuscle", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("MuscleNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The muscle with id %s has not been found", muscle.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The muscle with id %s has not been found", muscle.getId())));
     }
 
     @Test
