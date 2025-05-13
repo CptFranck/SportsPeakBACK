@@ -64,7 +64,10 @@ public class TargetSetServiceImpl implements TargetSetService {
         TargetSetEntity currentTargetSet = this.findOne(id);
         Optional<TargetSetEntity> targetSetUpdated = targetSetRepository.findByTargetSetUpdateId(currentTargetSet.getId());
         targetSetUpdated.ifPresent(targetSetEntity -> {
-            targetSetEntity.setTargetSetUpdate(currentTargetSet.getTargetSetUpdate());
+            TargetSetEntity targetSetUpdatedBuCurrentTargetSet = currentTargetSet.getTargetSetUpdate();
+            currentTargetSet.setTargetSetUpdate(null);
+            targetSetRepository.save(currentTargetSet);
+            targetSetEntity.setTargetSetUpdate(targetSetUpdatedBuCurrentTargetSet);
             targetSetRepository.save(targetSetEntity);
         });
         targetSetRepository.delete(currentTargetSet);
