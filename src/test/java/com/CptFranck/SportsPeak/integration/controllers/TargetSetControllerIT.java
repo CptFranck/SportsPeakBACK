@@ -140,6 +140,14 @@ class TargetSetControllerIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
+    void addTargetSet_InvalidInputLabel_ThrowsLabelMatchNotFoundException() {
+        InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), null, true);
+
+        Assertions.assertThrows(LabelMatchNotFoundException.class, () -> targetSetController.addTargetSet(inputNewTargetSet));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "USER")
     void addTargetSet_ValidInput_ReturnTargetSetDto() {
         InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), null, false);
 
@@ -188,6 +196,14 @@ class TargetSetControllerIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
+    void modifyTargetSet_InvalidInputLabel_ThrowsLabelMatchNotFoundException() {
+        InputTargetSet inputNewTargetSet = createTestInputTargetSet(targetSet.getId(), true);
+
+        Assertions.assertThrows(LabelMatchNotFoundException.class, () -> targetSetController.modifyTargetSet(inputNewTargetSet));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "USER")
     void modifyTargetSet_ValidInput_ReturnTargetSetDto() {
         InputTargetSet inputTargetSet = createTestInputTargetSet(targetSet.getId(), false);
 
@@ -215,7 +231,7 @@ class TargetSetControllerIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void modifyTargetSetState_InvalidLabelInput_ThrowLabelMatchNotFoundException() {
+    void modifyTargetSetState_InvalidInputLabel_ThrowsLabelMatchNotFoundException() {
         InputTargetSetState inputTargetSetState = createTestInputInputTargetSetState(targetSet.getId(), true);
 
         Assertions.assertThrows(LabelMatchNotFoundException.class, () -> targetSetController.modifyTargetSetState(inputTargetSetState));
