@@ -68,7 +68,9 @@ class PrivilegeControllerIT {
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void getPrivilegeById_InvalidPrivilegeId_ThrowPrivilegeNotFoundException() {
-        Assertions.assertThrows(PrivilegeNotFoundException.class, () -> privilegeController.getPrivilegeById(privilege.getId() + 1));
+        privilegeRepository.delete(privilege);
+
+        Assertions.assertThrows(PrivilegeNotFoundException.class, () -> privilegeController.getPrivilegeById(privilege.getId()));
     }
 
     @Test
@@ -103,7 +105,6 @@ class PrivilegeControllerIT {
 
         assertPrivilegeDtoAndInput(inputNewPrivilege, exerciseDto);
     }
-
 
     @Test
     void modifyPrivilege_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
@@ -148,8 +149,9 @@ class PrivilegeControllerIT {
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void deletePrivilege_InvalidPrivilegeId_ThrowPrivilegeNotFoundException() {
-        Assertions.assertThrows(PrivilegeNotFoundException.class,
-                () -> privilegeController.deletePrivilege(privilege.getId() + 1));
+        privilegeRepository.delete(privilege);
+
+        Assertions.assertThrows(PrivilegeNotFoundException.class, () -> privilegeController.deletePrivilege(privilege.getId()));
     }
 
     @Test

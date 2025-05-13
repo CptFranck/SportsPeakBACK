@@ -84,8 +84,10 @@ class PerformanceLogControllerIT {
 
     @Test
     void getPerformanceLogById_InvalidPerformanceLogId_ThrowPerformanceLogNotFoundException() {
+        performanceLogRepository.delete(performanceLog);
+
         Assertions.assertThrows(PerformanceLogNotFoundException.class,
-                () -> performanceLogController.getPerformanceLogById(performanceLog.getId() + 1));
+                () -> performanceLogController.getPerformanceLogById(performanceLog.getId()));
     }
 
     @Test
@@ -129,7 +131,9 @@ class PerformanceLogControllerIT {
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void addPerformanceLog_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
-        InputNewPerformanceLog inputNewPerformanceLog = createTestInputNewPerformanceLog(targetSet.getId() + 1, false);
+        performanceLogRepository.delete(performanceLog);
+        targetSetRepository.delete(targetSet);
+        InputNewPerformanceLog inputNewPerformanceLog = createTestInputNewPerformanceLog(targetSet.getId(), false);
 
         Assertions.assertThrows(TargetSetNotFoundException.class,
                 () -> performanceLogController.addPerformanceLog(inputNewPerformanceLog));
@@ -165,16 +169,18 @@ class PerformanceLogControllerIT {
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void modifyPerformanceLog_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
-        InputPerformanceLog inputPerformanceLog = createTestInputPerformanceLog(performanceLog.getId(), targetSet.getId() + 1, false);
+        performanceLogRepository.delete(performanceLog);
+        targetSetRepository.delete(targetSet);
+        InputPerformanceLog inputPerformanceLog = createTestInputPerformanceLog(performanceLog.getId(), targetSet.getId(), false);
 
-        Assertions.assertThrows(TargetSetNotFoundException.class,
-                () -> performanceLogController.modifyPerformanceLog(inputPerformanceLog));
+        Assertions.assertThrows(TargetSetNotFoundException.class, () -> performanceLogController.modifyPerformanceLog(inputPerformanceLog));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void modifyPerformanceLog_InvalidPerformanceLogId_ThrowPerformanceLogNotFoundException() {
-        InputPerformanceLog inputPerformanceLog = createTestInputPerformanceLog(performanceLog.getId() + 1, targetSet.getId(), false);
+        performanceLogRepository.delete(performanceLog);
+        InputPerformanceLog inputPerformanceLog = createTestInputPerformanceLog(performanceLog.getId(), targetSet.getId(), false);
 
         Assertions.assertThrows(PerformanceLogNotFoundException.class,
                 () -> performanceLogController.modifyPerformanceLog(inputPerformanceLog));
@@ -198,9 +204,10 @@ class PerformanceLogControllerIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void deletePerformanceLog_InvalidPerformanceLogIf_ThrowPerformanceLogNotFoundException() {
-        Assertions.assertThrows(PerformanceLogNotFoundException.class,
-                () -> performanceLogController.deletePerformanceLog(performanceLog.getId() + 1));
+    void deletePerformanceLog_InvalidPerformanceLogId_ThrowPerformanceLogNotFoundException() {
+        performanceLogRepository.delete(performanceLog);
+
+        Assertions.assertThrows(PerformanceLogNotFoundException.class, () -> performanceLogController.deletePerformanceLog(performanceLog.getId()));
     }
 
     @Test

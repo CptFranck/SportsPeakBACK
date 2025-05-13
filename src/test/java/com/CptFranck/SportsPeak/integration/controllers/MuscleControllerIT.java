@@ -61,7 +61,9 @@ class MuscleControllerIT {
 
     @Test
     void getMuscleById_InvalidMuscleId_ThrowMuscleNotFoundException() {
-        Assertions.assertThrows(MuscleNotFoundException.class, () -> muscleController.getMuscleById(muscle.getId() + 1));
+        muscleRepository.delete(muscle);
+
+        Assertions.assertThrows(MuscleNotFoundException.class, () -> muscleController.getMuscleById(muscle.getId()));
     }
 
     @Test
@@ -98,7 +100,8 @@ class MuscleControllerIT {
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void modifyMuscle_InvalidMuscleId_ThrowMuscleNotFoundException() {
-        InputMuscle inputMuscle = createTestInputMuscle(muscle.getId() + 1);
+        InputMuscle inputMuscle = createTestInputMuscle(muscle.getId());
+        muscleRepository.delete(muscle);
 
         Assertions.assertThrows(MuscleNotFoundException.class, () -> muscleController.modifyMuscle(inputMuscle));
     }
@@ -131,7 +134,9 @@ class MuscleControllerIT {
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void deleteMuscle_InvalidMuscleId_ThrowMuscleNotFoundException() {
-        Assertions.assertThrows(MuscleNotFoundException.class, () -> muscleController.deleteMuscle(muscle.getId() + 1));
+        muscleRepository.delete(muscle);
+
+        Assertions.assertThrows(MuscleNotFoundException.class, () -> muscleController.deleteMuscle(muscle.getId()));
     }
 
     @Test

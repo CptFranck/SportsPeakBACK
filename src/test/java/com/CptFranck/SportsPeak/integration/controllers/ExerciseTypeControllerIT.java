@@ -63,8 +63,9 @@ class ExerciseTypeControllerIT {
 
     @Test
     void getExerciseTypeById_InvalidExerciseTypeId_ThrowExerciseTypeNotFoundException() {
-        Assertions.assertThrows(ExerciseTypeNotFoundException.class,
-                () -> exerciseTypeController.getExerciseTypeById(exerciseType.getId() + 1));
+        exerciseTypeRepository.delete(exerciseType);
+
+        Assertions.assertThrows(ExerciseTypeNotFoundException.class, () -> exerciseTypeController.getExerciseTypeById(exerciseType.getId()));
     }
 
     @Test
@@ -103,7 +104,8 @@ class ExerciseTypeControllerIT {
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void modifyExerciseType_InvalidExerciseTypeId_ThrowExerciseTypeNotFoundException() {
-        InputExerciseType inputExerciseType = createTestInputExerciseType(exerciseType.getId() + 1);
+        InputExerciseType inputExerciseType = createTestInputExerciseType(exerciseType.getId());
+        exerciseTypeRepository.delete(exerciseType);
 
         Assertions.assertThrows(ExerciseTypeNotFoundException.class,
                 () -> exerciseTypeController.modifyExerciseType(inputExerciseType));
@@ -138,8 +140,9 @@ class ExerciseTypeControllerIT {
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void deleteExerciseType_InvalidExerciseTypeId_ThrowExerciseTypeNotFoundException() {
-        Assertions.assertThrows(ExerciseTypeNotFoundException.class,
-                () -> exerciseTypeController.deleteExerciseType(exerciseType.getId() + 1));
+        exerciseTypeRepository.delete(exerciseType);
+
+        Assertions.assertThrows(ExerciseTypeNotFoundException.class, () -> exerciseTypeController.deleteExerciseType(exerciseType.getId()));
     }
 
     @Test
