@@ -50,22 +50,22 @@ public class TargetSetInputResolverTest {
 
     @Test
     void resolveInput_ValidInputNewPerformanceLog_ReturnMuscleEntity() {
-        InputNewTargetSet newTargetSet = createTestInputNewTargetSet(progExercise.getId(), null);
+        InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), null);
         when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(progExercise);
 
-        TargetSetEntity performanceLogSaved = targetSetInputResolver.resolveInput(newTargetSet);
+        TargetSetEntity performanceLogSaved = targetSetInputResolver.resolveInput(inputNewTargetSet);
 
-        assertPerformanceLogInputAndEntity(newTargetSet, performanceLogSaved);
+        assertPerformanceLogInputAndEntity(inputNewTargetSet, performanceLogSaved);
     }
 
     @Test
     void resolveInput_ValidInputPerformanceLog_ReturnMuscleEntity() {
-        InputTargetSet newTargetSet = createTestInputTargetSet(progExercise.getId());
+        InputTargetSet inputTargetSet = createTestInputTargetSet(progExercise.getId());
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(targetSet);
 
-        TargetSetEntity targetSetSaved = targetSetInputResolver.resolveInput(newTargetSet);
+        TargetSetEntity targetSetSaved = targetSetInputResolver.resolveInput(inputTargetSet);
 
-        assertPerformanceLogInputAndEntity(newTargetSet, targetSetSaved);
+        assertPerformanceLogInputAndEntity(inputTargetSet, targetSetSaved);
     }
 
     private void assertPerformanceLogInputAndEntity(AbstractTargetSetInput expectedTargetSet, TargetSetEntity actualTargetSet) {

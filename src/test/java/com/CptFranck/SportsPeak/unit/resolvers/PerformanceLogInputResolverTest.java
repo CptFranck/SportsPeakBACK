@@ -43,23 +43,23 @@ public class PerformanceLogInputResolverTest {
 
     @Test
     void resolveInput_ValidInputNewPerformanceLog_ReturnMuscleEntity() {
-        InputNewPerformanceLog newPerformanceLog = createTestInputNewPerformanceLog(targetSet.getId(), false);
+        InputNewPerformanceLog inputNewPerformanceLog = createTestInputNewPerformanceLog(targetSet.getId(), false);
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(targetSet);
 
-        PerformanceLogEntity performanceLogSaved = performanceLogInputResolver.resolveInput(newPerformanceLog);
+        PerformanceLogEntity performanceLogSaved = performanceLogInputResolver.resolveInput(inputNewPerformanceLog);
 
-        assertPerformanceLogInputAndEntity(newPerformanceLog, performanceLogSaved);
+        assertPerformanceLogInputAndEntity(inputNewPerformanceLog, performanceLogSaved);
     }
 
     @Test
     void resolveInput_ValidInputPerformanceLog_ReturnMuscleEntity() {
-        InputPerformanceLog newPerformanceLog = createTestInputPerformanceLog(1L, targetSet.getId(), false);
+        InputPerformanceLog inputPerformanceLog = createTestInputPerformanceLog(1L, targetSet.getId(), false);
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(targetSet);
 
-        PerformanceLogEntity performanceLogSaved = performanceLogInputResolver.resolveInput(newPerformanceLog);
+        PerformanceLogEntity performanceLogSaved = performanceLogInputResolver.resolveInput(inputPerformanceLog);
 
-        Assertions.assertEquals(newPerformanceLog.getId(), performanceLogSaved.getId());
-        assertPerformanceLogInputAndEntity(newPerformanceLog, performanceLogSaved);
+        Assertions.assertEquals(inputPerformanceLog.getId(), performanceLogSaved.getId());
+        assertPerformanceLogInputAndEntity(inputPerformanceLog, performanceLogSaved);
     }
 
     private void assertPerformanceLogInputAndEntity(InputNewPerformanceLog expectedPerformanceLog, PerformanceLogEntity actualPerformanceLog) {
