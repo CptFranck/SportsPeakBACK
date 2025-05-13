@@ -5,7 +5,6 @@ import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.service.PerformanceLogService;
 import com.CptFranck.SportsPeak.service.TargetSetManager;
 import com.CptFranck.SportsPeak.service.TargetSetService;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,7 +34,6 @@ public class TargetSetManagerImpl implements TargetSetManager {
     }
 
     @Override
-    @Transactional
     public void deleteTargetSet(Long id) {
         List<PerformanceLogEntity> performanceLogs = performanceLogService.findAllByTargetSetId(id);
         performanceLogs.forEach(performanceLog -> performanceLogService.delete(performanceLog.getId()));
