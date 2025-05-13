@@ -153,7 +153,6 @@ class PerformanceLogControllerIT {
                 () -> performanceLogController.modifyPerformanceLog(inputPerformanceLog));
     }
 
-
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void modifyPerformanceLog_InvalidLabel_ThrowLabelMatchNotFoundException() {
