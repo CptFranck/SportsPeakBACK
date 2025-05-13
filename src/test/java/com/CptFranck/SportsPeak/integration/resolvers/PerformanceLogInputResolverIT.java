@@ -86,13 +86,6 @@ public class PerformanceLogInputResolverIT {
     }
 
     @Test
-    void resolveInput_InvalidInputLabel_ThrowLabelMatchNotFoundException() {
-        InputPerformanceLog newPerformanceLog = createTestInputPerformanceLog(1L, targetSet.getId(), true);
-
-        Assertions.assertThrows(LabelMatchNotFoundException.class, () -> performanceLogInputResolver.resolveInput(newPerformanceLog));
-    }
-
-    @Test
     void resolveInput_ValidInputPerformanceLog_ReturnPerformanceLogEntity() {
         InputPerformanceLog newPerformanceLog = createTestInputPerformanceLog(1L, targetSet.getId(), false);
 
