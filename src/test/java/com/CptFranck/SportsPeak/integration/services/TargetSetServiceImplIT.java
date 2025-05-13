@@ -142,7 +142,6 @@ public class TargetSetServiceImplIT {
         targetSetServiceImpl.delete(targetSet2.getId());
 
         boolean targetSetFound = targetSetServiceImpl.exists(targetSet2.getId());
-
         targetSet = targetSetRepository.findById(targetSet.getId()).orElseThrow();
         targetSet3 = targetSetRepository.findById(targetSet3.getId()).orElseThrow();
         Assertions.assertFalse(targetSetFound);
@@ -158,7 +157,8 @@ public class TargetSetServiceImplIT {
     void setTheUpdate_UpdateTargetSet_Void() {
         TargetSetEntity targetSetBis = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
 
-        assertAll(() -> targetSetServiceImpl.setTheUpdate(targetSetBis, targetSetBis.getId()));
+        targetSetServiceImpl.setTheUpdate(targetSetBis, targetSetBis.getId());
+
         targetSet = targetSetRepository.findById(targetSetBis.getId()).orElseThrow();
         assertEquals(targetSetBis.getId(), targetSet.getTargetSetUpdate().getId());
     }
