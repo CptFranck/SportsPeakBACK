@@ -39,7 +39,7 @@ import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-class TargetSetApiIntTest {
+class TargetSetApiIT {
 
     @Autowired
     private DgsQueryExecutor dgsQueryExecutor;
@@ -81,7 +81,7 @@ class TargetSetApiIntTest {
     }
 
     @Test
-    void TargetSetApi_GetTargetSets_UnsuccessfulNotAuthenticated() {
+    void getTargetSets_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(getTargetSetsQuery, "data.getTargetSets"));
 
@@ -91,7 +91,7 @@ class TargetSetApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void TargetSetApi_GetTargetSets_Success() {
+    void getTargetSets_ValidUse_ReturnListOfTargetSetDto() {
         List<LinkedHashMap<String, Object>> response = dgsQueryExecutor.executeAndExtractJsonPath(getTargetSetsQuery,
                 "data.getTargetSets");
 
@@ -101,8 +101,9 @@ class TargetSetApiIntTest {
     }
 
     @Test
-    void TargetSetApi_GetTargetSetById_UnsuccessfulNotAuthenticated() {
-        variables.put("id", targetSet.getId() + 1);
+    void getTargetSetById_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+        variables.put("id", targetSet.getId());
+        targetSetRepository.delete(targetSet);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(getTargetSetByIdQuery, "data.getTargetSetById", variables));
@@ -113,19 +114,20 @@ class TargetSetApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void TargetSetApi_GetTargetSetById_UnsuccessfulTargetSetNotFound() {
-        variables.put("id", targetSet.getId() + 1);
+    void getTargetSetById_InvalidTargetSetId_ThrowsTargetSetNotFoundException() {
+        variables.put("id", targetSet.getId());
+        targetSetRepository.delete(targetSet);
 
         QueryException exception = Assertions.assertThrows(QueryException.class, () -> dgsQueryExecutor.executeAndExtractJsonPath(getTargetSetByIdQuery,
                 "data.getTargetSetById", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("TargetSetNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The targetSet with the id %s has not been found", targetSet.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The targetSet with the id %s has not been found", targetSet.getId())));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void TargetSetApi_GetTargetSetById_Success() {
+    void getTargetSetById_ValidInput_ReturnTargetSetDto() {
         variables.put("id", targetSet.getId());
 
         LinkedHashMap<String, Object> response = dgsQueryExecutor.executeAndExtractJsonPath(getTargetSetByIdQuery,
@@ -136,7 +138,7 @@ class TargetSetApiIntTest {
     }
 
     @Test
-    void TargetSetApi_GetTargetSetsByTargetId_UnsuccessfulNotAuthenticated() {
+    void getTargetSetsByProgExerciseId_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         variables.put("progExerciseId", progExercise.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
@@ -148,7 +150,7 @@ class TargetSetApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void TargetSetApi_GetTargetSetsByTargetId_Success() {
+    void getTargetSetsByProgExerciseId_ValidInput_ReturnListOfTargetSetDto() {
         variables.put("progExerciseId", progExercise.getId());
 
         List<LinkedHashMap<String, Object>> response = dgsQueryExecutor.executeAndExtractJsonPath(getTargetSetsByProgExerciseIdQuery,
@@ -160,9 +162,9 @@ class TargetSetApiIntTest {
     }
 
     @Test
-    void TargetSetApi_AddTargetSet_UnsuccessfulNotAuthenticated() {
+    void addTargetSet_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         variables.put("inputNewTargetSet", objectMapper.convertValue(
-                createTestInputNewTargetSet(progExercise.getId(), null),
+                createTestInputNewTargetSet(progExercise.getId(), null, false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
 
@@ -175,54 +177,40 @@ class TargetSetApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void TargetSetApi_AddTargetSet_UnsuccessfulProgExerciseNotFound() {
+    void addTargetSet_InvalidProgExerciseId_ThrowsProgExerciseNotFoundException() {
         variables.put("inputNewTargetSet", objectMapper.convertValue(
-                createTestInputNewTargetSet(progExercise.getId() + 1, null),
+                createTestInputNewTargetSet(progExercise.getId(), null, false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
+        progExerciseRepository.delete(progExercise);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(addTargetSetQuery, "data.addTargetSet", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("ProgExerciseNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The progExercise with the id %s has not been found", progExercise.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The progExercise with the id %s has not been found", progExercise.getId())));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void TargetSetApi_AddTargetSet_Success() {
-        InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), null);
+    void addTargetSet_InvalidInputLabel_ThrowsLabelMatchNotFoundException() {
+        InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), null, true);
         variables.put("inputNewTargetSet", objectMapper.convertValue(
                 inputNewTargetSet,
-                new TypeReference<LinkedHashMap<String, Object>>() {
-                }));
-
-        LinkedHashMap<String, Object> response = dgsQueryExecutor.executeAndExtractJsonPath(addTargetSetQuery,
-                "data.addTargetSet", variables);
-
-        TargetSetDto targetSetDto = objectMapper.convertValue(response, TargetSetDto.class);
-        assertTargetSetDtoAndInputNew(inputNewTargetSet, targetSetDto);
-    }
-
-    @Test
-    @WithMockUser(username = "user", roles = "USER")
-    void TargetSetApi_AddTargetSetWithUpdate_UnsuccessfulTargetSetNotFound() {
-        variables.put("inputNewTargetSet", objectMapper.convertValue(
-                createTestInputNewTargetSet(progExercise.getId(), targetSet.getId() + 1),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(addTargetSetQuery, "data.addTargetSet", variables));
 
-        Assertions.assertTrue(exception.getMessage().contains("TargetSetNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The targetSet with the id %s has not been found", targetSet.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains("LabelMatchNotFoundException"));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("No %s (label) match with %s", "WeightUnit", inputNewTargetSet.getWeightUnit())));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void TargetSetApi_AddTargetSetWithUpdate_Success() {
-        InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), targetSet.getId());
+    void addTargetSet_ValidInput_ReturnTargetSetDto() {
+        InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), null, false);
         variables.put("inputNewTargetSet", objectMapper.convertValue(
                 inputNewTargetSet,
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -236,9 +224,41 @@ class TargetSetApiIntTest {
     }
 
     @Test
-    void TargetSetApi_ModifyTargetSet_UnsuccessfulNotAuthenticated() {
+    @WithMockUser(username = "user", roles = "USER")
+    void addTargetSet_ValidInputWithUpdate_ThrowsProgExerciseNotFoundException() {
+        variables.put("inputNewTargetSet", objectMapper.convertValue(
+                createTestInputNewTargetSet(progExercise.getId(), targetSet.getId(), false),
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
+        targetSetRepository.delete(targetSet);
+
+        QueryException exception = Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(addTargetSetQuery, "data.addTargetSet", variables));
+
+        Assertions.assertTrue(exception.getMessage().contains("TargetSetNotFoundException"));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The targetSet with the id %s has not been found", targetSet.getId())));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "USER")
+    void addTargetSet_ValidInputWithUpdate_ReturnTargetSetDto() {
+        InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), targetSet.getId(), false);
+        variables.put("inputNewTargetSet", objectMapper.convertValue(
+                inputNewTargetSet,
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
+
+        LinkedHashMap<String, Object> response = dgsQueryExecutor.executeAndExtractJsonPath(addTargetSetQuery,
+                "data.addTargetSet", variables);
+
+        TargetSetDto targetSetDto = objectMapper.convertValue(response, TargetSetDto.class);
+        assertTargetSetDtoAndInputNew(inputNewTargetSet, targetSetDto);
+    }
+
+    @Test
+    void modifyTargetSet_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         variables.put("inputTargetSet", objectMapper.convertValue(
-                createTestInputTargetSet(targetSet.getId()),
+                createTestInputTargetSet(targetSet.getId(), false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
 
@@ -251,23 +271,40 @@ class TargetSetApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void TargetSetApi_ModifyTargetSet_UnsuccessfulTargetSetNotFound() {
+    void modifyTargetSet_InvalidTargetSetId_ThrowsTargetSetNotFoundException() {
         variables.put("inputTargetSet", objectMapper.convertValue(
-                createTestInputTargetSet(targetSet.getId() + 1),
+                createTestInputTargetSet(targetSet.getId(), false),
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
+        targetSetRepository.delete(targetSet);
+
+        QueryException exception = Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyTargetSetQuery, "data.modifyTargetSet", variables));
+
+        Assertions.assertTrue(exception.getMessage().contains("TargetSetNotFoundException"));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The targetSet with the id %s has not been found", targetSet.getId())));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "USER")
+    void modifyTargetSet_InvalidInputLabel_ThrowsLabelMatchNotFoundException() {
+        InputTargetSet inputTargetSet = createTestInputTargetSet(targetSet.getId(), true);
+        variables.put("inputTargetSet", objectMapper.convertValue(
+                inputTargetSet,
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyTargetSetQuery, "data.modifyTargetSet", variables));
 
-        Assertions.assertTrue(exception.getMessage().contains("TargetSetNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The targetSet with the id %s has not been found", targetSet.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains("LabelMatchNotFoundException"));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("No %s (label) match with %s", "WeightUnit", inputTargetSet.getWeightUnit())));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void TargetSetApi_ModifyTargetSet_Success() {
-        InputTargetSet inputTargetSet = createTestInputTargetSet(targetSet.getId());
+    void modifyTargetSet_ValidInput_ReturnTargetSetDto() {
+        InputTargetSet inputTargetSet = createTestInputTargetSet(targetSet.getId(), false);
         variables.put("inputTargetSet", objectMapper.convertValue(
                 inputTargetSet,
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -281,7 +318,7 @@ class TargetSetApiIntTest {
     }
 
     @Test
-    void TargetSetApi_ModifyTargetSetState_UnsuccessfulNotAuthenticated() {
+    void modifyTargetSetState_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         variables.put("inputTargetSetState", objectMapper.convertValue(
                 createTestInputInputTargetSetState(targetSet.getId(), false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -296,23 +333,24 @@ class TargetSetApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void TargetSetApi_ModifyTargetSetState_UnsuccessfulTargetSetNotFound() {
-        InputTargetSetState inputTargetSetState = createTestInputInputTargetSetState(targetSet.getId() + 1, false);
+    void modifyTargetSetState_InvalidTargetSetId_ThrowsTargetSetNotFoundException() {
+        InputTargetSetState inputTargetSetState = createTestInputInputTargetSetState(targetSet.getId(), false);
         variables.put("inputTargetSetState", objectMapper.convertValue(
                 inputTargetSetState,
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
+        targetSetRepository.delete(targetSet);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyTargetSetStateQuery, "data.modifyTargetSetState", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("TargetSetNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The targetSet with the id %s has not been found", targetSet.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The targetSet with the id %s has not been found", targetSet.getId())));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void TargetSetApi_ModifyTargetSetState_UnsuccessfulWrongLabel() {
+    void modifyTargetSetState_InvalidInputLabel_ThrowsLabelMatchNotFoundException() {
         InputTargetSetState inputTargetSetState = createTestInputInputTargetSetState(targetSet.getId(), true);
         variables.put("inputTargetSetState", objectMapper.convertValue(
                 inputTargetSetState,
@@ -328,7 +366,8 @@ class TargetSetApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void TargetSetApi_ModifyTargetSetState_Success() {
+    void modifyTargetSetState_validInput_ReturnListOfTargetSetDto() {
+        targetSetRepository.save(createTestTargetSet(null, progExercise, targetSet));
         InputTargetSetState inputTargetSetState = createTestInputInputTargetSetState(targetSet.getId(), false);
         variables.put("inputTargetSetState", objectMapper.convertValue(
                 inputTargetSetState,
@@ -344,7 +383,7 @@ class TargetSetApiIntTest {
     }
 
     @Test
-    void TargetSetApi_DeleteTargetSet_UnsuccessfulNotAuthenticated() {
+    void deleteTargetSet_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         variables.put("targetSetId", targetSet.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
@@ -356,7 +395,21 @@ class TargetSetApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void TargetSetApi_DeleteTargetSet_Success() {
+    void deleteTargetSet_InvalidTargetSetId_ThrowsTargetSetNotFoundException() {
+        variables.put("targetSetId", targetSet.getId());
+        targetSetRepository.delete(targetSet);
+
+        QueryException exception = Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(deleteTargetSetQuery, "data.deleteTargetSet", variables));
+
+        Assertions.assertTrue(exception.getMessage().contains("TargetSetNotFoundException"));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The targetSet with the id %s has not been found", targetSet.getId())));
+
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "USER")
+    void deleteTargetSet_ValidInput_ReturnExerciseId() {
         variables.put("targetSetId", targetSet.getId());
 
         String id = dgsQueryExecutor.executeAndExtractJsonPath(deleteTargetSetQuery, "data.deleteTargetSet", variables);
