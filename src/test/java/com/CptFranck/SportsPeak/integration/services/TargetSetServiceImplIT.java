@@ -78,7 +78,7 @@ public class TargetSetServiceImplIT {
 
     @Test
     void findOne_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
-        assertThrows(TargetSetNotFoundException.class, () -> targetSetServiceImpl.findOne(targetSet.getId() + 1));
+        assertThrows(TargetSetNotFoundException.class, () -> targetSetServiceImpl.findOne(targetSet.getId()));
     }
 
     @Test
@@ -113,7 +113,9 @@ public class TargetSetServiceImplIT {
 
     @Test
     void save_UpdateTargetSetWithInvalidId_ReturnTargetSetEntity() {
-        TargetSetEntity unsavedTargetSet = createTestTargetSet(targetSet.getId() + 1, progExercise, null);
+        targetSetRepository.delete(targetSet);
+
+        TargetSetEntity unsavedTargetSet = createTestTargetSet(targetSet.getId(), progExercise, null);
 
         assertThrows(TargetSetNotFoundException.class, () -> targetSetServiceImpl.save(unsavedTargetSet));
     }
@@ -150,7 +152,9 @@ public class TargetSetServiceImplIT {
 
     @Test
     void setTheUpdate_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
-        assertThrows(TargetSetNotFoundException.class, () -> targetSetServiceImpl.setTheUpdate(targetSet, targetSet.getId() + 1));
+        targetSetRepository.delete(targetSet);
+
+        assertThrows(TargetSetNotFoundException.class, () -> targetSetServiceImpl.setTheUpdate(targetSet, targetSet.getId()));
     }
 
     @Test
