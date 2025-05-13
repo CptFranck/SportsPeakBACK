@@ -4,6 +4,7 @@ import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.exception.LabelMatchNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.targetSet.AbstractTargetSetInput;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputNewTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSet;
@@ -49,26 +50,42 @@ public class TargetSetInputResolverTest {
     }
 
     @Test
-    void resolveInput_ValidInputNewPerformanceLog_ReturnMuscleEntity() {
-        InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), null);
+    void resolveInput_InvalidInputNewLabel_ThrowLabelMatchNotFoundException() {
+        InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), null, true);
         when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(progExercise);
 
-        TargetSetEntity performanceLogSaved = targetSetInputResolver.resolveInput(inputNewTargetSet);
+        Assertions.assertThrows(LabelMatchNotFoundException.class, () -> targetSetInputResolver.resolveInput(inputNewTargetSet));
+    }
 
-        assertPerformanceLogInputAndEntity(inputNewTargetSet, performanceLogSaved);
+    @Test
+    void resolveInput_ValidInputNewPerformanceLog_ReturnMuscleEntity() {
+        InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), null, false);
+        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(progExercise);
+
+        TargetSetEntity targetSetSaved = targetSetInputResolver.resolveInput(inputNewTargetSet);
+
+        assertTargetSetInputAndEntity(inputNewTargetSet, targetSetSaved);
+    }
+
+    @Test
+    void resolveInput_InvalidInputLabel_ThrowLabelMatchNotFoundException() {
+        InputTargetSet inputTargetSet = createTestInputTargetSet(progExercise.getId(), true);
+        when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(targetSet);
+
+        Assertions.assertThrows(LabelMatchNotFoundException.class, () -> targetSetInputResolver.resolveInput(inputTargetSet));
     }
 
     @Test
     void resolveInput_ValidInputPerformanceLog_ReturnMuscleEntity() {
-        InputTargetSet inputTargetSet = createTestInputTargetSet(progExercise.getId());
+        InputTargetSet inputTargetSet = createTestInputTargetSet(progExercise.getId(), false);
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(targetSet);
 
         TargetSetEntity targetSetSaved = targetSetInputResolver.resolveInput(inputTargetSet);
 
-        assertPerformanceLogInputAndEntity(inputTargetSet, targetSetSaved);
+        assertTargetSetInputAndEntity(inputTargetSet, targetSetSaved);
     }
 
-    private void assertPerformanceLogInputAndEntity(AbstractTargetSetInput expectedTargetSet, TargetSetEntity actualTargetSet) {
+    private void assertTargetSetInputAndEntity(AbstractTargetSetInput expectedTargetSet, TargetSetEntity actualTargetSet) {
         if (expectedTargetSet instanceof InputTargetSet inputTargetSet)
             Assertions.assertEquals(inputTargetSet.getId(), actualTargetSet.getId());
         if (expectedTargetSet instanceof InputNewTargetSet inputNewTargetSet) {
