@@ -68,7 +68,7 @@ public class TargetSetInputResolverIT {
 
     @Test
     void resolveInput_InvalidProgExerciseId_ThrowProgExerciseNotFoundException() {
-        InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId() + 1, null, true);
+        InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(1L, null, true);
 
         Assertions.assertThrows(ProgExerciseNotFoundException.class, () -> targetSetInputResolver.resolveInput(inputNewTargetSet));
     }
@@ -91,7 +91,7 @@ public class TargetSetInputResolverIT {
 
     @Test
     void resolveInput_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
-        InputTargetSet inputTargetSet = createTestInputTargetSet(targetSet.getId() + 1, false);
+        InputTargetSet inputTargetSet = createTestInputTargetSet(1L, false);
 
         Assertions.assertThrows(TargetSetNotFoundException.class, () -> targetSetInputResolver.resolveInput(inputTargetSet));
     }

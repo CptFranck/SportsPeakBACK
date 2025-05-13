@@ -64,7 +64,7 @@ public class PerformanceLogInputResolverIT {
 
     @Test
     void resolveInput_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
-        InputNewPerformanceLog newPerformanceLog = createTestInputPerformanceLog(null, targetSet.getId() + 1, false);
+        InputNewPerformanceLog newPerformanceLog = createTestInputPerformanceLog(null, 1L, false);
 
         Assertions.assertThrows(TargetSetNotFoundException.class, () -> performanceLogInputResolver.resolveInput(newPerformanceLog));
     }

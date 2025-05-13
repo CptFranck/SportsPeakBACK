@@ -35,8 +35,7 @@ public class ExerciseInputResolverIT {
 
     @Test
     void resolveInput_InvalidExerciseId_ReturnExerciseEntity() {
-        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
-        InputExercise inputExercise = createTestInputExercise(exercise.getId() + 1);
+        InputExercise inputExercise = createTestInputExercise(1L);
 
         Assertions.assertThrows(ExerciseNotFoundException.class, () -> exerciseInputResolver.resolveInput(inputExercise));
     }

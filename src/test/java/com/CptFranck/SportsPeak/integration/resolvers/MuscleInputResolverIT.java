@@ -35,8 +35,7 @@ public class MuscleInputResolverIT {
 
     @Test
     void resolveInput_InvalidMuscleId_ThrowMuscleNotFoundException() {
-        MuscleEntity muscle = muscleRepository.save(createTestMuscle(null));
-        InputMuscle inputMuscle = createTestInputMuscle(muscle.getId() + 1);
+        InputMuscle inputMuscle = createTestInputMuscle(1L);
 
         Assertions.assertThrows(MuscleNotFoundException.class, () -> muscleInputResolver.resolveInput(inputMuscle));
     }
