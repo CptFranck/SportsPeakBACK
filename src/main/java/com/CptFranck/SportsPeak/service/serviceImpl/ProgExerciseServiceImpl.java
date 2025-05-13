@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.service.impl;
+package com.CptFranck.SportsPeak.service.serviceImpl;
 
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.exception.progExercise.ProgExerciseNotFoundException;
@@ -7,7 +7,6 @@ import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -22,11 +21,6 @@ public class ProgExerciseServiceImpl implements ProgExerciseService {
     }
 
     @Override
-    public ProgExerciseEntity save(ProgExerciseEntity progExercise) {
-        return progExerciseRepository.save(progExercise);
-    }
-
-    @Override
     public List<ProgExerciseEntity> findAll() {
         return StreamSupport.stream(progExerciseRepository
                                 .findAll()
@@ -36,8 +30,8 @@ public class ProgExerciseServiceImpl implements ProgExerciseService {
     }
 
     @Override
-    public Optional<ProgExerciseEntity> findOne(Long id) {
-        return progExerciseRepository.findById(id);
+    public ProgExerciseEntity findOne(Long id) {
+        return progExerciseRepository.findById(id).orElseThrow(() -> new ProgExerciseNotFoundException(id));
     }
 
     @Override
@@ -47,6 +41,15 @@ public class ProgExerciseServiceImpl implements ProgExerciseService {
                                 .spliterator(),
                         false)
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public ProgExerciseEntity save(ProgExerciseEntity progExercise) {
+        if (progExercise.getId() == null)
+            return progExerciseRepository.save(progExercise);
+        if (exists(progExercise.getId()))
+            return progExerciseRepository.save(progExercise);
+        throw new ProgExerciseNotFoundException(progExercise.getId());
     }
 
     @Override
