@@ -10,7 +10,7 @@ import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
 import com.CptFranck.SportsPeak.repositories.ProgExerciseRepository;
 import com.CptFranck.SportsPeak.repositories.TargetSetRepository;
 import com.CptFranck.SportsPeak.repositories.UserRepository;
-import com.CptFranck.SportsPeak.service.impl.TargetSetServiceImpl;
+import com.CptFranck.SportsPeak.service.serviceImpl.TargetSetServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,12 +29,11 @@ import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercis
 import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.TestTargetSetUtils.createTestTargetSet;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-public class TargetSetServiceImplIntTest {
+public class TargetSetServiceImplIT {
 
     @Autowired
     private ExerciseRepository exerciseRepository;
@@ -71,7 +70,40 @@ public class TargetSetServiceImplIntTest {
     }
 
     @Test
-    void TargetSetService_Save_Success() {
+    void findAll_ValidUse_ReturnListOfTargetSetEntity() {
+        List<TargetSetEntity> targetSetFound = targetSetServiceImpl.findAll();
+
+        assertEqualTargetSetList(List.of(targetSet), targetSetFound);
+    }
+
+    @Test
+    void findOne_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
+        assertThrows(TargetSetNotFoundException.class, () -> targetSetServiceImpl.findOne(targetSet.getId() + 1));
+    }
+
+    @Test
+    void findOne_ValidTargetSetId_ReturnTargetSetEntity() {
+        TargetSetEntity targetSetFound = targetSetServiceImpl.findOne(targetSet.getId());
+
+        assertEqualsTargetSet(targetSet, targetSetFound);
+    }
+
+    @Test
+    void findMany_ValidTargetSetIds_ReturnSetOfTargetSetEntity() {
+        Set<TargetSetEntity> targetSetFound = targetSetServiceImpl.findMany(Set.of(targetSet.getId()));
+
+        assertEqualTargetSetList(List.of(targetSet), targetSetFound.stream().toList());
+    }
+
+    @Test
+    void findAllByTargetSetId_ValidTargetSetIds_ReturnSetOfTargetSetEntity() {
+        List<TargetSetEntity> targetSetFound = targetSetServiceImpl.findAllByProgExerciseId(progExercise.getId());
+
+        assertEqualTargetSetList(List.of(targetSet), targetSetFound);
+    }
+
+    @Test
+    void save_AddNewTargetSet_ReturnTargetSetEntity() {
         TargetSetEntity unsavedTargetSet = createTestTargetSet(null, progExercise, null);
 
         TargetSetEntity targetSetSaved = targetSetServiceImpl.save(unsavedTargetSet);
@@ -80,49 +112,72 @@ public class TargetSetServiceImplIntTest {
     }
 
     @Test
-    void TargetSetService_FindAll_Success() {
-        List<TargetSetEntity> targetSetFound = targetSetServiceImpl.findAll();
+    void save_UpdateTargetSetWithInvalidId_ReturnTargetSetEntity() {
+        TargetSetEntity unsavedTargetSet = createTestTargetSet(targetSet.getId() + 1, progExercise, null);
 
-        assertEqualTargetSetList(List.of(targetSet), targetSetFound);
+        assertThrows(TargetSetNotFoundException.class, () -> targetSetServiceImpl.save(unsavedTargetSet));
     }
 
     @Test
-    void TargetSetService_FindOne_Success() {
-        Optional<TargetSetEntity> targetSetFound = targetSetServiceImpl.findOne(targetSet.getId());
+    void save_UpdateTargetSet_ReturnTargetSetEntity() {
+        TargetSetEntity unsavedTargetSet = createTestTargetSet(targetSet.getId(), progExercise, null);
 
-        Assertions.assertTrue(targetSetFound.isPresent());
-        assertEqualsTargetSet(targetSet, targetSetFound.get());
+        TargetSetEntity targetSetSaved = targetSetServiceImpl.save(unsavedTargetSet);
+
+        assertEqualsTargetSet(unsavedTargetSet, targetSetSaved);
     }
 
     @Test
-    void TargetSetService_FindMany_Success() {
-        Set<TargetSetEntity> targetSetFound = targetSetServiceImpl.findMany(Set.of(targetSet.getId()));
+    void delete_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
+        targetSetRepository.delete(targetSet);
 
-        assertEqualTargetSetList(List.of(targetSet), targetSetFound.stream().toList());
+        assertThrows(TargetSetNotFoundException.class, () -> targetSetServiceImpl.delete(targetSet.getId()));
     }
 
     @Test
-    void TargetSetService_FindAllByProgExerciseId_Success() {
-        List<TargetSetEntity> targetSetFound = targetSetServiceImpl.findAllByProgExerciseId(progExercise.getId());
+    void delete_ValidInput_Void() {
+        TargetSetEntity targetSet2 = targetSetRepository.save(createTestTargetSet(null, progExercise, targetSet));
+        TargetSetEntity targetSet3 = targetSetRepository.save(createTestTargetSet(null, progExercise, targetSet2));
 
-        assertEqualTargetSetList(List.of(targetSet), targetSetFound);
+        targetSetServiceImpl.delete(targetSet2.getId());
+
+        boolean targetSetFound = targetSetServiceImpl.exists(targetSet2.getId());
+
+        targetSet = targetSetRepository.findById(targetSet.getId()).orElseThrow();
+        targetSet3 = targetSetRepository.findById(targetSet3.getId()).orElseThrow();
+        Assertions.assertFalse(targetSetFound);
+        Assertions.assertEquals(targetSet3.getTargetSetUpdate().getId(), targetSet.getId());
     }
 
     @Test
-    void TargetSetService_UpdatePreviousUpdateState_Success() {
+    void setTheUpdate_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
+        assertThrows(TargetSetNotFoundException.class, () -> targetSetServiceImpl.setTheUpdate(targetSet, targetSet.getId() + 1));
+    }
+
+    @Test
+    void setTheUpdate_UpdateTargetSet_Void() {
+        TargetSetEntity targetSetBis = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
+
+        assertAll(() -> targetSetServiceImpl.setTheUpdate(targetSetBis, targetSetBis.getId()));
+        targetSet = targetSetRepository.findById(targetSetBis.getId()).orElseThrow();
+        assertEquals(targetSetBis.getId(), targetSet.getTargetSetUpdate().getId());
+    }
+
+    @Test
+    void updateTargetStates_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
+        assertAll(() -> targetSetServiceImpl.updateTargetStates(targetSet.getId(), TargetSetState.HIDDEN));
+    }
+
+    @Test
+    void updateTargetStates_InvalidTargetSetId_ReturnTargetSetEntity() {
         TargetSetEntity targetSetUpdate = targetSet;
         TargetSetEntity targetSet = targetSetRepository.save(createTestTargetSet(null, progExercise, targetSetUpdate));
 
-        targetSetServiceImpl.updatePreviousUpdateState(targetSetUpdate.getId(), TargetSetState.HIDDEN);
+        targetSetServiceImpl.updateTargetStates(targetSetUpdate.getId(), TargetSetState.HIDDEN);
 
-        Optional<TargetSetEntity> targetSetUpdated = targetSetServiceImpl.findOne(targetSet.getId());
+        Optional<TargetSetEntity> targetSetUpdated = targetSetRepository.findById(targetSet.getId());
         Assertions.assertTrue(targetSetUpdated.isPresent());
         Assertions.assertEquals(TargetSetState.HIDDEN, targetSetUpdated.get().getState());
-    }
-
-    @Test
-    void TargetSetService_UpdatePreviousUpdateState_TargetSetNotFoundSuccess() {
-        assertAll(() -> targetSetServiceImpl.updatePreviousUpdateState(targetSet.getId(), TargetSetState.HIDDEN));
     }
 
     @Test
@@ -130,27 +185,6 @@ public class TargetSetServiceImplIntTest {
         boolean targetSetFound = targetSetServiceImpl.exists(targetSet.getId());
 
         Assertions.assertTrue(targetSetFound);
-    }
-
-    @Test
-    void TargetSetService_Delete_Success() {
-        TargetSetEntity targetSet2 = targetSetServiceImpl.save(createTestTargetSet(null, progExercise, targetSet));
-        TargetSetEntity targetSet3 = targetSetServiceImpl.save(createTestTargetSet(null, progExercise, targetSet2));
-        targetSetServiceImpl.delete(targetSet2.getId());
-
-        boolean targetSetFound = targetSetServiceImpl.exists(targetSet2.getId());
-
-        targetSet = targetSetServiceImpl.findOne(targetSet.getId()).orElseThrow();
-        targetSet3 = targetSetServiceImpl.findOne(targetSet3.getId()).orElseThrow();
-        Assertions.assertFalse(targetSetFound);
-        Assertions.assertEquals(targetSet3.getTargetSetUpdate().getId(), targetSet.getId());
-    }
-
-    @Test
-    void TargetSetService_Delete_Unsuccessful() {
-        targetSetRepository.delete(targetSet);
-
-        assertThrows(TargetSetNotFoundException.class, () -> targetSetServiceImpl.delete(targetSet.getId()));
     }
 
     private void assertEqualTargetSetList(
