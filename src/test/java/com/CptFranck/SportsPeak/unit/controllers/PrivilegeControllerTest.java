@@ -62,7 +62,7 @@ class PrivilegeControllerTest {
     }
 
     @Test
-    void getPrivilegeById_InvalidPrivilegeId_ThrowPrivilegeNotFoundException() {
+    void getPrivilegeById_ValidUse_ReturnPrivilegeDto() {
         when(privilegeService.findOne(Mockito.any(Long.class))).thenReturn(privilegeEntity);
         when(privilegeMapper.mapTo(Mockito.any(PrivilegeEntity.class))).thenReturn(privilegeDto);
 
