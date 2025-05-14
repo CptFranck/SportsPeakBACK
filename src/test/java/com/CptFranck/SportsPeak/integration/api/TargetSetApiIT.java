@@ -182,6 +182,7 @@ class TargetSetApiIT {
                 createTestInputNewTargetSet(progExercise.getId(), null, false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
+        targetSetRepository.delete(targetSet);
         progExerciseRepository.delete(progExercise);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,

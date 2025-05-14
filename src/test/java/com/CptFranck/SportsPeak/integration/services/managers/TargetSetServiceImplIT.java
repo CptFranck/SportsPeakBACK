@@ -78,6 +78,8 @@ public class TargetSetServiceImplIT {
 
     @Test
     void findOne_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
+        targetSetRepository.delete(targetSet);
+
         assertThrows(TargetSetNotFoundException.class, () -> targetSetServiceImpl.findOne(targetSet.getId()));
     }
 
