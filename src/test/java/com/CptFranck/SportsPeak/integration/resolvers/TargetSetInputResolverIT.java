@@ -4,12 +4,14 @@ import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
 import com.CptFranck.SportsPeak.domain.exception.LabelMatchNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.progExercise.ProgExerciseNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.targetSet.AbstractTargetSetInput;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputNewTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSet;
+import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSetState;
 import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
 import com.CptFranck.SportsPeak.repositories.ProgExerciseRepository;
 import com.CptFranck.SportsPeak.repositories.TargetSetRepository;
@@ -103,6 +105,21 @@ public class TargetSetInputResolverIT {
         TargetSetEntity targetSetSaved = targetSetInputResolver.resolveInput(inputTargetSet);
 
         assertTargetSetInputAndEntity(inputTargetSet, targetSetSaved);
+    }
+
+    @Test
+    void resolveInput_InvalidInputTargetStateLabel_ThrowLabelMatchNotFoundException() {
+        InputTargetSetState inputTargetSetState = createTestInputInputTargetSetState(1L, true);
+        Assertions.assertThrows(LabelMatchNotFoundException.class, () -> targetSetInputResolver.resolveInput(inputTargetSetState));
+    }
+
+    @Test
+    void resolveInput_ValidInputTargetState_ReturnTargetSetState() {
+        InputTargetSetState inputTargetSetState = createTestInputInputTargetSetState(1L, false);
+
+        TargetSetState targetSetStateResolved = targetSetInputResolver.resolveInput(inputTargetSetState);
+
+        Assertions.assertEquals(inputTargetSetState.getState(), targetSetStateResolved.label);
     }
 
     private void assertTargetSetInputAndEntity(AbstractTargetSetInput expectedTargetSet, TargetSetEntity actualTargetSet) {
