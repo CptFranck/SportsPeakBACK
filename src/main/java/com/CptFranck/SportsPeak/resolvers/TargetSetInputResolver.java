@@ -8,6 +8,7 @@ import com.CptFranck.SportsPeak.domain.enumType.WeightUnit;
 import com.CptFranck.SportsPeak.domain.input.targetSet.AbstractTargetSetInput;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputNewTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSet;
+import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSetState;
 import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import com.CptFranck.SportsPeak.service.TargetSetService;
 import org.springframework.stereotype.Component;
@@ -68,5 +69,9 @@ public class TargetSetInputResolver {
                 targetSetUpdate,
                 performanceLogs
         );
+    }
+
+    public TargetSetState resolveInput(InputTargetSetState inputTargetSetState) {
+        return TargetSetState.valueOfLabel(inputTargetSetState.getState());
     }
 }
