@@ -37,7 +37,7 @@ import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserBis;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-class ProgExerciseControllerIntTest {
+class ProgExerciseControllerIT {
 
     @Autowired
     private ProgExerciseController progExerciseController;
@@ -74,27 +74,29 @@ class ProgExerciseControllerIntTest {
     }
 
     @Test
-    void ProgExerciseController_GetProgExercises_Success() {
+    void getProgExercises_ValidUse_ReturnListOfProgExerciseDto() {
         List<ProgExerciseDto> progExerciseDtos = progExerciseController.getProgExercises();
 
         assertEqualProgExerciseList(List.of(progExercise), progExerciseDtos);
     }
 
     @Test
-    void ProgExerciseController_GetProgExerciseById_UnsuccessfulProgExerciseNotFound() {
-        Assertions.assertThrows(ProgExerciseNotFoundException.class, () -> progExerciseController.getProgExerciseById(progExercise.getId() + 1));
+    void getProgExerciseById_InvalidProgExerciseId_ThrowsProgExerciseNotFoundException() {
+        progExerciseRepository.delete(progExercise);
+
+        Assertions.assertThrows(ProgExerciseNotFoundException.class, () -> progExerciseController.getProgExerciseById(progExercise.getId()));
     }
 
     @Test
-    void ProgExerciseController_GetProgExerciseById_Success() {
+    void getProgExerciseById_ValidInput_ReturnProgExerciseDto() {
         ProgExerciseDto progExerciseDto = progExerciseController.getProgExerciseById(progExercise.getId());
 
         assertProgExerciseDtoAndEntity(progExercise, progExerciseDto);
     }
 
     @Test
-    void ProgExerciseController_AddProgExercise_UnsuccessfulNotAuthenticated() {
-        InputNewProgExercise inputNewExercise = createTestInputNewProgExercise(user.getId() + 1, exercise.getId());
+    void addProgExercise_NotAuthenticated_ThrowsAuthenticationCredentialsNotFoundException() {
+        InputNewProgExercise inputNewExercise = createTestInputNewProgExercise(user.getId(), exercise.getId(), false);
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
                 () -> progExerciseController.addProgExercise(inputNewExercise));
@@ -102,25 +104,35 @@ class ProgExerciseControllerIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void ProgExerciseController_AddProgExercise_UnsuccessfulUserNotFound() {
-        InputNewProgExercise inputNewExercise = createTestInputNewProgExercise(user.getId() + 1, exercise.getId());
+    void addProgExercise_InvalidUserId_ThrowsUserNotFoundException() {
+        progExerciseRepository.delete(progExercise);
+        userRepository.delete(user);
+
+        InputNewProgExercise inputNewExercise = createTestInputNewProgExercise(user.getId(), exercise.getId(), false);
 
         Assertions.assertThrows(UserNotFoundException.class, () -> progExerciseController.addProgExercise(inputNewExercise));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void ProgExerciseController_AddProgExercise_UnsuccessfulExerciseNotFound() {
-        InputNewProgExercise inputNewExercise = createTestInputNewProgExercise(user.getId(), exercise.getId() + 1);
+    void addProgExercise_InvalidExerciseId_ThrowsProgExerciseNotFoundException() {
+        InputNewProgExercise inputNewExercise = createTestInputNewProgExercise(user.getId(), exercise.getId() + 1, false);
 
-        Assertions.assertThrows(ExerciseNotFoundException.class,
-                () -> progExerciseController.addProgExercise(inputNewExercise));
+        Assertions.assertThrows(ExerciseNotFoundException.class, () -> progExerciseController.addProgExercise(inputNewExercise));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void ProgExerciseController_AddProgExercise_Success() {
-        InputNewProgExercise inputNewExercise = createTestInputNewProgExercise(user.getId(), exercise.getId());
+    void addProgExercise_InvalidLabel_ThrowsLabelMatchNotFoundException() {
+        InputNewProgExercise inputNewExercise = createTestInputNewProgExercise(user.getId(), exercise.getId(), true);
+
+        Assertions.assertThrows(LabelMatchNotFoundException.class, () -> progExerciseController.addProgExercise(inputNewExercise));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "USER")
+    void addProgExercise_ValidInput_ReturnProgExerciseDto() {
+        InputNewProgExercise inputNewExercise = createTestInputNewProgExercise(user.getId(), exercise.getId(), false);
 
         ProgExerciseDto progExerciseDto = progExerciseController.addProgExercise(inputNewExercise);
 
@@ -129,8 +141,8 @@ class ProgExerciseControllerIntTest {
 
 
     @Test
-    void ProgExerciseController_ModifyProgExercise_UnsuccessfulNotAuthenticated() {
-        InputProgExercise inputNewExercise = createTestInputProgExercise(progExercise.getId() + 1, user.getId(), false);
+    void modifyProgExercise_NotAuthenticated_ThrowsAuthenticationCredentialsNotFoundException() {
+        InputProgExercise inputNewExercise = createTestInputProgExercise(progExercise.getId(), user.getId(), false);
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
                 () -> progExerciseController.modifyProgExercise(inputNewExercise));
@@ -138,24 +150,33 @@ class ProgExerciseControllerIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void ProgExerciseController_ModifyProgExercise_UnsuccessfulProgExerciseNotFound() {
-        InputProgExercise inputNewExercise = createTestInputProgExercise(progExercise.getId() + 1, user.getId(), false);
+    void modifyProgExercise_InvalidProgExerciseId_ThrowsProgExerciseNotFoundException() {
+        progExerciseRepository.delete(progExercise);
+
+        InputProgExercise inputNewExercise = createTestInputProgExercise(progExercise.getId(), exercise.getId(), false);
 
         Assertions.assertThrows(ProgExerciseNotFoundException.class, () -> progExerciseController.modifyProgExercise(inputNewExercise));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void ProgExerciseController_ModifyProgExercise_UnsuccessfulWrongLabel() {
-        InputProgExercise inputNewExercise = createTestInputProgExercise(progExercise.getId(), exercise.getId(), true);
+    void modifyProgExercise_InvalidExerciseId_ThrowsExerciseNotFoundException() {
+        InputProgExercise inputNewExercise = createTestInputProgExercise(progExercise.getId(), exercise.getId() + 1, false);
 
-        Assertions.assertThrows(LabelMatchNotFoundException.class,
-                () -> progExerciseController.modifyProgExercise(inputNewExercise));
+        Assertions.assertThrows(ExerciseNotFoundException.class, () -> progExerciseController.modifyProgExercise(inputNewExercise));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void ProgExerciseController_ModifyProgExercise_Success() {
+    void modifyProgExercise_InvalidLabel_ThrowsLabelMatchNotFoundException() {
+        InputProgExercise inputNewExercise = createTestInputProgExercise(progExercise.getId(), exercise.getId(), true);
+
+        Assertions.assertThrows(LabelMatchNotFoundException.class, () -> progExerciseController.modifyProgExercise(inputNewExercise));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "USER")
+    void modifyProgExercise_ValidInput_ReturnProgExerciseDto() {
         InputProgExercise inputNewExercise = createTestInputProgExercise(progExercise.getId(), exercise.getId(), false);
 
         ProgExerciseDto progExerciseDto = progExerciseController.modifyProgExercise(inputNewExercise);
@@ -164,8 +185,8 @@ class ProgExerciseControllerIntTest {
     }
 
     @Test
-    void ProgExerciseController_ModifyProgExerciseTrustLabel_UnsuccessfulNotAuthenticated() {
-        InputProgExerciseTrustLabel inputProgExerciseTrustLabel = createTestInputProgExerciseTrustLabel(progExercise.getId() + 1, false);
+    void modifyProgExerciseTrustLabel_NotAuthenticated_ThrowsAuthenticationCredentialsNotFoundException() {
+        InputProgExerciseTrustLabel inputProgExerciseTrustLabel = createTestInputProgExerciseTrustLabel(progExercise.getId(), false);
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
                 () -> progExerciseController.modifyProgExerciseTrustLabel(inputProgExerciseTrustLabel));
@@ -173,25 +194,25 @@ class ProgExerciseControllerIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "STAFF")
-    void ProgExerciseController_ModifyProgExerciseTrustLabel_UnsuccessfulProgExerciseNotFound() {
-        InputProgExerciseTrustLabel inputProgExerciseTrustLabel = createTestInputProgExerciseTrustLabel(progExercise.getId() + 1, false);
+    void modifyProgExerciseTrustLabel_InvalidProgExerciseId_ThrowsProgExerciseNotFoundException() {
+        progExerciseRepository.delete(progExercise);
 
-        Assertions.assertThrows(ProgExerciseNotFoundException.class,
-                () -> progExerciseController.modifyProgExerciseTrustLabel(inputProgExerciseTrustLabel));
+        InputProgExerciseTrustLabel inputProgExerciseTrustLabel = createTestInputProgExerciseTrustLabel(progExercise.getId(), false);
+
+        Assertions.assertThrows(ProgExerciseNotFoundException.class, () -> progExerciseController.modifyProgExerciseTrustLabel(inputProgExerciseTrustLabel));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "STAFF")
-    void ProgExerciseController_ModifyProgExerciseTrustLabel_UnsuccessfulWrongLabel() {
+    void modifyProgExerciseTrustLabel_InvalidVisibilityLabel_ThrowsLabelMatchNotFoundException() {
         InputProgExerciseTrustLabel inputProgExerciseTrustLabel = createTestInputProgExerciseTrustLabel(progExercise.getId(), true);
 
-        Assertions.assertThrows(LabelMatchNotFoundException.class,
-                () -> progExerciseController.modifyProgExerciseTrustLabel(inputProgExerciseTrustLabel));
+        Assertions.assertThrows(LabelMatchNotFoundException.class, () -> progExerciseController.modifyProgExerciseTrustLabel(inputProgExerciseTrustLabel));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "STAFF")
-    void ProgExerciseController_ModifyProgExerciseTrustLabel_Success() {
+    void modifyProgExerciseTrustLabel_ValidInput_ReturnProgExerciseDto() {
         InputProgExerciseTrustLabel inputProgExerciseTrustLabel = createTestInputProgExerciseTrustLabel(progExercise.getId(), false);
 
         ProgExerciseDto progExerciseDto = progExerciseController.modifyProgExerciseTrustLabel(inputProgExerciseTrustLabel);
@@ -201,21 +222,23 @@ class ProgExerciseControllerIntTest {
     }
 
     @Test
-    void ProgExerciseController_DeleteProgExercise_UnsuccessfulNotAuthenticated() {
+    void deleteProgExercise_NotAuthenticated_UnsuccessfulNotAuthenticated() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
                 () -> progExerciseController.deleteProgExercise(progExercise.getId()));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void ProgExerciseController_DeleteProgExercise_UnsuccessfulProgExerciseNotFound() {
+    void deleteProgExercise_InvalidProgExerciseId_ThrowsProgExerciseNotFoundException() {
+        progExerciseRepository.delete(progExercise);
+
         Assertions.assertThrows(ProgExerciseNotFoundException.class,
-                () -> progExerciseController.deleteProgExercise(progExercise.getId() + 1));
+                () -> progExerciseController.deleteProgExercise(progExercise.getId()));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void ProgExerciseController_DeleteProgExercise_UnsuccessfulProgExerciseStillUsed() {
+    void deleteProgExercise_ValidInputButSillUsed_ThrowsProgExerciseStillUsedException() {
         UserEntity userBis = userRepository.save(createTestUserBis(null));
         userBis.getSubscribedProgExercises().add(progExercise);
         userRepository.save(userBis);
@@ -226,7 +249,7 @@ class ProgExerciseControllerIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void ProgExerciseController_DeleteProgExercise_Success() {
+    void deleteProgExercise_ValidInput_ReturnProgExerciseId() {
         Long id = progExerciseController.deleteProgExercise(progExercise.getId());
 
         Assertions.assertEquals(progExercise.getId(), id);

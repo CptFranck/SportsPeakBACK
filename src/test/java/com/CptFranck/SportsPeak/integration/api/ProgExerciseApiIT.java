@@ -329,7 +329,7 @@ class ProgExerciseApiIT {
     }
 
     @Test
-    void ProgExerciseApi_DeleteProgExercise_UnsuccessfulNotAuthenticated() {
+    void deleteProgExercise_NotAuthenticated_UnsuccessfulNotAuthenticated() {
         variables.put("progExerciseId", progExercise.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
