@@ -51,11 +51,12 @@ public class TestProgExerciseUtils {
         );
     }
 
-    public static InputNewProgExercise createTestInputNewProgExercise(Long creatorId, Long exerciseId) {
+    public static InputNewProgExercise createTestInputNewProgExercise(Long creatorId, Long exerciseId, boolean wrongLabel) {
+        String label = wrongLabel ? TrustLabel.TRUSTED.label : VisibilityLabel.PRIVATE.label;
         return new InputNewProgExercise(
                 "Prog Exercise name",
                 "Prog Exercise note",
-                VisibilityLabel.PRIVATE.label,
+                label,
                 creatorId,
                 exerciseId
         );
