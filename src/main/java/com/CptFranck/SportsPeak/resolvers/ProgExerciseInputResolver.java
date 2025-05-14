@@ -9,6 +9,7 @@ import com.CptFranck.SportsPeak.domain.enumType.VisibilityLabel;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.progExercise.InputNewProgExercise;
 import com.CptFranck.SportsPeak.domain.input.progExercise.InputProgExercise;
+import com.CptFranck.SportsPeak.domain.input.progExercise.InputProgExerciseTrustLabel;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import com.CptFranck.SportsPeak.service.UserService;
@@ -65,6 +66,14 @@ public class ProgExerciseInputResolver {
         progExercise.setName(inputProgExercise.getName());
         progExercise.setVisibility(VisibilityLabel.valueOfLabel(inputProgExercise.getVisibility()));
         progExercise.setExercise(newExercise);
+
+        return progExercise;
+    }
+
+    public ProgExerciseEntity resolveInput(InputProgExerciseTrustLabel inputProgExerciseTrustLabel) {
+
+        ProgExerciseEntity progExercise = progExerciseService.findOne(inputProgExerciseTrustLabel.getId());
+        progExercise.setTrustLabel(TrustLabel.valueOfLabel(inputProgExerciseTrustLabel.getTrustLabel()));
 
         return progExercise;
     }
