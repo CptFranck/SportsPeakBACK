@@ -1,7 +1,8 @@
-package com.CptFranck.SportsPeak.service.impl;
+package com.CptFranck.SportsPeak.service.serviceImpl;
 
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
+import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.role.RoleExistsException;
 import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
 import com.CptFranck.SportsPeak.repositories.RoleRepository;
@@ -25,16 +26,6 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public RoleEntity save(RoleEntity role) {
-        Optional<RoleEntity> roleOptional = roleRepository.findByName(role.getName());
-        if (roleOptional.isPresent() &&
-                !Objects.equals(roleOptional.get().getId(), role.getId())) {
-            throw new RoleExistsException();
-        }
-        return roleRepository.save(role);
-    }
-
-    @Override
     public List<RoleEntity> findAll() {
         return StreamSupport.stream(roleRepository
                                 .findAll()
@@ -44,8 +35,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Optional<RoleEntity> findOne(Long id) {
-        return roleRepository.findById(id);
+    public RoleEntity findOne(Long id) {
+        return roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException(id.toString()));
     }
 
     @Override
@@ -60,6 +51,18 @@ public class RoleServiceImpl implements RoleService {
                                 .spliterator(),
                         false)
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public RoleEntity save(RoleEntity role) {
+        roleRepository.findByName(role.getName()).ifPresent((p) -> {
+            if (!Objects.equals(p.getId(), role.getId())) throw new RoleExistsException();
+        });
+        if (role.getId() == null)
+            return roleRepository.save(role);
+        if (exists(role.getId()))
+            return roleRepository.save(role);
+        throw new PrivilegeNotFoundException(role.getId());
     }
 
     @Override
@@ -81,7 +84,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void delete(Long id) {
-        RoleEntity exercise = roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException(id.toString()));
-        roleRepository.delete(exercise);
+        RoleEntity role = this.findOne(id);
+        roleRepository.delete(role);
     }
 }
