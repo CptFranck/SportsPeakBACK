@@ -2,7 +2,6 @@ package com.CptFranck.SportsPeak.controller;
 
 import com.CptFranck.SportsPeak.domain.dto.TargetSetDto;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
-import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputNewTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSetState;
@@ -76,8 +75,7 @@ public class TargetSetController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
     public List<TargetSetDto> modifyTargetSetState(@InputArgument InputTargetSetState inputTargetSetState) {
-        TargetSetState state = TargetSetState.valueOfLabel(inputTargetSetState.getState());
-        TargetSetEntity targetSet = targetSetService.updateTargetStates(inputTargetSetState.getId(), state);
+        TargetSetEntity targetSet = targetSetService.updateTargetStates(inputTargetSetState.getId(), targetSetInputResolver.resolveInput(inputTargetSetState));
         return targetSet.getProgExercise().getTargetSets().stream().map(targetSetMapper::mapTo).toList();
     }
 
