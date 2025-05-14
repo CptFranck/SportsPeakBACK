@@ -6,4 +6,6 @@ public interface ProgExerciseManager {
 
     TargetSetEntity saveTargetSet(TargetSetEntity targetSet, Long targetSetUpdateId);
 
+    void deleteProgExercise(Long id);
+
 }
