@@ -6,7 +6,6 @@ import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.enumType.TrustLabel;
 import com.CptFranck.SportsPeak.domain.enumType.VisibilityLabel;
-import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.progExercise.InputNewProgExercise;
 import com.CptFranck.SportsPeak.domain.input.progExercise.InputProgExercise;
 import com.CptFranck.SportsPeak.domain.input.progExercise.InputProgExerciseTrustLabel;
@@ -37,8 +36,7 @@ public class ProgExerciseInputResolver {
 
     public ProgExerciseEntity resolveInput(InputNewProgExercise inputNewProgExercise) {
 
-        UserEntity creator = userService.findOne(inputNewProgExercise.getCreatorId()).orElseThrow(
-                () -> new UserNotFoundException(inputNewProgExercise.getCreatorId()));
+        UserEntity creator = userService.findOne(inputNewProgExercise.getCreatorId());
         ExerciseEntity exercise = exerciseService.findOne(inputNewProgExercise.getExerciseId());
 
         Set<TargetSetEntity> targetSets = new HashSet<>();
