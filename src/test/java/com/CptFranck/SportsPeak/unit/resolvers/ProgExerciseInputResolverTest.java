@@ -109,9 +109,12 @@ public class ProgExerciseInputResolverTest {
 
     @Test
     void resolveInput_ValidInputTrustLabel_ReturnsProgExerciseTrustLabel() {
-        InputProgExerciseTrustLabel inputProgExerciseTrustLabel = createTestInputProgExerciseTrustLabel(1L, true);
+        InputProgExerciseTrustLabel inputProgExerciseTrustLabel = createTestInputProgExerciseTrustLabel(1L, false);
         when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(progExercise);
 
-        Assertions.assertThrows(LabelMatchNotFoundException.class, () -> progExerciseInputResolver.resolveInput(inputProgExerciseTrustLabel));
+        ProgExerciseEntity progExerciseResolved = progExerciseInputResolver.resolveInput(inputProgExerciseTrustLabel);
+
+        Assertions.assertEquals(inputProgExerciseTrustLabel.getId(), progExerciseResolved.getId());
+        Assertions.assertEquals(inputProgExerciseTrustLabel.getTrustLabel(), progExerciseResolved.getTrustLabel().label);
     }
 }
