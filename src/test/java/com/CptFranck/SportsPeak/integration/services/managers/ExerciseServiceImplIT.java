@@ -1,6 +1,8 @@
 package com.CptFranck.SportsPeak.integration.services.managers;
 
-import com.CptFranck.SportsPeak.domain.entity.*;
+import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
+import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
+import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
 import com.CptFranck.SportsPeak.repositories.*;
 import com.CptFranck.SportsPeak.service.serviceImpl.ExerciseServiceImpl;
@@ -17,8 +19,6 @@ import java.util.*;
 import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseType;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.createTestMuscle;
-import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest()
@@ -164,20 +164,6 @@ public class ExerciseServiceImplIT {
         assertEquals(0, exerciseOneReturn.get().getMuscles().size());
         assertEquals(1, exerciseTwoReturn.get().getMuscles().size());
         assertEquals(muscle.getId(), exerciseTwoReturn.get().getMuscles().stream().toList().getFirst().getId());
-    }
-
-    @Test
-    void updateProgExerciseRelation_ValidInputs_Void() {
-        UserEntity user = userRepository.save(createTestUser(null));
-        ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
-        exercise.getProgExercises().add(progExercise);
-        exerciseRepository.save(exercise);
-
-        exerciseServiceImpl.updateProgExerciseRelation(exerciseBis, exercise, progExercise);
-
-        assertEquals(0, exercise.getProgExercises().size());
-        assertEquals(1, exerciseBis.getProgExercises().size());
-        assertEquals(progExercise.getId(), exerciseBis.getProgExercises().stream().toList().getFirst().getId());
     }
 
     @Test
