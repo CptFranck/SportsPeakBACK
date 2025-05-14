@@ -7,9 +7,9 @@ import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
-import com.CptFranck.SportsPeak.domain.exception.LabelMatchNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputNewTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSet;
+import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSetState;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.resolvers.TargetSetInputResolver;
 import com.CptFranck.SportsPeak.service.ProgExerciseManager;
@@ -119,13 +119,8 @@ class TargetSetControllerTest {
     }
 
     @Test
-    void modifyTargetSetState_InvalidLabelInput_ThrowLabelMatchNotFoundException() {
-        Assertions.assertThrows(LabelMatchNotFoundException.class,
-                () -> targetSetController.modifyTargetSetState(createTestInputInputTargetSetState(1L, true)));
-    }
-
-    @Test
     void modifyTargetSetState_validInput_ReturnListOfTargetSetDto() {
+        when(targetSetInputResolver.resolveInput(Mockito.any(InputTargetSetState.class))).thenReturn(TargetSetState.USED);
         when(targetSetService.updateTargetStates(Mockito.any(Long.class), Mockito.any(TargetSetState.class))).thenReturn(targetSet);
         when(TargetSetMapper.mapTo(Mockito.any(TargetSetEntity.class))).thenReturn(targetSetDto);
 
