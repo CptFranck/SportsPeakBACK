@@ -64,7 +64,7 @@ class ProgExerciseControllerTest {
     }
 
     @Test
-    void getExercises_ValidUse_ReturnListOfExerciseDto() {
+    void getProgExercises_ValidUse_ReturnListOfProgExerciseDto() {
         when(progExerciseService.findAll()).thenReturn(List.of(progExercise));
         when(progExerciseMapper.mapTo(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExerciseDto);
 
@@ -74,7 +74,7 @@ class ProgExerciseControllerTest {
     }
 
     @Test
-    void getExerciseById_ValidInput_ReturnExerciseDto() {
+    void getProgExerciseById_ValidInput_ReturnProgExerciseDto() {
         when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(progExercise);
         when(progExerciseMapper.mapTo(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExerciseDto);
 
@@ -84,7 +84,7 @@ class ProgExerciseControllerTest {
     }
 
     @Test
-    void addExercise_ValidInput_ReturnExerciseDto() {
+    void addProgExercise_ValidInput_ReturnProgExerciseDto() {
         when(progExerciseInputResolver.resolveInput(Mockito.any(InputNewProgExercise.class))).thenReturn(progExercise);
         when(progExerciseService.save(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExercise);
         when(progExerciseMapper.mapTo(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExerciseDto);
@@ -96,7 +96,7 @@ class ProgExerciseControllerTest {
     }
 
     @Test
-    void modifyExercise_ValidInput_ReturnExerciseDto() {
+    void modifyProgExercise_ValidInput_ReturnProgExerciseDto() {
         when(progExerciseInputResolver.resolveInput(Mockito.any(InputProgExercise.class))).thenReturn(progExercise);
         when(progExerciseService.save(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExercise);
         when(progExerciseMapper.mapTo(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExerciseDto);
@@ -108,7 +108,7 @@ class ProgExerciseControllerTest {
     }
 
     @Test
-    void modifyProgExerciseTrustLabel_ValidInput_ReturnExerciseDto() {
+    void modifyProgExerciseTrustLabel_ValidInput_ReturnProgExerciseDto() {
         when(progExerciseInputResolver.resolveInput(Mockito.any(InputProgExerciseTrustLabel.class))).thenReturn(progExercise);
         when(progExerciseService.save(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExercise);
         when(progExerciseMapper.mapTo(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExerciseDto);
@@ -120,7 +120,7 @@ class ProgExerciseControllerTest {
     }
 
     @Test
-    void deleteExercise_ValidInput_ReturnExerciseId() {
+    void deleteProgExercise_ValidInput_ReturnProgExerciseId() {
         Long id = progExerciseController.deleteProgExercise(1L);
 
         Assertions.assertEquals(1L, id);
