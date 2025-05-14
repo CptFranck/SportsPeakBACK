@@ -12,17 +12,17 @@ public interface RoleService {
 
     List<RoleEntity> findAll();
 
-    Optional<RoleEntity> findOne(Long id);
+    RoleEntity findOne(Long id);
 
     Optional<RoleEntity> findByName(String name);
 
     Set<RoleEntity> findMany(Set<Long> ids);
 
-    void updatePrivilegeRelation(Set<Long> newIds, Set<Long> oldIds, PrivilegeEntity privilegeEntity);
-
-    boolean exists(Long id);
-
     RoleEntity save(RoleEntity roleEntity);
 
+    void updatePrivilegeRelation(Set<Long> newIds, Set<Long> oldIds, PrivilegeEntity privilegeEntity);
+
     void delete(Long id);
+
+    boolean exists(Long id);
 }
