@@ -3,7 +3,6 @@ package com.CptFranck.SportsPeak.service.serviceImpl;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
-import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
 import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
 import com.CptFranck.SportsPeak.service.ExerciseService;
@@ -86,14 +85,6 @@ public class ExerciseServiceImpl implements ExerciseService {
             e.getMuscles().add(muscle);
             exerciseRepository.save(e);
         });
-    }
-
-    @Override
-    public void updateProgExerciseRelation(ExerciseEntity newExercise, ExerciseEntity oldExercise, ProgExerciseEntity progExercise) {
-        oldExercise.getProgExercises().removeIf(progEx -> progEx.getId().equals(progExercise.getId()));
-        newExercise.getProgExercises().add(progExercise);
-        exerciseRepository.save(oldExercise);
-        exerciseRepository.save(newExercise);
     }
 
     @Override
