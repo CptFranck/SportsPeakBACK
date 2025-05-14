@@ -36,7 +36,7 @@ import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserBis;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-class ProgExerciseApiIntTest {
+class ProgExerciseApiIT {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -78,7 +78,7 @@ class ProgExerciseApiIntTest {
     }
 
     @Test
-    void ProgExerciseApi_GetProgExercises_Success() {
+    void getProgExercises_ValidUse_ReturnListOfProgExerciseDto() {
         List<LinkedHashMap<String, Object>> response = dgsQueryExecutor.executeAndExtractJsonPath(getProgExercisesQuery,
                 "data.getProgExercises");
 
@@ -88,18 +88,19 @@ class ProgExerciseApiIntTest {
     }
 
     @Test
-    void ProgExerciseApi_GetProgExerciseById_UnsuccessfulProgExerciseNotFound() {
-        variables.put("id", progExercise.getId() + 1);
+    void getProgExerciseById_InvalidProgExerciseId_ThrowsProgExerciseNotFoundException() {
+        progExerciseRepository.delete(progExercise);
+        variables.put("id", progExercise.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(getProgExerciseByIdQuery, "data.getProgExerciseById", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("ProgExerciseNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The progExercise with the id %s has not been found", progExercise.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The progExercise with the id %s has not been found", progExercise.getId())));
     }
 
     @Test
-    void ProgExerciseApi_GetProgExerciseById_Success() {
+    void getProgExerciseById_ValidInput_ReturnProgExerciseDto() {
         variables.put("id", progExercise.getId());
 
         LinkedHashMap<String, Object> response = dgsQueryExecutor.executeAndExtractJsonPath(getProgExerciseByIdQuery,
@@ -111,9 +112,9 @@ class ProgExerciseApiIntTest {
     }
 
     @Test
-    void ProgExerciseApi_AddProgExercise_UnsuccessfulNotAuthenticated() {
+    void addProgExercise_NotAuthenticated_ThrowsAuthenticationCredentialsNotFoundException() {
         variables.put("inputNewProgExercise", objectMapper.convertValue(
-                createTestInputNewProgExercise(user.getId(), exercise.getId()),
+                createTestInputNewProgExercise(user.getId(), exercise.getId(), false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
 
@@ -126,9 +127,11 @@ class ProgExerciseApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void ProgExerciseApi_AddProgExercise_UnsuccessfulUserNotFound() {
+    void addProgExercise_InvalidUserId_ThrowsUserNotFoundException() {
+        progExerciseRepository.delete(progExercise);
+        userRepository.delete(user);
         variables.put("inputNewProgExercise", objectMapper.convertValue(
-                createTestInputNewProgExercise(user.getId() + 1, exercise.getId()),
+                createTestInputNewProgExercise(user.getId(), exercise.getId(), false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
 
@@ -136,14 +139,16 @@ class ProgExerciseApiIntTest {
                 "data.addProgExercise", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("UserNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("User with id %s has been not found", user.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("User with id %s has been not found", user.getId())));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void ProgExerciseApi_AddProgExercise_UnsuccessfulExerciseNotFound() {
+    void addProgExercise_InvalidExerciseId_ThrowsProgExerciseNotFoundException() {
+        progExerciseRepository.delete(progExercise);
+        exerciseRepository.delete(exercise);
         variables.put("inputNewProgExercise", objectMapper.convertValue(
-                createTestInputNewProgExercise(user.getId(), exercise.getId() + 1),
+                createTestInputNewProgExercise(user.getId(), exercise.getId(), false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
 
@@ -151,13 +156,29 @@ class ProgExerciseApiIntTest {
                 "data.addProgExercise", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("ExerciseNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The exercise with the id %s has not been found", exercise.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The exercise with the id %s has not been found", exercise.getId())));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void ProgExerciseApi_AddProgExercise_Success() {
-        InputNewProgExercise newProgExercise = createTestInputNewProgExercise(user.getId(), exercise.getId());
+    void addProgExercise_InvalidLabel_ThrowsLabelMatchNotFoundException() {
+        InputNewProgExercise inputNewProgExercise = createTestInputNewProgExercise(user.getId(), exercise.getId(), true);
+        variables.put("inputNewProgExercise", objectMapper.convertValue(
+                inputNewProgExercise,
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
+
+        QueryException exception = Assertions.assertThrows(QueryException.class, () -> dgsQueryExecutor.executeAndExtractJsonPath(addProgExerciseQuery,
+                "data.addProgExercise", variables));
+
+        Assertions.assertTrue(exception.getMessage().contains("LabelMatchNotFoundException"));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("No %s (label) match with %s", "VisibilityLabel", inputNewProgExercise.getVisibility())));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "USER")
+    void addProgExercise_ValidInput_ReturnProgExerciseDto() {
+        InputNewProgExercise newProgExercise = createTestInputNewProgExercise(user.getId(), exercise.getId(), false);
         variables.put("inputNewProgExercise", objectMapper.convertValue(
                 newProgExercise,
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -172,7 +193,7 @@ class ProgExerciseApiIntTest {
     }
 
     @Test
-    void ProgExerciseApi_ModifyProgExercise_UnsuccessfulNotAuthenticated() {
+    void modifyProgExercise_NotAuthenticated_ThrowsAuthenticationCredentialsNotFoundException() {
         variables.put("inputProgExercise", objectMapper.convertValue(
                 createTestInputProgExercise(progExercise.getId(), exercise.getId(), false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -187,9 +208,10 @@ class ProgExerciseApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void ProgExerciseApi_ModifyProgExercise_UnsuccessfulProgExerciseNotFound() {
+    void modifyProgExercise_InvalidProgExerciseId_ThrowsProgExerciseNotFoundException() {
+        progExerciseRepository.delete(progExercise);
         variables.put("inputProgExercise", objectMapper.convertValue(
-                createTestInputProgExercise(progExercise.getId() + 1, exercise.getId(), false),
+                createTestInputProgExercise(progExercise.getId(), exercise.getId(), false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
 
@@ -197,12 +219,12 @@ class ProgExerciseApiIntTest {
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyProgExerciseQuery, "data.modifyProgExercise", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("ProgExerciseNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The progExercise with the id %s has not been found", progExercise.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The progExercise with the id %s has not been found", progExercise.getId())));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void ProgExerciseApi_ModifyProgExercise_UnsuccessfulExerciseNotFound() {
+    void modifyProgExercise_InvalidExerciseId_ThrowsExerciseNotFoundException() {
         variables.put("inputProgExercise", objectMapper.convertValue(
                 createTestInputProgExercise(progExercise.getId(), exercise.getId() + 1, false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -217,7 +239,7 @@ class ProgExerciseApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void ProgExerciseApi_ModifyProgExercise_UnsuccessfulWrongLabel() {
+    void modifyProgExercise_InvalidLabel_ThrowsLabelMatchNotFoundException() {
         InputProgExercise inputProgExercise = createTestInputProgExercise(progExercise.getId(), exercise.getId(), true);
         variables.put("inputProgExercise", objectMapper.convertValue(inputProgExercise, new TypeReference<LinkedHashMap<String, Object>>() {
         }));
@@ -231,7 +253,7 @@ class ProgExerciseApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void ProgExerciseApi_ModifyProgExercise_Success() {
+    void modifyProgExercise_ValidInput_ReturnProgExerciseDto() {
         InputProgExercise inputNewExercise = createTestInputProgExercise(progExercise.getId(), exercise.getId(), false);
         variables.put("inputProgExercise", objectMapper.convertValue(inputNewExercise, new TypeReference<LinkedHashMap<String, Object>>() {
         }));
@@ -244,7 +266,7 @@ class ProgExerciseApiIntTest {
     }
 
     @Test
-    void ProgExerciseApi_ModifyProgExerciseTrustLabel_UnsuccessfulNotAuthenticated() {
+    void modifyProgExerciseTrustLabel_NotAuthenticated_ThrowsAuthenticationCredentialsNotFoundException() {
         variables.put("inputProgExerciseTrustLabel", objectMapper.convertValue(
                 createTestInputProgExerciseTrustLabel(progExercise.getId(), false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -259,9 +281,10 @@ class ProgExerciseApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void ProgExerciseApi_ModifyProgExerciseTrustLabel_UnsuccessfulProgExerciseNotFound() {
+    void modifyProgExerciseTrustLabel_InvalidProgExerciseId_ThrowsProgExerciseNotFoundException() {
+        progExerciseRepository.delete(progExercise);
         variables.put("inputProgExerciseTrustLabel", objectMapper.convertValue(
-                createTestInputProgExerciseTrustLabel(progExercise.getId() + 1, false),
+                createTestInputProgExerciseTrustLabel(progExercise.getId(), false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
 
@@ -269,12 +292,12 @@ class ProgExerciseApiIntTest {
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyProgExerciseTrustLabelQuery, "data.modifyProgExerciseTrustLabel", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("ProgExerciseNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The progExercise with the id %s has not been found", progExercise.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The progExercise with the id %s has not been found", progExercise.getId())));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void ProgExerciseApi_ModifyProgExerciseTrustLabel_UnsuccessfulWrongLabel() {
+    void modifyProgExerciseTrustLabel_InvalidVisibilityLabel_ThrowsLabelMatchNotFoundException() {
         InputProgExerciseTrustLabel inputProgExerciseTrustLabel = createTestInputProgExerciseTrustLabel(progExercise.getId(), true);
         variables.put("inputProgExerciseTrustLabel", objectMapper.convertValue(
                 inputProgExerciseTrustLabel,
@@ -290,7 +313,7 @@ class ProgExerciseApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void ProgExerciseApi_ModifyProgExerciseTrustLabel_Success() {
+    void modifyProgExerciseTrustLabel_ValidInput_ReturnProgExerciseDto() {
         InputProgExerciseTrustLabel inputProgExerciseTrustLabel = createTestInputProgExerciseTrustLabel(progExercise.getId(), false);
         variables.put("inputProgExerciseTrustLabel", objectMapper.convertValue(
                 inputProgExerciseTrustLabel,
@@ -318,19 +341,20 @@ class ProgExerciseApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void ProgExerciseApi_DeleteProgExercise_UnsuccessfulProgExerciseNotFound() {
-        variables.put("progExerciseId", progExercise.getId() + 1);
+    void deleteProgExercise_InvalidProgExerciseId_ThrowsProgExerciseNotFoundException() {
+        progExerciseRepository.delete(progExercise);
+        variables.put("progExerciseId", progExercise.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(deleteProgExerciseQuery, "data.deleteProgExercise", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("ProgExerciseNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The progExercise with the id %s has not been found", progExercise.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The progExercise with the id %s has not been found", progExercise.getId())));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void ProgExerciseApi_DeleteProgExercise_UnsuccessfulProgExerciseStillUsed() {
+    void deleteProgExercise_ValidInputButSillUsed_ThrowsProgExerciseStillUsedException() {
         UserEntity userBis = createTestUserBis(null);
         userBis.getSubscribedProgExercises().add(progExercise);
         userRepository.save(userBis);
@@ -346,7 +370,7 @@ class ProgExerciseApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void ProgExerciseApi_DeleteProgExercise_Success() {
+    void deleteProgExercise_ValidInput_ReturnProgExerciseId() {
         variables.put("progExerciseId", progExercise.getId());
 
         String id = dgsQueryExecutor.executeAndExtractJsonPath(deleteProgExerciseQuery, "data.deleteProgExercise", variables);
