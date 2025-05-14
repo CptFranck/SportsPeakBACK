@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.integration.services;
+package com.CptFranck.SportsPeak.integration.services.services;
 
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
@@ -7,7 +7,7 @@ import com.CptFranck.SportsPeak.domain.exception.progExercise.ProgExerciseNotFou
 import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
 import com.CptFranck.SportsPeak.repositories.ProgExerciseRepository;
 import com.CptFranck.SportsPeak.repositories.UserRepository;
-import com.CptFranck.SportsPeak.service.impl.ProgExerciseServiceImpl;
+import com.CptFranck.SportsPeak.service.serviceImpl.ProgExerciseServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +18,6 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
@@ -29,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-public class ProgExerciseServiceImplIntTest {
+public class ProgExerciseServiceImplIT {
 
     @Autowired
     private UserRepository userRepository;
@@ -63,7 +62,35 @@ public class ProgExerciseServiceImplIntTest {
     }
 
     @Test
-    void progExerciseService_Save_Success() {
+    void findAll_ValidUse_ReturnListOfProgExerciseEntity() {
+        List<ProgExerciseEntity> progExerciseFound = progExerciseService.findAll();
+
+        assertEqualProgExerciseList(List.of(progExercise), progExerciseFound);
+    }
+
+    @Test
+    void findOne_InvalidProgExerciseId_ThrowProgExerciseNotFoundException() {
+        progExerciseRepository.delete(progExercise);
+
+        assertThrows(ProgExerciseNotFoundException.class, () -> progExerciseService.findOne(progExercise.getId()));
+    }
+
+    @Test
+    void findOne_ValidProgExerciseId_ReturnProgExerciseEntity() {
+        ProgExerciseEntity progExerciseFound = progExerciseService.findOne(progExercise.getId());
+
+        assertEqualProgExercise(progExercise, progExerciseFound);
+    }
+
+    @Test
+    void findMany_ValidProgExerciseIds_ReturnSetOfProgExerciseEntity() {
+        Set<ProgExerciseEntity> progExerciseFound = progExerciseService.findMany(Set.of(progExercise.getId()));
+
+        assertEqualProgExerciseList(List.of(progExercise), progExerciseFound.stream().toList());
+    }
+
+    @Test
+    void save_AddProgExercise_ReturnProgExerciseEntity() {
         ProgExerciseEntity unsavedProgExercise = createTestProgExercise(null, user, exercise);
 
         ProgExerciseEntity progExerciseSaved = progExerciseService.save(unsavedProgExercise);
@@ -72,44 +99,36 @@ public class ProgExerciseServiceImplIntTest {
     }
 
     @Test
-    void progExerciseService_FindAll_Success() {
-        List<ProgExerciseEntity> progExerciseFound = progExerciseService.findAll();
+    void save_UpdateProgExerciseNotExisting_ThrowProgExerciseNotFoundException() {
+        progExerciseRepository.delete(progExercise);
 
-        assertEqualProgExerciseList(List.of(progExercise), progExerciseFound);
+        assertThrows(ProgExerciseNotFoundException.class, () -> progExerciseService.save(progExercise));
     }
 
     @Test
-    void progExerciseService_FindOne_Success() {
-        Optional<ProgExerciseEntity> progExerciseFound = progExerciseService.findOne(progExercise.getId());
+    void save_UpdateProgExercise_ReturnProgExerciseEntity() {
+        ProgExerciseEntity progExerciseSaved = progExerciseService.save(progExercise);
 
-        Assertions.assertTrue(progExerciseFound.isPresent());
-        assertEqualProgExercise(progExercise, progExerciseFound.get());
+        assertEqualProgExercise(progExercise, progExerciseSaved);
     }
 
     @Test
-    void progExerciseService_FindMany_Success() {
-        Set<ProgExerciseEntity> progExerciseFound = progExerciseService.findMany(Set.of(progExercise.getId()));
+    void delete_InvalidProgExerciseId_ThrowProgExerciseNotFoundException() {
+        progExerciseRepository.delete(progExercise);
 
-        assertEqualProgExerciseList(List.of(progExercise), progExerciseFound.stream().toList());
+        assertThrows(ProgExerciseNotFoundException.class, () -> progExerciseService.delete(progExercise.getId()));
     }
 
     @Test
-    void progExerciseService_Exists_Success() {
-        boolean progExerciseFound = progExerciseService.exists(progExercise.getId());
-
-        Assertions.assertTrue(progExerciseFound);
-    }
-
-    @Test
-    void progExerciseService_Delete_Success() {
+    void delete_ValidInput_Void() {
         assertAll(() -> progExerciseService.delete(progExercise.getId()));
     }
 
     @Test
-    void progExerciseService_Delete_Unsuccessful() {
-        progExerciseRepository.delete(progExercise);
+    void exists_ValidInput_ReturnTrue() {
+        boolean progExerciseFound = progExerciseService.exists(progExercise.getId());
 
-        assertThrows(ProgExerciseNotFoundException.class, () -> progExerciseService.delete(progExercise.getId()));
+        Assertions.assertTrue(progExerciseFound);
     }
 
     private void assertEqualProgExerciseList(
