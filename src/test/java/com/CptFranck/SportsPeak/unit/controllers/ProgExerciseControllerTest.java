@@ -90,7 +90,7 @@ class ProgExerciseControllerTest {
         when(progExerciseMapper.mapTo(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExerciseDto);
 
         ProgExerciseDto progExerciseDto = progExerciseController.addProgExercise(
-                createTestInputNewProgExercise(1L, 1L));
+                createTestInputNewProgExercise(1L, 1L, false));
 
         Assertions.assertEquals(this.progExerciseDto, progExerciseDto);
     }
