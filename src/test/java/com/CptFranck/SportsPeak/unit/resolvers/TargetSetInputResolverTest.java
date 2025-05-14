@@ -4,10 +4,12 @@ import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
 import com.CptFranck.SportsPeak.domain.exception.LabelMatchNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.targetSet.AbstractTargetSetInput;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputNewTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSet;
+import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSetState;
 import com.CptFranck.SportsPeak.resolvers.TargetSetInputResolver;
 import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import com.CptFranck.SportsPeak.service.TargetSetService;
@@ -62,9 +64,9 @@ public class TargetSetInputResolverTest {
         InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), null, false);
         when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(progExercise);
 
-        TargetSetEntity targetSetSaved = targetSetInputResolver.resolveInput(inputNewTargetSet);
+        TargetSetEntity targetSetResolved = targetSetInputResolver.resolveInput(inputNewTargetSet);
 
-        assertTargetSetInputAndEntity(inputNewTargetSet, targetSetSaved);
+        assertTargetSetInputAndEntity(inputNewTargetSet, targetSetResolved);
     }
 
     @Test
@@ -80,9 +82,24 @@ public class TargetSetInputResolverTest {
         InputTargetSet inputTargetSet = createTestInputTargetSet(progExercise.getId(), false);
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(targetSet);
 
-        TargetSetEntity targetSetSaved = targetSetInputResolver.resolveInput(inputTargetSet);
+        TargetSetEntity targetSetResolved = targetSetInputResolver.resolveInput(inputTargetSet);
 
-        assertTargetSetInputAndEntity(inputTargetSet, targetSetSaved);
+        assertTargetSetInputAndEntity(inputTargetSet, targetSetResolved);
+    }
+
+    @Test
+    void resolveInput_InvalidInputTargetStateLabel_ThrowLabelMatchNotFoundException() {
+        InputTargetSetState inputTargetSetState = createTestInputInputTargetSetState(1L, true);
+        Assertions.assertThrows(LabelMatchNotFoundException.class, () -> targetSetInputResolver.resolveInput(inputTargetSetState));
+    }
+
+    @Test
+    void resolveInput_ValidInputTargetState_ReturnTargetSetState() {
+        InputTargetSetState inputTargetSetState = createTestInputInputTargetSetState(1L, false);
+
+        TargetSetState targetSetStateResolved = targetSetInputResolver.resolveInput(inputTargetSetState);
+
+        Assertions.assertEquals(inputTargetSetState.getState(), targetSetStateResolved.label);
     }
 
     private void assertTargetSetInputAndEntity(AbstractTargetSetInput expectedTargetSet, TargetSetEntity actualTargetSet) {
