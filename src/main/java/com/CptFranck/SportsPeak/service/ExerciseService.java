@@ -3,7 +3,6 @@ package com.CptFranck.SportsPeak.service;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
-import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 
 import java.util.List;
 import java.util.Set;
@@ -23,8 +22,6 @@ public interface ExerciseService {
     void updateExerciseTypeRelation(Set<Long> newIds, Set<Long> oldIds, ExerciseTypeEntity exerciseType);
 
     void updateMuscleRelation(Set<Long> newIds, Set<Long> oldIds, MuscleEntity muscle);
-
-    void updateProgExerciseRelation(ExerciseEntity newExercise, ExerciseEntity oldExercise, ProgExerciseEntity progExercise);
 
     boolean exists(Long id);
 }
