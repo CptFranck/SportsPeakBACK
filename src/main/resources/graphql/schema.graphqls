@@ -38,7 +38,7 @@ type Mutation {
     modifyUserRoles(inputUserRoles: InputUserRoles!): User!
     modifyUserEmail(inputUserEmail: InputUserEmail!): Auth!
     modifyUserUsername(inputUserUsername: InputUserUsername!): User!
-    modifyUserPassword(inputUserPassword: InputUserPassword!): User!
+    modifyUserPassword(inputUserPassword: InputUserPassword!): Auth!
     deleteUser(userId: ID!): ID!
 
     addRole(inputNewRole: InputNewRole!): Role!
