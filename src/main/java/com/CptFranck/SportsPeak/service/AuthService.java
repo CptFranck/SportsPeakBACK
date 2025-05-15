@@ -3,6 +3,8 @@ package com.CptFranck.SportsPeak.service;
 
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
+import com.CptFranck.SportsPeak.domain.input.user.InputUserEmail;
+import com.CptFranck.SportsPeak.domain.input.user.InputUserPassword;
 import com.CptFranck.SportsPeak.domain.model.UserToken;
 
 public interface AuthService {
@@ -11,4 +13,7 @@ public interface AuthService {
 
     UserToken register(InputRegisterNewUser inputRegisterNewUser);
 
+    UserToken updateEmail(InputUserEmail inputUserEmail);
+
+    UserToken updatePassword(InputUserPassword inputUserPassword);
 }
