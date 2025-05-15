@@ -45,7 +45,7 @@ public class RoleServiceImplTest {
     }
 
     @Test
-    void findAll_ValidUse_ReturnListOfPrivilegeEntity() {
+    void findAll_ValidUse_ReturnListOfRoleEntity() {
         List<RoleEntity> roleList = createNewTestRoleList(false);
         when(roleRepository.findAll()).thenReturn(roleList);
 
@@ -55,14 +55,14 @@ public class RoleServiceImplTest {
     }
 
     @Test
-    void findOne_InvalidPrivilegeId_ThrowPrivilegeNotFoundException() {
+    void findOne_InvalidRoleId_ThrowRoleNotFoundException() {
         when(roleRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
         assertThrows(RoleNotFoundException.class, () -> roleServiceImpl.findOne(role.getId()));
     }
 
     @Test
-    void findOne_ValidPrivilegeId_ReturnPrivilegeEntity() {
+    void findOne_ValidRoleId_ReturnRoleEntity() {
         when(roleRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(role));
 
         RoleEntity roleFound = roleServiceImpl.findOne(role.getId());
@@ -71,7 +71,7 @@ public class RoleServiceImplTest {
     }
 
     @Test
-    void findByName_ValidPrivilegeId_ReturnOptionalOfPrivilegeEntity() {
+    void findByName_ValidRoleId_ReturnOptionalOfRoleEntity() {
         when(roleRepository.findByName(Mockito.any(String.class))).thenReturn(Optional.of(role));
 
         Optional<RoleEntity> roleFound = roleServiceImpl.findByName(role.getName());
@@ -81,7 +81,7 @@ public class RoleServiceImplTest {
     }
 
     @Test
-    void findMany_ValidPrivilegeIds_ReturnSetOfPrivilegeEntity() {
+    void findMany_ValidRoleIds_ReturnSetOfRoleEntity() {
         List<RoleEntity> roleList = createNewTestRoleList(false);
         Set<Long> roleIds = roleList.stream().map(RoleEntity::getId).collect(Collectors.toSet());
         when(roleRepository.findAllById(Mockito.anyIterable())).thenReturn(roleList);
@@ -92,7 +92,7 @@ public class RoleServiceImplTest {
 
 
     @Test
-    void save_AddNewRoleWithNameAlreadyTaken_ThrowPrivilegeExistsException() {
+    void save_AddNewRoleWithNameAlreadyTaken_ThrowRoleExistsException() {
         RoleEntity unsavedRole = createTestRole(null, 0);
         when(roleRepository.findByName(Mockito.any(String.class))).thenReturn(Optional.of(role));
 
@@ -100,7 +100,7 @@ public class RoleServiceImplTest {
     }
 
     @Test
-    void save_AddNewRole_ReturnPrivilegeEntity() {
+    void save_AddNewRole_ReturnRoleEntity() {
         RoleEntity unsavedRole = createTestRole(null, 0);
         when(roleRepository.findByName(Mockito.any(String.class))).thenReturn(Optional.empty());
         when(roleRepository.save(Mockito.any(RoleEntity.class))).thenReturn(role);
@@ -111,7 +111,7 @@ public class RoleServiceImplTest {
     }
 
     @Test
-    void save_UpdateRoleWithInvalidId_ThrowPrivilegeNotFoundException() {
+    void save_UpdateRoleWithInvalidId_ThrowRoleNotFoundException() {
         when(roleRepository.findByName(Mockito.any(String.class))).thenReturn(Optional.of(role));
         when(roleRepository.existsById(Mockito.any(Long.class))).thenReturn(false);
 
@@ -119,7 +119,7 @@ public class RoleServiceImplTest {
     }
 
     @Test
-    void save_UpdatePrivilege_ReturnPrivilegeEntity() {
+    void save_UpdateRole_ReturnRoleEntity() {
         when(roleRepository.findByName(Mockito.any(String.class))).thenReturn(Optional.of(role));
         when(roleRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
         when(roleRepository.save(Mockito.any(RoleEntity.class))).thenReturn(role);
@@ -144,7 +144,7 @@ public class RoleServiceImplTest {
     }
 
     @Test
-    void updatePrivilegeRelation_ValidUse_Void() {
+    void updateRoleRelation_ValidUse_Void() {
         RoleEntity roleOne = createTestRole(1L, 1);
         RoleEntity roleTwo = createTestRole(2L, 2);
         Set<Long> oldRoleIds = Set.of(roleOne.getId());
