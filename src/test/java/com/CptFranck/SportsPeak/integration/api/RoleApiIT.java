@@ -28,7 +28,7 @@ import static com.CptFranck.SportsPeak.utils.TestRoleUtils.*;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-class RoleApiIntTest {
+class RoleApiIT {
 
     @Autowired
     private DgsQueryExecutor dgsQueryExecutor;
@@ -55,7 +55,7 @@ class RoleApiIntTest {
     }
 
     @Test
-    void RoleApi_GetRoles_UnsuccessfulNotAuthenticated() {
+    void getRoles_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(getRolesQuery, "data.getRoles"));
 
@@ -65,7 +65,7 @@ class RoleApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void RoleApi_GetRoles_Success() {
+    void getRoles_ValidUse_ReturnListOfRoleDto() {
         List<LinkedHashMap<String, Object>> response = dgsQueryExecutor.executeAndExtractJsonPath(getRolesQuery,
                 "data.getRoles");
 
@@ -75,8 +75,8 @@ class RoleApiIntTest {
     }
 
     @Test
-    void RoleApi_GetRoleById_UnsuccessfulNotAuthenticated() {
-        variables.put("id", role.getId() + 1);
+    void getRoleById_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+        variables.put("id", role.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(getRoleByIdQuery, "data.getRoleById", variables));
@@ -87,19 +87,20 @@ class RoleApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void RoleApi_GetRoleById_UnsuccessfulRoleNotFound() {
-        variables.put("id", role.getId() + 1);
+    void getRoleById_InvalidRoleId_ThrowRoleNotFoundException() {
+        roleRepository.delete(role);
+        variables.put("id", role.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(getRoleByIdQuery, "data.getRoleById", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("RoleNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The role the id or the name %s has not been found", role.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The role the id or the name %s has not been found", role.getId())));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void RoleApi_GetRoleById_Success() {
+    void getRoleById_ValidUse_ReturnRoleDto() {
         variables.put("id", role.getId());
 
         LinkedHashMap<String, Object> response = dgsQueryExecutor.executeAndExtractJsonPath(getRoleByIdQuery,
@@ -110,7 +111,7 @@ class RoleApiIntTest {
     }
 
     @Test
-    void RoleApi_AddRole_UnsuccessfulNotAuthenticated() {
+    void addRole_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         InputNewRole inputNewRole = createTestInputNewRole();
         variables.put("inputNewRole", objectMapper.convertValue(
                 inputNewRole,
@@ -126,7 +127,24 @@ class RoleApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void RoleApi_AddRole_Success() {
+    void addRole_AddNewRoleWithNameAlreadyTaken_ThrowRoleExistsException() {
+        InputNewRole inputNewRole = createTestInputNewRole();
+        inputNewRole.setName(role.getName());
+        variables.put("inputNewRole", objectMapper.convertValue(
+                inputNewRole,
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
+
+        QueryException exception = Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(addRoleQuery, "data.addRole", variables));
+
+        Assertions.assertTrue(exception.getMessage().contains("RoleExistsException"));
+        Assertions.assertTrue(exception.getMessage().contains("A role with this name already exists"));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void addRole_ValidInput_ReturnRoleDto() {
         InputNewRole inputNewRole = createTestInputNewRole();
         variables.put("inputNewRole", objectMapper.convertValue(
                 inputNewRole,
@@ -141,9 +159,9 @@ class RoleApiIntTest {
     }
 
     @Test
-    void RoleApi_ModifyRole_UnsuccessfulNotAuthenticated() {
+    void modifyRole_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         variables.put("inputRole", objectMapper.convertValue(
-                createTestInputRole(role.getId() + 1),
+                createTestInputRole(role.getId()),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
 
@@ -156,9 +174,10 @@ class RoleApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void RoleApi_ModifyRole_UnsuccessfulRoleNotFound() {
+    void modifyRole_InvalidRoleId_ThrowsRoleNotFoundException() {
+        roleRepository.delete(role);
         variables.put("inputRole", objectMapper.convertValue(
-                createTestInputRole(role.getId() + 1),
+                createTestInputRole(role.getId()),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
 
@@ -166,12 +185,12 @@ class RoleApiIntTest {
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyRoleQuery, "data.modifyRole", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("RoleNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The role the id or the name %s has not been found", role.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The role the id or the name %s has not been found", role.getId())));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void RoleApi_ModifyRole_Success() {
+    void modifyRole_ValidInput_ReturnRoleDto() {
         InputRole inputRole = createTestInputRole(role.getId());
         variables.put("inputRole", objectMapper.convertValue(
                 inputRole,
@@ -186,7 +205,7 @@ class RoleApiIntTest {
     }
 
     @Test
-    void RoleApi_DeleteRole_UnsuccessfulNotAuthenticated() {
+    void deleteRole_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         variables.put("roleId", role.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
@@ -198,7 +217,20 @@ class RoleApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void RoleApi_DeleteRole_Success() {
+    void deleteRole_InvalidRoleId_ThrowsRoleNotFoundException() {
+        roleRepository.delete(role);
+        variables.put("roleId", role.getId());
+
+        QueryException exception = Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(deleteRoleQuery, "data.deleteRole", variables));
+
+        Assertions.assertTrue(exception.getMessage().contains("RoleNotFoundException"));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The role the id or the name %s has not been found", role.getId())));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void deleteRole_ValidInput_ReturnRoleId() {
         variables.put("roleId", role.getId());
 
         String id = dgsQueryExecutor.executeAndExtractJsonPath(deleteRoleQuery, "data.deleteRole", variables);

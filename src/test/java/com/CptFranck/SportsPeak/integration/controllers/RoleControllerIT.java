@@ -67,7 +67,9 @@ class RoleControllerIT {
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void getRoleById_InvalidRoleId_ThrowRoleNotFoundException() {
-        Assertions.assertThrows(RoleNotFoundException.class, () -> roleController.getRoleById(role.getId() + 1));
+        roleRepository.delete(role);
+
+        Assertions.assertThrows(RoleNotFoundException.class, () -> roleController.getRoleById(role.getId()));
     }
 
     @Test
@@ -87,7 +89,7 @@ class RoleControllerIT {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void save_AddNewRoleWithNameAlreadyTaken_ThrowRoleExistsException() {
+    void addRole_AddNewRoleWithNameAlreadyTaken_ThrowRoleExistsException() {
         InputNewRole inputNewRole = createTestInputNewRole();
         inputNewRole.setName(role.getName());
 
@@ -114,7 +116,8 @@ class RoleControllerIT {
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void modifyRole_InvalidRoleId_ThrowsRoleNotFoundException() {
-        InputRole inputRole = createTestInputRole(role.getId() + 1);
+        roleRepository.delete(role);
+        InputRole inputRole = createTestInputRole(role.getId());
 
         assertThrows(RoleNotFoundException.class, () -> roleController.modifyRole(inputRole));
     }
@@ -138,7 +141,9 @@ class RoleControllerIT {
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void deleteRole_InvalidRoleId_ThrowsRoleNotFoundException() {
-        Assertions.assertThrows(RoleNotFoundException.class, () -> roleController.deleteRole(role.getId() + 1));
+        roleRepository.delete(role);
+
+        Assertions.assertThrows(RoleNotFoundException.class, () -> roleController.deleteRole(role.getId()));
     }
 
     @Test
