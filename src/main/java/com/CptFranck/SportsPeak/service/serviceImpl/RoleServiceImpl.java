@@ -2,7 +2,6 @@ package com.CptFranck.SportsPeak.service.serviceImpl;
 
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
-import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.role.RoleExistsException;
 import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
 import com.CptFranck.SportsPeak.repositories.RoleRepository;
@@ -62,7 +61,13 @@ public class RoleServiceImpl implements RoleService {
             return roleRepository.save(role);
         if (exists(role.getId()))
             return roleRepository.save(role);
-        throw new PrivilegeNotFoundException(role.getId());
+        throw new RoleNotFoundException(role.getId().toString());
+    }
+
+    @Override
+    public void delete(Long id) {
+        RoleEntity role = this.findOne(id);
+        roleRepository.delete(role);
     }
 
     @Override
@@ -80,11 +85,5 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public boolean exists(Long id) {
         return roleRepository.existsById(id);
-    }
-
-    @Override
-    public void delete(Long id) {
-        RoleEntity role = this.findOne(id);
-        roleRepository.delete(role);
     }
 }
