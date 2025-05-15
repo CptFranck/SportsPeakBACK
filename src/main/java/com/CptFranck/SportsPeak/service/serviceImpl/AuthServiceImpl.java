@@ -1,72 +1,125 @@
 package com.CptFranck.SportsPeak.service.serviceImpl;
 
+import com.CptFranck.SportsPeak.config.security.JwtProvider;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
-import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailAlreadyUsedException;
-import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailUnknownException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.IncorrectPasswordException;
-import com.CptFranck.SportsPeak.domain.exception.userAuth.UsernameExistsException;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
-import com.CptFranck.SportsPeak.repositories.UserRepository;
+import com.CptFranck.SportsPeak.domain.input.user.InputUserEmail;
+import com.CptFranck.SportsPeak.domain.input.user.InputUserPassword;
+import com.CptFranck.SportsPeak.domain.model.JWToken;
+import com.CptFranck.SportsPeak.domain.model.UserToken;
 import com.CptFranck.SportsPeak.service.AuthService;
 import com.CptFranck.SportsPeak.service.RoleService;
+import com.CptFranck.SportsPeak.service.UserService;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
 public class AuthServiceImpl implements AuthService {
 
     private final RoleService roleService;
-    private final UserRepository userRepository;
+
+    private final UserService userService;
+
+    private final JwtProvider userAuthProvider;
+
     private final PasswordEncoder passwordEncoder;
 
-    public AuthServiceImpl(RoleService roleService, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    private final AuthenticationManager authenticationManager;
+
+    public AuthServiceImpl(RoleService roleService, UserService userService, JwtProvider userAuthProvider, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
         this.roleService = roleService;
-        this.userRepository = userRepository;
+        this.userService = userService;
         this.passwordEncoder = passwordEncoder;
+        this.userAuthProvider = userAuthProvider;
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
-    public UserEntity login(InputCredentials credentials) {
-        UserEntity user = userRepository.findByEmail(credentials.getEmail())
-                .orElseThrow(EmailUnknownException::new);
-        if (passwordEncoder.matches(credentials.getPassword(), user.getPassword()))
-            return user;
-        throw new IncorrectPasswordException();
+    public UserToken login(InputCredentials credentials) {
+        String email = credentials.getEmail();
+        String password = credentials.getPassword();
+        UserEntity user = userService.findByEmail(email);
+
+        verifyPassword(password, user);
+
+        return getUserToken(email, password, user);
     }
 
     @Override
-    public UserEntity register(InputRegisterNewUser inputRegisterNewUser) {
-        Optional<RoleEntity> userRole = roleService.findByName("ROLE_USER");
-        Optional<UserEntity> userOptionalEmail = userRepository.findByEmail(inputRegisterNewUser.getEmail());
-        Optional<UserEntity> userOptionalUsername = userRepository.findByUsername(inputRegisterNewUser.getUsername());
+    public UserToken register(InputRegisterNewUser inputRegisterNewUser) {
+        RoleEntity userRole = roleService.findByName("ROLE_USER").orElseThrow(() -> new RoleNotFoundException("ROLE_USER"));
 
-        if (userRole.isEmpty())
-            throw new RoleNotFoundException("ROLE_USER");
-        if (userOptionalEmail.isPresent())
-            throw new EmailAlreadyUsedException();
-        if (userOptionalUsername.isPresent())
-            throw new UsernameExistsException();
+        String email = inputRegisterNewUser.getEmail();
+        String password = inputRegisterNewUser.getPassword();
+        String encodedPassword = passwordEncoder.encode(password);
 
-        UserEntity userEntity = new UserEntity(
+        UserEntity user = new UserEntity(
                 null,
-                inputRegisterNewUser.getEmail(),
+                email,
                 inputRegisterNewUser.getFirstName(),
                 inputRegisterNewUser.getLastName(),
                 inputRegisterNewUser.getUsername(),
-                inputRegisterNewUser.getPassword(),
-                Set.of(userRole.get()),
+                encodedPassword,
+                Set.of(userRole),
                 new HashSet<>(),
                 new HashSet<>()
         );
 
-        userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
-        return userRepository.save(userEntity);
+        UserEntity userSaved = userService.save(user);
+
+        return getUserToken(email, password, userSaved);
+    }
+
+    @Override
+    public UserToken updateEmail(InputUserEmail inputUserEmail) {
+        Long id = inputUserEmail.getId();
+        String password = inputUserEmail.getPassword();
+        String newEmail = inputUserEmail.getNewEmail();
+
+        UserEntity user = userService.findOne(id);
+        verifyPassword(password, user);
+
+        user.setEmail(newEmail);
+        UserEntity userUpdated = userService.save(user);
+
+        return getUserToken(newEmail, password, userUpdated);
+    }
+
+    @Override
+    public UserToken updatePassword(InputUserPassword inputUserPassword) {
+        Long id = inputUserPassword.getId();
+        String oldPassword = inputUserPassword.getOldPassword();
+        String newPassword = inputUserPassword.getNewPassword();
+
+        UserEntity user = userService.findOne(id);
+        verifyPassword(oldPassword, user);
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        UserEntity userSaved = userService.save(user);
+
+        return getUserToken(user.getEmail(), newPassword, userSaved);
+    }
+
+    private void verifyPassword(String password, UserEntity user) {
+        boolean match = passwordEncoder.matches(password, user.getPassword());
+        if (!match) throw new IncorrectPasswordException();
+    }
+
+    private UserToken getUserToken(String login, String password, UserEntity user) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, password));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        JWToken token = userAuthProvider.generateToken(authentication);
+        return new UserToken(token, user);
     }
 }
