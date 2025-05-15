@@ -1,10 +1,13 @@
-package com.CptFranck.SportsPeak.service.impl;
+package com.CptFranck.SportsPeak.service.serviceImpl;
 
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
-import com.CptFranck.SportsPeak.domain.exception.userAuth.*;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailAlreadyUsedException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailUnknownException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.UsernameExistsException;
 import com.CptFranck.SportsPeak.repositories.UserRepository;
 import com.CptFranck.SportsPeak.service.UserService;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,7 +16,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -24,11 +26,9 @@ import java.util.stream.StreamSupport;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -41,8 +41,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public Optional<UserEntity> findOne(Long id) {
-        return userRepository.findById(id);
+    public UserEntity findOne(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
     @Override
@@ -58,7 +58,41 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public Set<UserEntity> findUserBySubscribedProgExercises(ProgExerciseEntity progExercise) {
         return new HashSet<>(userRepository.findAllBySubscribedProgExercisesContaining(progExercise));
     }
-    
+
+    @Override
+    public UserEntity findByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new EmailUnknownException(email));
+    }
+
+    @Override
+    public UserEntity save(UserEntity user) {
+        Optional<UserEntity> OptionalUserEmail = userRepository.findByEmail(user.getEmail());
+        Optional<UserEntity> OptionalUserUsername = userRepository.findByUsername(user.getUsername());
+        if (user.getId() == null) {
+            if (OptionalUserEmail.isPresent())
+                throw new EmailAlreadyUsedException();
+            if (OptionalUserUsername.isPresent())
+                throw new UsernameExistsException();
+            return userRepository.save(user);
+        }
+        if (exists(user.getId())) {
+            if (OptionalUserEmail.isPresent() &&
+                    !Objects.equals(OptionalUserEmail.get().getId(), user.getId()))
+                throw new EmailAlreadyUsedException();
+            if (OptionalUserUsername.isPresent() &&
+                    !Objects.equals(OptionalUserUsername.get().getId(), user.getId()))
+                throw new UsernameExistsException();
+            return userRepository.save(user);
+        }
+        throw new UserNotFoundException(user.getId());
+    }
+
+    @Override
+    public void delete(Long id) {
+        UserEntity exercise = this.findOne(id);
+        userRepository.delete(exercise);
+    }
+
     @Override
     public void updateRoleRelation(Set<Long> newIds, Set<Long> oldIds, RoleEntity roleEntity) {
         this.findMany(oldIds).forEach(u -> {
@@ -73,24 +107,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public boolean exists(Long id) {
-        return userRepository.existsById(id);
-    }
-
-    @Override
-    public UserEntity save(UserEntity user) {
-        return userRepository.save(user);
-    }
-
-    @Override
-    public void delete(Long id) {
-        UserEntity exercise = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-        userRepository.delete(exercise);
-    }
-
-    @Override
     public UserEntity changeIdentity(Long id, String firstName, String lastName) {
-        UserEntity user = userRepository.findById(id).orElseThrow(EmailUnknownException::new);
+        UserEntity user = this.findOne(id);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         return userRepository.save(user);
@@ -98,29 +116,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserEntity changeRoles(Long id, Set<RoleEntity> roles) {
-        UserEntity user = userRepository.findById(id).orElseThrow(EmailUnknownException::new);
-
+        UserEntity user = this.findOne(id);
         user.getRoles().forEach(role -> {
-            if (!roles.contains(role)) {
-                user.getRoles().remove(role);
-            }
+            if (!roles.contains(role)) user.getRoles().remove(role);
         });
         user.getRoles().addAll(roles);
-        return userRepository.save(user);
-    }
-
-    @Override
-    public UserEntity changeEmail(Long id, String password, String newEmail) {
-        UserEntity user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-        if (passwordEncoder.matches(password, user.getPassword())) {
-            Optional<UserEntity> userOptionalEmail = userRepository.findByEmail(newEmail);
-            if (userOptionalEmail.isPresent()) {
-                throw new EmailAlreadyUsedException();
-            }
-            user.setEmail(newEmail);
-        } else {
-            throw new IncorrectPasswordException();
-        }
         return userRepository.save(user);
     }
 
@@ -128,28 +128,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserEntity changeUsername(Long id, String newUsername) {
         UserEntity user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         Optional<UserEntity> userOptionalUsername = userRepository.findByUsername(newUsername);
-        if (userOptionalUsername.isPresent()) {
+        if (userOptionalUsername.isPresent())
             throw new UsernameExistsException();
-        }
         user.setUsername(newUsername);
         return userRepository.save(user);
     }
 
     @Override
-    public UserEntity changePassword(Long id, String oldPassword, String newPassword) {
-        UserEntity user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
-            throw new IncorrectPasswordException();
-        }
-        user.setPassword(passwordEncoder.encode(newPassword));
-        return userRepository.save(user);
+    public boolean exists(Long id) {
+        return userRepository.existsById(id);
     }
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByEmail(email).orElseThrow(() ->
-                new UsernameNotFoundException("User name not found in database")
-        );
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User name not found in database"));
         return new User(user.getEmail(), user.getPassword(), getAuthorities(user.getRoles()));
     }
 
@@ -172,9 +165,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private List<GrantedAuthority> getGrantedAuthorities(List<String> privileges) {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        for (String privilege : privileges) {
+        for (String privilege : privileges)
             authorities.add(new SimpleGrantedAuthority(privilege));
-        }
         return authorities;
     }
 }
