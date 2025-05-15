@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.integration.services;
+package com.CptFranck.SportsPeak.integration.services.services;
 
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
@@ -6,7 +6,7 @@ import com.CptFranck.SportsPeak.domain.exception.role.RoleExistsException;
 import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
 import com.CptFranck.SportsPeak.repositories.PrivilegeRepository;
 import com.CptFranck.SportsPeak.repositories.RoleRepository;
-import com.CptFranck.SportsPeak.service.impl.RoleServiceImpl;
+import com.CptFranck.SportsPeak.service.serviceImpl.RoleServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-public class RoleServiceImplIntTest {
+public class RoleServiceImplIT {
 
     @Autowired
     private RoleRepository roleRepository;
@@ -53,7 +53,50 @@ public class RoleServiceImplIntTest {
     }
 
     @Test
-    void RoleService_Save_Success() {
+    void findAll_ValidUse_ReturnListOfRoleEntity() {
+        List<RoleEntity> roleFound = roleServiceImpl.findAll();
+
+        assertEqualsRoleList(List.of(role, roleBis), roleFound);
+    }
+
+    @Test
+    void findOne_InvalidRoleId_ThrowRoleNotFoundException() {
+        roleRepository.delete(role);
+
+        assertThrows(RoleNotFoundException.class, () -> roleServiceImpl.findOne(role.getId()));
+    }
+
+    @Test
+    void findOne_ValidRoleId_ReturnRoleEntity() {
+        RoleEntity roleFound = roleServiceImpl.findOne(role.getId());
+
+        assertEqualsRole(role, roleFound);
+    }
+
+    @Test
+    void findByName_ValidRoleId_ReturnOptionalOfRoleEntity() {
+        Optional<RoleEntity> roleFound = roleServiceImpl.findByName(role.getName());
+
+        Assertions.assertTrue(roleFound.isPresent());
+        assertEqualsRole(role, roleFound.get());
+    }
+
+    @Test
+    void findMany_ValidRoleIds_ReturnSetOfRoleEntity() {
+        Set<RoleEntity> roleFound = roleServiceImpl.findMany(Set.of(role.getId()));
+
+        assertEqualsRoleList(List.of(role), roleFound.stream().toList());
+    }
+
+    @Test
+    void save_AddNewRoleWithNameAlreadyTaken_ThrowRoleExistsException() {
+        RoleEntity unsavedRole = createTestRole(null, 0);
+
+        assertThrows(RoleExistsException.class, () -> roleServiceImpl.save(unsavedRole));
+    }
+
+    @Test
+    void save_AddNewRole_ReturnRoleEntity() {
         RoleEntity unsavedRole = createTestRole(null, 2);
 
         RoleEntity roleSaved = roleServiceImpl.save(unsavedRole);
@@ -62,52 +105,39 @@ public class RoleServiceImplIntTest {
     }
 
     @Test
-    void RoleService_Save_UpdateSuccess() {
+    void save_UpdateRoleWithInvalidId_ThrowRoleNotFoundException() {
+        role.setId(role.getId() + roleBis.getId() + 1);
+        role.setName("test");
+
+        assertThrows(RoleNotFoundException.class, () -> roleServiceImpl.save(role));
+    }
+
+    @Test
+    void save_UpdateRole_ReturnRoleEntity() {
         RoleEntity roleSaved = roleServiceImpl.save(role);
 
         assertEqualsRole(role, roleSaved);
     }
 
     @Test
-    void RoleService_Save_UnSuccessful() {
-        assertThrows(RoleExistsException.class, () -> roleServiceImpl.save(createTestRole(null, 0)));
+    void delete_InvalidRoleId_ThrowsRoleNotFoundException() {
+        roleRepository.delete(role);
+
+        assertThrows(RoleNotFoundException.class, () -> roleServiceImpl.delete(role.getId()));
     }
 
     @Test
-    void RoleService_FindAll_Success() {
-        List<RoleEntity> roleFound = roleServiceImpl.findAll();
-
-        assertEqualsRoleList(List.of(role, roleBis), roleFound);
+    void delete_ValidInput_Void() {
+        assertAll(() -> roleServiceImpl.delete(role.getId()));
     }
 
     @Test
-    void RoleService_FindOne_Success() {
-        Optional<RoleEntity> roleFound = roleServiceImpl.findOne(role.getId());
-
-        Assertions.assertTrue(roleFound.isPresent());
-        assertEqualsRole(role, roleFound.get());
-    }
-
-    @Test
-    void RoleService_findByName_Success() {
-        Optional<RoleEntity> roleFound = roleServiceImpl.findByName(role.getName());
-
-        Assertions.assertTrue(roleFound.isPresent());
-        assertEqualsRole(role, roleFound.get());
-    }
-
-    @Test
-    void RoleService_FindMany_Success() {
-        Set<RoleEntity> roleFound = roleServiceImpl.findMany(Set.of(role.getId()));
-
-        assertEqualsRoleList(List.of(role), roleFound.stream().toList());
-    }
-
-    @Test
-    void exerciseService_UpdatePrivilegeRelation_Success() {
+    void updateRoleRelation_ValidUse_Void() {
         PrivilegeEntity privilege = privilegeRepository.save(createTestPrivilege(null, 0));
         Set<Long> oldRoleIds = Set.of(role.getId());
         Set<Long> newRoleIds = Set.of(roleBis.getId());
+        role.getPrivileges().add(privilege);
+        roleRepository.save(role);
 
         roleServiceImpl.updatePrivilegeRelation(newRoleIds, oldRoleIds, privilege);
 
@@ -121,22 +151,10 @@ public class RoleServiceImplIntTest {
     }
 
     @Test
-    void RoleService_Exists_Success() {
+    void exists_ValidInput_ReturnTrue() {
         boolean roleFound = roleServiceImpl.exists(role.getId());
 
         Assertions.assertTrue(roleFound);
-    }
-
-    @Test
-    void RoleService_Delete_Success() {
-        assertAll(() -> roleServiceImpl.delete(role.getId()));
-    }
-
-    @Test
-    void RoleService_Delete_Unsuccessful() {
-        roleRepository.delete(role);
-
-        assertThrows(RoleNotFoundException.class, () -> roleServiceImpl.delete(role.getId()));
     }
 
     private void assertEqualsRoleList(
