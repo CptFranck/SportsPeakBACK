@@ -34,9 +34,9 @@ public class ExerciseTypeInputResolverTest {
 
         when(exerciseService.findMany(Mockito.anySet())).thenReturn(new HashSet<>());
 
-        ExerciseTypeEntity exerciseTypeSaved = exerciseTypeInputResolver.resolveInput(inputNewExercise);
+        ExerciseTypeEntity exerciseTypeResolved = exerciseTypeInputResolver.resolveInput(inputNewExercise);
 
-        assertExerciseTypeInputAndEntity(inputNewExercise, exerciseTypeSaved);
+        assertExerciseTypeInputAndEntity(inputNewExercise, exerciseTypeResolved);
     }
 
     @Test
@@ -45,10 +45,10 @@ public class ExerciseTypeInputResolverTest {
 
         when(exerciseService.findMany(Mockito.anySet())).thenReturn(new HashSet<>());
 
-        ExerciseTypeEntity exerciseTypeSaved = exerciseTypeInputResolver.resolveInput(inputExerciseType);
+        ExerciseTypeEntity exerciseTypeResolved = exerciseTypeInputResolver.resolveInput(inputExerciseType);
 
-        Assertions.assertEquals(inputExerciseType.getId(), exerciseTypeSaved.getId());
-        assertExerciseTypeInputAndEntity(inputExerciseType, exerciseTypeSaved);
+        Assertions.assertEquals(inputExerciseType.getId(), exerciseTypeResolved.getId());
+        assertExerciseTypeInputAndEntity(inputExerciseType, exerciseTypeResolved);
     }
 
     private void assertExerciseTypeInputAndEntity(InputNewExerciseType expectedExerciseType, ExerciseTypeEntity actualExerciseType) {

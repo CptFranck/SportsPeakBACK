@@ -36,9 +36,9 @@ public class MuscleInputResolverTest {
         InputNewMuscle inputNewMuscle = createTestInputNewMuscle();
         when(exerciseService.findMany(Mockito.anySet())).thenReturn(new HashSet<>());
 
-        MuscleEntity muscleSaved = muscleInputResolver.resolveInput(inputNewMuscle);
+        MuscleEntity muscleResolved = muscleInputResolver.resolveInput(inputNewMuscle);
 
-        assertMuscleInputAndEntity(inputNewMuscle, muscleSaved);
+        assertMuscleInputAndEntity(inputNewMuscle, muscleResolved);
     }
 
     @Test
@@ -48,10 +48,10 @@ public class MuscleInputResolverTest {
         when(exerciseService.findMany(Mockito.anySet())).thenReturn(new HashSet<>());
         when(muscleService.findOne(Mockito.any(Long.class))).thenReturn(muscle);
 
-        MuscleEntity muscleSaved = muscleInputResolver.resolveInput(inputMuscle);
+        MuscleEntity muscleResolved = muscleInputResolver.resolveInput(inputMuscle);
 
-        Assertions.assertEquals(inputMuscle.getId(), muscleSaved.getId());
-        assertMuscleInputAndEntity(inputMuscle, muscleSaved);
+        Assertions.assertEquals(inputMuscle.getId(), muscleResolved.getId());
+        assertMuscleInputAndEntity(inputMuscle, muscleResolved);
     }
 
     private void assertMuscleInputAndEntity(InputNewMuscle expectedMuscle, MuscleEntity actualMuscle) {

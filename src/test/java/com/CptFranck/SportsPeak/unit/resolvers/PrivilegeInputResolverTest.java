@@ -33,9 +33,9 @@ public class PrivilegeInputResolverTest {
         InputNewPrivilege inputNewPrivilege = createTestInputNewPrivilege();
         when(roleService.findMany(Mockito.anySet())).thenReturn(new HashSet<>());
 
-        PrivilegeEntity privilegeSaved = privilegeInputResolver.resolveInput(inputNewPrivilege);
+        PrivilegeEntity privilegeResolved = privilegeInputResolver.resolveInput(inputNewPrivilege);
 
-        assertPrivilegeInputAndEntity(inputNewPrivilege, privilegeSaved);
+        assertPrivilegeInputAndEntity(inputNewPrivilege, privilegeResolved);
     }
 
     @Test
@@ -43,10 +43,10 @@ public class PrivilegeInputResolverTest {
         InputPrivilege inputPrivilege = createTestInputPrivilege(1L);
         when(roleService.findMany(Mockito.anySet())).thenReturn(new HashSet<>());
 
-        PrivilegeEntity privilegeSaved = privilegeInputResolver.resolveInput(inputPrivilege);
+        PrivilegeEntity privilegeResolved = privilegeInputResolver.resolveInput(inputPrivilege);
 
-        Assertions.assertEquals(inputPrivilege.getId(), privilegeSaved.getId());
-        assertPrivilegeInputAndEntity(inputPrivilege, privilegeSaved);
+        Assertions.assertEquals(inputPrivilege.getId(), privilegeResolved.getId());
+        assertPrivilegeInputAndEntity(inputPrivilege, privilegeResolved);
     }
 
     private void assertPrivilegeInputAndEntity(InputNewPrivilege expectedPrivilege, PrivilegeEntity actualPrivilege) {

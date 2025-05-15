@@ -42,9 +42,9 @@ public class ExerciseInputResolverTest {
         when(muscleService.findMany(Mockito.anySet())).thenReturn(new HashSet<>());
         when(exerciseTypeService.findMany(Mockito.anySet())).thenReturn(new HashSet<>());
 
-        ExerciseEntity exerciseSaved = exerciseInputResolver.resolveInput(inputNewExercise);
+        ExerciseEntity exerciseResolved = exerciseInputResolver.resolveInput(inputNewExercise);
 
-        assertExerciseInputAndEntity(inputNewExercise, exerciseSaved);
+        assertExerciseInputAndEntity(inputNewExercise, exerciseResolved);
     }
 
     @Test
@@ -55,11 +55,11 @@ public class ExerciseInputResolverTest {
         when(exerciseTypeService.findMany(Mockito.anySet())).thenReturn(new HashSet<>());
         when(exerciseService.findOne(Mockito.any(Long.class))).thenReturn(exercise);
 
-        ExerciseEntity exerciseSaved = exerciseInputResolver.resolveInput(inputExercise);
+        ExerciseEntity exerciseResolved = exerciseInputResolver.resolveInput(inputExercise);
 
-        Assertions.assertEquals(inputExercise.getId(), exerciseSaved.getId());
-        assertExerciseInputAndEntity(inputExercise, exerciseSaved);
-        Assertions.assertEquals(exercise.getProgExercises().size(), exerciseSaved.getProgExercises().size());
+        Assertions.assertEquals(inputExercise.getId(), exerciseResolved.getId());
+        assertExerciseInputAndEntity(inputExercise, exerciseResolved);
+        Assertions.assertEquals(exercise.getProgExercises().size(), exerciseResolved.getProgExercises().size());
     }
 
     private void assertExerciseInputAndEntity(InputNewExercise expectedExercise, ExerciseEntity actualExercise) {

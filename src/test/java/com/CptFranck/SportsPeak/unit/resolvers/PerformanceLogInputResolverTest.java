@@ -54,9 +54,9 @@ public class PerformanceLogInputResolverTest {
         InputNewPerformanceLog inputNewPerformanceLog = createTestInputNewPerformanceLog(targetSet.getId(), false);
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(targetSet);
 
-        PerformanceLogEntity performanceLogSaved = performanceLogInputResolver.resolveInput(inputNewPerformanceLog);
+        PerformanceLogEntity performanceLogResolved = performanceLogInputResolver.resolveInput(inputNewPerformanceLog);
 
-        assertPerformanceLogInputAndEntity(inputNewPerformanceLog, performanceLogSaved);
+        assertPerformanceLogInputAndEntity(inputNewPerformanceLog, performanceLogResolved);
     }
 
     @Test
@@ -71,10 +71,10 @@ public class PerformanceLogInputResolverTest {
         InputPerformanceLog inputPerformanceLog = createTestInputPerformanceLog(1L, targetSet.getId(), false);
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(targetSet);
 
-        PerformanceLogEntity performanceLogSaved = performanceLogInputResolver.resolveInput(inputPerformanceLog);
+        PerformanceLogEntity performanceLogResolved = performanceLogInputResolver.resolveInput(inputPerformanceLog);
 
-        Assertions.assertEquals(inputPerformanceLog.getId(), performanceLogSaved.getId());
-        assertPerformanceLogInputAndEntity(inputPerformanceLog, performanceLogSaved);
+        Assertions.assertEquals(inputPerformanceLog.getId(), performanceLogResolved.getId());
+        assertPerformanceLogInputAndEntity(inputPerformanceLog, performanceLogResolved);
     }
 
     private void assertPerformanceLogInputAndEntity(InputNewPerformanceLog expectedPerformanceLog, PerformanceLogEntity actualPerformanceLog) {
