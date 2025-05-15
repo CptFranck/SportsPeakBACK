@@ -1,14 +1,14 @@
 package com.CptFranck.SportsPeak.service;
 
 
-import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
+import com.CptFranck.SportsPeak.domain.model.UserToken;
 
 public interface AuthService {
 
-    UserEntity login(InputCredentials credentials);
+    UserToken login(InputCredentials credentials);
 
-    UserEntity register(InputRegisterNewUser inputRegisterNewUser);
+    UserToken register(InputRegisterNewUser inputRegisterNewUser);
 
 }
