@@ -3,6 +3,7 @@ package com.CptFranck.SportsPeak.integration.controllers;
 import com.CptFranck.SportsPeak.controller.RoleController;
 import com.CptFranck.SportsPeak.domain.dto.RoleDto;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
+import com.CptFranck.SportsPeak.domain.exception.role.RoleExistsException;
 import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.role.InputNewRole;
 import com.CptFranck.SportsPeak.domain.input.role.InputRole;
@@ -21,10 +22,11 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.CptFranck.SportsPeak.utils.TestRoleUtils.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-class RoleControllerIntTest {
+class RoleControllerIT {
 
     @Autowired
     private RoleRepository roleRepository;
@@ -45,39 +47,39 @@ class RoleControllerIntTest {
     }
 
     @Test
-    void RoleController_GetRoles_UnsuccessfulNotAuthenticated() {
+    void getRoles_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> roleController.getRoles());
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void RoleController_GetRoles_Success() {
+    void getRoles_ValidUse_ReturnListOfRoleDto() {
         List<RoleDto> roleDtos = roleController.getRoles();
 
         assertEqualRoleList(List.of(role), roleDtos);
     }
 
     @Test
-    void RoleController_GetRoleById_UnsuccessfulNotAuthenticated() {
+    void getRoleById_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> roleController.getRoleById(role.getId()));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void RoleController_GetRoleById_UnsuccessfulRoleNotFound() {
+    void getRoleById_InvalidRoleId_ThrowRoleNotFoundException() {
         Assertions.assertThrows(RoleNotFoundException.class, () -> roleController.getRoleById(role.getId() + 1));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void RoleController_GetRoleById_Success() {
+    void getRoleById_ValidUse_ReturnRoleDto() {
         RoleDto roleDto = roleController.getRoleById(role.getId());
 
         assertRoleDtoAndEntity(role, roleDto);
     }
 
     @Test
-    void RoleController_AddRole_UnsuccessfulNotAuthenticated() {
+    void addRole_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         InputNewRole inputNewRole = createTestInputNewRole();
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> roleController.addRole(inputNewRole));
@@ -85,7 +87,16 @@ class RoleControllerIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void RoleController_AddRole_Success() {
+    void save_AddNewRoleWithNameAlreadyTaken_ThrowRoleExistsException() {
+        InputNewRole inputNewRole = createTestInputNewRole();
+        inputNewRole.setName(role.getName());
+
+        assertThrows(RoleExistsException.class, () -> roleController.addRole(inputNewRole));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void addRole_ValidInput_ReturnRoleDto() {
         InputNewRole inputNewRole = createTestInputNewRole();
 
         RoleDto roleDto = roleController.addRole(inputNewRole);
@@ -94,7 +105,7 @@ class RoleControllerIntTest {
     }
 
     @Test
-    void RoleController_ModifyRole_UnsuccessfulNotAuthenticated() {
+    void modifyRole_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         InputRole inputRole = createTestInputRole(role.getId());
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> roleController.modifyRole(inputRole));
@@ -102,16 +113,17 @@ class RoleControllerIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void RoleController_ModifyRole_UnsuccessfulRoleNotFound() {
+    void modifyRole_InvalidRoleId_ThrowsRoleNotFoundException() {
         InputRole inputRole = createTestInputRole(role.getId() + 1);
 
-        Assertions.assertThrows(RoleNotFoundException.class, () -> roleController.modifyRole(inputRole));
+        assertThrows(RoleNotFoundException.class, () -> roleController.modifyRole(inputRole));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void RoleController_ModifyRole_Success() {
+    void modifyRole_ValidInput_ReturnRoleDto() {
         InputRole inputRole = createTestInputRole(role.getId());
+        inputRole.setName(role.getName());
 
         RoleDto roleDto = roleController.modifyRole(inputRole);
 
@@ -119,18 +131,19 @@ class RoleControllerIntTest {
     }
 
     @Test
-    void RoleController_DeleteExercise_UnsuccessfulNotAuthenticated() {
+    void deleteRole_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> roleController.deleteRole(role.getId()));
     }
-//    @Test
-//    @WithMockUser(username = "user", roles = "ADMIN")
-//    void RoleController_DeleteExercise_UnsuccessfulRoleNotFound() {
-//        Assertions.assertThrows(RoleNotFoundException.class, () -> roleController.deleteRole(role.getId() + 1));
-//    }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void RoleController_DeleteRole_Success() {
+    void deleteRole_InvalidRoleId_ThrowsRoleNotFoundException() {
+        Assertions.assertThrows(RoleNotFoundException.class, () -> roleController.deleteRole(role.getId() + 1));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void deleteRole_ValidInput_ReturnRoleId() {
         Long id = roleController.deleteRole(role.getId());
 
         Assertions.assertEquals(role.getId(), id);
