@@ -1,15 +1,15 @@
 package com.CptFranck.SportsPeak.controller;
 
-import com.CptFranck.SportsPeak.config.security.JwtProvider;
 import com.CptFranck.SportsPeak.domain.dto.AuthDto;
 import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
-import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.user.*;
+import com.CptFranck.SportsPeak.domain.model.UserToken;
 import com.CptFranck.SportsPeak.mappers.Mapper;
+import com.CptFranck.SportsPeak.service.AuthService;
 import com.CptFranck.SportsPeak.service.RoleService;
 import com.CptFranck.SportsPeak.service.UserService;
 import com.netflix.graphql.dgs.DgsComponent;
@@ -19,9 +19,6 @@ import com.netflix.graphql.dgs.InputArgument;
 import graphql.com.google.common.collect.Sets;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 import java.util.Set;
@@ -31,18 +28,16 @@ public class UserController {
 
     private final RoleService roleService;
     private final UserService userService;
-    private final JwtProvider userAuthProvider;
+    private final AuthService authService;
     private final Mapper<UserEntity, UserDto> userMapper;
     private final Mapper<ProgExerciseEntity, ProgExerciseDto> progExerciseMapper;
-    private final AuthenticationManager authenticationManager;
 
-    public UserController(RoleService roleService, UserService userService, JwtProvider userAuthProvider, Mapper<UserEntity, UserDto> userMapper, Mapper<ProgExerciseEntity, ProgExerciseDto> progExerciseMapper, AuthenticationManager authenticationManager) {
+    public UserController(RoleService roleService, UserService userService, Mapper<UserEntity, UserDto> userMapper, Mapper<ProgExerciseEntity, ProgExerciseDto> progExerciseMapper, AuthenticationManager authenticationManager, AuthService authService) {
+        this.userMapper = userMapper;
         this.roleService = roleService;
         this.userService = userService;
-        this.userMapper = userMapper;
-        this.userAuthProvider = userAuthProvider;
+        this.authService = authService;
         this.progExerciseMapper = progExerciseMapper;
-        this.authenticationManager = authenticationManager;
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -54,15 +49,14 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DgsQuery
     public UserDto getUserById(@InputArgument Long id) {
-        UserEntity userEntity = userService.findOne(id).orElseThrow(() -> new UserNotFoundException(id));
+        UserEntity userEntity = userService.findOne(id);
         return userMapper.mapTo(userEntity);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsQuery
     public List<ProgExerciseDto> getUserProgExercises(@InputArgument Long userId) {
-        UserEntity userEntity = userService.findOne(userId).orElseThrow(
-                () -> new UserNotFoundException(userId));
+        UserEntity userEntity = userService.findOne(userId);
         return userEntity.getSubscribedProgExercises().stream().map(progExerciseMapper::mapTo).toList();
     }
 
@@ -87,17 +81,8 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
     public AuthDto modifyUserEmail(@InputArgument InputUserEmail inputUserEmail) {
-        UserEntity userEnt = userService.changeEmail(
-                inputUserEmail.getId(),
-                inputUserEmail.getPassword(),
-                inputUserEmail.getNewEmail()
-        );
-
-        UserDto user = userMapper.mapTo(userEnt);
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(inputUserEmail.getNewEmail(), inputUserEmail.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return new AuthDto(userAuthProvider.generateToken(authentication), user);
+        UserToken userToken = authService.updateEmail(inputUserEmail);
+        return new AuthDto(userToken.getToken(), userMapper.mapTo(userToken.getUser()));
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -109,9 +94,9 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @DgsMutation
-    public UserDto modifyUserPassword(@InputArgument InputUserPassword inputUserPassword) {
-        UserEntity userEntity = userService.changePassword(inputUserPassword.getId(), inputUserPassword.getOldPassword(), inputUserPassword.getNewPassword());
-        return userMapper.mapTo(userEntity);
+    public AuthDto modifyUserPassword(@InputArgument InputUserPassword inputUserPassword) {
+        UserToken userToken = authService.updatePassword(inputUserPassword);
+        return new AuthDto(userToken.getToken(), userMapper.mapTo(userToken.getUser()));
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
