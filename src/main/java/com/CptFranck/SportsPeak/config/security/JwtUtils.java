@@ -17,7 +17,7 @@ import java.util.function.Function;
 import static com.CptFranck.SportsPeak.config.security.SecurityConstant.JWT_EXPIRATION;
 
 @Component
-public class JwtProvider {
+public class JwtUtils {
 
     @Value("${security.jwt.token.secret-key}")
     private String secretKey;

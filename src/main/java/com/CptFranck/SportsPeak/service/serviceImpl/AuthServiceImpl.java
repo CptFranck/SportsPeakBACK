@@ -1,6 +1,6 @@
 package com.CptFranck.SportsPeak.service.serviceImpl;
 
-import com.CptFranck.SportsPeak.config.security.JwtProvider;
+import com.CptFranck.SportsPeak.config.security.JwtUtils;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.IncorrectPasswordException;
@@ -26,11 +26,11 @@ import java.util.Set;
 @Service
 public class AuthServiceImpl implements AuthService {
 
+    private final JwtUtils jwtUtils;
+
     private final RoleService roleService;
 
     private final UserService userService;
-
-    private final JwtProvider userAuthProvider;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -38,11 +38,11 @@ public class AuthServiceImpl implements AuthService {
 
     private final AuthenticationManager authenticationManager;
 
-    public AuthServiceImpl(RoleService roleService, UserService userService, JwtProvider userAuthProvider, PasswordEncoder passwordEncoder, UserDetailsService userDetailsService, AuthenticationManager authenticationManager) {
+    public AuthServiceImpl(JwtUtils jwtUtils, RoleService roleService, UserService userService, PasswordEncoder passwordEncoder, UserDetailsService userDetailsService, AuthenticationManager authenticationManager) {
+        this.jwtUtils = jwtUtils;
         this.roleService = roleService;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
-        this.userAuthProvider = userAuthProvider;
         this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;
     }
@@ -124,7 +124,7 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("Invalid credentials", e);
         }
         UserDetails userDetails = userDetailsService.loadUserByUsername(login);
-        return userAuthProvider.generateToken(userDetails);
+        return jwtUtils.generateToken(userDetails);
     }
 
     private void verifyPassword(String password, UserEntity user) {
