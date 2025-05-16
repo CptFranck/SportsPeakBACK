@@ -4,6 +4,7 @@ import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import lombok.Getter;
+import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,36 +14,42 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Getter
-public class CustomUserDetails implements UserDetails {
+public class CustomUserDetails implements UserDetails, CredentialsContainer {
 
-    private final UserEntity user;
+    private final String email;
+    private final Set<GrantedAuthority> authorities;
+    private String password;
 
     public CustomUserDetails(UserEntity user) {
-        this.user = user;
+        email = user.getEmail();
+        password = user.getPassword();
+        authorities = buildAuthorities(user);
+    }
+
+    private Set<GrantedAuthority> buildAuthorities(UserEntity user) {
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        for (RoleEntity role : user.getRoles()) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
+            for (PrivilegeEntity privilege : role.getPrivileges()) {
+                authorities.add(new SimpleGrantedAuthority(privilege.getName()));
+            }
+        }
+        return authorities;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Set<GrantedAuthority> authorities = new HashSet<>();
-
-        for (RoleEntity role : user.getRoles())
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
-
-        for (RoleEntity role : user.getRoles())
-            for (PrivilegeEntity privilege : role.getPrivileges())
-                authorities.add(new SimpleGrantedAuthority(privilege.getName()));
-
         return authorities;
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return email;
     }
 
     @Override
@@ -63,5 +70,10 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public void eraseCredentials() {
+        this.password = null;
     }
 }
