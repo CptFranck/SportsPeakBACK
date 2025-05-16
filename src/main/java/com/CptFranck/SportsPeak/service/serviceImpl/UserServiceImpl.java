@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
     public UserEntity findByLogin(String login) {
         return userRepository.findByEmail(login)
                 .or(() -> userRepository.findByUsername(login))
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + login));
     }
 
     @Override
