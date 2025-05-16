@@ -1,19 +1,20 @@
 package com.CptFranck.SportsPeak.config.security;
 
-import com.CptFranck.SportsPeak.domain.model.JWToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
+import static com.CptFranck.SportsPeak.config.security.SecurityConstant.JWT_EXPIRATION;
 
 @Component
 public class JwtProvider {
@@ -26,38 +27,48 @@ public class JwtProvider {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public JWToken generateToken(Authentication authentication) {
-        String login = authentication.getName();
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime validityDate = now.plusHours(1);
-        Date nowDate = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
-        Date validityDateDate = Date.from(validityDate.atZone(ZoneId.systemDefault()).toInstant());
-
-        String token = Jwts.builder()
-                .subject(login)
-                .issuedAt(nowDate)
-                .expiration(validityDateDate)
-                .signWith(getSigningKey())
-                .compact();
-
-        return new JWToken(token, validityDate);
+    public String generateToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, userDetails.getUsername());
     }
 
-    public String getUsernameFromJWT(String token) {
-        Claims claims = Jwts.parser()
+    private String createToken(Map<String, Object> claims, String subject) {
+        return Jwts.builder()
+                .claims(claims)
+                .subject(subject)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION))
+                .signWith(getSigningKey())
+                .compact();
+    }
+
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    public Boolean validateToken(String token, UserDetails userDetails) {
+        final String username = this.extractUsername(token);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+
+    private Boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    private Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractClaimAll(token);
+        return claimsResolver.apply(claims);
+    }
+
+    private Claims extractClaimAll(String token) {
+        return Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-        return claims.getSubject();
-    }
-
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token);
-            return true;
-        } catch (Exception e) {
-            throw new AuthenticationCredentialsNotFoundException("JWT is not valid or expired");
-        }
     }
 }
