@@ -18,7 +18,7 @@ public interface UserService {
 
     Set<UserEntity> findUserBySubscribedProgExercises(ProgExerciseEntity progExercise);
 
-    UserEntity findByEmail(String email);
+    UserEntity findByLogin(String login);
 
     UserEntity save(UserEntity user);
 
