@@ -3,20 +3,20 @@ package com.CptFranck.SportsPeak.service.serviceImpl;
 import com.CptFranck.SportsPeak.config.security.JwtProvider;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
-import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.IncorrectPasswordException;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserEmail;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserPassword;
-import com.CptFranck.SportsPeak.domain.model.JWToken;
 import com.CptFranck.SportsPeak.domain.model.UserToken;
 import com.CptFranck.SportsPeak.service.AuthService;
 import com.CptFranck.SportsPeak.service.RoleService;
 import com.CptFranck.SportsPeak.service.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,30 +34,33 @@ public class AuthServiceImpl implements AuthService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final UserDetailsService userDetailsService;
+
     private final AuthenticationManager authenticationManager;
 
-    public AuthServiceImpl(RoleService roleService, UserService userService, JwtProvider userAuthProvider, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
+    public AuthServiceImpl(RoleService roleService, UserService userService, JwtProvider userAuthProvider, PasswordEncoder passwordEncoder, UserDetailsService userDetailsService, AuthenticationManager authenticationManager) {
         this.roleService = roleService;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.userAuthProvider = userAuthProvider;
+        this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;
     }
 
     @Override
     public UserToken login(InputCredentials credentials) {
-        String email = credentials.getEmail();
+        String login = credentials.getLogin();
         String password = credentials.getPassword();
-        UserEntity user = userService.findByLogin(email);
 
-//        verifyPassword(password, user);
+        String token = authenticate(login, password);
+        UserEntity user = userService.findByLogin(login);
 
-        return authenticate(email, password, user);
+        return new UserToken(token, user);
     }
 
     @Override
     public UserToken register(InputRegisterNewUser inputRegisterNewUser) {
-        RoleEntity userRole = roleService.findByName("ROLE_USER").orElseThrow(() -> new RoleNotFoundException("ROLE_USER"));
+        RoleEntity userRole = roleService.findByName("USER");
 
         String email = inputRegisterNewUser.getEmail();
         String password = inputRegisterNewUser.getPassword();
@@ -76,8 +79,9 @@ public class AuthServiceImpl implements AuthService {
         );
 
         UserEntity userSaved = userService.save(user);
+        String token = authenticate(email, password);
 
-        return authenticate(email, password, userSaved);
+        return new UserToken(token, userSaved);
     }
 
     @Override
@@ -87,43 +91,44 @@ public class AuthServiceImpl implements AuthService {
         String newEmail = inputUserEmail.getNewEmail();
 
         UserEntity user = userService.findOne(id);
-//        verifyPassword(password, user);
+        verifyPassword(password, user);
 
         user.setEmail(newEmail);
         UserEntity userUpdated = userService.save(user);
+        String token = authenticate(userUpdated.getEmail(), password);
 
-        return authenticate(newEmail, password, userUpdated);
+        return new UserToken(token, userUpdated);
     }
 
     @Override
     public UserToken updatePassword(InputUserPassword inputUserPassword) {
-        Long id = inputUserPassword.getId();
+        UserEntity user = userService.findOne(inputUserPassword.getId());
+
+        String email = user.getEmail();
         String oldPassword = inputUserPassword.getOldPassword();
         String newPassword = inputUserPassword.getNewPassword();
 
-        UserEntity user = userService.findOne(id);
-//        verifyPassword(oldPassword, user);
+        verifyPassword(oldPassword, user);
 
         user.setPassword(passwordEncoder.encode(newPassword));
-        UserEntity userSaved = userService.save(user);
+        UserEntity userUpdated = userService.save(user);
+        String token = authenticate(email, newPassword);
 
-        return authenticate(user.getEmail(), newPassword, userSaved);
+        return new UserToken(token, userUpdated);
     }
 
-//    private void verifyPassword(String password, UserEntity user) {
-//        boolean match = passwordEncoder.matches(password, user.getPassword());
-//        if (!match) throw new IncorrectPasswordException();
-//    }
-
-    private UserToken authenticate(String login, String password, UserEntity user) {
-        Authentication authentication;
+    private String authenticate(String login, String password) {
         try {
-            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, password));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, password));
         } catch (AuthenticationException e) {
             throw new RuntimeException("Invalid credentials", e);
         }
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-        JWToken token = userAuthProvider.generateToken(authentication);
-        return new UserToken(token, user);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(login);
+        return userAuthProvider.generateToken(userDetails);
+    }
+
+    private void verifyPassword(String password, UserEntity user) {
+        boolean match = passwordEncoder.matches(password, user.getPassword());
+        if (!match) throw new IncorrectPasswordException();
     }
 }
