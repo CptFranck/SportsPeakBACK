@@ -13,6 +13,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.CptFranck.SportsPeak.config.security.SecurityConfig.grantedAuthorityDefaults;
+
 @Getter
 public class CustomUserDetails implements UserDetails, CredentialsContainer {
 
@@ -29,7 +31,7 @@ public class CustomUserDetails implements UserDetails, CredentialsContainer {
     private Set<GrantedAuthority> buildAuthorities(UserEntity user) {
         Set<GrantedAuthority> authorities = new HashSet<>();
         for (RoleEntity role : user.getRoles()) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
+            authorities.add(new SimpleGrantedAuthority(grantedAuthorityDefaults() + role.getName()));
             for (PrivilegeEntity privilege : role.getPrivileges()) {
                 authorities.add(new SimpleGrantedAuthority(privilege.getName()));
             }
