@@ -40,27 +40,27 @@ public class UserController {
         this.progExerciseMapper = progExerciseMapper;
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsQuery
     public List<UserDto> getUsers() {
         return userService.findAll().stream().map(userMapper::mapTo).toList();
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsQuery
     public UserDto getUserById(@InputArgument Long id) {
         UserEntity userEntity = userService.findOne(id);
         return userMapper.mapTo(userEntity);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     @DgsQuery
     public List<ProgExerciseDto> getUserProgExercises(@InputArgument Long userId) {
         UserEntity userEntity = userService.findOne(userId);
         return userEntity.getSubscribedProgExercises().stream().map(progExerciseMapper::mapTo).toList();
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     @DgsMutation
     public UserDto modifyUserIdentity(@InputArgument InputUserIdentity inputUserIdentity) {
         UserEntity userEntity = userService.changeIdentity(inputUserIdentity.getId(),
@@ -69,7 +69,7 @@ public class UserController {
         return userMapper.mapTo(userEntity);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
     public UserDto modifyUserRoles(@InputArgument InputUserRoles inputUserRoles) {
         Set<Long> roleIds = Sets.newHashSet((inputUserRoles.getRoleIds()));
@@ -78,28 +78,28 @@ public class UserController {
         return userMapper.mapTo(userEntity);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     @DgsMutation
     public AuthDto modifyUserEmail(@InputArgument InputUserEmail inputUserEmail) {
         UserToken userToken = authService.updateEmail(inputUserEmail);
         return new AuthDto(userToken.getToken(), userMapper.mapTo(userToken.getUser()));
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     @DgsMutation
     public UserDto modifyUserUsername(@InputArgument InputUserUsername inputUserUsername) {
         UserEntity userEntity = userService.changeUsername(inputUserUsername.getId(), inputUserUsername.getNewUsername());
         return userMapper.mapTo(userEntity);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     @DgsMutation
     public AuthDto modifyUserPassword(@InputArgument InputUserPassword inputUserPassword) {
         UserToken userToken = authService.updatePassword(inputUserPassword);
         return new AuthDto(userToken.getToken(), userMapper.mapTo(userToken.getUser()));
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     @DgsMutation
     public Long deleteUser(@InputArgument Long userId) {
         userService.delete(userId);

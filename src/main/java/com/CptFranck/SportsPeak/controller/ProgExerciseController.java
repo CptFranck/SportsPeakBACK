@@ -43,28 +43,28 @@ public class ProgExerciseController {
         return progExerciseMapper.mapTo(progExercise);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     @DgsMutation
     public ProgExerciseDto addProgExercise(@InputArgument InputNewProgExercise inputNewProgExercise) {
         ProgExerciseEntity progExercise = progExerciseInputResolver.resolveInput(inputNewProgExercise);
         return progExerciseMapper.mapTo(progExerciseService.save(progExercise));
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     @DgsMutation
     public ProgExerciseDto modifyProgExercise(@InputArgument InputProgExercise inputProgExercise) {
         ProgExerciseEntity progExercise = progExerciseInputResolver.resolveInput(inputProgExercise);
         return progExerciseMapper.mapTo(progExerciseService.save(progExercise));
     }
 
-    @PreAuthorize("hasRole('ROLE_STAFF')")
+    @PreAuthorize("hasRole('STAFF')")
     @DgsMutation
     public ProgExerciseDto modifyProgExerciseTrustLabel(@InputArgument InputProgExerciseTrustLabel inputProgExerciseTrustLabel) {
         ProgExerciseEntity progExercise = progExerciseInputResolver.resolveInput(inputProgExerciseTrustLabel);
         return progExerciseMapper.mapTo(progExerciseService.save(progExercise));
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     @DgsMutation
     public Long deleteProgExercise(@InputArgument Long progExerciseId) {
         progExerciseManager.deleteProgExercise(progExerciseId);

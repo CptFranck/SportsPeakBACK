@@ -40,46 +40,46 @@ public class TargetSetController {
     }
 
     @DgsQuery
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     public List<TargetSetDto> getTargetSets() {
         return targetSetService.findAll().stream().map(targetSetMapper::mapTo).toList();
     }
 
     @DgsQuery
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     public TargetSetDto getTargetSetById(@InputArgument Long id) {
         TargetSetEntity targetSet = targetSetService.findOne(id);
         return targetSetMapper.mapTo(targetSet);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     @DgsQuery
     public List<TargetSetDto> getTargetSetsByProgExerciseId(@InputArgument Long progExerciseId) {
         return targetSetService.findAllByProgExerciseId(progExerciseId).stream().map(targetSetMapper::mapTo).toList();
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     @DgsMutation
     public TargetSetDto addTargetSet(@InputArgument InputNewTargetSet inputNewTargetSet) {
         TargetSetEntity targetSet = targetSetInputResolver.resolveInput(inputNewTargetSet);
         return targetSetMapper.mapTo(progExerciseManager.saveTargetSet(targetSet, inputNewTargetSet.getTargetSetUpdateId()));
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     @DgsMutation
     public TargetSetDto modifyTargetSet(@InputArgument InputTargetSet inputTargetSet) {
         TargetSetEntity targetSet = targetSetInputResolver.resolveInput(inputTargetSet);
         return targetSetMapper.mapTo(progExerciseManager.saveTargetSet(targetSet, null));
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     @DgsMutation
     public List<TargetSetDto> modifyTargetSetState(@InputArgument InputTargetSetState inputTargetSetState) {
         TargetSetEntity targetSet = targetSetService.updateTargetStates(inputTargetSetState.getId(), targetSetInputResolver.resolveInput(inputTargetSetState));
         return targetSet.getProgExercise().getTargetSets().stream().map(targetSetMapper::mapTo).toList();
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     @DgsMutation
     public Long deleteTargetSet(@InputArgument Long targetSetId) {
         targetSetManager.deleteTargetSet(targetSetId);
