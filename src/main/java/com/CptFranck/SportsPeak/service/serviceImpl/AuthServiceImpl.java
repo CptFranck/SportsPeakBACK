@@ -4,7 +4,6 @@ import com.CptFranck.SportsPeak.config.security.JwtProvider;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
-import com.CptFranck.SportsPeak.domain.exception.userAuth.IncorrectPasswordException;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserEmail;
@@ -17,7 +16,7 @@ import com.CptFranck.SportsPeak.service.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -49,11 +48,11 @@ public class AuthServiceImpl implements AuthService {
     public UserToken login(InputCredentials credentials) {
         String email = credentials.getEmail();
         String password = credentials.getPassword();
-        UserEntity user = userService.findByEmail(email);
+        UserEntity user = userService.findByLogin(email);
 
-        verifyPassword(password, user);
+//        verifyPassword(password, user);
 
-        return getUserToken(email, password, user);
+        return authenticate(email, password, user);
     }
 
     @Override
@@ -78,7 +77,7 @@ public class AuthServiceImpl implements AuthService {
 
         UserEntity userSaved = userService.save(user);
 
-        return getUserToken(email, password, userSaved);
+        return authenticate(email, password, userSaved);
     }
 
     @Override
@@ -88,12 +87,12 @@ public class AuthServiceImpl implements AuthService {
         String newEmail = inputUserEmail.getNewEmail();
 
         UserEntity user = userService.findOne(id);
-        verifyPassword(password, user);
+//        verifyPassword(password, user);
 
         user.setEmail(newEmail);
         UserEntity userUpdated = userService.save(user);
 
-        return getUserToken(newEmail, password, userUpdated);
+        return authenticate(newEmail, password, userUpdated);
     }
 
     @Override
@@ -103,22 +102,27 @@ public class AuthServiceImpl implements AuthService {
         String newPassword = inputUserPassword.getNewPassword();
 
         UserEntity user = userService.findOne(id);
-        verifyPassword(oldPassword, user);
+//        verifyPassword(oldPassword, user);
 
         user.setPassword(passwordEncoder.encode(newPassword));
         UserEntity userSaved = userService.save(user);
 
-        return getUserToken(user.getEmail(), newPassword, userSaved);
+        return authenticate(user.getEmail(), newPassword, userSaved);
     }
 
-    private void verifyPassword(String password, UserEntity user) {
-        boolean match = passwordEncoder.matches(password, user.getPassword());
-        if (!match) throw new IncorrectPasswordException();
-    }
+//    private void verifyPassword(String password, UserEntity user) {
+//        boolean match = passwordEncoder.matches(password, user.getPassword());
+//        if (!match) throw new IncorrectPasswordException();
+//    }
 
-    private UserToken getUserToken(String login, String password, UserEntity user) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, password));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+    private UserToken authenticate(String login, String password, UserEntity user) {
+        Authentication authentication;
+        try {
+            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, password));
+        } catch (AuthenticationException e) {
+            throw new RuntimeException("Invalid credentials", e);
+        }
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
         JWToken token = userAuthProvider.generateToken(authentication);
         return new UserToken(token, user);
     }
