@@ -34,34 +34,34 @@ public class PrivilegeController {
         this.privilegeInputResolver = privilegeInputResolver;
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsQuery
     public List<PrivilegeDto> getPrivileges() {
         return privilegeService.findAll().stream().map(privilegeMapper::mapTo).toList();
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsQuery
     public PrivilegeDto getPrivilegeById(@InputArgument Long id) {
         PrivilegeEntity privilege = privilegeService.findOne(id);
         return privilegeMapper.mapTo(privilege);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
     public PrivilegeDto addPrivilege(@InputArgument InputNewPrivilege inputNewPrivilege) {
         PrivilegeEntity privilege = privilegeInputResolver.resolveInput(inputNewPrivilege);
         return privilegeMapper.mapTo(roleManager.savePrivilege(privilege));
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
     public PrivilegeDto modifyPrivilege(@InputArgument InputPrivilege inputPrivilege) {
         PrivilegeEntity privilege = privilegeInputResolver.resolveInput(inputPrivilege);
         return privilegeMapper.mapTo(roleManager.savePrivilege(privilege));
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
     public Long deletePrivilege(@InputArgument Long privilegeId) {
         privilegeService.delete(privilegeId);

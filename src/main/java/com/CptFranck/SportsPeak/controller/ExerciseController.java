@@ -41,21 +41,21 @@ public class ExerciseController {
         return exerciseMapper.mapTo(exerciseService.findOne(id));
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
     public ExerciseDto addExercise(@InputArgument InputNewExercise inputNewExercise) {
         ExerciseEntity exercise = exerciseInputResolver.resolveInput(inputNewExercise);
         return exerciseMapper.mapTo(exerciseService.save(exercise));
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
     public ExerciseDto modifyExercise(@InputArgument InputExercise inputExercise) {
         ExerciseEntity exercise = exerciseInputResolver.resolveInput(inputExercise);
         return exerciseMapper.mapTo(exerciseService.save(exercise));
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
     public Long deleteExercise(@InputArgument Long exerciseId) {
         exerciseService.delete(exerciseId);

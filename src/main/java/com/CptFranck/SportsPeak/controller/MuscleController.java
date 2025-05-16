@@ -45,21 +45,21 @@ public class MuscleController {
         return muscleMapper.mapTo(muscleEntity);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
     public MuscleDto addMuscle(@InputArgument InputNewMuscle inputNewMuscle) {
         MuscleEntity muscle = muscleInputResolver.resolveInput(inputNewMuscle);
         return muscleMapper.mapTo(exerciseManager.saveMuscle(muscle));
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
     public MuscleDto modifyMuscle(@InputArgument InputMuscle inputMuscle) {
         MuscleEntity muscle = muscleInputResolver.resolveInput(inputMuscle);
         return muscleMapper.mapTo(exerciseManager.saveMuscle(muscle));
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
     public Long deleteMuscle(@InputArgument Long muscleId) {
         muscleService.delete(muscleId);

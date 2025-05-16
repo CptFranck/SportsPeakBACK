@@ -45,27 +45,27 @@ public class PerformanceLogController {
         return performanceLogMapper.mapTo(performanceLog);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     @DgsQuery
     public List<PerformanceLogDto> getPerformanceLogsByTargetSetsId(@InputArgument Long targetSetId) {
         return performanceLogService.findAllByTargetSetId(targetSetId).stream().map(performanceLogMapper::mapTo).toList();
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     @DgsMutation
     public PerformanceLogDto addPerformanceLog(@InputArgument InputNewPerformanceLog inputNewPerformanceLog) {
         PerformanceLogEntity performanceLog = performanceLogInputResolver.resolveInput(inputNewPerformanceLog);
         return performanceLogMapper.mapTo(targetSetManager.savePerformanceLog(performanceLog));
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     @DgsMutation
     public PerformanceLogDto modifyPerformanceLog(@InputArgument InputPerformanceLog inputPerformanceLog) {
         PerformanceLogEntity performanceLog = performanceLogInputResolver.resolveInput(inputPerformanceLog);
         return performanceLogMapper.mapTo(performanceLogService.save(performanceLog));
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('USER')")
     @DgsMutation
     public Long deletePerformanceLog(@InputArgument Long performanceLogId) {
         performanceLogService.delete(performanceLogId);

@@ -31,34 +31,34 @@ public class RoleController {
         this.roleInputResolver = roleInputResolver;
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsQuery
     public List<RoleDto> getRoles() {
         return roleService.findAll().stream().map(roleMapper::mapTo).toList();
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsQuery
     public RoleDto getRoleById(@InputArgument Long id) {
         RoleEntity role = roleService.findOne(id);
         return roleMapper.mapTo(role);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
     public RoleDto addRole(@InputArgument InputNewRole inputNewRole) {
         RoleEntity role = roleInputResolver.resolveInput(inputNewRole);
         return roleMapper.mapTo(userManager.saveRole(role));
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
     public RoleDto modifyRole(@InputArgument InputRole inputRole) {
         RoleEntity role = roleInputResolver.resolveInput(inputRole);
         return roleMapper.mapTo(userManager.saveRole(role));
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
     public Long deleteRole(@InputArgument Long roleId) {
         roleService.delete(roleId);
