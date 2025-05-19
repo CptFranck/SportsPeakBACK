@@ -3,11 +3,14 @@ package com.CptFranck.SportsPeak.integration.services.services;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailAlreadyUsedException;
-import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailUnknownException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.IncorrectPasswordException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UsernameExistsException;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
+import com.CptFranck.SportsPeak.domain.input.user.InputUserEmail;
+import com.CptFranck.SportsPeak.domain.input.user.InputUserPassword;
+import com.CptFranck.SportsPeak.domain.model.UserToken;
 import com.CptFranck.SportsPeak.repositories.RoleRepository;
 import com.CptFranck.SportsPeak.repositories.UserRepository;
 import com.CptFranck.SportsPeak.service.serviceImpl.AuthServiceImpl;
@@ -60,26 +63,50 @@ public class AuthServiceImplIT {
     }
 
     @Test
-    void login_EmailNotFound_ThrowEmailUnknownException() {
+    void login_InvalidUsername_ThrowsRuntimeException() {
+        InputCredentials wrongUsernameInputCredentials = new InputCredentials("wrongUsername", rawPassword);
+
+        assertThrows(RuntimeException.class, () -> authServiceImpl.login(wrongUsernameInputCredentials));
+    }
+
+    @Test
+    void login_InvalidEmail_ThrowsRuntimeException() {
         InputCredentials wrongEmailInputCredentials = new InputCredentials("wrong@email.test", rawPassword);
 
-        assertThrows(EmailUnknownException.class, () -> authServiceImpl.login(wrongEmailInputCredentials));
+        assertThrows(RuntimeException.class, () -> authServiceImpl.login(wrongEmailInputCredentials));
     }
 
     @Test
-    void login_IncorrectPassword_ThrowIncorrectPasswordException() {
+    void login_IncorrectPassword_ThrowsRuntimeException() {
         InputCredentials wrongPasswordInputCredentials = new InputCredentials(user.getEmail(), "wrongPassword");
 
-        assertThrows(IncorrectPasswordException.class, () -> authServiceImpl.login(wrongPasswordInputCredentials));
+        assertThrows(RuntimeException.class, () -> authServiceImpl.login(wrongPasswordInputCredentials));
     }
 
     @Test
-    void login_CorrectCredentials_ReturnUserEntity() {
-        InputCredentials wrongPasswordInputCredentials = new InputCredentials(user.getEmail(), rawPassword);
+    void login_UserNotFound_ThrowsRuntimeException() {
+        InputCredentials inputCredentials = new InputCredentials(user.getEmail(), rawPassword);
+        userRepository.delete(user);
 
-        UserEntity returnedUser = authServiceImpl.login(wrongPasswordInputCredentials);
+        assertThrows(RuntimeException.class, () -> authServiceImpl.login(inputCredentials));
+    }
 
-        assertEqualsUser(user, returnedUser);
+    @Test
+    void login_CorrectCredentialsWithEmails_ReturnUserEntity() {
+        InputCredentials inputCredentials = new InputCredentials(user.getEmail(), rawPassword);
+
+        UserToken returnedUserToken = authServiceImpl.login(inputCredentials);
+
+        assertEqualsUser(user, returnedUserToken.getUser());
+    }
+
+    @Test
+    void login_CorrectCredentialsWithUsername_ReturnUserEntity() {
+        InputCredentials inputCredentials = new InputCredentials(user.getUsername(), rawPassword);
+
+        UserToken returnedUserToken = authServiceImpl.login(inputCredentials);
+
+        assertEqualsUser(user, returnedUserToken.getUser());
     }
 
     @Test
@@ -110,17 +137,89 @@ public class AuthServiceImplIT {
     }
 
     @Test
-    void register_CorrectCredentials_ReturnUserEntity() {
+    void register_CorrectCredentials_ReturnUserToken() {
         UserEntity userToRegister = createTestUserBis(null);
         InputRegisterNewUser inputRegisterNewUser = createInputRegisterNewUser(userToRegister);
 
-        UserEntity registeredUser = authServiceImpl.register(inputRegisterNewUser);
+        UserToken returnedUserToken = authServiceImpl.register(inputRegisterNewUser);
 
-        Assertions.assertEquals(userToRegister.getEmail(), registeredUser.getEmail());
-        Assertions.assertEquals(userToRegister.getFirstName(), registeredUser.getFirstName());
-        Assertions.assertEquals(userToRegister.getLastName(), registeredUser.getLastName());
-        Assertions.assertEquals(userToRegister.getUsername(), registeredUser.getUsername());
-        Assertions.assertTrue(passwordEncoder.matches(userToRegister.getPassword(), registeredUser.getPassword()));
+        UserEntity user = returnedUserToken.getUser();
+        Assertions.assertEquals(userToRegister.getEmail(), user.getEmail());
+        Assertions.assertEquals(userToRegister.getFirstName(), user.getFirstName());
+        Assertions.assertEquals(userToRegister.getLastName(), user.getLastName());
+        Assertions.assertEquals(userToRegister.getUsername(), user.getUsername());
+        Assertions.assertTrue(passwordEncoder.matches(userToRegister.getPassword(), user.getPassword()));
+    }
 
+    @Test
+    void updateEmail_InvalidUserId_ThrowsUserNotFoundException() {
+        InputUserEmail inputUserEmail = createTestInputUserEmail(user.getId(), rawPassword);
+        userRepository.delete(user);
+
+        Assertions.assertThrows(UserNotFoundException.class, () -> authServiceImpl.updateEmail(inputUserEmail));
+    }
+
+    @Test
+    void updateEmail_IncorrectPassword_ThrowsUserNotFoundException() {
+        InputUserEmail inputUserEmail = createTestInputUserEmail(user.getId(), "wrongPassword");
+
+        Assertions.assertThrows(IncorrectPasswordException.class, () -> authServiceImpl.updateEmail(inputUserEmail));
+    }
+
+    @Test
+    void updateEmail_UserEmailAlreadyUsed_ThrowsUsernameExistsException() {
+        UserEntity userToRegister = userRepository.save(createTestUserBis(null));
+        InputUserEmail inputUserEmail = createTestInputUserEmail(user.getId(), rawPassword);
+        inputUserEmail.setNewEmail(userToRegister.getEmail());
+
+        Assertions.assertThrows(EmailAlreadyUsedException.class, () -> authServiceImpl.updateEmail(inputUserEmail));
+    }
+
+    @Test
+    void updateEmail_ValidInput_ReturnUserToken() {
+        InputUserEmail inputUserEmail = createTestInputUserEmail(user.getId(), rawPassword);
+
+        UserToken returnedUserToken = authServiceImpl.updateEmail(inputUserEmail);
+
+        UserEntity userSaved = returnedUserToken.getUser();
+        Assertions.assertNotEquals(user.getEmail(), userSaved.getEmail());
+        Assertions.assertEquals(user.getFirstName(), userSaved.getFirstName());
+        Assertions.assertEquals(user.getLastName(), userSaved.getLastName());
+        Assertions.assertEquals(user.getUsername(), userSaved.getUsername());
+        Assertions.assertEquals(user.getRoles().size(), userSaved.getRoles().size());
+        Assertions.assertEquals(user.getSubscribedProgExercises().size(), userSaved.getSubscribedProgExercises().size());
+        Assertions.assertEquals(user.getProgExercisesCreated().size(), userSaved.getProgExercisesCreated().size());
+    }
+
+    @Test
+    void updatePassword_InvalidUserId_ThrowsUserNotFoundException() {
+        InputUserPassword inputUserPassword = createTestInputUserPassword(user.getId(), rawPassword);
+        userRepository.delete(user);
+
+        Assertions.assertThrows(UserNotFoundException.class, () -> authServiceImpl.updatePassword(inputUserPassword));
+    }
+
+    @Test
+    void updatePassword_InvalidPassword_ThrowsIncorrectPasswordException() {
+        InputUserPassword inputUserPassword = createTestInputUserPassword(user.getId(), "wrongPassword");
+
+        Assertions.assertThrows(IncorrectPasswordException.class, () -> authServiceImpl.updatePassword(inputUserPassword));
+    }
+
+    @Test
+    void updatePassword_ValidInput_ReturnUserToken() {
+        InputUserPassword inputUserPassword = createTestInputUserPassword(user.getId(), rawPassword);
+
+        UserToken returnedUserToken = authServiceImpl.updatePassword(inputUserPassword);
+
+        UserEntity userSaved = returnedUserToken.getUser();
+        Assertions.assertNotEquals(user.getPassword(), userSaved.getPassword());
+        Assertions.assertEquals(user.getEmail(), userSaved.getEmail());
+        Assertions.assertEquals(user.getFirstName(), userSaved.getFirstName());
+        Assertions.assertEquals(user.getLastName(), userSaved.getLastName());
+        Assertions.assertEquals(user.getUsername(), userSaved.getUsername());
+        Assertions.assertEquals(user.getRoles().size(), userSaved.getRoles().size());
+        Assertions.assertEquals(user.getSubscribedProgExercises().size(), userSaved.getSubscribedProgExercises().size());
+        Assertions.assertEquals(user.getProgExercisesCreated().size(), userSaved.getProgExercisesCreated().size());
     }
 }
