@@ -81,7 +81,7 @@ public class AuthServiceImplIT {
     }
 
     @Test
-    void login_UserNotFound_ThrowsInvalidCredentialsException() {
+    void login_UserDeleted_ThrowsInvalidCredentialsException() {
         InputCredentials inputCredentials = new InputCredentials(user.getEmail(), rawPassword);
         userRepository.delete(user);
 
