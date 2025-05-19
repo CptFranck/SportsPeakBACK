@@ -71,7 +71,7 @@ public class AuthControllerIT {
     public void login_InvalidLogin_ThrowsRuntimeException() {
         InputCredentials inputCredentials = new InputCredentials("login", rawPassword);
 
-        Assertions.assertThrows(RuntimeException.class, () -> authController.login(inputCredentials));
+        Assertions.assertThrows(InvalidCredentialsException.class, () -> authController.login(inputCredentials));
     }
 
     @Test
@@ -79,15 +79,6 @@ public class AuthControllerIT {
         InputCredentials inputCredentials = new InputCredentials(user.getEmail(), "rawPassword");
 
         Assertions.assertThrows(InvalidCredentialsException.class, () -> authController.login(inputCredentials));
-    }
-
-    @Test
-    public void login_CorrectCredentialsWithEmail_ReturnAuthDto() {
-        InputCredentials inputCredentials = new InputCredentials(user.getEmail(), rawPassword);
-
-        AuthDto authDto = authController.login(inputCredentials);
-
-        assertAuthDto(authDto, user, true);
     }
 
     @Test
@@ -101,6 +92,15 @@ public class AuthControllerIT {
     @Test
     public void login_CorrectCredentialsWithUsername_ReturnAuthDto() {
         InputCredentials inputCredentials = new InputCredentials(user.getUsername(), rawPassword);
+
+        AuthDto authDto = authController.login(inputCredentials);
+
+        assertAuthDto(authDto, user, true);
+    }
+
+    @Test
+    public void login_CorrectCredentialsWithEmail_ReturnAuthDto() {
+        InputCredentials inputCredentials = new InputCredentials(user.getEmail(), rawPassword);
 
         AuthDto authDto = authController.login(inputCredentials);
 
