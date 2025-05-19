@@ -4,6 +4,7 @@ import com.CptFranck.SportsPeak.config.security.JwtUtils;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.IncorrectPasswordException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.InvalidCredentialsException;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserEmail;
@@ -77,13 +78,12 @@ public class AuthServiceImplTest {
     }
 
     @Test
-    void login_authentificationFailed_ThrowRuntimeException() {
+    void login_authentificationFailed_ThrowsInvalidCredentialsException() {
         when(authenticationManager.authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class)))
                 .thenThrow(new BadCredentialsException("Bad credentials"));
-        ;
 
         InputCredentials inputCredentials = createInputCredentials(user);
-        assertThrows(RuntimeException.class, () -> authServiceImpl.login(inputCredentials));
+        assertThrows(InvalidCredentialsException.class, () -> authServiceImpl.login(inputCredentials));
     }
 
     @Test
@@ -122,7 +122,7 @@ public class AuthServiceImplTest {
         when(passwordEncoder.matches(Mockito.any(CharSequence.class), Mockito.any(String.class))).thenThrow(IncorrectPasswordException.class);
 
         InputUserEmail inputUserEmail = createTestInputUserEmail(user.getId(), user.getPassword());
-        assertThrows(RuntimeException.class, () -> authServiceImpl.updateEmail(inputUserEmail));
+        assertThrows(IncorrectPasswordException.class, () -> authServiceImpl.updateEmail(inputUserEmail));
     }
 
     @Test
