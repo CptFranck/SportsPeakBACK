@@ -95,7 +95,7 @@ class RoleApiIT {
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(getRoleByIdQuery, "data.getRoleById", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("RoleNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The role the id or the name %s has not been found", role.getId())));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The role id or name %s has not been found", role.getId())));
     }
 
     @Test
@@ -185,7 +185,7 @@ class RoleApiIT {
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyRoleQuery, "data.modifyRole", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("RoleNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The role the id or the name %s has not been found", role.getId())));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The role id or name %s has not been found", role.getId())));
     }
 
     @Test
@@ -225,7 +225,7 @@ class RoleApiIT {
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(deleteRoleQuery, "data.deleteRole", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("RoleNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The role the id or the name %s has not been found", role.getId())));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The role id or name %s has not been found", role.getId())));
     }
 
     @Test
