@@ -1,13 +1,12 @@
 package com.CptFranck.SportsPeak.unit.controllers;
 
-import com.CptFranck.SportsPeak.config.security.JwtProvider;
 import com.CptFranck.SportsPeak.controller.AuthController;
 import com.CptFranck.SportsPeak.domain.dto.AuthDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
-import com.CptFranck.SportsPeak.domain.model.JWToken;
+import com.CptFranck.SportsPeak.domain.model.UserToken;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.AuthService;
 import org.junit.jupiter.api.Assertions;
@@ -18,10 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-
-import java.time.LocalDateTime;
 
 import static com.CptFranck.SportsPeak.utils.AuthUtils.createInputCredentials;
 import static com.CptFranck.SportsPeak.utils.AuthUtils.createInputRegisterNewUser;
@@ -39,32 +34,24 @@ public class AuthControllerTest {
     private AuthService authService;
 
     @Mock
-    private JwtProvider userAuthProvider;
-
-    @Mock
     private Mapper<UserEntity, UserDto> userMapper;
-
-    @Mock
-    private AuthenticationManager authenticationManager;
 
     private UserEntity user;
     private UserDto userDto;
-    private JWToken jwToken;
+    private UserToken userToken;
     private AuthDto authDto;
 
     @BeforeEach
     void setUp() {
         user = createTestUser(1L);
         userDto = createTestUserDto(1L);
-        jwToken = new JWToken("token", LocalDateTime.now());
-        authDto = new AuthDto(jwToken, userDto);
+        userToken = new UserToken("token", user);
+        authDto = new AuthDto("token", userDto);
     }
     @Test
     public void login_ValidCredentials_ReturnsAuthDto() {
-        when(authService.login(Mockito.any(InputCredentials.class))).thenReturn(user);
+        when(authService.login(Mockito.any(InputCredentials.class))).thenReturn(userToken);
         when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
-        when(authenticationManager.authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class))).thenReturn(null);
-        when(userAuthProvider.generateToken(Mockito.any())).thenReturn(jwToken);
 
         AuthDto authDtoReturn = authController.login(createInputCredentials(user));
 
@@ -73,10 +60,8 @@ public class AuthControllerTest {
 
     @Test
     public void register_ValidCredentials_ReturnsAuthDto() {
-        when(authService.register(Mockito.any(InputRegisterNewUser.class))).thenReturn(user);
+        when(authService.register(Mockito.any(InputRegisterNewUser.class))).thenReturn(userToken);
         when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
-        when(authenticationManager.authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class))).thenReturn(null);
-        when(userAuthProvider.generateToken(Mockito.any())).thenReturn(jwToken);
 
         AuthDto authDtoReturn = authController.register(createInputRegisterNewUser(user));
 
@@ -85,7 +70,6 @@ public class AuthControllerTest {
 
     private void assertEqualsAuth(AuthDto authDto, AuthDto authDtoReturn) {
         Assertions.assertEquals(authDto.getUser(), authDtoReturn.getUser());
-        Assertions.assertEquals(authDto.getExpiration(), authDtoReturn.getExpiration());
-        Assertions.assertEquals(authDto.getAccessToken(), authDtoReturn.getAccessToken());
+        Assertions.assertEquals(authDto.getToken(), authDtoReturn.getToken());
     }
 }
