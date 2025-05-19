@@ -18,6 +18,9 @@ public class TestUserUtils {
         Assertions.assertEquals(userToGet.getLastName(), obtainedUser.getLastName());
         Assertions.assertEquals(userToGet.getUsername(), obtainedUser.getUsername());
         Assertions.assertEquals(userToGet.getPassword(), obtainedUser.getPassword());
+        Assertions.assertEquals(userToGet.getRoles().size(), obtainedUser.getRoles().size());
+        Assertions.assertEquals(userToGet.getSubscribedProgExercises().size(), obtainedUser.getSubscribedProgExercises().size());
+        Assertions.assertEquals(userToGet.getProgExercisesCreated().size(), obtainedUser.getProgExercisesCreated().size());
     }
 
     public static UserEntity createTestUser(Long id) {
