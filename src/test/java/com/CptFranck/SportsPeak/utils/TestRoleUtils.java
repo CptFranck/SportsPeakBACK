@@ -12,7 +12,7 @@ import java.util.List;
 public class TestRoleUtils {
 
     public static RoleEntity createTestRole(Long id, int option) {
-        String roleName = "ROLE_USER";
+        String roleName = "USER";
         if (option == 1) {
             roleName = "Role One";
         } else if (option == 2) {
