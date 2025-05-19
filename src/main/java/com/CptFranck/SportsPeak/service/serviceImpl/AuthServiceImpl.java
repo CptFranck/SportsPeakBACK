@@ -4,6 +4,7 @@ import com.CptFranck.SportsPeak.config.security.JwtUtils;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.IncorrectPasswordException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.InvalidCredentialsException;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserEmail;
@@ -121,7 +122,7 @@ public class AuthServiceImpl implements AuthService {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, password));
         } catch (AuthenticationException e) {
-            throw new RuntimeException("Invalid credentials", e);
+            throw new InvalidCredentialsException(e);
         }
         UserDetails userDetails = userDetailsService.loadUserByUsername(login);
         return jwtUtils.generateToken(userDetails);
