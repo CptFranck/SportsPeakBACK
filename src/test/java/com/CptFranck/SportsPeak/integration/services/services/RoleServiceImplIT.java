@@ -74,11 +74,17 @@ public class RoleServiceImplIT {
     }
 
     @Test
-    void findByName_ValidRoleId_ReturnOptionalOfRoleEntity() {
-        Optional<RoleEntity> roleFound = roleServiceImpl.findByName(role.getName());
+    void findByName_InvalidRoleId_ThrowRoleNotFoundException() {
+        roleRepository.delete(role);
 
-        Assertions.assertTrue(roleFound.isPresent());
-        assertEqualsRole(role, roleFound.get());
+        assertThrows(RoleNotFoundException.class, () -> roleServiceImpl.findByName(role.getName()));
+    }
+
+    @Test
+    void findByName_ValidRoleId_ReturnOptionalOfRoleEntity() {
+        RoleEntity roleFound = roleServiceImpl.findByName(role.getName());
+
+        assertEqualsRole(role, roleFound);
     }
 
     @Test
