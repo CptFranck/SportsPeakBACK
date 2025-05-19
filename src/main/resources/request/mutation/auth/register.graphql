@@ -1,8 +1,7 @@
 mutation ($inputRegisterNewUser : InputRegisterNewUser!) {
     register(inputRegisterNewUser: $inputRegisterNewUser){
         tokenType
-        accessToken
-        expiration
+        token
         user {
             id
             email

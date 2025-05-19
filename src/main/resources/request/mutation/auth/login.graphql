@@ -1,8 +1,7 @@
 mutation ($inputCredentials: InputCredentials!){
     login(inputCredentials: $inputCredentials){
         tokenType
-        accessToken
-        expiration
+        token
         user {
             id
             email
