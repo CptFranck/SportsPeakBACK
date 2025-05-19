@@ -1,6 +1,6 @@
 package com.CptFranck.SportsPeak.integration.api;
 
-import com.CptFranck.SportsPeak.config.security.JwtProvider;
+import com.CptFranck.SportsPeak.config.security.JwtUtils;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
@@ -18,6 +18,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.LinkedHashMap;
@@ -38,10 +40,7 @@ public class AuthApiIT {
     private DgsQueryExecutor dgsQueryExecutor;
 
     @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private AuthService authService;
+    private UserDetailsService userDetailsService;
 
     @Autowired
     private UserRepository userRepository;
@@ -50,7 +49,13 @@ public class AuthApiIT {
     private RoleRepository roleRepository;
 
     @Autowired
-    private JwtProvider jwtProvider;
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private AuthService authService;
+
+    @Autowired
+    private JwtUtils jwtProvider;
 
     private UserEntity user;
     private String rawPassword;
@@ -61,7 +66,7 @@ public class AuthApiIT {
         roleRepository.save(createTestRole(null, 0));
         user = createTestUser(null);
         rawPassword = user.getPassword();
-        user = authService.register(createInputRegisterNewUser(user));
+        user = authService.register(createInputRegisterNewUser(user)).getUser();
         variables = new LinkedHashMap<>();
     }
 
@@ -74,19 +79,19 @@ public class AuthApiIT {
     @Test
     public void login_EmailNotFound_ThrowEmailUnknownException() {
         variables.put("inputCredentials", objectMapper.convertValue(
-                new InputCredentials("user.getEmail()", rawPassword),
+                new InputCredentials("login", rawPassword),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(loginQuery, "data.login", variables));
 
-        Assertions.assertTrue(exception.getMessage().contains("EmailUnknownException"));
-        Assertions.assertTrue(exception.getMessage().contains("Email unknown"));
+        Assertions.assertTrue(exception.getMessage().contains("InvalidCredentialsException"));
+        Assertions.assertTrue(exception.getMessage().contains("Invalid credentials"));
     }
 
     @Test
-    public void login_IncorrectPassword_ThrowIncorrectPasswordException() {
+    public void login_IncorrectPassword_ThrowsInvalidCredentialsException() {
         variables.put("inputCredentials", objectMapper.convertValue(
                 new InputCredentials(user.getEmail(), "rawPassword"),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -95,14 +100,42 @@ public class AuthApiIT {
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(loginQuery, "data.login", variables));
 
-        Assertions.assertTrue(exception.getMessage().contains("IncorrectPasswordException"));
-        Assertions.assertTrue(exception.getMessage().contains("Incorrect password"));
+        Assertions.assertTrue(exception.getMessage().contains("InvalidCredentialsException"));
+        Assertions.assertTrue(exception.getMessage().contains("Invalid credentials"));
     }
 
     @Test
-    public void login_CorrectCredentials_ReturnAuthDto() {
+    public void login_UserDeleted_ThrowsInvalidCredentialsException() {
         variables.put("inputCredentials", objectMapper.convertValue(
-                        new InputCredentials(user.getEmail(), rawPassword),
+                new InputCredentials(user.getEmail(), rawPassword),
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
+        userRepository.delete(user);
+
+        QueryException exception = Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(loginQuery, "data.login", variables));
+
+        Assertions.assertTrue(exception.getMessage().contains("InvalidCredentialsException"));
+        Assertions.assertTrue(exception.getMessage().contains("Invalid credentials"));
+    }
+
+    @Test
+    public void login_CorrectCredentialsWithEmail_ReturnAuthDto() {
+        variables.put("inputCredentials", objectMapper.convertValue(
+                new InputCredentials(user.getEmail(), rawPassword),
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
+
+        LinkedHashMap<String, Object> response = dgsQueryExecutor.executeAndExtractJsonPath(loginQuery,
+                "data.login", variables);
+
+        assertAuthDtoValid(user, response, true);
+    }
+
+    @Test
+    public void login_CorrectCredentialsWithUsername_ReturnAuthDto() {
+        variables.put("inputCredentials", objectMapper.convertValue(
+                new InputCredentials(user.getUsername(), rawPassword),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
 
@@ -126,7 +159,7 @@ public class AuthApiIT {
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(registerQuery, "data.register", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("RoleNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("The role the id or the name %s has not been found", "ROLE_USER")));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The role id or name %s has not been found", "USER")));
     }
 
     @Test
@@ -177,9 +210,12 @@ public class AuthApiIT {
 
     private void assertAuthDtoValid(UserEntity userEntity, LinkedHashMap<String, Object> response, boolean beenRegistered) {
         Assertions.assertNotNull(response);
-        Assertions.assertTrue(jwtProvider.validateToken((String) response.get("accessToken")));
-
         UserDto userDto = objectMapper.convertValue(response.get("user"), UserDto.class);
+        String token = objectMapper.convertValue(response.get("token"), String.class);
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(userEntity.getEmail());
+        Assertions.assertTrue(jwtProvider.validateToken(token, userDetails));
+
         Assertions.assertEquals(userEntity.getEmail(), userDto.getEmail());
         Assertions.assertEquals(userEntity.getFirstName(), userDto.getFirstName());
         Assertions.assertEquals(userEntity.getLastName(), userDto.getLastName());
