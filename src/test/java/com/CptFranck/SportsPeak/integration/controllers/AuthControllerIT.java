@@ -1,13 +1,12 @@
 package com.CptFranck.SportsPeak.integration.controllers;
 
-import com.CptFranck.SportsPeak.config.security.JwtProvider;
+import com.CptFranck.SportsPeak.config.security.JwtUtils;
 import com.CptFranck.SportsPeak.controller.AuthController;
 import com.CptFranck.SportsPeak.domain.dto.AuthDto;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailAlreadyUsedException;
-import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailUnknownException;
-import com.CptFranck.SportsPeak.domain.exception.userAuth.IncorrectPasswordException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.InvalidCredentialsException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UsernameExistsException;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
@@ -20,6 +19,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.TestPropertySource;
 
 import static com.CptFranck.SportsPeak.utils.AuthUtils.createInputRegisterNewUser;
@@ -35,7 +36,7 @@ public class AuthControllerIT {
     private AuthController authController;
 
     @Autowired
-    private AuthService authService;
+    private UserDetailsService userDetailsService;
 
     @Autowired
     private UserRepository userRepository;
@@ -44,7 +45,10 @@ public class AuthControllerIT {
     private RoleRepository roleRepository;
 
     @Autowired
-    private JwtProvider jwtProvider;
+    private AuthService authService;
+
+    @Autowired
+    private JwtUtils jwtProvider;
 
     private UserEntity user;
     private String rawPassword;
@@ -54,7 +58,7 @@ public class AuthControllerIT {
         roleRepository.save(createTestRole(null, 0));
         user = createTestUser(null);
         rawPassword = user.getPassword();
-        user = authService.register(createInputRegisterNewUser(user));
+        user = authService.register(createInputRegisterNewUser(user)).getUser();
     }
 
     @AfterEach
@@ -64,22 +68,39 @@ public class AuthControllerIT {
     }
 
     @Test
-    public void login_EmailNotFound_ThrowEmailUnknownException() {
-        InputCredentials inputCredentials = new InputCredentials("user.getEmail()", rawPassword);
+    public void login_InvalidLogin_ThrowsRuntimeException() {
+        InputCredentials inputCredentials = new InputCredentials("login", rawPassword);
 
-        Assertions.assertThrows(EmailUnknownException.class, () -> authController.login(inputCredentials));
+        Assertions.assertThrows(RuntimeException.class, () -> authController.login(inputCredentials));
     }
 
     @Test
-    public void login_IncorrectPassword_ThrowIncorrectPasswordException() {
+    public void login_IncorrectPassword_ThrowsInvalidCredentialsException() {
         InputCredentials inputCredentials = new InputCredentials(user.getEmail(), "rawPassword");
 
-        Assertions.assertThrows(IncorrectPasswordException.class, () -> authController.login(inputCredentials));
+        Assertions.assertThrows(InvalidCredentialsException.class, () -> authController.login(inputCredentials));
     }
 
     @Test
-    public void login_CorrectCredentials_ReturnAuthDto() {
+    public void login_CorrectCredentialsWithEmail_ReturnAuthDto() {
         InputCredentials inputCredentials = new InputCredentials(user.getEmail(), rawPassword);
+
+        AuthDto authDto = authController.login(inputCredentials);
+
+        assertAuthDto(authDto, user, true);
+    }
+
+    @Test
+    public void login_UserDeleted_ThrowsInvalidCredentialsException() {
+        InputCredentials inputCredentials = new InputCredentials(user.getEmail(), rawPassword);
+        userRepository.delete(user);
+
+        Assertions.assertThrows(InvalidCredentialsException.class, () -> authController.login(inputCredentials));
+    }
+
+    @Test
+    public void login_CorrectCredentialsWithUsername_ReturnAuthDto() {
+        InputCredentials inputCredentials = new InputCredentials(user.getUsername(), rawPassword);
 
         AuthDto authDto = authController.login(inputCredentials);
 
@@ -131,7 +152,8 @@ public class AuthControllerIT {
     private void assertAuthDto(AuthDto authDto, UserEntity userEntity, boolean beenRegistered) {
         Assertions.assertNotNull(authDto);
         Assertions.assertEquals("Bearer", authDto.getTokenType());
-        Assertions.assertTrue(jwtProvider.validateToken(authDto.getAccessToken()));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(userEntity.getEmail());
+        Assertions.assertTrue(jwtProvider.validateToken(authDto.getToken(), userDetails));
 
         Assertions.assertEquals(userEntity.getEmail(), authDto.getUser().getEmail());
         Assertions.assertEquals(userEntity.getFirstName(), authDto.getUser().getFirstName());
