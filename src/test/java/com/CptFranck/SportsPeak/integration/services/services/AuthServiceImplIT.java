@@ -2,10 +2,7 @@ package com.CptFranck.SportsPeak.integration.services.services;
 
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
-import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailAlreadyUsedException;
-import com.CptFranck.SportsPeak.domain.exception.userAuth.IncorrectPasswordException;
-import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
-import com.CptFranck.SportsPeak.domain.exception.userAuth.UsernameExistsException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.*;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserEmail;
@@ -63,32 +60,32 @@ public class AuthServiceImplIT {
     }
 
     @Test
-    void login_InvalidUsername_ThrowsRuntimeException() {
+    void login_InvalidUsername_ThrowsInvalidCredentialsException() {
         InputCredentials wrongUsernameInputCredentials = new InputCredentials("wrongUsername", rawPassword);
 
-        assertThrows(RuntimeException.class, () -> authServiceImpl.login(wrongUsernameInputCredentials));
+        assertThrows(InvalidCredentialsException.class, () -> authServiceImpl.login(wrongUsernameInputCredentials));
     }
 
     @Test
-    void login_InvalidEmail_ThrowsRuntimeException() {
+    void login_InvalidEmail_ThrowsInvalidCredentialsException() {
         InputCredentials wrongEmailInputCredentials = new InputCredentials("wrong@email.test", rawPassword);
 
-        assertThrows(RuntimeException.class, () -> authServiceImpl.login(wrongEmailInputCredentials));
+        assertThrows(InvalidCredentialsException.class, () -> authServiceImpl.login(wrongEmailInputCredentials));
     }
 
     @Test
-    void login_IncorrectPassword_ThrowsRuntimeException() {
+    void login_IncorrectPassword_ThrowsInvalidCredentialsException() {
         InputCredentials wrongPasswordInputCredentials = new InputCredentials(user.getEmail(), "wrongPassword");
 
-        assertThrows(RuntimeException.class, () -> authServiceImpl.login(wrongPasswordInputCredentials));
+        assertThrows(InvalidCredentialsException.class, () -> authServiceImpl.login(wrongPasswordInputCredentials));
     }
 
     @Test
-    void login_UserNotFound_ThrowsRuntimeException() {
+    void login_UserNotFound_ThrowsInvalidCredentialsException() {
         InputCredentials inputCredentials = new InputCredentials(user.getEmail(), rawPassword);
         userRepository.delete(user);
 
-        assertThrows(RuntimeException.class, () -> authServiceImpl.login(inputCredentials));
+        assertThrows(InvalidCredentialsException.class, () -> authServiceImpl.login(inputCredentials));
     }
 
     @Test
