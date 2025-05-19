@@ -7,6 +7,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class UserToken {
-    JWToken token;
+    String token;
     UserEntity user;
 }
