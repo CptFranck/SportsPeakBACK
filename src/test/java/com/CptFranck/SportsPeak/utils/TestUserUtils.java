@@ -11,8 +11,9 @@ import java.util.List;
 
 public class TestUserUtils {
 
-    public static void assertEqualsUser(UserEntity userToGet, UserEntity obtainedUser) {
-        Assertions.assertEquals(userToGet.getId(), obtainedUser.getId());
+    public static void assertEqualsUser(UserEntity userToGet, UserEntity obtainedUser, boolean justBeenCreated) {
+        if (!justBeenCreated)
+            Assertions.assertEquals(userToGet.getId(), obtainedUser.getId());
         Assertions.assertEquals(userToGet.getEmail(), obtainedUser.getEmail());
         Assertions.assertEquals(userToGet.getFirstName(), obtainedUser.getFirstName());
         Assertions.assertEquals(userToGet.getLastName(), obtainedUser.getLastName());
