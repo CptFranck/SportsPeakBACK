@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
     public UserEntity findByLogin(String login) {
         return userRepository.findByEmail(login)
                 .or(() -> userRepository.findByUsername(login))
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + login));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email: " + login));
     }
 
     @Override
@@ -99,34 +99,6 @@ public class UserServiceImpl implements UserService {
             u.getRoles().add(roleEntity);
             userRepository.save(u);
         });
-    }
-
-    @Override
-    public UserEntity changeIdentity(Long id, String firstName, String lastName) {
-        UserEntity user = this.findOne(id);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        return userRepository.save(user);
-    }
-
-    @Override
-    public UserEntity changeRoles(Long id, Set<RoleEntity> roles) {
-        UserEntity user = this.findOne(id);
-        user.getRoles().forEach(role -> {
-            if (!roles.contains(role)) user.getRoles().remove(role);
-        });
-        user.getRoles().addAll(roles);
-        return userRepository.save(user);
-    }
-
-    @Override
-    public UserEntity changeUsername(Long id, String newUsername) {
-        UserEntity user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-        Optional<UserEntity> userOptionalUsername = userRepository.findByUsername(newUsername);
-        if (userOptionalUsername.isPresent())
-            throw new UsernameExistsException();
-        user.setUsername(newUsername);
-        return userRepository.save(user);
     }
 
     @Override
