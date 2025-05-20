@@ -74,7 +74,7 @@ class MuscleControllerIT {
     }
 
     @Test
-    void addMuscle_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void addMuscle_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         InputNewMuscle inputNewExercise = createTestInputNewMuscle();
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> muscleController.addMuscle(inputNewExercise));
@@ -91,7 +91,7 @@ class MuscleControllerIT {
     }
 
     @Test
-    void modifyMuscle_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void modifyMuscle_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         InputMuscle inputMuscle = createTestInputMuscle(muscle.getId());
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> muscleController.modifyMuscle(inputMuscle));
@@ -117,7 +117,7 @@ class MuscleControllerIT {
     }
 
     @Test
-    void deleteMuscle_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void deleteMuscle_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> muscleController.deleteMuscle(muscle.getId()));
     }
 

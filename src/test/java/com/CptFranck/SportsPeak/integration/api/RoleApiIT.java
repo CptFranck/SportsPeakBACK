@@ -55,7 +55,7 @@ class RoleApiIT {
     }
 
     @Test
-    void getRoles_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void getRoles_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(getRolesQuery, "data.getRoles"));
 
@@ -75,7 +75,7 @@ class RoleApiIT {
     }
 
     @Test
-    void getRoleById_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void getRoleById_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         variables.put("id", role.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
@@ -111,7 +111,7 @@ class RoleApiIT {
     }
 
     @Test
-    void addRole_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void addRole_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         InputNewRole inputNewRole = createTestInputNewRole();
         variables.put("inputNewRole", objectMapper.convertValue(
                 inputNewRole,
@@ -159,7 +159,7 @@ class RoleApiIT {
     }
 
     @Test
-    void modifyRole_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void modifyRole_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         variables.put("inputRole", objectMapper.convertValue(
                 createTestInputRole(role.getId()),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -174,7 +174,7 @@ class RoleApiIT {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void modifyRole_InvalidRoleId_ThrowsRoleNotFoundException() {
+    void modifyRole_InvalidRoleId_ThrowRoleNotFoundException() {
         roleRepository.delete(role);
         variables.put("inputRole", objectMapper.convertValue(
                 createTestInputRole(role.getId()),
@@ -205,7 +205,7 @@ class RoleApiIT {
     }
 
     @Test
-    void deleteRole_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void deleteRole_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         variables.put("roleId", role.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
@@ -217,7 +217,7 @@ class RoleApiIT {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void deleteRole_InvalidRoleId_ThrowsRoleNotFoundException() {
+    void deleteRole_InvalidRoleId_ThrowRoleNotFoundException() {
         roleRepository.delete(role);
         variables.put("roleId", role.getId());
 

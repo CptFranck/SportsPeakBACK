@@ -63,7 +63,7 @@ class ExerciseApiIT {
     }
 
     @Test
-    void getExerciseById_InvalidExerciseId_ThrowsQueryExceptionExerciseNotFound() {
+    void getExerciseById_InvalidExerciseId_ThrowQueryExceptionExerciseNotFound() {
         variables.put("id", exercise.getId());
         exerciseRepository.delete(exercise);
 
@@ -86,7 +86,7 @@ class ExerciseApiIT {
     }
 
     @Test
-    void addExercise_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void addExercise_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         variables.put("inputNewExercise", objectMapper.convertValue(
                 createTestInputNewExercise(), new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
@@ -114,7 +114,7 @@ class ExerciseApiIT {
     }
 
     @Test
-    void modifyExercise_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void modifyExercise_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         variables.put("inputExercise", objectMapper.convertValue(
                 createTestInputExercise(exercise.getId()), new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
@@ -128,7 +128,7 @@ class ExerciseApiIT {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void modifyExercise_InvalidExerciseId_ThrowsQueryExceptionExerciseNotFound() {
+    void modifyExercise_InvalidExerciseId_ThrowQueryExceptionExerciseNotFound() {
         variables.put("inputExercise", objectMapper.convertValue(
                 createTestInputExercise(exercise.getId()), new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
@@ -156,7 +156,7 @@ class ExerciseApiIT {
     }
 
     @Test
-    void deleteExercise_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void deleteExercise_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         variables.put("exerciseId", exercise.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
@@ -168,7 +168,7 @@ class ExerciseApiIT {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    void deleteExercise_InvalidExerciseId_ThrowsQueryExceptionExerciseNotFound() {
+    void deleteExercise_InvalidExerciseId_ThrowQueryExceptionExerciseNotFound() {
         variables.put("exerciseId", exercise.getId());
         exerciseRepository.delete(exercise);
 

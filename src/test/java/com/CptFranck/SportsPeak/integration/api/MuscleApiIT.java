@@ -93,7 +93,7 @@ class MuscleApiIT {
     }
 
     @Test
-    void addMuscle_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void addMuscle_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         variables.put("inputNewMuscle", objectMapper.convertValue(
                 createTestInputNewMuscle(), new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
@@ -121,7 +121,7 @@ class MuscleApiIT {
     }
 
     @Test
-    void modifyMuscle_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void modifyMuscle_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         variables.put("inputMuscle", objectMapper.convertValue(
                 createTestInputMuscle(muscle.getId()), new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
@@ -164,7 +164,7 @@ class MuscleApiIT {
     }
 
     @Test
-    void deleteMuscle_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void deleteMuscle_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         variables.put("muscleId", muscle.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,

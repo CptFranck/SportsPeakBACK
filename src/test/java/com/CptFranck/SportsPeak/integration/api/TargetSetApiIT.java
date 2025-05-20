@@ -81,7 +81,7 @@ class TargetSetApiIT {
     }
 
     @Test
-    void getTargetSets_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void getTargetSets_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(getTargetSetsQuery, "data.getTargetSets"));
 
@@ -101,7 +101,7 @@ class TargetSetApiIT {
     }
 
     @Test
-    void getTargetSetById_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void getTargetSetById_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         variables.put("id", targetSet.getId());
         targetSetRepository.delete(targetSet);
 
@@ -114,7 +114,7 @@ class TargetSetApiIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void getTargetSetById_InvalidTargetSetId_ThrowsTargetSetNotFoundException() {
+    void getTargetSetById_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
         variables.put("id", targetSet.getId());
         targetSetRepository.delete(targetSet);
 
@@ -138,7 +138,7 @@ class TargetSetApiIT {
     }
 
     @Test
-    void getTargetSetsByProgExerciseId_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void getTargetSetsByProgExerciseId_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         variables.put("progExerciseId", progExercise.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
@@ -162,7 +162,7 @@ class TargetSetApiIT {
     }
 
     @Test
-    void addTargetSet_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void addTargetSet_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         variables.put("inputNewTargetSet", objectMapper.convertValue(
                 createTestInputNewTargetSet(progExercise.getId(), null, false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -177,7 +177,7 @@ class TargetSetApiIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void addTargetSet_InvalidProgExerciseId_ThrowsProgExerciseNotFoundException() {
+    void addTargetSet_InvalidProgExerciseId_ThrowProgExerciseNotFoundException() {
         variables.put("inputNewTargetSet", objectMapper.convertValue(
                 createTestInputNewTargetSet(progExercise.getId(), null, false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -194,7 +194,7 @@ class TargetSetApiIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void addTargetSet_InvalidInputLabel_ThrowsLabelMatchNotFoundException() {
+    void addTargetSet_InvalidInputLabel_ThrowLabelMatchNotFoundException() {
         InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), null, true);
         variables.put("inputNewTargetSet", objectMapper.convertValue(
                 inputNewTargetSet,
@@ -226,7 +226,7 @@ class TargetSetApiIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void addTargetSet_ValidInputWithUpdate_ThrowsProgExerciseNotFoundException() {
+    void addTargetSet_ValidInputWithUpdate_ThrowProgExerciseNotFoundException() {
         variables.put("inputNewTargetSet", objectMapper.convertValue(
                 createTestInputNewTargetSet(progExercise.getId(), targetSet.getId(), false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -257,7 +257,7 @@ class TargetSetApiIT {
     }
 
     @Test
-    void modifyTargetSet_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void modifyTargetSet_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         variables.put("inputTargetSet", objectMapper.convertValue(
                 createTestInputTargetSet(targetSet.getId(), false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -272,7 +272,7 @@ class TargetSetApiIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void modifyTargetSet_InvalidTargetSetId_ThrowsTargetSetNotFoundException() {
+    void modifyTargetSet_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
         variables.put("inputTargetSet", objectMapper.convertValue(
                 createTestInputTargetSet(targetSet.getId(), false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -288,7 +288,7 @@ class TargetSetApiIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void modifyTargetSet_InvalidInputLabel_ThrowsLabelMatchNotFoundException() {
+    void modifyTargetSet_InvalidInputLabel_ThrowLabelMatchNotFoundException() {
         InputTargetSet inputTargetSet = createTestInputTargetSet(targetSet.getId(), true);
         variables.put("inputTargetSet", objectMapper.convertValue(
                 inputTargetSet,
@@ -319,7 +319,7 @@ class TargetSetApiIT {
     }
 
     @Test
-    void modifyTargetSetState_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void modifyTargetSetState_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         variables.put("inputTargetSetState", objectMapper.convertValue(
                 createTestInputInputTargetSetState(targetSet.getId(), false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -334,7 +334,7 @@ class TargetSetApiIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void modifyTargetSetState_InvalidTargetSetId_ThrowsTargetSetNotFoundException() {
+    void modifyTargetSetState_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
         InputTargetSetState inputTargetSetState = createTestInputInputTargetSetState(targetSet.getId(), false);
         variables.put("inputTargetSetState", objectMapper.convertValue(
                 inputTargetSetState,
@@ -351,7 +351,7 @@ class TargetSetApiIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void modifyTargetSetState_InvalidInputLabel_ThrowsLabelMatchNotFoundException() {
+    void modifyTargetSetState_InvalidInputLabel_ThrowLabelMatchNotFoundException() {
         InputTargetSetState inputTargetSetState = createTestInputInputTargetSetState(targetSet.getId(), true);
         variables.put("inputTargetSetState", objectMapper.convertValue(
                 inputTargetSetState,
@@ -384,7 +384,7 @@ class TargetSetApiIT {
     }
 
     @Test
-    void deleteTargetSet_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void deleteTargetSet_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         variables.put("targetSetId", targetSet.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
@@ -396,7 +396,7 @@ class TargetSetApiIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void deleteTargetSet_InvalidTargetSetId_ThrowsTargetSetNotFoundException() {
+    void deleteTargetSet_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
         variables.put("targetSetId", targetSet.getId());
         targetSetRepository.delete(targetSet);
 

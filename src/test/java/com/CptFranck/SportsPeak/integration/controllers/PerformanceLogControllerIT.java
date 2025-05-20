@@ -98,7 +98,7 @@ class PerformanceLogControllerIT {
     }
 
     @Test
-    void getPerformanceLogsByTargetSetsId_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void getPerformanceLogsByTargetSetsId_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
                 () -> performanceLogController.getPerformanceLogsByTargetSetsId(targetSet.getId()));
     }
@@ -112,7 +112,7 @@ class PerformanceLogControllerIT {
     }
 
     @Test
-    void addPerformanceLog_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void addPerformanceLog_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         InputNewPerformanceLog inputNewPerformanceLog = createTestInputNewPerformanceLog(targetSet.getId(), false);
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
@@ -150,7 +150,7 @@ class PerformanceLogControllerIT {
     }
 
     @Test
-    void modifyPerformanceLog_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void modifyPerformanceLog_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         InputPerformanceLog inputPerformanceLog = createTestInputPerformanceLog(performanceLog.getId(), targetSet.getId(), false);
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
@@ -197,7 +197,7 @@ class PerformanceLogControllerIT {
     }
 
     @Test
-    void deletePerformanceLog_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void deletePerformanceLog_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
                 () -> performanceLogController.deletePerformanceLog(performanceLog.getId()));
     }

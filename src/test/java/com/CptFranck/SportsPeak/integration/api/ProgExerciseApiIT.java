@@ -88,7 +88,7 @@ class ProgExerciseApiIT {
     }
 
     @Test
-    void getProgExerciseById_InvalidProgExerciseId_ThrowsProgExerciseNotFoundException() {
+    void getProgExerciseById_InvalidProgExerciseId_ThrowProgExerciseNotFoundException() {
         progExerciseRepository.delete(progExercise);
         variables.put("id", progExercise.getId());
 
@@ -112,7 +112,7 @@ class ProgExerciseApiIT {
     }
 
     @Test
-    void addProgExercise_NotAuthenticated_ThrowsAuthenticationCredentialsNotFoundException() {
+    void addProgExercise_NotAuthenticated_ThrowAuthenticationCredentialsNotFoundException() {
         variables.put("inputNewProgExercise", objectMapper.convertValue(
                 createTestInputNewProgExercise(user.getId(), exercise.getId(), false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -127,7 +127,7 @@ class ProgExerciseApiIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void addProgExercise_InvalidUserId_ThrowsUserNotFoundException() {
+    void addProgExercise_InvalidUserId_ThrowUserNotFoundException() {
         progExerciseRepository.delete(progExercise);
         userRepository.delete(user);
         variables.put("inputNewProgExercise", objectMapper.convertValue(
@@ -144,7 +144,7 @@ class ProgExerciseApiIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void addProgExercise_InvalidExerciseId_ThrowsProgExerciseNotFoundException() {
+    void addProgExercise_InvalidExerciseId_ThrowProgExerciseNotFoundException() {
         progExerciseRepository.delete(progExercise);
         exerciseRepository.delete(exercise);
         variables.put("inputNewProgExercise", objectMapper.convertValue(
@@ -161,7 +161,7 @@ class ProgExerciseApiIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void addProgExercise_InvalidLabel_ThrowsLabelMatchNotFoundException() {
+    void addProgExercise_InvalidLabel_ThrowLabelMatchNotFoundException() {
         InputNewProgExercise inputNewProgExercise = createTestInputNewProgExercise(user.getId(), exercise.getId(), true);
         variables.put("inputNewProgExercise", objectMapper.convertValue(
                 inputNewProgExercise,
@@ -193,7 +193,7 @@ class ProgExerciseApiIT {
     }
 
     @Test
-    void modifyProgExercise_NotAuthenticated_ThrowsAuthenticationCredentialsNotFoundException() {
+    void modifyProgExercise_NotAuthenticated_ThrowAuthenticationCredentialsNotFoundException() {
         variables.put("inputProgExercise", objectMapper.convertValue(
                 createTestInputProgExercise(progExercise.getId(), exercise.getId(), false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -208,7 +208,7 @@ class ProgExerciseApiIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void modifyProgExercise_InvalidProgExerciseId_ThrowsProgExerciseNotFoundException() {
+    void modifyProgExercise_InvalidProgExerciseId_ThrowProgExerciseNotFoundException() {
         progExerciseRepository.delete(progExercise);
         variables.put("inputProgExercise", objectMapper.convertValue(
                 createTestInputProgExercise(progExercise.getId(), exercise.getId(), false),
@@ -224,7 +224,7 @@ class ProgExerciseApiIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void modifyProgExercise_InvalidExerciseId_ThrowsExerciseNotFoundException() {
+    void modifyProgExercise_InvalidExerciseId_ThrowExerciseNotFoundException() {
         variables.put("inputProgExercise", objectMapper.convertValue(
                 createTestInputProgExercise(progExercise.getId(), exercise.getId() + 1, false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -239,7 +239,7 @@ class ProgExerciseApiIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void modifyProgExercise_InvalidLabel_ThrowsLabelMatchNotFoundException() {
+    void modifyProgExercise_InvalidLabel_ThrowLabelMatchNotFoundException() {
         InputProgExercise inputProgExercise = createTestInputProgExercise(progExercise.getId(), exercise.getId(), true);
         variables.put("inputProgExercise", objectMapper.convertValue(inputProgExercise, new TypeReference<LinkedHashMap<String, Object>>() {
         }));
@@ -266,7 +266,7 @@ class ProgExerciseApiIT {
     }
 
     @Test
-    void modifyProgExerciseTrustLabel_NotAuthenticated_ThrowsAuthenticationCredentialsNotFoundException() {
+    void modifyProgExerciseTrustLabel_NotAuthenticated_ThrowAuthenticationCredentialsNotFoundException() {
         variables.put("inputProgExerciseTrustLabel", objectMapper.convertValue(
                 createTestInputProgExerciseTrustLabel(progExercise.getId(), false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -281,7 +281,7 @@ class ProgExerciseApiIT {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void modifyProgExerciseTrustLabel_InvalidProgExerciseId_ThrowsProgExerciseNotFoundException() {
+    void modifyProgExerciseTrustLabel_InvalidProgExerciseId_ThrowProgExerciseNotFoundException() {
         progExerciseRepository.delete(progExercise);
         variables.put("inputProgExerciseTrustLabel", objectMapper.convertValue(
                 createTestInputProgExerciseTrustLabel(progExercise.getId(), false),
@@ -297,7 +297,7 @@ class ProgExerciseApiIT {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void modifyProgExerciseTrustLabel_InvalidVisibilityLabel_ThrowsLabelMatchNotFoundException() {
+    void modifyProgExerciseTrustLabel_InvalidVisibilityLabel_ThrowLabelMatchNotFoundException() {
         InputProgExerciseTrustLabel inputProgExerciseTrustLabel = createTestInputProgExerciseTrustLabel(progExercise.getId(), true);
         variables.put("inputProgExerciseTrustLabel", objectMapper.convertValue(
                 inputProgExerciseTrustLabel,
@@ -341,7 +341,7 @@ class ProgExerciseApiIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void deleteProgExercise_InvalidProgExerciseId_ThrowsProgExerciseNotFoundException() {
+    void deleteProgExercise_InvalidProgExerciseId_ThrowProgExerciseNotFoundException() {
         progExerciseRepository.delete(progExercise);
         variables.put("progExerciseId", progExercise.getId());
 
@@ -354,7 +354,7 @@ class ProgExerciseApiIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void deleteProgExercise_ValidInputButSillUsed_ThrowsProgExerciseStillUsedException() {
+    void deleteProgExercise_ValidInputButSillUsed_ThrowProgExerciseStillUsedException() {
         UserEntity userBis = createTestUserBis(null);
         userBis.getSubscribedProgExercises().add(progExercise);
         userRepository.save(userBis);

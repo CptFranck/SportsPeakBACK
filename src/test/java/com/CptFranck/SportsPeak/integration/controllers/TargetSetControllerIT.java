@@ -74,7 +74,7 @@ class TargetSetControllerIT {
     }
 
     @Test
-    void getTargetSets_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void getTargetSets_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> targetSetController.getTargetSets());
     }
 
@@ -87,13 +87,13 @@ class TargetSetControllerIT {
     }
 
     @Test
-    void getTargetSetById_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void getTargetSetById_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> targetSetController.getTargetSetById(targetSet.getId()));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void getTargetSetById_InvalidTargetSetId_ThrowsTargetSetNotFoundException() {
+    void getTargetSetById_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
         targetSetRepository.delete(targetSet);
 
         Assertions.assertThrows(TargetSetNotFoundException.class, () -> targetSetController.getTargetSetById(targetSet.getId()));
@@ -108,7 +108,7 @@ class TargetSetControllerIT {
     }
 
     @Test
-    void getTargetSetsByProgExerciseId_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void getTargetSetsByProgExerciseId_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
                 () -> targetSetController.getTargetSetsByProgExerciseId(progExercise.getId()));
     }
@@ -122,7 +122,7 @@ class TargetSetControllerIT {
     }
 
     @Test
-    void addTargetSet_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void addTargetSet_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), null, false);
         targetSetRepository.delete(targetSet);
         progExerciseRepository.delete(progExercise);
@@ -132,7 +132,7 @@ class TargetSetControllerIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void addTargetSet_InvalidProgExerciseId_ThrowsProgExerciseNotFoundException() {
+    void addTargetSet_InvalidProgExerciseId_ThrowProgExerciseNotFoundException() {
         InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), null, false);
         targetSetRepository.delete(targetSet);
         progExerciseRepository.delete(progExercise);
@@ -142,7 +142,7 @@ class TargetSetControllerIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void addTargetSet_InvalidInputLabel_ThrowsLabelMatchNotFoundException() {
+    void addTargetSet_InvalidInputLabel_ThrowLabelMatchNotFoundException() {
         InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), null, true);
 
         Assertions.assertThrows(LabelMatchNotFoundException.class, () -> targetSetController.addTargetSet(inputNewTargetSet));
@@ -160,7 +160,7 @@ class TargetSetControllerIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void addTargetSet_ValidInputWithUpdate_ThrowsProgExerciseNotFoundException() {
+    void addTargetSet_ValidInputWithUpdate_ThrowProgExerciseNotFoundException() {
         InputNewTargetSet inputNewTargetSet = createTestInputNewTargetSet(progExercise.getId(), targetSet.getId(), false);
         targetSetRepository.delete(targetSet);
 
@@ -180,7 +180,7 @@ class TargetSetControllerIT {
     }
 
     @Test
-    void modifyTargetSet_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void modifyTargetSet_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         InputTargetSet inputNewTargetSet = createTestInputTargetSet(targetSet.getId(), false);
         targetSetRepository.delete(targetSet);
 
@@ -189,7 +189,7 @@ class TargetSetControllerIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void modifyTargetSet_InvalidTargetSetId_ThrowsTargetSetNotFoundException() {
+    void modifyTargetSet_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
         InputTargetSet inputNewTargetSet = createTestInputTargetSet(targetSet.getId(), false);
         targetSetRepository.delete(targetSet);
 
@@ -198,7 +198,7 @@ class TargetSetControllerIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void modifyTargetSet_InvalidInputLabel_ThrowsLabelMatchNotFoundException() {
+    void modifyTargetSet_InvalidInputLabel_ThrowLabelMatchNotFoundException() {
         InputTargetSet inputNewTargetSet = createTestInputTargetSet(targetSet.getId(), true);
 
         Assertions.assertThrows(LabelMatchNotFoundException.class, () -> targetSetController.modifyTargetSet(inputNewTargetSet));
@@ -215,7 +215,7 @@ class TargetSetControllerIT {
     }
 
     @Test
-    void modifyTargetSetState_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void modifyTargetSetState_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         InputTargetSetState inputTargetSetState = createTestInputInputTargetSetState(targetSet.getId(), false);
         targetSetRepository.delete(targetSet);
 
@@ -224,7 +224,7 @@ class TargetSetControllerIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void modifyTargetSetState_InvalidTargetSetId_ThrowsTargetSetNotFoundException() {
+    void modifyTargetSetState_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
         InputTargetSetState inputTargetSetState = createTestInputInputTargetSetState(targetSet.getId(), false);
         targetSetRepository.delete(targetSet);
 
@@ -233,7 +233,7 @@ class TargetSetControllerIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void modifyTargetSetState_InvalidInputLabel_ThrowsLabelMatchNotFoundException() {
+    void modifyTargetSetState_InvalidInputLabel_ThrowLabelMatchNotFoundException() {
         InputTargetSetState inputTargetSetState = createTestInputInputTargetSetState(targetSet.getId(), true);
 
         Assertions.assertThrows(LabelMatchNotFoundException.class, () -> targetSetController.modifyTargetSetState(inputTargetSetState));
@@ -251,13 +251,13 @@ class TargetSetControllerIT {
     }
 
     @Test
-    void deleteTargetSet_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void deleteTargetSet_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> targetSetController.deleteTargetSet(targetSet.getId()));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void deleteTargetSet_InvalidTargetSetId_ThrowsTargetSetNotFoundException() {
+    void deleteTargetSet_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
         targetSetRepository.delete(targetSet);
 
         Assertions.assertThrows(TargetSetNotFoundException.class, () -> targetSetController.deleteTargetSet(targetSet.getId()));

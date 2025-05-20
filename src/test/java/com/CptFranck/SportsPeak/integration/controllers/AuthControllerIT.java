@@ -68,21 +68,21 @@ public class AuthControllerIT {
     }
 
     @Test
-    public void login_InvalidLogin_ThrowsRuntimeException() {
+    public void login_InvalidLogin_ThrowRuntimeException() {
         InputCredentials inputCredentials = new InputCredentials("login", rawPassword);
 
         Assertions.assertThrows(InvalidCredentialsException.class, () -> authController.login(inputCredentials));
     }
 
     @Test
-    public void login_IncorrectPassword_ThrowsInvalidCredentialsException() {
+    public void login_IncorrectPassword_ThrowInvalidCredentialsException() {
         InputCredentials inputCredentials = new InputCredentials(user.getEmail(), "rawPassword");
 
         Assertions.assertThrows(InvalidCredentialsException.class, () -> authController.login(inputCredentials));
     }
 
     @Test
-    public void login_UserDeleted_ThrowsInvalidCredentialsException() {
+    public void login_UserDeleted_ThrowInvalidCredentialsException() {
         InputCredentials inputCredentials = new InputCredentials(user.getEmail(), rawPassword);
         userRepository.delete(user);
 

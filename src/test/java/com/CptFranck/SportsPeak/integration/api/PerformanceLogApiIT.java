@@ -112,7 +112,7 @@ class PerformanceLogApiIT {
     }
 
     @Test
-    void getPerformanceLogsByTargetSetsId_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void getPerformanceLogsByTargetSetsId_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         variables.put("targetSetId", performanceLog.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
@@ -136,7 +136,7 @@ class PerformanceLogApiIT {
     }
 
     @Test
-    void addPerformanceLog_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void addPerformanceLog_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         variables.put("inputNewPerformanceLog", objectMapper.convertValue(
                 createTestInputNewPerformanceLog(targetSet.getId(), false),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -198,7 +198,7 @@ class PerformanceLogApiIT {
     }
 
     @Test
-    void modifyPerformanceLog_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void modifyPerformanceLog_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         InputPerformanceLog inputPerformanceLog = createTestInputPerformanceLog(performanceLog.getId(), targetSet.getId(), false);
         variables.put("inputPerformanceLog", objectMapper.convertValue(inputPerformanceLog, new TypeReference<LinkedHashMap<String, Object>>() {
         }));
@@ -271,7 +271,7 @@ class PerformanceLogApiIT {
 
 
     @Test
-    void deletePerformanceLog_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void deletePerformanceLog_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         variables.put("performanceLogId", performanceLog.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,

@@ -66,7 +66,7 @@ class ExerciseControllerIT {
     }
 
     @Test
-    void addExercise_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void addExercise_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         InputNewExercise inputNewExercise = createTestInputNewExercise();
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
@@ -84,7 +84,7 @@ class ExerciseControllerIT {
     }
 
     @Test
-    void modifyExercise_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void modifyExercise_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         InputExercise inputExercise = createTestInputExercise(exercise.getId());
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
@@ -113,7 +113,7 @@ class ExerciseControllerIT {
     }
 
     @Test
-    void deleteExercise_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void deleteExercise_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class,
                 () -> exerciseController.deleteExercise(exercise.getId()));
     }

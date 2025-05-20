@@ -47,7 +47,7 @@ class RoleControllerIT {
     }
 
     @Test
-    void getRoles_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void getRoles_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> roleController.getRoles());
     }
 
@@ -60,7 +60,7 @@ class RoleControllerIT {
     }
 
     @Test
-    void getRoleById_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void getRoleById_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> roleController.getRoleById(role.getId()));
     }
 
@@ -81,7 +81,7 @@ class RoleControllerIT {
     }
 
     @Test
-    void addRole_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void addRole_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         InputNewRole inputNewRole = createTestInputNewRole();
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> roleController.addRole(inputNewRole));
@@ -107,7 +107,7 @@ class RoleControllerIT {
     }
 
     @Test
-    void modifyRole_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void modifyRole_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         InputRole inputRole = createTestInputRole(role.getId());
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> roleController.modifyRole(inputRole));
@@ -115,7 +115,7 @@ class RoleControllerIT {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void modifyRole_InvalidRoleId_ThrowsRoleNotFoundException() {
+    void modifyRole_InvalidRoleId_ThrowRoleNotFoundException() {
         roleRepository.delete(role);
         InputRole inputRole = createTestInputRole(role.getId());
 
@@ -134,13 +134,13 @@ class RoleControllerIT {
     }
 
     @Test
-    void deleteRole_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void deleteRole_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> roleController.deleteRole(role.getId()));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void deleteRole_InvalidRoleId_ThrowsRoleNotFoundException() {
+    void deleteRole_InvalidRoleId_ThrowRoleNotFoundException() {
         roleRepository.delete(role);
 
         Assertions.assertThrows(RoleNotFoundException.class, () -> roleController.deleteRole(role.getId()));

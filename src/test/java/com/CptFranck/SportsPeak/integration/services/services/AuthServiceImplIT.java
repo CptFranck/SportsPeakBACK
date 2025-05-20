@@ -60,28 +60,28 @@ public class AuthServiceImplIT {
     }
 
     @Test
-    void login_InvalidUsername_ThrowsInvalidCredentialsException() {
+    void login_InvalidUsername_ThrowInvalidCredentialsException() {
         InputCredentials wrongUsernameInputCredentials = new InputCredentials("wrongUsername", rawPassword);
 
         assertThrows(InvalidCredentialsException.class, () -> authServiceImpl.login(wrongUsernameInputCredentials));
     }
 
     @Test
-    void login_InvalidEmail_ThrowsInvalidCredentialsException() {
+    void login_InvalidEmail_ThrowInvalidCredentialsException() {
         InputCredentials wrongEmailInputCredentials = new InputCredentials("wrong@email.test", rawPassword);
 
         assertThrows(InvalidCredentialsException.class, () -> authServiceImpl.login(wrongEmailInputCredentials));
     }
 
     @Test
-    void login_IncorrectPassword_ThrowsInvalidCredentialsException() {
+    void login_IncorrectPassword_ThrowInvalidCredentialsException() {
         InputCredentials wrongPasswordInputCredentials = new InputCredentials(user.getEmail(), "wrongPassword");
 
         assertThrows(InvalidCredentialsException.class, () -> authServiceImpl.login(wrongPasswordInputCredentials));
     }
 
     @Test
-    void login_UserDeleted_ThrowsInvalidCredentialsException() {
+    void login_UserDeleted_ThrowInvalidCredentialsException() {
         InputCredentials inputCredentials = new InputCredentials(user.getEmail(), rawPassword);
         userRepository.delete(user);
 
@@ -149,7 +149,7 @@ public class AuthServiceImplIT {
     }
 
     @Test
-    void updateEmail_InvalidUserId_ThrowsUserNotFoundException() {
+    void updateEmail_InvalidUserId_ThrowUserNotFoundException() {
         InputUserEmail inputUserEmail = createTestInputUserEmail(user.getId(), rawPassword);
         userRepository.delete(user);
 
@@ -157,14 +157,14 @@ public class AuthServiceImplIT {
     }
 
     @Test
-    void updateEmail_IncorrectPassword_ThrowsUserNotFoundException() {
+    void updateEmail_IncorrectPassword_ThrowUserNotFoundException() {
         InputUserEmail inputUserEmail = createTestInputUserEmail(user.getId(), "wrongPassword");
 
         Assertions.assertThrows(IncorrectPasswordException.class, () -> authServiceImpl.updateEmail(inputUserEmail));
     }
 
     @Test
-    void updateEmail_UserEmailAlreadyUsed_ThrowsUsernameExistsException() {
+    void updateEmail_UserEmailAlreadyUsed_ThrowUsernameExistsException() {
         UserEntity userToRegister = userRepository.save(createTestUserBis(null));
         InputUserEmail inputUserEmail = createTestInputUserEmail(user.getId(), rawPassword);
         inputUserEmail.setNewEmail(userToRegister.getEmail());
@@ -189,7 +189,7 @@ public class AuthServiceImplIT {
     }
 
     @Test
-    void updatePassword_InvalidUserId_ThrowsUserNotFoundException() {
+    void updatePassword_InvalidUserId_ThrowUserNotFoundException() {
         InputUserPassword inputUserPassword = createTestInputUserPassword(user.getId(), rawPassword);
         userRepository.delete(user);
 
@@ -197,7 +197,7 @@ public class AuthServiceImplIT {
     }
 
     @Test
-    void updatePassword_InvalidPassword_ThrowsIncorrectPasswordException() {
+    void updatePassword_InvalidPassword_ThrowIncorrectPasswordException() {
         InputUserPassword inputUserPassword = createTestInputUserPassword(user.getId(), "wrongPassword");
 
         Assertions.assertThrows(IncorrectPasswordException.class, () -> authServiceImpl.updatePassword(inputUserPassword));

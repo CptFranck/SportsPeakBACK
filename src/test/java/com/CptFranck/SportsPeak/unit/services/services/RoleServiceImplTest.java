@@ -129,7 +129,7 @@ public class RoleServiceImplTest {
     }
 
     @Test
-    void delete_InvalidRoleId_ThrowsRoleNotFoundException() {
+    void delete_InvalidRoleId_ThrowRoleNotFoundException() {
         when(roleRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
         assertThrows(RoleNotFoundException.class, () -> roleServiceImpl.delete(role.getId()));

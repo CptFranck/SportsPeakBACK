@@ -91,7 +91,7 @@ public class AuthApiIT {
     }
 
     @Test
-    public void login_IncorrectPassword_ThrowsInvalidCredentialsException() {
+    public void login_IncorrectPassword_ThrowInvalidCredentialsException() {
         variables.put("inputCredentials", objectMapper.convertValue(
                 new InputCredentials(user.getEmail(), "rawPassword"),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -105,7 +105,7 @@ public class AuthApiIT {
     }
 
     @Test
-    public void login_UserDeleted_ThrowsInvalidCredentialsException() {
+    public void login_UserDeleted_ThrowInvalidCredentialsException() {
         variables.put("inputCredentials", objectMapper.convertValue(
                 new InputCredentials(user.getEmail(), rawPassword),
                 new TypeReference<LinkedHashMap<String, Object>>() {

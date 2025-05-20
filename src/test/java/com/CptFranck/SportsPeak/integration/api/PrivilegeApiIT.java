@@ -53,7 +53,7 @@ class PrivilegeApiIT {
     }
 
     @Test
-    void getPrivileges_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void getPrivileges_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(getPrivilegeQuery, "data.getPrivileges"));
 
@@ -73,7 +73,7 @@ class PrivilegeApiIT {
     }
 
     @Test
-    void getPrivilegeById_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void getPrivilegeById_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         variables.put("id", privilege.getId());
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(getPrivilegeByIdQuery, "data.getPrivilegeById", variables));
@@ -108,7 +108,7 @@ class PrivilegeApiIT {
     }
 
     @Test
-    void addPrivilege_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void addPrivilege_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         variables.put("inputNewPrivilege", objectMapper.convertValue(
                 createTestInputNewPrivilege(), new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
@@ -152,7 +152,7 @@ class PrivilegeApiIT {
     }
 
     @Test
-    void modifyPrivilege_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void modifyPrivilege_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         variables.put("inputPrivilege", objectMapper.convertValue(
                 createTestInputPrivilege(privilege.getId()), new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
@@ -211,7 +211,7 @@ class PrivilegeApiIT {
     }
 
     @Test
-    void deletePrivilege_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void deletePrivilege_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         variables.put("privilegeId", privilege.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,

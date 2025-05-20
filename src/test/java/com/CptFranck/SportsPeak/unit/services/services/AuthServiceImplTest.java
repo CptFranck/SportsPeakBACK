@@ -78,7 +78,7 @@ public class AuthServiceImplTest {
     }
 
     @Test
-    void login_authentificationFailed_ThrowsInvalidCredentialsException() {
+    void login_authentificationFailed_ThrowInvalidCredentialsException() {
         when(authenticationManager.authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class)))
                 .thenThrow(new BadCredentialsException("Bad credentials"));
 
@@ -117,7 +117,7 @@ public class AuthServiceImplTest {
     }
 
     @Test
-    void updateEmail_InvalidPassword_ThrowsIncorrectPasswordException() {
+    void updateEmail_InvalidPassword_ThrowIncorrectPasswordException() {
         when(userService.findOne(Mockito.any(Long.class))).thenReturn(user);
         when(passwordEncoder.matches(Mockito.any(CharSequence.class), Mockito.any(String.class))).thenThrow(IncorrectPasswordException.class);
 
@@ -142,7 +142,7 @@ public class AuthServiceImplTest {
     }
 
     @Test
-    void updatePassword_InvalidPassword_ThrowsIncorrectPasswordException() {
+    void updatePassword_InvalidPassword_ThrowIncorrectPasswordException() {
         when(userService.findOne(Mockito.any(Long.class))).thenReturn(user);
         when(passwordEncoder.matches(Mockito.any(CharSequence.class), Mockito.any(String.class))).thenReturn(false);
 

@@ -48,7 +48,7 @@ class PrivilegeControllerIT {
     }
 
     @Test
-    void getPrivileges_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void getPrivileges_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> privilegeController.getPrivileges());
     }
 
@@ -61,7 +61,7 @@ class PrivilegeControllerIT {
     }
 
     @Test
-    void getPrivilegeById_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void getPrivilegeById_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> privilegeController.getPrivilegeById(privilege.getId()));
     }
 
@@ -82,7 +82,7 @@ class PrivilegeControllerIT {
     }
 
     @Test
-    void addPrivilege_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void addPrivilege_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         InputNewPrivilege inputNewPrivilege = createTestInputNewPrivilege();
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> privilegeController.addPrivilege(inputNewPrivilege));
@@ -107,7 +107,7 @@ class PrivilegeControllerIT {
     }
 
     @Test
-    void modifyPrivilege_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void modifyPrivilege_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         InputPrivilege inputExercise = createTestInputPrivilege(privilege.getId());
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> privilegeController.modifyPrivilege(inputExercise));
@@ -142,7 +142,7 @@ class PrivilegeControllerIT {
     }
 
     @Test
-    void deletePrivilege_NotAuthenticated_ThrowsQueryAuthenticationCredentialsNotFoundException() {
+    void deletePrivilege_NotAuthenticated_ThrowQueryAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> privilegeController.deletePrivilege(privilege.getId()));
     }
 

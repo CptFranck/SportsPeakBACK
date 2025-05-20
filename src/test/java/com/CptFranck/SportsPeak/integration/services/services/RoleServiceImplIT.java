@@ -126,7 +126,7 @@ public class RoleServiceImplIT {
     }
 
     @Test
-    void delete_InvalidRoleId_ThrowsRoleNotFoundException() {
+    void delete_InvalidRoleId_ThrowRoleNotFoundException() {
         roleRepository.delete(role);
 
         assertThrows(RoleNotFoundException.class, () -> roleServiceImpl.delete(role.getId()));
