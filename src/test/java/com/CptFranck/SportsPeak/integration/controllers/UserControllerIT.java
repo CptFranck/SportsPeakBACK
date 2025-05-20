@@ -114,7 +114,7 @@ class UserControllerIT {
     void getUserById_ValidInput_ReturnUserDto() {
         UserDto userDto = userController.getUserById(user.getId());
 
-        assertUserDtoAndEntity(user, userDto);
+        assertUserDtoAndEntity(user, userDto, false);
     }
 
     @Test
@@ -223,7 +223,7 @@ class UserControllerIT {
 
         AuthDto authDto = userController.modifyUserEmail(inputUserIdentity);
 
-        assertUserDtoAndEntity(user, authDto.getUser());
+        assertUserDtoAndEntity(user, authDto.getUser(), true);
         Assertions.assertEquals(inputUserIdentity.getNewEmail(), authDto.getUser().getEmail());
     }
 
@@ -267,7 +267,7 @@ class UserControllerIT {
 
         AuthDto authDto = userController.modifyUserPassword(inputUserPassword);
 
-        assertUserDtoAndEntity(user, authDto.getUser());
+        assertUserDtoAndEntity(user, authDto.getUser(), false);
         UserEntity modifyUser = userRepository.findById(user.getId()).orElseThrow();
         Assertions.assertTrue(passwordEncoder.matches(inputUserPassword.getNewPassword(), modifyUser.getPassword()));
     }
@@ -302,13 +302,14 @@ class UserControllerIT {
                 userEntities.stream().filter(
                         userEntity -> Objects.equals(userEntity.getId(), userDto.getId())
                 ).toList().getFirst(),
-                userDto)
+                userDto, false)
         );
     }
 
-    private void assertUserDtoAndEntity(UserEntity userEntity, UserDto userDto) {
+    private void assertUserDtoAndEntity(UserEntity userEntity, UserDto userDto, boolean isEmailUpdated) {
         Assertions.assertNotNull(userDto);
-        Assertions.assertEquals(userEntity.getEmail(), userDto.getEmail());
+        if (!isEmailUpdated)
+            Assertions.assertEquals(userEntity.getEmail(), userDto.getEmail());
         Assertions.assertEquals(userEntity.getFirstName(), userDto.getFirstName());
         Assertions.assertEquals(userEntity.getLastName(), userDto.getLastName());
         Assertions.assertEquals(userEntity.getUsername(), userDto.getUsername());
