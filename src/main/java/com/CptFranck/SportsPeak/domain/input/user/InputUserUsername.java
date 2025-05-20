@@ -7,9 +7,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class InputUserUsername {
-
-    private Long id;
+public class InputUserUsername extends AbstractInputUser {
 
     private String newUsername;
+
+    public InputUserUsername(Long id, String newUsername) {
+        super(id);
+        this.newUsername = newUsername;
+    }
 }
