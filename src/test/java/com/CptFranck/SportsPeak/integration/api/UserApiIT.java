@@ -39,7 +39,7 @@ import static com.CptFranck.SportsPeak.utils.TestUserUtils.*;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-class UserApiIntTest {
+class UserApiIT {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -63,6 +63,7 @@ class UserApiIntTest {
     private PasswordEncoder passwordEncoder;
 
     private UserEntity user;
+    private UserEntity userBis;
     private String rawPassword;
     private LinkedHashMap<String, Object> variables;
 
@@ -71,7 +72,8 @@ class UserApiIntTest {
         user = createTestUser(null);
         rawPassword = user.getPassword();
         user.setPassword(passwordEncoder.encode(rawPassword));
-        userRepository.save(user);
+        user = userRepository.save(user);
+        userBis = userRepository.save(createTestUserBis(null));
         variables = new LinkedHashMap<>();
     }
 
@@ -88,7 +90,7 @@ class UserApiIntTest {
     }
 
     @Test
-    void UserApi_GetUsers_UnsuccessfulNotAuthenticated() {
+    void getUsers_NotAuthenticated_ThrowAuthenticationCredentialsNotFoundException() {
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(getUsersQuery, "data.getUsers"));
 
@@ -98,17 +100,17 @@ class UserApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void UserApi_GetUsers_Success() {
+    void getUsers_ValidUse_ReturnListOfUserDto() {
         List<LinkedHashMap<String, Object>> response = dgsQueryExecutor.executeAndExtractJsonPath(getUsersQuery,
                 "data.getUsers");
 
         List<UserDto> userDtos = objectMapper.convertValue(response, new TypeReference<>() {
         });
-        assertEqualUserList(List.of(user), userDtos);
+        assertEqualUserList(List.of(user, userBis), userDtos);
     }
 
     @Test
-    void UserApi_GetUserById_UnsuccessfulNotAuthenticated() {
+    void getUserById_NotAuthenticated_ThrowAuthenticationCredentialsNotFoundException() {
         variables.put("id", user.getId() + 1);
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
@@ -120,19 +122,20 @@ class UserApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void UserApi_GetUserById_UnsuccessfulUserNotFound() {
-        variables.put("id", user.getId() + 1);
+    void getUserById_InvalidTargetSetId_ThrowUserNotFoundException() {
+        userRepository.delete(user);
+        variables.put("id", user.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(getUserByIdQuery, "data.getUserById", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("UserNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("User with id %s has been not found", user.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("User with id %s has been not found", user.getId())));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void UserApi_GetUserById_Success() {
+    void getUserById_ValidInput_ReturnUserDto() {
         variables.put("id", user.getId());
 
         LinkedHashMap<String, Object> response = dgsQueryExecutor.executeAndExtractJsonPath(getUserByIdQuery,
@@ -143,8 +146,8 @@ class UserApiIntTest {
     }
 
     @Test
-    void UserApi_GetUserProgExercises_UnsuccessfulNotAuthenticated() {
-        variables.put("userId", user.getId() + 1);
+    void getUserProgExercises_NotAuthenticated_ThrowAuthenticationCredentialsNotFoundException() {
+        variables.put("userId", user.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(getUserProgExercisesQuery, "data.getUserProgExercises", variables));
@@ -155,19 +158,20 @@ class UserApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void UserApi_GetUserProgExercises_UnsuccessfulUserNotFound() {
-        variables.put("userId", user.getId() + 1);
+    void getUserProgExercises_InvalidUserId_ThrowUserNotFoundException() {
+        userRepository.delete(user);
+        variables.put("userId", user.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(getUserProgExercisesQuery, "data.getUserProgExercises", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("UserNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("User with id %s has been not found", user.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("User with id %s has been not found", user.getId())));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void UserApi_GetUserProgExercises_Success() {
+    void getUserProgExercises_ValidUse_ReturnListOfUserDto() {
         ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
         ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
         user.getSubscribedProgExercises().add(progExercise);
@@ -191,7 +195,7 @@ class UserApiIntTest {
     }
 
     @Test
-    void UserApi_ModifyUserIdentity_UnsuccessfulNotAuthenticated() {
+    void modifyUserIdentity_NotAuthenticated_ThrowAuthenticationCredentialsNotFoundException() {
         variables.put("inputUserIdentity", objectMapper.convertValue(
                 createTestInputUserIdentity(user.getId()),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -205,8 +209,25 @@ class UserApiIntTest {
     }
 
     @Test
+    @WithMockUser(username = "user", roles = "USER")
+    void modifyUserIdentity_InvalidUserId_ThrowUserNotFoundException() {
+        InputUserIdentity inputUserIdentity = createTestInputUserIdentity(user.getId());
+        variables.put("inputUserIdentity", objectMapper.convertValue(
+                inputUserIdentity,
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
+        userRepository.delete(user);
+
+        QueryException exception = Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyUserIdentityQuery, "data.modifyUserIdentity", variables));
+
+        Assertions.assertTrue(exception.getMessage().contains("UserNotFoundException"));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("User with id %s has been not found", user.getId())));
+    }
+
+    @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void UserApi_ModifyUserIdentity_Success() {
+    void modifyUserIdentity_ValidUse_ReturnUserDto() {
         InputUserIdentity inputUserIdentity = createTestInputUserIdentity(user.getId());
         variables.put("inputUserIdentity", objectMapper.convertValue(
                 inputUserIdentity,
@@ -222,7 +243,7 @@ class UserApiIntTest {
     }
 
     @Test
-    void UserApi_ModifyUserRoles_UnsuccessfulNotAuthenticated() {
+    void modifyUserRoles_NotAuthenticated_ThrowAuthenticationCredentialsNotFoundException() {
         RoleEntity role = roleRepository.save(createTestRole(null, 0));
         InputUserRoles inputUserIdentity = createTestInputUserRoles(user.getId());
         inputUserIdentity.getRoleIds().add(role.getId());
@@ -240,7 +261,7 @@ class UserApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void UserApi_ModifyUserRoles_Success() {
+    void modifyUserRoles_ValidUse_ReturnUserDto() {
         RoleEntity role = roleRepository.save(createTestRole(null, 0));
         InputUserRoles inputUserIdentity = createTestInputUserRoles(user.getId());
         inputUserIdentity.getRoleIds().add(role.getId());
@@ -257,7 +278,7 @@ class UserApiIntTest {
     }
 
     @Test
-    void UserApi_ModifyUserEmail_UnsuccessfulNotAuthenticated() {
+    void modifyUserEmail_NotAuthenticated_ThrowAuthenticationCredentialsNotFoundException() {
         variables.put("inputUserEmail", objectMapper.convertValue(
                 createTestInputUserEmail(user.getId(), rawPassword),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -272,7 +293,24 @@ class UserApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void UserApi_ModifyUserEmail_Success() {
+    void modifyUserEmail_UserEmailAlreadyUsed_ThrowUsernameExistsException() {
+        InputUserEmail inputUserIdentity = createTestInputUserEmail(user.getId(), rawPassword);
+        inputUserIdentity.setNewEmail(userBis.getEmail());
+        variables.put("inputUserEmail", objectMapper.convertValue(
+                inputUserIdentity,
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
+
+        QueryException exception = Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyUserEmailQuery, "data.modifyUserEmail", variables));
+
+        Assertions.assertTrue(exception.getMessage().contains("EmailAlreadyUsedException"));
+        Assertions.assertTrue(exception.getMessage().contains("Email already used for an other account"));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void modifyUserEmail_ValidInput_ReturnAuthDto() {
         InputUserEmail inputUserIdentity = createTestInputUserEmail(user.getId(), rawPassword);
         variables.put("inputUserEmail", objectMapper.convertValue(
                 inputUserIdentity,
@@ -287,7 +325,7 @@ class UserApiIntTest {
     }
 
     @Test
-    void UserApi_ModifyUserUsername_UnsuccessfulNotAuthenticated() {
+    void modifyUserUsername_NotAuthenticated_ThrowAuthenticationCredentialsNotFoundException() {
         variables.put("inputUserUsername", objectMapper.convertValue(
                 createTestInputUserUsername(user.getId()),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -301,11 +339,28 @@ class UserApiIntTest {
     }
 
     @Test
-    @WithMockUser(username = "user", roles = "ADMIN")
-    void UserApi_ModifyUserUsername_Success() {
-        InputUserUsername testInputUserUsername = createTestInputUserUsername(user.getId());
+    @WithMockUser(username = "user", roles = "USER")
+    void modifyUserUsername_UserUsernameAlreadyUsed_ThrowUsernameExistsException() {
+        InputUserUsername inputUserUsername = createTestInputUserUsername(user.getId());
+        inputUserUsername.setNewUsername(userBis.getUsername());
         variables.put("inputUserUsername", objectMapper.convertValue(
-                testInputUserUsername,
+                inputUserUsername,
+                new TypeReference<LinkedHashMap<String, Object>>() {
+                }));
+
+        QueryException exception = Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(modifyUserUsernameQuery, "data.modifyUserUsername", variables));
+
+        Assertions.assertTrue(exception.getMessage().contains("UsernameExistsException"));
+        Assertions.assertTrue(exception.getMessage().contains("Username already used for an other account"));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void modifyUserUsername_ValidInput_ReturnUserDto() {
+        InputUserUsername inputUserUsername = createTestInputUserUsername(user.getId());
+        variables.put("inputUserUsername", objectMapper.convertValue(
+                inputUserUsername,
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
 
@@ -313,11 +368,11 @@ class UserApiIntTest {
                 "data.modifyUserUsername", variables);
 
         UserDto userDto = objectMapper.convertValue(response, UserDto.class);
-        Assertions.assertEquals(testInputUserUsername.getNewUsername(), userDto.getUsername());
+        Assertions.assertEquals(inputUserUsername.getNewUsername(), userDto.getUsername());
     }
 
     @Test
-    void UserApi_ModifyUserPassword_UnsuccessfulNotAuthenticated() {
+    void modifyUserPassword_NotAuthenticated_ThrowAuthenticationCredentialsNotFoundException() {
         variables.put("inputUserPassword", objectMapper.convertValue(
                 createTestInputUserPassword(user.getId(), rawPassword),
                 new TypeReference<LinkedHashMap<String, Object>>() {
@@ -332,21 +387,23 @@ class UserApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void UserApi_ModifyUserPassword_Success() {
+    void modifyUserPassword_ValidUse_ReturnAuthDto() {
         InputUserPassword inputUserPassword = createTestInputUserPassword(user.getId(), rawPassword);
         variables.put("inputUserPassword", objectMapper.convertValue(
                 inputUserPassword,
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
 
-        dgsQueryExecutor.executeAndExtractJsonPath(modifyUserPasswordQuery, "data.modifyUserPassword", variables);
+        LinkedHashMap<String, Object> response = dgsQueryExecutor.executeAndExtractJsonPath(modifyUserPasswordQuery, "data.modifyUserPassword", variables);
 
+        UserDto userDto = objectMapper.convertValue(response.get("user"), UserDto.class);
+        assertUserDtoAndEntity(user, userDto);
         UserEntity modifyUser = userRepository.findById(user.getId()).orElseThrow();
         Assertions.assertTrue(passwordEncoder.matches(inputUserPassword.getNewPassword(), modifyUser.getPassword()));
     }
 
     @Test
-    void UserApi_DeleteUser_UnsuccessfulNotAuthenticated() {
+    void deleteUser_NotAuthenticated_ThrowAuthenticationCredentialsNotFoundException() {
         variables.put("userId", user.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
@@ -358,19 +415,20 @@ class UserApiIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void UserController_DeleteUser_UnsuccessfulUserNotFound() {
-        variables.put("userId", user.getId() + 1);
+    void deleteUser_InvalidUserId_ThrowUnsuccessfulUserNotFound() {
+        userRepository.delete(user);
+        variables.put("userId", user.getId());
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(deleteUserQuery, "data.deleteUser", variables));
 
         Assertions.assertTrue(exception.getMessage().contains("UserNotFoundException"));
-        Assertions.assertTrue(exception.getMessage().contains(String.format("User with id %s has been not found", user.getId() + 1)));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("User with id %s has been not found", user.getId())));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void UserApi_DeleteUser_Success() {
+    void deleteUser_ValidUse_ReturnId() {
         variables.put("userId", user.getId());
 
         String id = dgsQueryExecutor.executeAndExtractJsonPath(deleteUserQuery, "data.deleteUser", variables);
