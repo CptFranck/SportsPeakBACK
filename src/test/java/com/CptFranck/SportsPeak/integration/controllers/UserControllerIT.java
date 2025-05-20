@@ -190,7 +190,7 @@ class UserControllerIT {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void UserController_ModifyUserRoles_Success() {
+    void modifyUserRoles_ValidUse_ReturnUserDto() {
         RoleEntity role = roleRepository.save(createTestRole(null, 0));
         InputUserRoles inputUserIdentity = createTestInputUserRoles(user.getId());
         inputUserIdentity.getRoleIds().add(role.getId());
@@ -209,7 +209,7 @@ class UserControllerIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void modifyUserEmail_ModifyUserEmail_ThrowUsernameExistsException() {
+    void modifyUserEmail_UserEmailAlreadyUsed_ThrowUsernameExistsException() {
         InputUserEmail inputUserIdentity = createTestInputUserEmail(user.getId(), rawPassword);
         inputUserIdentity.setNewEmail(userBis.getEmail());
 
@@ -218,24 +218,25 @@ class UserControllerIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void modifyUserEmail_ModifyUserEmail_ThrowUserNotFoundException() {
+    void modifyUserEmail_ValidInput_ReturnAuthDto() {
         InputUserEmail inputUserIdentity = createTestInputUserEmail(user.getId(), rawPassword);
 
         AuthDto authDto = userController.modifyUserEmail(inputUserIdentity);
 
+        assertUserDtoAndEntity(user, authDto.getUser());
         Assertions.assertEquals(inputUserIdentity.getNewEmail(), authDto.getUser().getEmail());
     }
 
     @Test
     void modifyUserUsername_NotAuthenticated_ThrowAuthenticationCredentialsNotFoundException() {
-        InputUserUsername testInputUserUsername = createTestInputUserUsername(user.getId());
+        InputUserUsername inputUserUsername = createTestInputUserUsername(user.getId());
 
-        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> userController.modifyUserUsername(testInputUserUsername));
+        Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> userController.modifyUserUsername(inputUserUsername));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void UserController_ModifyUserUsername_ThrowUsernameExistsException() {
+    void modifyUserUsername_UserUsernameAlreadyUsed_ThrowUsernameExistsException() {
         InputUserUsername inputUserUsername = createTestInputUserUsername(user.getId());
         inputUserUsername.setNewUsername(userBis.getUsername());
 
@@ -244,12 +245,12 @@ class UserControllerIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void UserController_ModifyUserUsername_Success() {
-        InputUserUsername testInputUserUsername = createTestInputUserUsername(user.getId());
+    void modifyUserUsername_ValidInput_ReturnUserDto() {
+        InputUserUsername inputUserUsername = createTestInputUserUsername(user.getId());
 
-        UserDto userDto = userController.modifyUserUsername(testInputUserUsername);
+        UserDto userDto = userController.modifyUserUsername(inputUserUsername);
 
-        Assertions.assertEquals(testInputUserUsername.getNewUsername(), userDto.getUsername());
+        Assertions.assertEquals(inputUserUsername.getNewUsername(), userDto.getUsername());
     }
 
     @Test
@@ -261,11 +262,12 @@ class UserControllerIT {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void UserController_ModifyUserPassword_Success() {
+    void modifyUserPassword_ValidUse_ReturnAuthDto() {
         InputUserPassword inputUserPassword = createTestInputUserPassword(user.getId(), rawPassword);
 
-        userController.modifyUserPassword(inputUserPassword);
+        AuthDto authDto = userController.modifyUserPassword(inputUserPassword);
 
+        assertUserDtoAndEntity(user, authDto.getUser());
         UserEntity modifyUser = userRepository.findById(user.getId()).orElseThrow();
         Assertions.assertTrue(passwordEncoder.matches(inputUserPassword.getNewPassword(), modifyUser.getPassword()));
     }
@@ -277,7 +279,7 @@ class UserControllerIT {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void UserController_DeleteUser_UnsuccessfulUserNotFound() {
+    void deleteUser_InvalidUserId_ThrowUnsuccessfulUserNotFound() {
         userRepository.delete(user);
 
         Assertions.assertThrows(UserNotFoundException.class, () -> userController.deleteUser(user.getId()));
@@ -285,7 +287,7 @@ class UserControllerIT {
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void UserController_DeleteUser_Success() {
+    void deleteUser_ValidUse_ReturnId() {
         Long id = userController.deleteUser(user.getId());
 
         Assertions.assertEquals(user.getId(), id);
