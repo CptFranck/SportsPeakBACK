@@ -6,7 +6,7 @@ import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.IncorrectPasswordException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.InvalidCredentialsException;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
-import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
+import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserEmail;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserPassword;
 import com.CptFranck.SportsPeak.domain.model.UserToken;
@@ -60,19 +60,19 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public UserToken register(InputRegisterNewUser inputRegisterNewUser) {
+    public UserToken register(RegisterInput registerInput) {
         RoleEntity userRole = roleService.findByName("USER");
 
-        String email = inputRegisterNewUser.getEmail();
-        String password = inputRegisterNewUser.getPassword();
+        String email = registerInput.getEmail();
+        String password = registerInput.getPassword();
         String encodedPassword = passwordEncoder.encode(password);
 
         UserEntity user = new UserEntity(
                 null,
                 email,
-                inputRegisterNewUser.getFirstName(),
-                inputRegisterNewUser.getLastName(),
-                inputRegisterNewUser.getUsername(),
+                registerInput.getFirstName(),
+                registerInput.getLastName(),
+                registerInput.getUsername(),
                 encodedPassword,
                 Set.of(userRole),
                 new HashSet<>(),

@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.domain.input.user;
+package com.CptFranck.SportsPeak.domain.input.credentials;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class InputRegisterNewUser {
+public class RegisterInput {
     private String email;
 
     private String firstName;

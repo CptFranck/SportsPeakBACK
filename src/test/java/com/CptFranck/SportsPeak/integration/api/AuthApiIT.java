@@ -4,7 +4,7 @@ import com.CptFranck.SportsPeak.config.security.JwtUtils;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
-import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
+import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
 import com.CptFranck.SportsPeak.repositories.RoleRepository;
 import com.CptFranck.SportsPeak.repositories.UserRepository;
 import com.CptFranck.SportsPeak.service.AuthService;
@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
 
 import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.AuthQuery.loginQuery;
 import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.AuthQuery.registerQuery;
-import static com.CptFranck.SportsPeak.utils.AuthUtils.createInputRegisterNewUser;
+import static com.CptFranck.SportsPeak.utils.AuthUtils.createRegisterInput;
 import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserBis;
@@ -66,7 +66,7 @@ public class AuthApiIT {
         roleRepository.save(createTestRole(null, 0));
         user = createTestUser(null);
         rawPassword = user.getPassword();
-        user = authService.register(createInputRegisterNewUser(user)).getUser();
+        user = authService.register(createRegisterInput(user)).getUser();
         variables = new LinkedHashMap<>();
     }
 
@@ -147,8 +147,8 @@ public class AuthApiIT {
 
     @Test
     public void register_MissingUserRoleInDB_ThrowRoleNotFoundException() {
-        variables.put("inputRegisterNewUser", objectMapper.convertValue(
-                createInputRegisterNewUser(user),
+        variables.put("registerInput", objectMapper.convertValue(
+                createRegisterInput(user),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
 
@@ -164,8 +164,8 @@ public class AuthApiIT {
 
     @Test
     public void register_UserEmailAlreadyTaken_ThrowEmailAlreadyUsedException() {
-        variables.put("inputRegisterNewUser", objectMapper.convertValue(
-                createInputRegisterNewUser(user),
+        variables.put("registerInput", objectMapper.convertValue(
+                createRegisterInput(user),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
 
@@ -179,10 +179,10 @@ public class AuthApiIT {
     @Test
     public void register_UserUsernameAlreadyUsed_ThrowUsernameExistsException() {
         UserEntity userBis = createTestUserBis(null);
-        InputRegisterNewUser inputRegisterNewUser = createInputRegisterNewUser(userBis);
-        inputRegisterNewUser.setUsername(user.getUsername());
-        variables.put("inputRegisterNewUser", objectMapper.convertValue(
-                inputRegisterNewUser,
+        RegisterInput registerInput = createRegisterInput(userBis);
+        registerInput.setUsername(user.getUsername());
+        variables.put("registerInput", objectMapper.convertValue(
+                registerInput,
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
 
@@ -196,9 +196,9 @@ public class AuthApiIT {
     @Test
     public void register_CorrectCredentials_ReturnAuthDto() {
         UserEntity userBis = createTestUserBis(null);
-        InputRegisterNewUser inputRegisterNewUser = createInputRegisterNewUser(userBis);
-        variables.put("inputRegisterNewUser", objectMapper.convertValue(
-                inputRegisterNewUser,
+        RegisterInput registerInput = createRegisterInput(userBis);
+        variables.put("registerInput", objectMapper.convertValue(
+                registerInput,
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
 

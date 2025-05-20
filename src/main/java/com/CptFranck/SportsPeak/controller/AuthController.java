@@ -4,7 +4,7 @@ import com.CptFranck.SportsPeak.domain.dto.AuthDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
-import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
+import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
 import com.CptFranck.SportsPeak.domain.model.UserToken;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.AuthService;
@@ -31,8 +31,8 @@ public class AuthController {
     }
 
     @DgsMutation
-    public AuthDto register(@InputArgument InputRegisterNewUser inputRegisterNewUser) {
-        UserToken userToken = authService.register(inputRegisterNewUser);
+    public AuthDto register(@InputArgument RegisterInput registerInput) {
+        UserToken userToken = authService.register(registerInput);
         return new AuthDto(userToken.getToken(), userMapper.mapTo(userToken.getUser()));
     }
 }

@@ -9,7 +9,7 @@ import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailAlreadyUsedExcept
 import com.CptFranck.SportsPeak.domain.exception.userAuth.InvalidCredentialsException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UsernameExistsException;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
-import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
+import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
 import com.CptFranck.SportsPeak.repositories.RoleRepository;
 import com.CptFranck.SportsPeak.repositories.UserRepository;
 import com.CptFranck.SportsPeak.service.AuthService;
@@ -23,7 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.TestPropertySource;
 
-import static com.CptFranck.SportsPeak.utils.AuthUtils.createInputRegisterNewUser;
+import static com.CptFranck.SportsPeak.utils.AuthUtils.createRegisterInput;
 import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserBis;
@@ -58,7 +58,7 @@ public class AuthControllerIT {
         roleRepository.save(createTestRole(null, 0));
         user = createTestUser(null);
         rawPassword = user.getPassword();
-        user = authService.register(createInputRegisterNewUser(user)).getUser();
+        user = authService.register(createRegisterInput(user)).getUser();
     }
 
     @AfterEach
@@ -109,42 +109,35 @@ public class AuthControllerIT {
 
     @Test
     public void register_MissingUserRoleInDB_ThrowRoleNotFoundException() {
-        InputRegisterNewUser inputCredentials = createInputRegisterNewUser(user);
+        RegisterInput registerInput = createRegisterInput(user);
         userRepository.deleteAll();
         roleRepository.deleteAll();
 
-        Assertions.assertThrows(RoleNotFoundException.class, () -> authController.register(inputCredentials));
+        Assertions.assertThrows(RoleNotFoundException.class, () -> authController.register(registerInput));
     }
 
     @Test
     public void register_UserEmailAlreadyTaken_ThrowEmailAlreadyUsedException() {
-        InputRegisterNewUser inputCredentials = createInputRegisterNewUser(user);
+        RegisterInput registerInput = createRegisterInput(user);
 
-        Assertions.assertThrows(EmailAlreadyUsedException.class, () -> authController.register(inputCredentials));
+        Assertions.assertThrows(EmailAlreadyUsedException.class, () -> authController.register(registerInput));
     }
 
     @Test
     public void register_UserUsernameAlreadyUsed_ThrowUsernameExistsException() {
         UserEntity userBis = createTestUserBis(null);
-        InputRegisterNewUser inputCredentials = createInputRegisterNewUser(userBis);
-        inputCredentials.setUsername(user.getUsername());
+        RegisterInput registerInput = createRegisterInput(userBis);
+        registerInput.setUsername(user.getUsername());
 
-        Assertions.assertThrows(UsernameExistsException.class, () -> authController.register(inputCredentials));
+        Assertions.assertThrows(UsernameExistsException.class, () -> authController.register(registerInput));
     }
 
     @Test
     public void register_CorrectCredentials_ReturnAuthDto() {
         UserEntity userBis = createTestUserBis(null);
+        RegisterInput registerInput = createRegisterInput(userBis);
 
-        InputRegisterNewUser inputCredentials = new InputRegisterNewUser(
-                userBis.getEmail(),
-                userBis.getFirstName(),
-                userBis.getLastName(),
-                userBis.getUsername(),
-                userBis.getPassword()
-        );
-
-        AuthDto authDto = authController.register(inputCredentials);
+        AuthDto authDto = authController.register(registerInput);
 
         assertAuthDto(authDto, userBis, false);
     }

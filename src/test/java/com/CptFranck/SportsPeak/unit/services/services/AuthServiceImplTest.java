@@ -6,7 +6,7 @@ import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.IncorrectPasswordException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.InvalidCredentialsException;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
-import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
+import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserEmail;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserPassword;
 import com.CptFranck.SportsPeak.domain.model.CustomUserDetails;
@@ -31,7 +31,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static com.CptFranck.SportsPeak.utils.AuthUtils.createInputCredentials;
-import static com.CptFranck.SportsPeak.utils.AuthUtils.createInputRegisterNewUser;
+import static com.CptFranck.SportsPeak.utils.AuthUtils.createRegisterInput;
 import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -109,8 +109,8 @@ public class AuthServiceImplTest {
         when(userDetailsService.loadUserByUsername(Mockito.any(String.class))).thenReturn(userDetails);
         when(jwtUtils.generateToken(Mockito.any(UserDetails.class))).thenReturn(token);
 
-        InputRegisterNewUser inputRegisterNewUser = createInputRegisterNewUser(user);
-        UserToken returnedUser = authServiceImpl.register(inputRegisterNewUser);
+        RegisterInput registerInput = createRegisterInput(user);
+        UserToken returnedUser = authServiceImpl.register(registerInput);
 
         Assertions.assertEquals(userToken.getToken(), returnedUser.getToken());
         Assertions.assertEquals(userToken.getUser(), returnedUser.getUser());

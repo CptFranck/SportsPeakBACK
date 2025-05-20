@@ -3,3 +3,11 @@ type Auth {
     tokenType: String!
     token: String!
 }
+
+input RegisterInput {
+    email: String!
+    firstName: String!
+    lastName: String!
+    username: String!
+    password: String!
+}

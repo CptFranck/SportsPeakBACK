@@ -5,7 +5,7 @@ import com.CptFranck.SportsPeak.domain.dto.AuthDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
-import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
+import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
 import com.CptFranck.SportsPeak.domain.model.UserToken;
 import com.CptFranck.SportsPeak.mappers.Mapper;
 import com.CptFranck.SportsPeak.service.AuthService;
@@ -19,7 +19,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.CptFranck.SportsPeak.utils.AuthUtils.createInputCredentials;
-import static com.CptFranck.SportsPeak.utils.AuthUtils.createInputRegisterNewUser;
+import static com.CptFranck.SportsPeak.utils.AuthUtils.createRegisterInput;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserDto;
 import static org.mockito.Mockito.when;
@@ -60,10 +60,10 @@ public class AuthControllerTest {
 
     @Test
     public void register_ValidCredentials_ReturnsAuthDto() {
-        when(authService.register(Mockito.any(InputRegisterNewUser.class))).thenReturn(userToken);
+        when(authService.register(Mockito.any(RegisterInput.class))).thenReturn(userToken);
         when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
 
-        AuthDto authDtoReturn = authController.register(createInputRegisterNewUser(user));
+        AuthDto authDtoReturn = authController.register(createRegisterInput(user));
 
         assertEqualsAuth(authDto, authDtoReturn);
     }

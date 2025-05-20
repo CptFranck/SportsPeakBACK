@@ -1,5 +1,5 @@
-mutation ($inputRegisterNewUser : InputRegisterNewUser!) {
-    register(inputRegisterNewUser: $inputRegisterNewUser){
+mutation ($registerInput : RegisterInput!) {
+    register(registerInput: $registerInput){
         tokenType
         token
         user {

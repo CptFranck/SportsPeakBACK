@@ -2,7 +2,7 @@ package com.CptFranck.SportsPeak.utils;
 
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
-import com.CptFranck.SportsPeak.domain.input.user.InputRegisterNewUser;
+import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
 
 public class AuthUtils {
     public static InputCredentials createInputCredentials(UserEntity user) {
@@ -12,8 +12,8 @@ public class AuthUtils {
         );
     }
 
-    public static InputRegisterNewUser createInputRegisterNewUser(UserEntity user) {
-        return new InputRegisterNewUser(
+    public static RegisterInput createRegisterInput(UserEntity user) {
+        return new RegisterInput(
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),
