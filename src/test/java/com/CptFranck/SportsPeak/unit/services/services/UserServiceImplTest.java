@@ -61,6 +61,14 @@ public class UserServiceImplTest {
     }
 
     @Test
+    void findOne_InvalidUserId_ReturnUserEntity() {
+        when(userRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundException.class, () -> userServiceImpl.findOne(user.getId()));
+
+    }
+
+    @Test
     void findOne_ValidUse_ReturnUserEntity() {
         when(userRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(user));
 
@@ -163,7 +171,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void save_UpdateNewUserWithEmailAlreadyTaken_ThrowEmailAlreadyUsedException() {
+    void save_UpdateUserWithEmailAlreadyTaken_ThrowEmailAlreadyUsedException() {
         when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.of(user));
         when(userRepository.findByUsername(Mockito.any(String.class))).thenReturn(Optional.empty());
         when(userRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
@@ -173,7 +181,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void save_UpdateNewUserWithUsernameAlreadyTaken_ThrowUsernameExistsException() {
+    void save_UpdateUserWithUsernameAlreadyTaken_ThrowUsernameExistsException() {
         when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.empty());
         when(userRepository.findByUsername(Mockito.any(String.class))).thenReturn(Optional.of(user));
         when(userRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
@@ -183,7 +191,7 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void save_UpdateNewUser_ThrowUsernameExistsException() {
+    void save_UpdateUser_ReturnUserEntity() {
         when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.of(user));
         when(userRepository.findByUsername(Mockito.any(String.class))).thenReturn(Optional.of(user));
         when(userRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
