@@ -2,8 +2,11 @@ package com.CptFranck.SportsPeak.unit.controllers;
 
 import com.CptFranck.SportsPeak.controller.UserController;
 import com.CptFranck.SportsPeak.domain.dto.AuthDto;
+import com.CptFranck.SportsPeak.domain.dto.ExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
+import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
+import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.user.*;
 import com.CptFranck.SportsPeak.domain.model.UserToken;
@@ -21,9 +24,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExerciseDto;
+import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExerciseDto;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.*;
 import static org.mockito.Mockito.when;
 
@@ -33,6 +41,9 @@ class UserControllerTest {
 
     @InjectMocks
     private UserController userController;
+
+    @Mock
+    private Mapper<ProgExerciseEntity, ProgExerciseDto> progExerciseMapper;
 
     @Mock
     private Mapper<UserEntity, UserDto> userMapper;
@@ -54,6 +65,8 @@ class UserControllerTest {
 
     @BeforeEach
     void init() {
+        ReflectionTestUtils.setField(userController, "progExerciseMapper", progExerciseMapper);
+        ReflectionTestUtils.setField(userController, "userMapper", userMapper);
         user = createTestUser(1L);
         userDto = createTestUserDto(1L);
     }
@@ -79,12 +92,18 @@ class UserControllerTest {
     }
 
     @Test
-    void getUserProgExercises_ValidInput_ReturnProgExerciseDto() {
+    void getUserProgExercises_ValidInput_ReturnListOfProgExerciseDto() {
+        ExerciseEntity exercise = createTestExercise(1L);
+        ExerciseDto exerciseDto = createTestExerciseDto(1L);
+        ProgExerciseEntity progExercise = createTestProgExercise(null, user, exercise);
+        ProgExerciseDto progExerciseDto = createTestProgExerciseDto(null, userDto, exerciseDto);
+        user.getSubscribedProgExercises().add(progExercise);
         when(userService.findOne(Mockito.any(Long.class))).thenReturn(user);
+        when(progExerciseMapper.mapTo(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExerciseDto);
 
         List<ProgExerciseDto> userProgExercises = userController.getUserProgExercises(1L);
 
-        Assertions.assertEquals(List.of(), userProgExercises);
+        Assertions.assertEquals(List.of(progExerciseDto), userProgExercises);
     }
 
     @Test
@@ -109,7 +128,7 @@ class UserControllerTest {
     }
 
     @Test
-    void modifyUserEmail_ValidInput_ReturnUserDto() {
+    void modifyUserEmail_ValidInput_ReturnAuthDto() {
         UserToken userToken = new UserToken("token", user);
         AuthDto returnValue = new AuthDto("token", userDto);
 
@@ -134,7 +153,7 @@ class UserControllerTest {
     }
 
     @Test
-    void modifyUserPassword_ValidInput_ReturnUserDto() {
+    void modifyUserPassword_ValidInput_ReturnAuthDto() {
         UserToken userToken = new UserToken("token", user);
         AuthDto returnValue = new AuthDto("token", userDto);
 
