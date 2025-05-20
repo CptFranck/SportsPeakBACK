@@ -8,7 +8,9 @@ import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailAlreadyUsedException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.userAuth.UsernameExistsException;
 import com.CptFranck.SportsPeak.domain.input.user.*;
 import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
 import com.CptFranck.SportsPeak.repositories.ProgExerciseRepository;
@@ -36,7 +38,7 @@ import static com.CptFranck.SportsPeak.utils.TestUserUtils.*;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
-class UserControllerIntTest {
+class UserControllerIT {
 
     @Autowired
     private UserController userController;
@@ -57,6 +59,7 @@ class UserControllerIntTest {
     private PasswordEncoder passwordEncoder;
 
     private UserEntity user;
+    private UserEntity userBis;
     private String rawPassword;
 
     @BeforeEach
@@ -64,7 +67,8 @@ class UserControllerIntTest {
         user = createTestUser(null);
         rawPassword = user.getPassword();
         user.setPassword(passwordEncoder.encode(rawPassword));
-        userRepository.save(user);
+        user = userRepository.save(user);
+        userBis = userRepository.save(createTestUserBis(null));
     }
 
     @AfterEach
@@ -80,51 +84,55 @@ class UserControllerIntTest {
     }
 
     @Test
-    void UserController_GetUsers_UnsuccessfulNotAuthenticated() {
+    void getUsers_NotAuthenticated_ThrowAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> userController.getUsers());
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void UserController_GetUsers_Success() {
+    void getUsers_ValidUse_ReturnListOfUserDto() {
         List<UserDto> userDtos = userController.getUsers();
 
-        assertEqualUserList(List.of(user), userDtos);
+        assertEqualUserList(List.of(user, userBis), userDtos);
     }
 
     @Test
-    void UserController_GetUserById_UnsuccessfulNotAuthenticated() {
+    void getUserById_NotAuthenticated_ThrowAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> userController.getUserById(user.getId() + 1));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void UserController_GetUserById_UnsuccessfulUserNotFound() {
-        Assertions.assertThrows(UserNotFoundException.class, () -> userController.getUserById(user.getId() + 1));
+    void getUserById_InvalidTargetSetId_ThrowUserNotFoundException() {
+        userRepository.delete(user);
+
+        Assertions.assertThrows(UserNotFoundException.class, () -> userController.getUserById(user.getId()));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
-    void UserController_GetUserById_Success() {
+    void getUserById_ValidInput_ReturnUserDto() {
         UserDto userDto = userController.getUserById(user.getId());
 
         assertUserDtoAndEntity(user, userDto);
     }
 
     @Test
-    void UserController_GetUserProgExercises_UnsuccessfulNotAuthenticated() {
+    void getUserProgExercises_NotAuthenticated_ThrowAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> userController.getUserProgExercises(user.getId() + 1));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void UserController_GetUserProgExercises_UnsuccessfulUserNotFound() {
-        Assertions.assertThrows(UserNotFoundException.class, () -> userController.getUserProgExercises(user.getId() + 1));
+    void getUserProgExercises_InvalidUserId_ThrowUserNotFoundException() {
+        userRepository.delete(user);
+
+        Assertions.assertThrows(UserNotFoundException.class, () -> userController.getUserProgExercises(user.getId()));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void UserController_GetUserProgExercises_Success() {
+    void getUserProgExercises_ValidUse_ReturnListOfUserDto() {
         ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
         ProgExerciseEntity progExercise = progExerciseRepository.save(createTestProgExercise(null, user, exercise));
         user.getSubscribedProgExercises().add(progExercise);
@@ -142,8 +150,9 @@ class UserControllerIntTest {
         Assertions.assertEquals(progExercise.getTargetSets().size(), progExerciseDtos.getFirst().getTargetSets().size());
     }
 
+
     @Test
-    void UserController_ModifyUserIdentity_UnsuccessfulNotAuthenticated() {
+    void modifyUserIdentity_NotAuthenticated_ThrowAuthenticationCredentialsNotFoundException() {
         InputUserIdentity inputUserIdentity = createTestInputUserIdentity(user.getId());
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> userController.modifyUserIdentity(inputUserIdentity));
@@ -151,7 +160,17 @@ class UserControllerIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void UserController_ModifyUserIdentity_Success() {
+    void modifyUserIdentity_InvalidUserId_ThrowUserNotFoundException() {
+        userRepository.delete(user);
+
+        InputUserIdentity inputUserIdentity = createTestInputUserIdentity(user.getId());
+
+        Assertions.assertThrows(UserNotFoundException.class, () -> userController.modifyUserIdentity(inputUserIdentity));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "USER")
+    void modifyUserIdentity_ValidUse_ReturnUserDto() {
         InputUserIdentity inputUserIdentity = createTestInputUserIdentity(user.getId());
 
         UserDto userDto = userController.modifyUserIdentity(inputUserIdentity);
@@ -161,7 +180,7 @@ class UserControllerIntTest {
     }
 
     @Test
-    void UserController_ModifyUserRoles_UnsuccessfulNotAuthenticated() {
+    void modifyUserRoles_NotAuthenticated_ThrowAuthenticationCredentialsNotFoundException() {
         RoleEntity role = roleRepository.save(createTestRole(null, 0));
         InputUserRoles inputUserIdentity = createTestInputUserRoles(user.getId());
         inputUserIdentity.getRoleIds().add(role.getId());
@@ -182,7 +201,7 @@ class UserControllerIntTest {
     }
 
     @Test
-    void UserController_ModifyUserEmail_UnsuccessfulNotAuthenticated() {
+    void modifyUserEmail_NotAuthenticated_ThrowAuthenticationCredentialsNotFoundException() {
         InputUserEmail inputUserIdentity = createTestInputUserEmail(user.getId(), rawPassword);
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> userController.modifyUserEmail(inputUserIdentity));
@@ -190,7 +209,16 @@ class UserControllerIntTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void UserController_ModifyUserEmail_Success() {
+    void modifyUserEmail_ModifyUserEmail_ThrowUsernameExistsException() {
+        InputUserEmail inputUserIdentity = createTestInputUserEmail(user.getId(), rawPassword);
+        inputUserIdentity.setNewEmail(userBis.getEmail());
+
+        Assertions.assertThrows(EmailAlreadyUsedException.class, () -> userController.modifyUserEmail(inputUserIdentity));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "USER")
+    void modifyUserEmail_ModifyUserEmail_ThrowUserNotFoundException() {
         InputUserEmail inputUserIdentity = createTestInputUserEmail(user.getId(), rawPassword);
 
         AuthDto authDto = userController.modifyUserEmail(inputUserIdentity);
@@ -199,10 +227,19 @@ class UserControllerIntTest {
     }
 
     @Test
-    void UserController_ModifyUserUsername_UnsuccessfulNotAuthenticated() {
+    void modifyUserUsername_NotAuthenticated_ThrowAuthenticationCredentialsNotFoundException() {
         InputUserUsername testInputUserUsername = createTestInputUserUsername(user.getId());
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> userController.modifyUserUsername(testInputUserUsername));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "USER")
+    void UserController_ModifyUserUsername_ThrowUsernameExistsException() {
+        InputUserUsername inputUserUsername = createTestInputUserUsername(user.getId());
+        inputUserUsername.setNewUsername(userBis.getUsername());
+
+        Assertions.assertThrows(UsernameExistsException.class, () -> userController.modifyUserUsername(inputUserUsername));
     }
 
     @Test
@@ -216,7 +253,7 @@ class UserControllerIntTest {
     }
 
     @Test
-    void UserController_ModifyUserPassword_UnsuccessfulNotAuthenticated() {
+    void modifyUserPassword_NotAuthenticated_ThrowAuthenticationCredentialsNotFoundException() {
         InputUserPassword inputUserPassword = createTestInputUserPassword(user.getId(), rawPassword);
 
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> userController.modifyUserPassword(inputUserPassword));
@@ -234,14 +271,16 @@ class UserControllerIntTest {
     }
 
     @Test
-    void UserController_DeleteUser_UnsuccessfulNotAuthenticated() {
+    void deleteUser_NotAuthenticated_ThrowAuthenticationCredentialsNotFoundException() {
         Assertions.assertThrows(AuthenticationCredentialsNotFoundException.class, () -> userController.deleteUser(user.getId()));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "ADMIN")
     void UserController_DeleteUser_UnsuccessfulUserNotFound() {
-        Assertions.assertThrows(UserNotFoundException.class, () -> userController.deleteUser(user.getId() + 1));
+        userRepository.delete(user);
+
+        Assertions.assertThrows(UserNotFoundException.class, () -> userController.deleteUser(user.getId()));
     }
 
     @Test
