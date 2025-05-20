@@ -6,10 +6,11 @@ import com.CptFranck.SportsPeak.domain.input.user.InputUserRoles;
 import com.CptFranck.SportsPeak.service.RoleService;
 import com.CptFranck.SportsPeak.service.UserManager;
 import com.CptFranck.SportsPeak.service.UserService;
-import graphql.com.google.common.collect.Sets;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -47,8 +48,12 @@ public class UserManagerImpl implements UserManager {
     @Override
     public UserEntity updateUserRoles(InputUserRoles inputUserRoles) {
         UserEntity user = userService.findOne(inputUserRoles.getId());
-        Set<Long> roleIds = Sets.newHashSet((inputUserRoles.getRoleIds()));
-        Set<RoleEntity> roles = roleService.findMany(roleIds);
-        return userService.changeRoles(user, roles);
+
+        List<Long> roleIds = inputUserRoles.getRoleIds();
+        Set<RoleEntity> roles = roleService.findMany(new HashSet<>(roleIds));
+
+        user.setRoles(roles);
+
+        return userService.save(user);
     }
 }
