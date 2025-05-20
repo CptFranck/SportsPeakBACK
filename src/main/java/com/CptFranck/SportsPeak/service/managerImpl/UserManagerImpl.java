@@ -2,9 +2,11 @@ package com.CptFranck.SportsPeak.service.managerImpl;
 
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.input.user.InputUserRoles;
 import com.CptFranck.SportsPeak.service.RoleService;
 import com.CptFranck.SportsPeak.service.UserManager;
 import com.CptFranck.SportsPeak.service.UserService;
+import graphql.com.google.common.collect.Sets;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -40,5 +42,13 @@ public class UserManagerImpl implements UserManager {
         userService.updateRoleRelation(newUserIds, oldUserIds, role);
 
         return roleSaved;
+    }
+
+    @Override
+    public UserEntity updateUserRoles(InputUserRoles inputUserRoles) {
+        UserEntity user = userService.findOne(inputUserRoles.getId());
+        Set<Long> roleIds = Sets.newHashSet((inputUserRoles.getRoleIds()));
+        Set<RoleEntity> roles = roleService.findMany(roleIds);
+        return userService.changeRoles(user, roles);
     }
 }
