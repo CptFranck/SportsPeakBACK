@@ -4,39 +4,44 @@ import com.CptFranck.SportsPeak.domain.dto.AuthDto;
 import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
-import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.user.*;
 import com.CptFranck.SportsPeak.domain.model.UserToken;
 import com.CptFranck.SportsPeak.mappers.Mapper;
+import com.CptFranck.SportsPeak.resolvers.UserInputResolver;
 import com.CptFranck.SportsPeak.service.AuthService;
-import com.CptFranck.SportsPeak.service.RoleService;
+import com.CptFranck.SportsPeak.service.UserManager;
 import com.CptFranck.SportsPeak.service.UserService;
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsMutation;
 import com.netflix.graphql.dgs.DgsQuery;
 import com.netflix.graphql.dgs.InputArgument;
-import graphql.com.google.common.collect.Sets;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 
 import java.util.List;
-import java.util.Set;
 
 @DgsComponent
 public class UserController {
 
-    private final RoleService roleService;
+    private final UserManager userManager;
+
     private final UserService userService;
+
     private final AuthService authService;
+
+    private final UserInputResolver userInputResolver;
+
     private final Mapper<UserEntity, UserDto> userMapper;
+
     private final Mapper<ProgExerciseEntity, ProgExerciseDto> progExerciseMapper;
 
-    public UserController(RoleService roleService, UserService userService, Mapper<UserEntity, UserDto> userMapper, Mapper<ProgExerciseEntity, ProgExerciseDto> progExerciseMapper, AuthenticationManager authenticationManager, AuthService authService) {
+    public UserController(UserManager userManager, UserInputResolver userInputResolver, UserService userService, Mapper<UserEntity, UserDto> userMapper, Mapper<ProgExerciseEntity, ProgExerciseDto> progExerciseMapper, AuthenticationManager authenticationManager, AuthService authService) {
         this.userMapper = userMapper;
-        this.roleService = roleService;
+        this.userManager = userManager;
         this.userService = userService;
         this.authService = authService;
+        this.userInputResolver = userInputResolver;
         this.progExerciseMapper = progExerciseMapper;
     }
 
@@ -63,18 +68,14 @@ public class UserController {
     @PreAuthorize("hasRole('USER')")
     @DgsMutation
     public UserDto modifyUserIdentity(@InputArgument InputUserIdentity inputUserIdentity) {
-        UserEntity userEntity = userService.changeIdentity(inputUserIdentity.getId(),
-                inputUserIdentity.getFirstName(),
-                inputUserIdentity.getLastName());
-        return userMapper.mapTo(userEntity);
+        UserEntity userEntity = userInputResolver.resolveInput(inputUserIdentity);
+        return userMapper.mapTo(userService.save(userEntity));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
     public UserDto modifyUserRoles(@InputArgument InputUserRoles inputUserRoles) {
-        Set<Long> roleIds = Sets.newHashSet((inputUserRoles.getRoleIds()));
-        Set<RoleEntity> roles = roleService.findMany(roleIds);
-        UserEntity userEntity = userService.changeRoles(inputUserRoles.getId(), roles);
+        UserEntity userEntity = userManager.updateUserRoles(inputUserRoles);
         return userMapper.mapTo(userEntity);
     }
 
@@ -88,8 +89,8 @@ public class UserController {
     @PreAuthorize("hasRole('USER')")
     @DgsMutation
     public UserDto modifyUserUsername(@InputArgument InputUserUsername inputUserUsername) {
-        UserEntity userEntity = userService.changeUsername(inputUserUsername.getId(), inputUserUsername.getNewUsername());
-        return userMapper.mapTo(userEntity);
+        UserEntity userEntity = userInputResolver.resolveInput(inputUserUsername);
+        return userMapper.mapTo(userService.save(userEntity));
     }
 
     @PreAuthorize("hasRole('USER')")
