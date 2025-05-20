@@ -24,12 +24,6 @@ public interface UserService {
 
     void delete(Long id);
 
-    UserEntity changeIdentity(Long id, String firstName, String lastName);
-
-    UserEntity changeRoles(Long id, Set<RoleEntity> roles);
-
-    UserEntity changeUsername(Long id, String newUsername);
-
     void updateRoleRelation(Set<Long> newIds, Set<Long> oldIds, RoleEntity roleEntity);
 
     boolean exists(Long id);
