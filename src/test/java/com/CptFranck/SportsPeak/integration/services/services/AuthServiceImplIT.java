@@ -94,7 +94,7 @@ public class AuthServiceImplIT {
 
         UserToken returnedUserToken = authServiceImpl.login(inputCredentials);
 
-        assertEqualsUser(user, returnedUserToken.getUser());
+        assertEqualsUser(user, returnedUserToken.getUser(), false);
     }
 
     @Test
@@ -103,7 +103,7 @@ public class AuthServiceImplIT {
 
         UserToken returnedUserToken = authServiceImpl.login(inputCredentials);
 
-        assertEqualsUser(user, returnedUserToken.getUser());
+        assertEqualsUser(user, returnedUserToken.getUser(), false);
     }
 
     @Test
