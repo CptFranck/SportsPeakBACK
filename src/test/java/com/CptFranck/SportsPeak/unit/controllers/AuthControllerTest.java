@@ -59,7 +59,7 @@ public class AuthControllerTest {
     }
 
     @Test
-    public void register_ValidCredentials_ReturnsAuthDto() {
+    public void register_ValidRegisterInput_ReturnsAuthDto() {
         when(authService.register(Mockito.any(RegisterInput.class))).thenReturn(userToken);
         when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
 

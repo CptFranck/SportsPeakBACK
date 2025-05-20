@@ -133,7 +133,7 @@ public class AuthControllerIT {
     }
 
     @Test
-    public void register_CorrectCredentials_ReturnAuthDto() {
+    public void register_ValidRegisterInput_ReturnAuthDto() {
         UserEntity userBis = createTestUserBis(null);
         RegisterInput registerInput = createRegisterInput(userBis);
 

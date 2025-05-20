@@ -134,7 +134,7 @@ public class AuthServiceImplIT {
     }
 
     @Test
-    void register_CorrectCredentials_ReturnUserToken() {
+    void register_ValidRegisterInput_ReturnUserToken() {
         UserEntity userToRegister = createTestUserBis(null);
         RegisterInput registerInput = createRegisterInput(userToRegister);
 

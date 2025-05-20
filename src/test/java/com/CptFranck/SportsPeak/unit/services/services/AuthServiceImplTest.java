@@ -101,7 +101,7 @@ public class AuthServiceImplTest {
     }
 
     @Test
-    void register_CorrectCredentials_ReturnUserEntity() {
+    void register_ValidRegisterInput_ReturnUserEntity() {
         when(roleService.findByName(Mockito.any(String.class))).thenReturn(role);
         when(passwordEncoder.encode(Mockito.any(String.class))).thenReturn(user.getPassword());
         when(userService.save(Mockito.any(UserEntity.class))).thenReturn(user);
