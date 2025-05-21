@@ -10,10 +10,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 
+import static com.CptFranck.SportsPeak.utils.MuscleTestUtils.createTestMuscle;
+import static com.CptFranck.SportsPeak.utils.MuscleTestUtils.createTestMuscleDto;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExerciseDto;
-import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.createTestMuscle;
-import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.createTestMuscleDto;
 
 public class MuscleMapperImplIntTest {
 

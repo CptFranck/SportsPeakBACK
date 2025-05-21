@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashSet;
 
-import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.*;
+import static com.CptFranck.SportsPeak.utils.MuscleTestUtils.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

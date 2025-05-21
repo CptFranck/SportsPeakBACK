@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import static com.CptFranck.SportsPeak.utils.MuscleTestUtils.assertEqualMuscle;
+import static com.CptFranck.SportsPeak.utils.MuscleTestUtils.createTestMuscle;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.assertEqualMuscle;
-import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.createTestMuscle;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

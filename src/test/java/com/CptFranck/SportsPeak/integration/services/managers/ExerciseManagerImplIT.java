@@ -11,10 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
+import static com.CptFranck.SportsPeak.utils.MuscleTestUtils.assertEqualMuscle;
+import static com.CptFranck.SportsPeak.utils.MuscleTestUtils.createTestMuscle;
 import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.asserEqualExerciseType;
 import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseType;
-import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.assertEqualMuscle;
-import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.createTestMuscle;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")

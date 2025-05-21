@@ -16,9 +16,9 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.util.*;
 
+import static com.CptFranck.SportsPeak.utils.MuscleTestUtils.createTestMuscle;
 import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseType;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.createTestMuscle;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest()
