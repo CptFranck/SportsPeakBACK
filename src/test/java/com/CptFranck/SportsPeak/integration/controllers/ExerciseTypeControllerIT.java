@@ -163,19 +163,4 @@ class ExerciseTypeControllerIT {
                 exerciseTypeDto)
         );
     }
-
-    private void assertExerciseTypeDtoAndEntity(ExerciseTypeEntity exerciseType, ExerciseTypeDto exerciseTypeDto) {
-        Assertions.assertNotNull(exerciseTypeDto);
-        Assertions.assertEquals(exerciseType.getId(), exerciseTypeDto.getId());
-        Assertions.assertEquals(exerciseType.getName(), exerciseTypeDto.getName());
-        Assertions.assertEquals(exerciseType.getGoal(), exerciseTypeDto.getGoal());
-        Assertions.assertEquals(exerciseType.getExercises().size(), exerciseTypeDto.getExercises().size());
-    }
-
-    private void assertExerciseTypeDtoAndInput(InputNewExerciseType inputNewExerciseType, ExerciseTypeDto exerciseTypeDto) {
-        Assertions.assertNotNull(exerciseTypeDto);
-        Assertions.assertEquals(inputNewExerciseType.getName(), exerciseTypeDto.getName());
-        Assertions.assertEquals(inputNewExerciseType.getGoal(), exerciseTypeDto.getGoal());
-        Assertions.assertEquals(inputNewExerciseType.getExerciseIds().size(), exerciseTypeDto.getExercises().size());
-    }
 }

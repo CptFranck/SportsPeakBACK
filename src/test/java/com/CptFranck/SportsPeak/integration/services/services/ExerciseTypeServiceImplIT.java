@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.asserEqualExerciseType;
 import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseType;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -146,12 +147,5 @@ public class ExerciseTypeServiceImplIT {
                 ).toList().getFirst(),
                 exerciseTypeFound)
         );
-    }
-
-    private void asserEqualExerciseType(ExerciseTypeEntity exerciseTypeExpected, ExerciseTypeEntity exerciseTypeObtain) {
-        Assertions.assertEquals(exerciseTypeExpected.getId(), exerciseTypeObtain.getId());
-        Assertions.assertEquals(exerciseTypeExpected.getName(), exerciseTypeObtain.getName());
-        Assertions.assertEquals(exerciseTypeExpected.getGoal(), exerciseTypeObtain.getGoal());
-        Assertions.assertEquals(exerciseTypeExpected.getExercises().size(), exerciseTypeObtain.getExercises().size());
     }
 }

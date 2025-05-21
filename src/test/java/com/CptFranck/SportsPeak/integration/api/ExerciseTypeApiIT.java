@@ -88,7 +88,7 @@ class ExerciseTypeApiIT {
                 "data.getExerciseTypeById", variables);
 
         ExerciseTypeDto exerciseTypeDto = objectMapper.convertValue(response, ExerciseTypeDto.class);
-        assertExerciseTypeDtoValid(exerciseType, exerciseTypeDto);
+        assertExerciseTypeDtoAndEntity(exerciseType, exerciseTypeDto);
     }
 
     @Test
@@ -117,7 +117,7 @@ class ExerciseTypeApiIT {
                 "data.addExerciseType", variables);
 
         ExerciseTypeDto exerciseTypeDto = objectMapper.convertValue(response, ExerciseTypeDto.class);
-        assertExerciseTypeDtoValidInput(inputNewExerciseType, exerciseTypeDto);
+        assertExerciseTypeDtoAndInput(inputNewExerciseType, exerciseTypeDto);
     }
 
     @Test
@@ -160,7 +160,7 @@ class ExerciseTypeApiIT {
                 "data.modifyExerciseType", variables);
 
         ExerciseTypeDto exerciseTypeDto = objectMapper.convertValue(response, ExerciseTypeDto.class);
-        assertExerciseTypeDtoValidInput(inputNewExerciseType, exerciseTypeDto);
+        assertExerciseTypeDtoAndInput(inputNewExerciseType, exerciseTypeDto);
     }
 
     @Test
@@ -214,7 +214,7 @@ class ExerciseTypeApiIT {
 
     private void assertEqualExerciseList(List<ExerciseTypeEntity> exerciseTypeEntities, List<ExerciseTypeDto> exerciseTypeDtos) {
         Assertions.assertEquals(exerciseTypeEntities.size(), exerciseTypeDtos.size());
-        exerciseTypeDtos.forEach(exerciseTypeDto -> assertExerciseTypeDtoValid(
+        exerciseTypeDtos.forEach(exerciseTypeDto -> assertExerciseTypeDtoAndEntity(
                 exerciseTypeEntities.stream().filter(
                         exerciseTypeEntity -> Objects.equals(exerciseTypeEntity.getId(), exerciseTypeDto.getId())
                 ).toList().getFirst(),
@@ -222,17 +222,5 @@ class ExerciseTypeApiIT {
         );
     }
 
-    private void assertExerciseTypeDtoValid(ExerciseTypeEntity exerciseTypeEntity, ExerciseTypeDto exerciseTypeDto) {
-        Assertions.assertNotNull(exerciseTypeDto);
-        Assertions.assertEquals(exerciseTypeEntity.getName(), exerciseTypeDto.getName());
-        Assertions.assertEquals(exerciseTypeEntity.getGoal(), exerciseTypeDto.getGoal());
-        Assertions.assertEquals(exerciseTypeEntity.getExercises().size(), exerciseTypeDto.getExercises().size());
-    }
 
-    private void assertExerciseTypeDtoValidInput(InputNewExerciseType inputNewExercise, ExerciseTypeDto exerciseDto) {
-        Assertions.assertNotNull(exerciseDto);
-        Assertions.assertEquals(inputNewExercise.getName(), exerciseDto.getName());
-        Assertions.assertEquals(inputNewExercise.getGoal(), exerciseDto.getGoal());
-        Assertions.assertEquals(inputNewExercise.getExerciseIds().size(), exerciseDto.getExercises().size());
-    }
 }
