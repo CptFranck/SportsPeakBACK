@@ -34,7 +34,7 @@ public class CustomUserDetailsServiceTest {
     }
 
     @Test
-    void loadUserByUsername_ValidUse_ReturnListOfUserEntity() {
+    void loadUserByUsername_ValidUse_ReturnUserDetails() {
         when(userService.findByLogin(Mockito.any(String.class))).thenReturn(user);
 
         UserDetails userFound = customUserDetailsService.loadUserByUsername(user.getUsername());

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.TestPropertySource;
 
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
@@ -39,6 +40,21 @@ public class CustomUserDetailsServiceIT {
 
     @Test
     void loadUserByUsername_ValidUse_ReturnListOfUserEntity() {
+        userRepository.delete(user);
+
+        Assertions.assertThrows(UsernameNotFoundException.class, () -> customUserDetailsService.loadUserByUsername(user.getUsername()));
+    }
+
+    @Test
+    void loadUserByUsername_ValidUseWithEmail_ReturnListOfUserEntity() {
+        UserDetails userFound = customUserDetailsService.loadUserByUsername(user.getEmail());
+
+        UserDetails userDetails = new CustomUserDetails(user);
+        Assertions.assertEquals(userDetails.getUsername(), userFound.getUsername());
+    }
+
+    @Test
+    void loadUserByUsername_ValidUseWithUsername_ReturnListOfUserEntity() {
         UserDetails userFound = customUserDetailsService.loadUserByUsername(user.getUsername());
 
         UserDetails userDetails = new CustomUserDetails(user);
