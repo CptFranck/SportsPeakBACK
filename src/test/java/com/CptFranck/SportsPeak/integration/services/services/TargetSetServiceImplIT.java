@@ -24,10 +24,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.CptFranck.SportsPeak.utils.TestDateTimeUtils.assertDatetimeWithTimestamp;
-import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.TargetSetTestUtils.assertEqualsTargetSet;
 import static com.CptFranck.SportsPeak.utils.TargetSetTestUtils.createTestTargetSet;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -188,17 +188,5 @@ public class TargetSetServiceImplIT {
                 ).toList().getFirst(),
                 exerciseFound)
         );
-    }
-
-    private void assertEqualsTargetSet(TargetSetEntity expected, TargetSetEntity actual) {
-        Assertions.assertEquals(expected.getId(), actual.getId());
-        Assertions.assertEquals(expected.getIndex(), actual.getIndex());
-        Assertions.assertEquals(expected.getSetNumber(), actual.getSetNumber());
-        Assertions.assertEquals(expected.getRepetitionNumber(), actual.getRepetitionNumber());
-        Assertions.assertEquals(expected.getWeight(), actual.getWeight());
-        Assertions.assertEquals(expected.getWeightUnit(), actual.getWeightUnit());
-        Assertions.assertEquals(expected.getPhysicalExertionUnitTime(), actual.getPhysicalExertionUnitTime());
-        Assertions.assertEquals(expected.getRestTime(), actual.getRestTime());
-        assertDatetimeWithTimestamp(expected.getCreationDate(), actual.getCreationDate());
     }
 }
