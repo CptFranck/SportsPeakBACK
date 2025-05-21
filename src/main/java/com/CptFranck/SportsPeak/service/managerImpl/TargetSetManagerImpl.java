@@ -23,9 +23,8 @@ public class TargetSetManagerImpl implements TargetSetManager {
 
     @Override
     public PerformanceLogEntity savePerformanceLog(PerformanceLogEntity performanceLog) {
-        boolean newEntity = performanceLog.getId() == null;
         PerformanceLogEntity performanceLogSaved = performanceLogService.save(performanceLog);
-        if (newEntity) {
+        if (performanceLog.getId() == null) {
             TargetSetEntity targetSet = performanceLogSaved.getTargetSet();
             targetSet.getPerformanceLogs().add(performanceLogSaved);
             targetSetService.save(targetSet);
