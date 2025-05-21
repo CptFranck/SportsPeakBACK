@@ -12,7 +12,7 @@ import java.util.List;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.TestPerformanceLogUtils.createNewTestPerformanceLogList;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.utils.TestTargetSetUtils.createTestTargetSet;
+import static com.CptFranck.SportsPeak.utils.TargetSetTestUtils.createTestTargetSet;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 
 @DataJpaTest

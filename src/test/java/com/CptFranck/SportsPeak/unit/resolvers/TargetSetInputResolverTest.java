@@ -24,7 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.utils.TestTargetSetUtils.*;
+import static com.CptFranck.SportsPeak.utils.TargetSetTestUtils.*;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static org.mockito.Mockito.when;
 

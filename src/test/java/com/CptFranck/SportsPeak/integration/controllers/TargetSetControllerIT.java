@@ -28,7 +28,7 @@ import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercis
 import static com.CptFranck.SportsPeak.utils.TestInputDuration.assertInputDuration;
 import static com.CptFranck.SportsPeak.utils.TestPerformanceLogUtils.createTestPerformanceLog;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.utils.TestTargetSetUtils.*;
+import static com.CptFranck.SportsPeak.utils.TargetSetTestUtils.*;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 
 @SpringBootTest()

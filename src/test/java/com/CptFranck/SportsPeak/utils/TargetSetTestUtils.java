@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 
-public class TestTargetSetUtils {
+public class TargetSetTestUtils {
 
     public static TargetSetEntity createTestTargetSet(Long id, ProgExerciseEntity progExercise, TargetSetEntity update) {
         LocalDateTime creationDate = LocalDateTime.now();

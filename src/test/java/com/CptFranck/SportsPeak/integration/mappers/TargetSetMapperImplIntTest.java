@@ -5,7 +5,7 @@ import com.CptFranck.SportsPeak.domain.dto.TargetSetDto;
 import com.CptFranck.SportsPeak.domain.entity.*;
 import com.CptFranck.SportsPeak.mapper.Mapper;
 import com.CptFranck.SportsPeak.mapper.impl.TargetSetMapperImpl;
-import com.CptFranck.SportsPeak.utils.TestTargetSetUtils;
+import com.CptFranck.SportsPeak.utils.TargetSetTestUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -14,8 +14,8 @@ import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercis
 import static com.CptFranck.SportsPeak.utils.TestPerformanceLogUtils.createTestPerformanceLog;
 import static com.CptFranck.SportsPeak.utils.TestPerformanceLogUtils.createTestPerformanceLogDto;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.utils.TestTargetSetUtils.createTestTargetSet;
-import static com.CptFranck.SportsPeak.utils.TestTargetSetUtils.createTestTargetSetDto;
+import static com.CptFranck.SportsPeak.utils.TargetSetTestUtils.createTestTargetSet;
+import static com.CptFranck.SportsPeak.utils.TargetSetTestUtils.createTestTargetSetDto;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 
 public class TargetSetMapperImplIntTest {
@@ -47,7 +47,7 @@ public class TargetSetMapperImplIntTest {
         TargetSetEntity targetSet = createTestTargetSet(1L, progExercise, null);
         PerformanceLogEntity performanceLog = createTestPerformanceLog(1L, targetSet);
         targetSet.getPerformanceLogs().add(performanceLog);
-        TargetSetEntity targetSetUpdate = TestTargetSetUtils.createTestTargetSet(1L, progExercise, null);
+        TargetSetEntity targetSetUpdate = TargetSetTestUtils.createTestTargetSet(1L, progExercise, null);
         targetSet.setTargetSetUpdate(targetSetUpdate);
 
         TargetSetDto targetSetDto = targetSetMapper.mapTo(targetSet);
@@ -83,7 +83,7 @@ public class TargetSetMapperImplIntTest {
         TargetSetDto targetSet = createTestTargetSetDto(1L, null);
         PerformanceLogDto performanceLog = createTestPerformanceLogDto(1L);
         targetSet.getPerformanceLogs().add(performanceLog);
-        TargetSetDto targetSetUpdate = TestTargetSetUtils.createTestTargetSetDto(1L, null);
+        TargetSetDto targetSetUpdate = TargetSetTestUtils.createTestTargetSetDto(1L, null);
         targetSet.setTargetSetUpdate(targetSetUpdate);
 
         TargetSetEntity targetSetEntity = targetSetMapper.mapFrom(targetSet);

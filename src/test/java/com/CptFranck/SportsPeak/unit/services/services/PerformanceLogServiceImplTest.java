@@ -23,7 +23,7 @@ import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercis
 import static com.CptFranck.SportsPeak.utils.TestPerformanceLogUtils.createNewTestPerformanceLogList;
 import static com.CptFranck.SportsPeak.utils.TestPerformanceLogUtils.createTestPerformanceLog;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.utils.TestTargetSetUtils.createTestTargetSet;
+import static com.CptFranck.SportsPeak.utils.TargetSetTestUtils.createTestTargetSet;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;

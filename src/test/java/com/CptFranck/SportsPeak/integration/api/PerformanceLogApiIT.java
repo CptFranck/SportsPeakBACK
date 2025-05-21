@@ -27,7 +27,7 @@ import static com.CptFranck.SportsPeak.utils.TestDateTimeUtils.assertDatetimeWit
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.TestPerformanceLogUtils.*;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.utils.TestTargetSetUtils.createTestTargetSet;
+import static com.CptFranck.SportsPeak.utils.TargetSetTestUtils.createTestTargetSet;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 
 @SpringBootTest()

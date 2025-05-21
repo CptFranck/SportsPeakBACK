@@ -18,8 +18,8 @@ import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercis
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExerciseDto;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExerciseDto;
-import static com.CptFranck.SportsPeak.utils.TestTargetSetUtils.createTestTargetSet;
-import static com.CptFranck.SportsPeak.utils.TestTargetSetUtils.createTestTargetSetDto;
+import static com.CptFranck.SportsPeak.utils.TargetSetTestUtils.createTestTargetSet;
+import static com.CptFranck.SportsPeak.utils.TargetSetTestUtils.createTestTargetSetDto;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserDto;
 
