@@ -10,11 +10,16 @@ import com.CptFranck.SportsPeak.domain.input.duration.InputDuration;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputNewTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSetState;
+import org.junit.jupiter.api.Assertions;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+
+import static com.CptFranck.SportsPeak.utils.TestDateTimeUtils.assertDatetimeWithTimestamp;
+import static com.CptFranck.SportsPeak.utils.TestInputDuration.assertInputDuration;
 
 public class TargetSetTestUtils {
 
@@ -115,5 +120,58 @@ public class TargetSetTestUtils {
                 id,
                 label
         );
+    }
+
+    public static void assertEqualsTargetSet(TargetSetEntity expected, TargetSetEntity actual) {
+        Assertions.assertEquals(expected.getId(), actual.getId());
+        Assertions.assertEquals(expected.getIndex(), actual.getIndex());
+        Assertions.assertEquals(expected.getSetNumber(), actual.getSetNumber());
+        Assertions.assertEquals(expected.getRepetitionNumber(), actual.getRepetitionNumber());
+        Assertions.assertEquals(expected.getWeight(), actual.getWeight());
+        Assertions.assertEquals(expected.getWeightUnit(), actual.getWeightUnit());
+        Assertions.assertEquals(expected.getPhysicalExertionUnitTime(), actual.getPhysicalExertionUnitTime());
+        Assertions.assertEquals(expected.getRestTime(), actual.getRestTime());
+        assertDatetimeWithTimestamp(expected.getCreationDate(), actual.getCreationDate());
+    }
+
+    public static void assertTargetSetDtoAndEntity(TargetSetEntity targetSetEntity, TargetSetDto targetSetDto) {
+        Assertions.assertNotNull(targetSetDto);
+        Assertions.assertEquals(targetSetEntity.getId(), targetSetDto.getId());
+        Assertions.assertEquals(targetSetEntity.getIndex(), targetSetDto.getIndex());
+        Assertions.assertEquals(targetSetEntity.getSetNumber(), targetSetDto.getSetNumber());
+        Assertions.assertEquals(targetSetEntity.getRepetitionNumber(), targetSetDto.getRepetitionNumber());
+        Assertions.assertEquals(targetSetEntity.getWeight(), targetSetDto.getWeight());
+        Assertions.assertEquals(targetSetEntity.getWeightUnit().label, targetSetDto.getWeightUnit());
+        Assertions.assertEquals(targetSetEntity.getPhysicalExertionUnitTime(), targetSetDto.getPhysicalExertionUnitTime().InputDurationToDuration());
+        Assertions.assertEquals(targetSetEntity.getRestTime(), targetSetDto.getRestTime().InputDurationToDuration());
+        assertDatetimeWithTimestamp(targetSetEntity.getCreationDate(), targetSetDto.getCreationDate());
+        Assertions.assertEquals(targetSetEntity.getState().label, targetSetDto.getState());
+        if (Objects.nonNull(targetSetEntity.getTargetSetUpdate()) || Objects.nonNull(targetSetDto.getTargetSetUpdate()))
+            Assertions.assertEquals(targetSetEntity.getTargetSetUpdate().getId(), targetSetDto.getTargetSetUpdate().getId());
+        Assertions.assertEquals(targetSetEntity.getPerformanceLogs().size(), targetSetDto.getPerformanceLogs().size());
+    }
+
+    public static void assertTargetSetDtoAndInputNew(InputNewTargetSet inputNewTargetSet, TargetSetDto targetSetDto) {
+        Assertions.assertNotNull(targetSetDto);
+        Assertions.assertEquals(inputNewTargetSet.getIndex(), targetSetDto.getIndex());
+        Assertions.assertEquals(inputNewTargetSet.getSetNumber(), targetSetDto.getSetNumber());
+        Assertions.assertEquals(inputNewTargetSet.getRepetitionNumber(), targetSetDto.getRepetitionNumber());
+        Assertions.assertEquals(inputNewTargetSet.getWeight(), targetSetDto.getWeight());
+        Assertions.assertEquals(inputNewTargetSet.getWeightUnit(), targetSetDto.getWeightUnit());
+        assertInputDuration(inputNewTargetSet.getPhysicalExertionUnitTime(), targetSetDto.getPhysicalExertionUnitTime());
+        assertInputDuration(inputNewTargetSet.getRestTime(), targetSetDto.getRestTime());
+        assertDatetimeWithTimestamp(inputNewTargetSet.getCreationDate(), targetSetDto.getCreationDate());
+    }
+
+    public static void assertTargetSetDtoAndInput(InputTargetSet targetSetEntity, TargetSetDto targetSetDto) {
+        Assertions.assertNotNull(targetSetDto);
+        Assertions.assertEquals(targetSetEntity.getId(), targetSetDto.getId());
+        Assertions.assertEquals(targetSetEntity.getIndex(), targetSetDto.getIndex());
+        Assertions.assertEquals(targetSetEntity.getSetNumber(), targetSetDto.getSetNumber());
+        Assertions.assertEquals(targetSetEntity.getRepetitionNumber(), targetSetDto.getRepetitionNumber());
+        Assertions.assertEquals(targetSetEntity.getWeight(), targetSetDto.getWeight());
+        Assertions.assertEquals(targetSetEntity.getWeightUnit(), targetSetDto.getWeightUnit());
+        assertInputDuration(targetSetEntity.getPhysicalExertionUnitTime(), targetSetDto.getPhysicalExertionUnitTime());
+        assertInputDuration(targetSetEntity.getRestTime(), targetSetDto.getRestTime());
     }
 }
