@@ -118,6 +118,7 @@ public class ExerciseServiceImplTest {
         exercise.getExerciseTypes().add(exerciseType);
         when(exerciseRepository.findAllById(oldExerciseIds)).thenReturn(List.of(exercise));
         when(exerciseRepository.findAllById(newExerciseIds)).thenReturn(List.of(exerciseBis));
+        when(exerciseRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
 
         assertAll(() -> exerciseServiceImpl.updateExerciseTypeRelation(newExerciseIds, oldExerciseIds, exerciseType));
         Assertions.assertEquals(0, exercise.getExerciseTypes().size());
@@ -134,26 +135,12 @@ public class ExerciseServiceImplTest {
 
         when(exerciseRepository.findAllById(oldExerciseIds)).thenReturn(List.of(exercise));
         when(exerciseRepository.findAllById(newExerciseIds)).thenReturn(List.of(exerciseBis));
+        when(exerciseRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
 
         assertAll(() -> exerciseServiceImpl.updateMuscleRelation(newExerciseIds, oldExerciseIds, muscle));
         Assertions.assertEquals(0, exercise.getMuscles().size());
         Assertions.assertEquals(1, exerciseBis.getMuscles().size());
     }
-
-//    @Test
-//    void updateProgExerciseRelation_ValidInputs_Void() {
-//        UserEntity user = createTestUser(1L);
-//        ProgExerciseEntity progExercise = createTestProgExercise(1L, user, exercise);
-//        exercise.getProgExercises().add(progExercise);
-//        ExerciseEntity newExercise = createTestExercise(2L);
-//
-//        when(exerciseRepository.save(newExercise)).thenReturn(newExercise);
-//        when(exerciseRepository.save(exercise)).thenReturn(exercise);
-//
-//        assertAll(() -> exerciseServiceImpl.updateProgExerciseRelation(newExercise, exercise, progExercise));
-//        Assertions.assertEquals(0, exercise.getProgExercises().size());
-//        Assertions.assertEquals(1, newExercise.getProgExercises().size());
-//    }
 
     @Test
     void delete_InvalidExerciseId_ThrowExerciseNotFoundException() {

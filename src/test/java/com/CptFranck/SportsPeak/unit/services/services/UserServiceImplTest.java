@@ -25,8 +25,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserList;
@@ -162,7 +162,7 @@ public class UserServiceImplTest {
 
     @Test
     void save_UpdateUserNotExisting_ThrowUserNotFoundException() {
-        when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.empty());
         when(userRepository.findByUsername(Mockito.any(String.class))).thenReturn(Optional.empty());
         when(userRepository.existsById(Mockito.any(Long.class))).thenReturn(false);
         UserEntity userBis = createTestUser(2L);
@@ -191,9 +191,21 @@ public class UserServiceImplTest {
     }
 
     @Test
-    void save_UpdateUser_ReturnUserEntity() {
+    void save_UpdateUserWithSameUsernameEmail_ReturnUserEntity() {
         when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.of(user));
         when(userRepository.findByUsername(Mockito.any(String.class))).thenReturn(Optional.of(user));
+        when(userRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
+        when(userRepository.save(Mockito.any(UserEntity.class))).thenReturn(user);
+
+        UserEntity userSaved = userServiceImpl.save(user);
+
+        Assertions.assertEquals(user, userSaved);
+    }
+
+    @Test
+    void save_UpdateUser_ReturnUserEntity() {
+        when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.empty());
+        when(userRepository.findByUsername(Mockito.any(String.class))).thenReturn(Optional.empty());
         when(userRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
         when(userRepository.save(Mockito.any(UserEntity.class))).thenReturn(user);
 
@@ -228,6 +240,9 @@ public class UserServiceImplTest {
 
         when(userRepository.findAllById(oldUserIds)).thenReturn(List.of(userOne));
         when(userRepository.findAllById(newUserIds)).thenReturn(List.of(userTwo));
+        when(userRepository.findByEmail(Mockito.any(String.class))).thenReturn(Optional.of(userOne)).thenReturn(Optional.of(userTwo));
+        when(userRepository.findByUsername(Mockito.any(String.class))).thenReturn(Optional.of(userOne)).thenReturn(Optional.of(userTwo));
+        when(userRepository.existsById(Mockito.any(Long.class))).thenReturn(true);
 
         assertAll(() -> userServiceImpl.updateRoleRelation(newUserIds, oldUserIds, role));
     }
