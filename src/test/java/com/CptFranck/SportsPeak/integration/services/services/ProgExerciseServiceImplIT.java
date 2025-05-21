@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.assertEqualProgExercise;
 import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -142,12 +143,5 @@ public class ProgExerciseServiceImplIT {
                 ).toList().getFirst(),
                 progExerciseFound)
         );
-    }
-
-    private void assertEqualProgExercise(ProgExerciseEntity expected, ProgExerciseEntity actual) {
-        Assertions.assertEquals(expected.getId(), actual.getId());
-        Assertions.assertEquals(expected.getName(), actual.getName());
-        Assertions.assertEquals(expected.getVisibility(), actual.getVisibility());
-        Assertions.assertEquals(expected.getTrustLabel(), actual.getTrustLabel());
     }
 }

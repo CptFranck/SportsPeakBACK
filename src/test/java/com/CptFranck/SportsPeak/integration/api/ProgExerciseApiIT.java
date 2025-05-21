@@ -390,32 +390,4 @@ class ProgExerciseApiIT {
                 progExerciseDto)
         );
     }
-
-    private void assertProgExerciseDtoAndEntity(ProgExerciseEntity progExercise, ProgExerciseDto progExerciseDto) {
-        Assertions.assertNotNull(progExerciseDto);
-        Assertions.assertEquals(progExercise.getName(), progExerciseDto.getName());
-        Assertions.assertEquals(progExercise.getNote(), progExerciseDto.getNote());
-        Assertions.assertEquals(progExercise.getVisibility().label, progExerciseDto.getVisibility());
-        Assertions.assertEquals(progExercise.getTrustLabel().label, progExerciseDto.getTrustLabel());
-        Assertions.assertEquals(progExercise.getCreator().getId(), progExerciseDto.getCreator().getId());
-        Assertions.assertEquals(progExercise.getExercise().getId(), progExerciseDto.getExercise().getId());
-        Assertions.assertEquals(progExercise.getTargetSets().size(), progExerciseDto.getTargetSets().size());
-    }
-
-    private void assertProgExerciseDtoAndInputNew(InputNewProgExercise inputNewProgExercise, ProgExerciseDto progExerciseDto) {
-        Assertions.assertNotNull(progExerciseDto);
-        Assertions.assertEquals(inputNewProgExercise.getName(), progExerciseDto.getName());
-        Assertions.assertEquals(inputNewProgExercise.getNote(), progExerciseDto.getNote());
-        Assertions.assertEquals(inputNewProgExercise.getVisibility(), progExerciseDto.getVisibility());
-        Assertions.assertEquals(inputNewProgExercise.getCreatorId(), progExerciseDto.getCreator().getId());
-        Assertions.assertEquals(inputNewProgExercise.getExerciseId(), progExerciseDto.getExercise().getId());
-    }
-
-    private void assertProgExerciseDtoAndInput(InputProgExercise inputProgExercise, ProgExerciseDto progExerciseDto) {
-        Assertions.assertNotNull(progExerciseDto);
-        Assertions.assertEquals(inputProgExercise.getName(), progExerciseDto.getName());
-        Assertions.assertEquals(inputProgExercise.getNote(), progExerciseDto.getNote());
-        Assertions.assertEquals(inputProgExercise.getVisibility(), progExerciseDto.getVisibility());
-        Assertions.assertEquals(inputProgExercise.getExerciseId(), progExerciseDto.getExercise().getId());
-    }
 }
