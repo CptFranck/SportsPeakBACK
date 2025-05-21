@@ -30,8 +30,8 @@ import java.util.List;
 
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExerciseDto;
-import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExerciseDto;
+import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExerciseDto;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.*;
 import static org.mockito.Mockito.when;
 

@@ -24,7 +24,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.TestTargetSetUtils.createTestTargetSet;
 import static com.CptFranck.SportsPeak.utils.TestTargetSetUtils.createTestTargetSetList;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;

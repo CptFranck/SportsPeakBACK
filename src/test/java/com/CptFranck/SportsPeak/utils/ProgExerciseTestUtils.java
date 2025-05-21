@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Assertions;
 import java.util.HashSet;
 import java.util.List;
 
-public class TestProgExerciseUtils {
+public class ProgExerciseTestUtils {
 
     public static ProgExerciseEntity createTestProgExercise(Long id, UserEntity creator, ExerciseEntity exercise) {
         return new ProgExerciseEntity(

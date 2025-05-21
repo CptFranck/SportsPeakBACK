@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.*;
 

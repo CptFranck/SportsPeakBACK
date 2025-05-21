@@ -21,7 +21,7 @@ import org.springframework.test.context.TestPropertySource;
 import java.util.*;
 
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.*;
 import static org.junit.jupiter.api.Assertions.*;

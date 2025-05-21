@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserBis;
 

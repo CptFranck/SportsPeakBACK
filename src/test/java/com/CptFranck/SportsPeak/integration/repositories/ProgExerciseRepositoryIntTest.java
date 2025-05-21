@@ -14,7 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.util.List;
 
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createNewTestProgExerciseList;
+import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createNewTestProgExerciseList;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 
 @DataJpaTest

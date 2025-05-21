@@ -30,7 +30,7 @@ import java.util.Objects;
 
 import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.ProgExerciseQuery.*;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.*;
+import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.*;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserBis;
 
