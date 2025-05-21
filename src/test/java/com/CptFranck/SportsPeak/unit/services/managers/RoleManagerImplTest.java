@@ -32,9 +32,9 @@ public class RoleManagerImplTest {
         PrivilegeEntity privilege = createTestPrivilege(null, 0);
         when(privilegeService.save(Mockito.any(PrivilegeEntity.class))).thenReturn(privilege);
 
-        PrivilegeEntity privilegeResolved = roleManager.savePrivilege(privilege);
+        PrivilegeEntity privilegeSaved = roleManager.savePrivilege(privilege);
 
-        Assertions.assertEquals(privilege, privilegeResolved);
+        Assertions.assertEquals(privilege, privilegeSaved);
     }
 
     @Test
@@ -43,8 +43,8 @@ public class RoleManagerImplTest {
         when(privilegeService.findOne(Mockito.any(Long.class))).thenReturn(privilege);
         when(privilegeService.save(Mockito.any(PrivilegeEntity.class))).thenReturn(privilege);
 
-        PrivilegeEntity privilegeResolved = roleManager.savePrivilege(privilege);
+        PrivilegeEntity privilegeSaved = roleManager.savePrivilege(privilege);
 
-        Assertions.assertEquals(privilege, privilegeResolved);
+        Assertions.assertEquals(privilege, privilegeSaved);
     }
 }

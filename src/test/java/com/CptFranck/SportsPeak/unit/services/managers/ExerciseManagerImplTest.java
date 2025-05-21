@@ -38,9 +38,9 @@ public class ExerciseManagerImplTest {
         ExerciseTypeEntity exerciseType = createTestExerciseType(null);
         when(exerciseTypeService.save(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseType);
 
-        ExerciseTypeEntity exerciseTypeResolved = exerciseManager.saveExerciseType(exerciseType);
+        ExerciseTypeEntity exerciseTypeSaved = exerciseManager.saveExerciseType(exerciseType);
 
-        Assertions.assertEquals(exerciseType, exerciseTypeResolved);
+        Assertions.assertEquals(exerciseType, exerciseTypeSaved);
     }
 
     @Test
@@ -49,9 +49,9 @@ public class ExerciseManagerImplTest {
         when(exerciseTypeService.findOne(Mockito.any(Long.class))).thenReturn(exerciseType);
         when(exerciseTypeService.save(Mockito.any(ExerciseTypeEntity.class))).thenReturn(exerciseType);
 
-        ExerciseTypeEntity exerciseTypeResolved = exerciseManager.saveExerciseType(exerciseType);
+        ExerciseTypeEntity exerciseTypeSaved = exerciseManager.saveExerciseType(exerciseType);
 
-        Assertions.assertEquals(exerciseType, exerciseTypeResolved);
+        Assertions.assertEquals(exerciseType, exerciseTypeSaved);
     }
 
     @Test
@@ -59,9 +59,9 @@ public class ExerciseManagerImplTest {
         MuscleEntity muscle = createTestMuscle(null);
         when(muscleService.save(Mockito.any(MuscleEntity.class))).thenReturn(muscle);
 
-        MuscleEntity muscleResolved = exerciseManager.saveMuscle(muscle);
+        MuscleEntity muscleSaved = exerciseManager.saveMuscle(muscle);
 
-        Assertions.assertEquals(muscle, muscleResolved);
+        Assertions.assertEquals(muscle, muscleSaved);
     }
 
     @Test
@@ -70,8 +70,8 @@ public class ExerciseManagerImplTest {
         when(muscleService.findOne(Mockito.any(Long.class))).thenReturn(muscle);
         when(muscleService.save(Mockito.any(MuscleEntity.class))).thenReturn(muscle);
 
-        MuscleEntity muscleResolved = exerciseManager.saveMuscle(muscle);
+        MuscleEntity muscleSaved = exerciseManager.saveMuscle(muscle);
 
-        Assertions.assertEquals(muscle, muscleResolved);
+        Assertions.assertEquals(muscle, muscleSaved);
     }
 }

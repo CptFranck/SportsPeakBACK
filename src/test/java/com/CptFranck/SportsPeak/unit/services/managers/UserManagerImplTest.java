@@ -38,9 +38,9 @@ public class UserManagerImplTest {
         RoleEntity role = createTestRole(null, 0);
         when(roleService.save(Mockito.any(RoleEntity.class))).thenReturn(role);
 
-        RoleEntity roleResolved = userManager.saveRole(role);
+        RoleEntity roleSaved = userManager.saveRole(role);
 
-        Assertions.assertEquals(role, roleResolved);
+        Assertions.assertEquals(role, roleSaved);
     }
 
     @Test
@@ -49,9 +49,9 @@ public class UserManagerImplTest {
         when(roleService.findOne(Mockito.any(Long.class))).thenReturn(role);
         when(roleService.save(Mockito.any(RoleEntity.class))).thenReturn(role);
 
-        RoleEntity roleResolved = userManager.saveRole(role);
+        RoleEntity roleSaved = userManager.saveRole(role);
 
-        Assertions.assertEquals(role, roleResolved);
+        Assertions.assertEquals(role, roleSaved);
     }
 
     @Test
@@ -62,8 +62,8 @@ public class UserManagerImplTest {
         when(userService.save(Mockito.any(UserEntity.class))).thenReturn(user);
         InputUserRoles inputUserRoles = createTestInputUserRoles(user.getId());
 
-        UserEntity userResolved = userManager.updateUserRoles(inputUserRoles);
+        UserEntity userSaved = userManager.updateUserRoles(inputUserRoles);
 
-        Assertions.assertEquals(user, userResolved);
+        Assertions.assertEquals(user, userSaved);
     }
 }

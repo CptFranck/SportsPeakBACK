@@ -59,9 +59,9 @@ public class ProgExerciseManagerImplTest {
         TargetSetEntity targetSet = createTestTargetSet(null, progExercise, null);
         when(targetSetService.save(Mockito.any(TargetSetEntity.class))).thenReturn(targetSet);
 
-        TargetSetEntity targetSetResolved = progExerciseManager.saveTargetSet(targetSet, null);
+        TargetSetEntity targetSetSaved = progExerciseManager.saveTargetSet(targetSet, null);
 
-        Assertions.assertEquals(targetSet, targetSetResolved);
+        Assertions.assertEquals(targetSet, targetSetSaved);
     }
 
     @Test
@@ -71,10 +71,10 @@ public class ProgExerciseManagerImplTest {
         when(targetSetService.save(Mockito.any(TargetSetEntity.class))).thenReturn(targetSet);
         when(targetSetService.findOne(Mockito.any(Long.class))).thenReturn(targetSetBis);
 
-        TargetSetEntity targetSetResolved = progExerciseManager.saveTargetSet(targetSet, targetSetBis.getId());
+        TargetSetEntity targetSetSaved = progExerciseManager.saveTargetSet(targetSet, targetSetBis.getId());
 
-        Assertions.assertEquals(targetSet, targetSetResolved);
-        Assertions.assertEquals(targetSetBis.getTargetSetUpdate(), targetSetResolved);
+        Assertions.assertEquals(targetSet, targetSetSaved);
+        Assertions.assertEquals(targetSetBis.getTargetSetUpdate(), targetSetSaved);
     }
 
     @Test

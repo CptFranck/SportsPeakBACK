@@ -50,9 +50,9 @@ public class TargetSetManagerImplTest {
         PerformanceLogEntity performanceLog = createTestPerformanceLog(null, targetSet);
         when(performanceLogService.save(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLog);
 
-        PerformanceLogEntity performanceLogResolved = targetSetManager.savePerformanceLog(performanceLog);
+        PerformanceLogEntity performanceLogSaved = targetSetManager.savePerformanceLog(performanceLog);
 
-        Assertions.assertEquals(performanceLog, performanceLogResolved);
+        Assertions.assertEquals(performanceLog, performanceLogSaved);
     }
 
     @Test
@@ -60,9 +60,9 @@ public class TargetSetManagerImplTest {
         PerformanceLogEntity performanceLog = createTestPerformanceLog(1L, targetSet);
         when(performanceLogService.save(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLog);
 
-        PerformanceLogEntity performanceLogResolved = targetSetManager.savePerformanceLog(performanceLog);
+        PerformanceLogEntity performanceLogSaved = targetSetManager.savePerformanceLog(performanceLog);
 
-        Assertions.assertEquals(performanceLog, performanceLogResolved);
+        Assertions.assertEquals(performanceLog, performanceLogSaved);
     }
 
     @Test
