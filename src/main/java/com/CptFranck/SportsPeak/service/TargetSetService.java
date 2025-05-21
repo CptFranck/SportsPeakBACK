@@ -20,8 +20,6 @@ public interface TargetSetService {
 
     void delete(Long id);
 
-    void setTheUpdate(TargetSetEntity targetSet, Long targetSetUpdatedId);
-
     TargetSetEntity updateTargetStates(Long id, TargetSetState state);
 
     boolean exists(Long id);
