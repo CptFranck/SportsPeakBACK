@@ -35,8 +35,11 @@ public class ProgExerciseManagerImpl implements ProgExerciseManager {
         progExercise.getTargetSets().add(targetSet);
         progExerciseService.save(progExercise);
 
-        if (targetSetUpdateId != null)
-            targetSetService.setTheUpdate(targetSetSaved, targetSetUpdateId);
+        if (targetSetUpdateId != null) {
+            TargetSetEntity targetSetUpdated = targetSetService.findOne(targetSetUpdateId);
+            targetSetUpdated.setTargetSetUpdate(targetSet);
+            targetSetService.save(targetSetUpdated);
+        }
 
         return targetSetSaved;
     }
