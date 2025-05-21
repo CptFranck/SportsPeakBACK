@@ -4,6 +4,7 @@ import com.CptFranck.SportsPeak.domain.dto.MuscleDto;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
 import com.CptFranck.SportsPeak.domain.input.muscle.InputMuscle;
 import com.CptFranck.SportsPeak.domain.input.muscle.InputNewMuscle;
+import org.junit.jupiter.api.Assertions;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -61,5 +62,33 @@ public class TestMuscleUtils {
                 "description",
                 new ArrayList<>()
         );
+    }
+
+    public static void assertEqualMuscle(MuscleEntity expected, MuscleEntity actual) {
+        Assertions.assertEquals(expected.getId(), actual.getId());
+        Assertions.assertEquals(expected.getName(), actual.getName());
+        Assertions.assertEquals(expected.getLatinName(), actual.getLatinName());
+        Assertions.assertEquals(expected.getDescription(), actual.getDescription());
+        Assertions.assertEquals(expected.getFunction(), actual.getFunction());
+        Assertions.assertEquals(expected.getExercises().size(), actual.getExercises().size());
+    }
+
+    public static void assertMuscleDtoAndEntity(MuscleEntity muscleEntity, MuscleDto muscleDto) {
+        Assertions.assertNotNull(muscleDto);
+        Assertions.assertEquals(muscleEntity.getId(), muscleDto.getId());
+        Assertions.assertEquals(muscleEntity.getName(), muscleDto.getName());
+        Assertions.assertEquals(muscleEntity.getLatinName(), muscleDto.getLatinName());
+        Assertions.assertEquals(muscleEntity.getFunction(), muscleDto.getFunction());
+        Assertions.assertEquals(muscleEntity.getDescription(), muscleDto.getDescription());
+        Assertions.assertEquals(muscleEntity.getExercises().size(), muscleDto.getExercises().size());
+    }
+
+    public static void assertMuscleDtoAndInput(InputNewMuscle inputNewMuscle, MuscleDto muscleDto) {
+        Assertions.assertNotNull(muscleDto);
+        Assertions.assertEquals(inputNewMuscle.getName(), muscleDto.getName());
+        Assertions.assertEquals(inputNewMuscle.getLatinName(), muscleDto.getLatinName());
+        Assertions.assertEquals(inputNewMuscle.getFunction(), muscleDto.getFunction());
+        Assertions.assertEquals(inputNewMuscle.getDescription(), muscleDto.getDescription());
+        Assertions.assertEquals(inputNewMuscle.getExerciseIds().size(), muscleDto.getExercises().size());
     }
 }
