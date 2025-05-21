@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.assertEqualMuscle;
 import static com.CptFranck.SportsPeak.utils.TestMuscleUtils.createTestMuscle;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -140,14 +141,5 @@ public class MuscleServiceImplIT {
                 ).toList().getFirst(),
                 muscleFound)
         );
-    }
-
-    private void assertEqualMuscle(MuscleEntity expected, MuscleEntity actual) {
-        Assertions.assertEquals(expected.getId(), actual.getId());
-        Assertions.assertEquals(expected.getName(), actual.getName());
-        Assertions.assertEquals(expected.getLatinName(), actual.getLatinName());
-        Assertions.assertEquals(expected.getDescription(), actual.getDescription());
-        Assertions.assertEquals(expected.getFunction(), actual.getFunction());
-        Assertions.assertEquals(expected.getExercises().size(), actual.getExercises().size());
     }
 }

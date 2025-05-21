@@ -225,23 +225,4 @@ class MuscleApiIT {
                 muscleDto)
         );
     }
-
-    private void assertMuscleDtoAndEntity(MuscleEntity muscleEntity, MuscleDto muscleDto) {
-        Assertions.assertNotNull(muscleDto);
-        Assertions.assertEquals(muscleEntity.getId(), muscleDto.getId());
-        Assertions.assertEquals(muscleEntity.getName(), muscleDto.getName());
-        Assertions.assertEquals(muscleEntity.getLatinName(), muscleDto.getLatinName());
-        Assertions.assertEquals(muscleEntity.getFunction(), muscleDto.getFunction());
-        Assertions.assertEquals(muscleEntity.getDescription(), muscleDto.getDescription());
-        Assertions.assertEquals(muscleEntity.getExercises().size(), muscleDto.getExercises().size());
-    }
-
-    private void assertMuscleDtoAndInput(InputNewMuscle inputNewMuscle, MuscleDto muscleDto) {
-        Assertions.assertNotNull(muscleDto);
-        Assertions.assertEquals(inputNewMuscle.getName(), muscleDto.getName());
-        Assertions.assertEquals(inputNewMuscle.getLatinName(), muscleDto.getLatinName());
-        Assertions.assertEquals(inputNewMuscle.getFunction(), muscleDto.getFunction());
-        Assertions.assertEquals(inputNewMuscle.getDescription(), muscleDto.getDescription());
-        Assertions.assertEquals(inputNewMuscle.getExerciseIds().size(), muscleDto.getExercises().size());
-    }
 }
