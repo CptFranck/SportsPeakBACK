@@ -82,6 +82,13 @@ public class TestProgExerciseUtils {
         );
     }
 
+    public static void assertEqualProgExercise(ProgExerciseEntity expected, ProgExerciseEntity actual) {
+        Assertions.assertEquals(expected.getId(), actual.getId());
+        Assertions.assertEquals(expected.getName(), actual.getName());
+        Assertions.assertEquals(expected.getVisibility(), actual.getVisibility());
+        Assertions.assertEquals(expected.getTrustLabel(), actual.getTrustLabel());
+    }
+
     public static void assertProgExerciseDtoAndEntity(ProgExerciseEntity progExercise, ProgExerciseDto progExerciseDto) {
         Assertions.assertNotNull(progExerciseDto);
         Assertions.assertEquals(progExercise.getName(), progExerciseDto.getName());
