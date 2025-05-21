@@ -98,6 +98,7 @@ public class ProgExerciseManagerImplTest {
     void deleteProgExercise_ValidUseWithUserAuthor_UpdatePrivilege_Void() {
         when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(progExercise);
         when(userService.findUserBySubscribedProgExercises(Mockito.any(ProgExerciseEntity.class))).thenReturn(Set.of(user));
+        when(userService.findOne(Mockito.any(Long.class))).thenReturn(user);
 
         assertAll(() -> progExerciseManager.deleteProgExercise(progExercise.getId()));
     }

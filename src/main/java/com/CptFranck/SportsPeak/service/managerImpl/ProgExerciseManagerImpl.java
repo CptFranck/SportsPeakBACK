@@ -10,6 +10,7 @@ import com.CptFranck.SportsPeak.service.TargetSetService;
 import com.CptFranck.SportsPeak.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -48,9 +49,17 @@ public class ProgExerciseManagerImpl implements ProgExerciseManager {
     public void deleteProgExercise(Long id) {
         ProgExerciseEntity progExercise = progExerciseService.findOne(id);
         Set<UserEntity> users = userService.findUserBySubscribedProgExercises(progExercise);
-        if (users.isEmpty() || users.size() == 1 && users.contains(progExercise.getCreator()))
+
+        boolean usersContainsCreator = users.stream().anyMatch(user -> Objects.equals(user.getId(), progExercise.getCreator().getId()));
+        if (users.isEmpty() || users.size() == 1 && usersContainsCreator) {
+            if (usersContainsCreator) {
+                UserEntity user = userService.findOne(progExercise.getCreator().getId());
+                user.getSubscribedProgExercises().removeIf(prgEx -> progExercise.getId().equals(prgEx.getId()));
+                userService.save(user);
+            }
             progExerciseService.delete(id);
-        else
+        } else {
             throw new ProgExerciseStillUsedException(id);
+        }
     }
 }
