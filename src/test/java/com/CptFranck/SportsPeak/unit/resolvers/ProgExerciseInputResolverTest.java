@@ -7,7 +7,7 @@ import com.CptFranck.SportsPeak.domain.exception.LabelMatchNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.progExercise.InputNewProgExercise;
 import com.CptFranck.SportsPeak.domain.input.progExercise.InputProgExercise;
 import com.CptFranck.SportsPeak.domain.input.progExercise.InputProgExerciseTrustLabel;
-import com.CptFranck.SportsPeak.resolvers.ProgExerciseInputResolver;
+import com.CptFranck.SportsPeak.resolver.ProgExerciseInputResolver;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import com.CptFranck.SportsPeak.service.UserService;

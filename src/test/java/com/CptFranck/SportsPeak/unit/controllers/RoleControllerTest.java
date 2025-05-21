@@ -5,7 +5,7 @@ import com.CptFranck.SportsPeak.domain.dto.RoleDto;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.input.role.InputNewRole;
 import com.CptFranck.SportsPeak.mappers.Mapper;
-import com.CptFranck.SportsPeak.resolvers.RoleInputResolver;
+import com.CptFranck.SportsPeak.resolver.RoleInputResolver;
 import com.CptFranck.SportsPeak.service.RoleService;
 import com.CptFranck.SportsPeak.service.UserManager;
 import org.junit.jupiter.api.Assertions;

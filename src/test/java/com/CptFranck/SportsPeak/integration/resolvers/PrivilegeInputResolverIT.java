@@ -3,7 +3,7 @@ package com.CptFranck.SportsPeak.integration.resolvers;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.input.privilege.InputNewPrivilege;
 import com.CptFranck.SportsPeak.domain.input.privilege.InputPrivilege;
-import com.CptFranck.SportsPeak.resolvers.PrivilegeInputResolver;
+import com.CptFranck.SportsPeak.resolver.PrivilegeInputResolver;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

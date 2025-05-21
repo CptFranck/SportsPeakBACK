@@ -3,7 +3,7 @@ package com.CptFranck.SportsPeak.unit.resolvers;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.input.role.InputNewRole;
 import com.CptFranck.SportsPeak.domain.input.role.InputRole;
-import com.CptFranck.SportsPeak.resolvers.RoleInputResolver;
+import com.CptFranck.SportsPeak.resolver.RoleInputResolver;
 import com.CptFranck.SportsPeak.service.PrivilegeService;
 import com.CptFranck.SportsPeak.service.UserService;
 import org.junit.jupiter.api.Assertions;

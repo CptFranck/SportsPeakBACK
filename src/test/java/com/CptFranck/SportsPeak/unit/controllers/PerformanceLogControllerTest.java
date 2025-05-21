@@ -6,7 +6,7 @@ import com.CptFranck.SportsPeak.domain.entity.*;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputNewPerformanceLog;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputPerformanceLog;
 import com.CptFranck.SportsPeak.mappers.Mapper;
-import com.CptFranck.SportsPeak.resolvers.PerformanceLogInputResolver;
+import com.CptFranck.SportsPeak.resolver.PerformanceLogInputResolver;
 import com.CptFranck.SportsPeak.service.PerformanceLogService;
 import com.CptFranck.SportsPeak.service.TargetSetManager;
 import org.junit.jupiter.api.Assertions;

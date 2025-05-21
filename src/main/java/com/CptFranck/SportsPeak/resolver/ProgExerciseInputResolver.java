@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.resolvers;
+package com.CptFranck.SportsPeak.resolver;
 
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;

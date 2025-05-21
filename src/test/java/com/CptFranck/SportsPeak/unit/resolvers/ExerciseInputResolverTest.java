@@ -3,7 +3,7 @@ package com.CptFranck.SportsPeak.unit.resolvers;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.input.exercise.InputExercise;
 import com.CptFranck.SportsPeak.domain.input.exercise.InputNewExercise;
-import com.CptFranck.SportsPeak.resolvers.ExerciseInputResolver;
+import com.CptFranck.SportsPeak.resolver.ExerciseInputResolver;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import com.CptFranck.SportsPeak.service.ExerciseTypeService;
 import com.CptFranck.SportsPeak.service.MuscleService;

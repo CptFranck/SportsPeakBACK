@@ -5,7 +5,7 @@ import com.CptFranck.SportsPeak.domain.exception.muscle.MuscleNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.muscle.InputMuscle;
 import com.CptFranck.SportsPeak.domain.input.muscle.InputNewMuscle;
 import com.CptFranck.SportsPeak.repositories.MuscleRepository;
-import com.CptFranck.SportsPeak.resolvers.MuscleInputResolver;
+import com.CptFranck.SportsPeak.resolver.MuscleInputResolver;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

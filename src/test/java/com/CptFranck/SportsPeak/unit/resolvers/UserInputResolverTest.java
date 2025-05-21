@@ -3,7 +3,7 @@ package com.CptFranck.SportsPeak.unit.resolvers;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserIdentity;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserUsername;
-import com.CptFranck.SportsPeak.resolvers.UserInputResolver;
+import com.CptFranck.SportsPeak.resolver.UserInputResolver;
 import com.CptFranck.SportsPeak.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

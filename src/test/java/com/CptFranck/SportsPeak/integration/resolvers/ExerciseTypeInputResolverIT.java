@@ -3,7 +3,7 @@ package com.CptFranck.SportsPeak.integration.resolvers;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.input.exerciseType.InputExerciseType;
 import com.CptFranck.SportsPeak.domain.input.exerciseType.InputNewExerciseType;
-import com.CptFranck.SportsPeak.resolvers.ExerciseTypeInputResolver;
+import com.CptFranck.SportsPeak.resolver.ExerciseTypeInputResolver;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

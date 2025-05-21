@@ -10,7 +10,7 @@ import com.CptFranck.SportsPeak.domain.input.targetSet.AbstractTargetSetInput;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputNewTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSetState;
-import com.CptFranck.SportsPeak.resolvers.TargetSetInputResolver;
+import com.CptFranck.SportsPeak.resolver.TargetSetInputResolver;
 import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import com.CptFranck.SportsPeak.service.TargetSetService;
 import org.junit.jupiter.api.Assertions;

@@ -5,7 +5,7 @@ import com.CptFranck.SportsPeak.domain.entity.PerformanceLogEntity;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputNewPerformanceLog;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputPerformanceLog;
 import com.CptFranck.SportsPeak.mappers.Mapper;
-import com.CptFranck.SportsPeak.resolvers.PerformanceLogInputResolver;
+import com.CptFranck.SportsPeak.resolver.PerformanceLogInputResolver;
 import com.CptFranck.SportsPeak.service.PerformanceLogService;
 import com.CptFranck.SportsPeak.service.TargetSetManager;
 import com.netflix.graphql.dgs.DgsComponent;

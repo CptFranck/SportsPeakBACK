@@ -8,7 +8,7 @@ import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.user.*;
 import com.CptFranck.SportsPeak.domain.model.UserToken;
 import com.CptFranck.SportsPeak.mappers.Mapper;
-import com.CptFranck.SportsPeak.resolvers.UserInputResolver;
+import com.CptFranck.SportsPeak.resolver.UserInputResolver;
 import com.CptFranck.SportsPeak.service.AuthService;
 import com.CptFranck.SportsPeak.service.UserManager;
 import com.CptFranck.SportsPeak.service.UserService;

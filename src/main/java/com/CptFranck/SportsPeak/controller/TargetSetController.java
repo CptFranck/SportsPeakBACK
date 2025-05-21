@@ -6,7 +6,7 @@ import com.CptFranck.SportsPeak.domain.input.targetSet.InputNewTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSetState;
 import com.CptFranck.SportsPeak.mappers.Mapper;
-import com.CptFranck.SportsPeak.resolvers.TargetSetInputResolver;
+import com.CptFranck.SportsPeak.resolver.TargetSetInputResolver;
 import com.CptFranck.SportsPeak.service.ProgExerciseManager;
 import com.CptFranck.SportsPeak.service.TargetSetManager;
 import com.CptFranck.SportsPeak.service.TargetSetService;

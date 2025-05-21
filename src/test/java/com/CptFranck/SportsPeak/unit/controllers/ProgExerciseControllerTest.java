@@ -11,7 +11,7 @@ import com.CptFranck.SportsPeak.domain.input.progExercise.InputNewProgExercise;
 import com.CptFranck.SportsPeak.domain.input.progExercise.InputProgExercise;
 import com.CptFranck.SportsPeak.domain.input.progExercise.InputProgExerciseTrustLabel;
 import com.CptFranck.SportsPeak.mappers.Mapper;
-import com.CptFranck.SportsPeak.resolvers.ProgExerciseInputResolver;
+import com.CptFranck.SportsPeak.resolver.ProgExerciseInputResolver;
 import com.CptFranck.SportsPeak.service.ProgExerciseManager;
 import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import org.junit.jupiter.api.Assertions;

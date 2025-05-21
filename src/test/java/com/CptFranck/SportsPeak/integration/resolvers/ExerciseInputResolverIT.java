@@ -5,7 +5,7 @@ import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundExcept
 import com.CptFranck.SportsPeak.domain.input.exercise.InputExercise;
 import com.CptFranck.SportsPeak.domain.input.exercise.InputNewExercise;
 import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
-import com.CptFranck.SportsPeak.resolvers.ExerciseInputResolver;
+import com.CptFranck.SportsPeak.resolver.ExerciseInputResolver;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

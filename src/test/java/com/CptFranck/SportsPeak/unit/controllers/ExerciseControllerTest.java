@@ -6,7 +6,7 @@ import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.input.exercise.InputExercise;
 import com.CptFranck.SportsPeak.domain.input.exercise.InputNewExercise;
 import com.CptFranck.SportsPeak.mappers.Mapper;
-import com.CptFranck.SportsPeak.resolvers.ExerciseInputResolver;
+import com.CptFranck.SportsPeak.resolver.ExerciseInputResolver;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

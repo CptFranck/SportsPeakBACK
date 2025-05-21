@@ -10,7 +10,7 @@ import com.CptFranck.SportsPeak.domain.input.progExercise.InputProgExerciseTrust
 import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
 import com.CptFranck.SportsPeak.repositories.ProgExerciseRepository;
 import com.CptFranck.SportsPeak.repositories.UserRepository;
-import com.CptFranck.SportsPeak.resolvers.ProgExerciseInputResolver;
+import com.CptFranck.SportsPeak.resolver.ProgExerciseInputResolver;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
