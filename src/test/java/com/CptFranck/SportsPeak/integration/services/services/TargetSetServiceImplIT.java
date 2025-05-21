@@ -29,7 +29,8 @@ import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercis
 import static com.CptFranck.SportsPeak.utils.TestProgExerciseUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.TestTargetSetUtils.createTestTargetSet;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
@@ -150,23 +151,6 @@ public class TargetSetServiceImplIT {
         targetSet3 = targetSetRepository.findById(targetSet3.getId()).orElseThrow();
         Assertions.assertFalse(targetSetFound);
         Assertions.assertEquals(targetSet3.getTargetSetUpdate().getId(), targetSet.getId());
-    }
-
-    @Test
-    void setTheUpdate_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
-        targetSetRepository.delete(targetSet);
-
-        assertThrows(TargetSetNotFoundException.class, () -> targetSetServiceImpl.setTheUpdate(targetSet, targetSet.getId()));
-    }
-
-    @Test
-    void setTheUpdate_UpdateTargetSet_Void() {
-        TargetSetEntity targetSetBis = targetSetRepository.save(createTestTargetSet(null, progExercise, null));
-
-        targetSetServiceImpl.setTheUpdate(targetSetBis, targetSetBis.getId());
-
-        targetSet = targetSetRepository.findById(targetSetBis.getId()).orElseThrow();
-        assertEquals(targetSetBis.getId(), targetSet.getTargetSetUpdate().getId());
     }
 
     @Test

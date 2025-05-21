@@ -145,20 +145,6 @@ public class TargetSetServiceImplTest {
     }
 
     @Test
-    void setTheUpdate_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
-        when(targetSetRepository.findById(targetSet.getId())).thenReturn(Optional.empty());
-
-        assertThrows(TargetSetNotFoundException.class, () -> targetSetServiceImpl.setTheUpdate(targetSet, 1L));
-    }
-
-    @Test
-    void setTheUpdate_UpdateTargetSet_Void() {
-        when(targetSetRepository.findById(targetSet.getId())).thenReturn(Optional.of(targetSet));
-
-        assertAll(() -> targetSetServiceImpl.setTheUpdate(targetSet, 1L));
-    }
-
-    @Test
     void updateTargetStates_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
         when(targetSetRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 

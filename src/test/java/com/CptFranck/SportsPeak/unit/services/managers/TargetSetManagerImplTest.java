@@ -71,6 +71,5 @@ public class TargetSetManagerImplTest {
         when(performanceLogService.findAllByTargetSetId(Mockito.any(Long.class))).thenReturn(List.of(performanceLog));
 
         assertAll(() -> targetSetManager.deleteTargetSet(targetSet.getId()));
-
     }
 }
