@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.ExerciseTypeQuery.*;
-import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.*;
+import static com.CptFranck.SportsPeak.utils.ExerciseTypeTestUtils.*;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 
 @SpringBootTest()

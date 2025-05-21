@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
-import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestInputExerciseType;
-import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestInputNewExerciseType;
+import static com.CptFranck.SportsPeak.utils.ExerciseTypeTestUtils.createTestInputExerciseType;
+import static com.CptFranck.SportsPeak.utils.ExerciseTypeTestUtils.createTestInputNewExerciseType;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")

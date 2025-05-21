@@ -23,7 +23,7 @@ import org.springframework.test.context.TestPropertySource;
 import java.util.List;
 import java.util.Objects;
 
-import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.*;
+import static com.CptFranck.SportsPeak.utils.ExerciseTypeTestUtils.*;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 
 

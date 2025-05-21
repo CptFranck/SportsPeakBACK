@@ -21,8 +21,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.CptFranck.SportsPeak.utils.ExerciseTypeTestUtils.createTestExerciseType;
 import static com.CptFranck.SportsPeak.utils.MuscleTestUtils.createTestMuscle;
-import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseType;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExerciseList;
 import static org.junit.jupiter.api.Assertions.assertAll;

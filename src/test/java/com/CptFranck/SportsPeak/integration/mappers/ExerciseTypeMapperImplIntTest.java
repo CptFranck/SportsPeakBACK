@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseType;
-import static com.CptFranck.SportsPeak.utils.TestExerciseTypeUtils.createTestExerciseTypeDto;
+import static com.CptFranck.SportsPeak.utils.ExerciseTypeTestUtils.createTestExerciseType;
+import static com.CptFranck.SportsPeak.utils.ExerciseTypeTestUtils.createTestExerciseTypeDto;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExerciseDto;
 
