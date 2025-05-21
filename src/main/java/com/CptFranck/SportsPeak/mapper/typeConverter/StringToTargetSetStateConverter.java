@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.mappers.typeConverter;
+package com.CptFranck.SportsPeak.mapper.typeConverter;
 
 import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
 import org.modelmapper.AbstractConverter;

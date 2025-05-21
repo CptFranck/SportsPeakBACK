@@ -2,8 +2,8 @@ package com.CptFranck.SportsPeak.integration.mappers;
 
 import com.CptFranck.SportsPeak.domain.dto.*;
 import com.CptFranck.SportsPeak.domain.entity.*;
-import com.CptFranck.SportsPeak.mappers.Mapper;
-import com.CptFranck.SportsPeak.mappers.impl.ExerciseMapperImpl;
+import com.CptFranck.SportsPeak.mapper.Mapper;
+import com.CptFranck.SportsPeak.mapper.impl.ExerciseMapperImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;

@@ -1,7 +1,7 @@
 package com.CptFranck.SportsPeak.unit.typeConverters;
 
 import com.CptFranck.SportsPeak.domain.enumType.TrustLabel;
-import com.CptFranck.SportsPeak.mappers.typeConverter.TrustLabelToStringConverter;
+import com.CptFranck.SportsPeak.mapper.typeConverter.TrustLabelToStringConverter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

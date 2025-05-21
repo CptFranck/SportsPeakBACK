@@ -1,7 +1,7 @@
 package com.CptFranck.SportsPeak.unit.typeConverters;
 
 import com.CptFranck.SportsPeak.domain.enumType.VisibilityLabel;
-import com.CptFranck.SportsPeak.mappers.typeConverter.StringToVisibilityConverter;
+import com.CptFranck.SportsPeak.mapper.typeConverter.StringToVisibilityConverter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

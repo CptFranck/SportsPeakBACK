@@ -1,12 +1,12 @@
-package com.CptFranck.SportsPeak.mappers.impl;
+package com.CptFranck.SportsPeak.mapper.impl;
 
 import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
-import com.CptFranck.SportsPeak.mappers.Mapper;
-import com.CptFranck.SportsPeak.mappers.typeConverter.StringToTrustLabelConverter;
-import com.CptFranck.SportsPeak.mappers.typeConverter.StringToVisibilityConverter;
-import com.CptFranck.SportsPeak.mappers.typeConverter.TrustLabelToStringConverter;
-import com.CptFranck.SportsPeak.mappers.typeConverter.VisibilityToStringConverter;
+import com.CptFranck.SportsPeak.mapper.Mapper;
+import com.CptFranck.SportsPeak.mapper.typeConverter.StringToTrustLabelConverter;
+import com.CptFranck.SportsPeak.mapper.typeConverter.StringToVisibilityConverter;
+import com.CptFranck.SportsPeak.mapper.typeConverter.TrustLabelToStringConverter;
+import com.CptFranck.SportsPeak.mapper.typeConverter.VisibilityToStringConverter;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 

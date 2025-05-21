@@ -1,7 +1,7 @@
 package com.CptFranck.SportsPeak.unit.typeConverters;
 
 import com.CptFranck.SportsPeak.domain.input.duration.InputDuration;
-import com.CptFranck.SportsPeak.mappers.typeConverter.InputDurationToDurationConverter;
+import com.CptFranck.SportsPeak.mapper.typeConverter.InputDurationToDurationConverter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

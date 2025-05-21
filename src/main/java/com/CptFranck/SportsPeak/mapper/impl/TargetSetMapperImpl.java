@@ -1,9 +1,9 @@
-package com.CptFranck.SportsPeak.mappers.impl;
+package com.CptFranck.SportsPeak.mapper.impl;
 
 import com.CptFranck.SportsPeak.domain.dto.TargetSetDto;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
-import com.CptFranck.SportsPeak.mappers.Mapper;
-import com.CptFranck.SportsPeak.mappers.typeConverter.*;
+import com.CptFranck.SportsPeak.mapper.Mapper;
+import com.CptFranck.SportsPeak.mapper.typeConverter.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 

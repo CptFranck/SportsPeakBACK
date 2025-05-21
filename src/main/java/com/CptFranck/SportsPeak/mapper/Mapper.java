@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.mappers;
+package com.CptFranck.SportsPeak.mapper;
 
 public interface Mapper<A, B> {
 

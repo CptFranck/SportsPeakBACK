@@ -4,7 +4,7 @@ import com.CptFranck.SportsPeak.domain.dto.MuscleDto;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
 import com.CptFranck.SportsPeak.domain.input.muscle.InputMuscle;
 import com.CptFranck.SportsPeak.domain.input.muscle.InputNewMuscle;
-import com.CptFranck.SportsPeak.mappers.Mapper;
+import com.CptFranck.SportsPeak.mapper.Mapper;
 import com.CptFranck.SportsPeak.resolver.MuscleInputResolver;
 import com.CptFranck.SportsPeak.service.ExerciseManager;
 import com.CptFranck.SportsPeak.service.MuscleService;

@@ -6,7 +6,7 @@ import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
 import com.CptFranck.SportsPeak.domain.model.UserToken;
-import com.CptFranck.SportsPeak.mappers.Mapper;
+import com.CptFranck.SportsPeak.mapper.Mapper;
 import com.CptFranck.SportsPeak.service.AuthService;
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsMutation;

@@ -4,7 +4,7 @@ import com.CptFranck.SportsPeak.domain.dto.PrivilegeDto;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.input.privilege.InputNewPrivilege;
 import com.CptFranck.SportsPeak.domain.input.privilege.InputPrivilege;
-import com.CptFranck.SportsPeak.mappers.Mapper;
+import com.CptFranck.SportsPeak.mapper.Mapper;
 import com.CptFranck.SportsPeak.resolver.PrivilegeInputResolver;
 import com.CptFranck.SportsPeak.service.PrivilegeService;
 import com.CptFranck.SportsPeak.service.RoleManager;

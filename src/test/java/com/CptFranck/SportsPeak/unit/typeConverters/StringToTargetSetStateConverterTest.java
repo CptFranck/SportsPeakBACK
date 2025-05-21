@@ -1,7 +1,7 @@
 package com.CptFranck.SportsPeak.unit.typeConverters;
 
 import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
-import com.CptFranck.SportsPeak.mappers.typeConverter.StringToTargetSetStateConverter;
+import com.CptFranck.SportsPeak.mapper.typeConverter.StringToTargetSetStateConverter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

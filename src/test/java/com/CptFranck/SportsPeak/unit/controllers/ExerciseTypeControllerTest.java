@@ -5,7 +5,7 @@ import com.CptFranck.SportsPeak.domain.dto.ExerciseTypeDto;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.input.exerciseType.InputExerciseType;
 import com.CptFranck.SportsPeak.domain.input.exerciseType.InputNewExerciseType;
-import com.CptFranck.SportsPeak.mappers.Mapper;
+import com.CptFranck.SportsPeak.mapper.Mapper;
 import com.CptFranck.SportsPeak.resolver.ExerciseTypeInputResolver;
 import com.CptFranck.SportsPeak.service.ExerciseManager;
 import com.CptFranck.SportsPeak.service.ExerciseTypeService;

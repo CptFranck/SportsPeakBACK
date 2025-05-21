@@ -1,10 +1,10 @@
-package com.CptFranck.SportsPeak.mappers.impl;
+package com.CptFranck.SportsPeak.mapper.impl;
 
 import com.CptFranck.SportsPeak.domain.dto.PerformanceLogDto;
 import com.CptFranck.SportsPeak.domain.entity.PerformanceLogEntity;
-import com.CptFranck.SportsPeak.mappers.Mapper;
-import com.CptFranck.SportsPeak.mappers.typeConverter.StringToWeightUnitConverter;
-import com.CptFranck.SportsPeak.mappers.typeConverter.WeightUnitToStringConverter;
+import com.CptFranck.SportsPeak.mapper.Mapper;
+import com.CptFranck.SportsPeak.mapper.typeConverter.StringToWeightUnitConverter;
+import com.CptFranck.SportsPeak.mapper.typeConverter.WeightUnitToStringConverter;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 

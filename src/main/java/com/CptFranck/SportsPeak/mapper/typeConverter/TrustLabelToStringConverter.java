@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.mappers.typeConverter;
+package com.CptFranck.SportsPeak.mapper.typeConverter;
 
 import com.CptFranck.SportsPeak.domain.enumType.TrustLabel;
 import org.modelmapper.AbstractConverter;
