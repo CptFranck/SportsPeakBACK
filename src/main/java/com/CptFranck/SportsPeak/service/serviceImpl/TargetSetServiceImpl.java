@@ -74,13 +74,6 @@ public class TargetSetServiceImpl implements TargetSetService {
     }
 
     @Override
-    public void setTheUpdate(TargetSetEntity targetSet, Long targetSetUpdatedId) {
-        TargetSetEntity targetSetUpdated = this.findOne(targetSetUpdatedId);
-        targetSetUpdated.setTargetSetUpdate(targetSet);
-        targetSetRepository.save(targetSetUpdated);
-    }
-
-    @Override
     public TargetSetEntity updateTargetStates(Long id, TargetSetState state) {
         TargetSetEntity targetSet = this.findOne(id);
         targetSet.setState(state);
