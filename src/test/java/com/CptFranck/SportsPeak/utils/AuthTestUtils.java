@@ -4,7 +4,7 @@ import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
 
-public class AuthUtils {
+public class AuthTestUtils {
     public static InputCredentials createInputCredentials(UserEntity user) {
         return new InputCredentials(
                 user.getEmail(),

@@ -30,8 +30,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static com.CptFranck.SportsPeak.utils.AuthUtils.createInputCredentials;
-import static com.CptFranck.SportsPeak.utils.AuthUtils.createRegisterInput;
+import static com.CptFranck.SportsPeak.utils.AuthTestUtils.createInputCredentials;
+import static com.CptFranck.SportsPeak.utils.AuthTestUtils.createRegisterInput;
 import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
