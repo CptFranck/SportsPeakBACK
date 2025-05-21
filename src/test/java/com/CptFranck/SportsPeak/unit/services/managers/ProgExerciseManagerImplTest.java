@@ -21,9 +21,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Collections;
 import java.util.Set;
 
-import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.TargetSetTestUtils.createTestTargetSet;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -78,7 +78,7 @@ public class ProgExerciseManagerImplTest {
     }
 
     @Test
-    void deleteProgExercise_UserStillLinkedToProgExercise_Trow() {
+    void deleteProgExercise_UserStillLinkedToProgExercise_ThrowProgExerciseStillUsedException() {
         UserEntity userBis = createTestUser(1L);
         when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(progExercise);
         when(userService.findUserBySubscribedProgExercises(Mockito.any(ProgExerciseEntity.class))).thenReturn(Set.of(userBis, user));
