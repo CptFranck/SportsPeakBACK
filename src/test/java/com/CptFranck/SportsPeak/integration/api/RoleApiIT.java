@@ -4,7 +4,7 @@ import com.CptFranck.SportsPeak.domain.dto.RoleDto;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.input.role.InputNewRole;
 import com.CptFranck.SportsPeak.domain.input.role.InputRole;
-import com.CptFranck.SportsPeak.repositories.RoleRepository;
+import com.CptFranck.SportsPeak.repository.RoleRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.graphql.dgs.DgsQueryExecutor;

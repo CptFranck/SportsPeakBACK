@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.repositories;
+package com.CptFranck.SportsPeak.repository;
 
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import org.springframework.data.repository.CrudRepository;

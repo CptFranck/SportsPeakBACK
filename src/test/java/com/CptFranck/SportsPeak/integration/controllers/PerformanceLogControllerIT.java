@@ -8,7 +8,7 @@ import com.CptFranck.SportsPeak.domain.exception.performanceLog.PerformanceLogNo
 import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputNewPerformanceLog;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputPerformanceLog;
-import com.CptFranck.SportsPeak.repositories.*;
+import com.CptFranck.SportsPeak.repository.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

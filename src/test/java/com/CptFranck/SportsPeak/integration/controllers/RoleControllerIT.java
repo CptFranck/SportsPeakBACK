@@ -7,7 +7,7 @@ import com.CptFranck.SportsPeak.domain.exception.role.RoleExistsException;
 import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.role.InputNewRole;
 import com.CptFranck.SportsPeak.domain.input.role.InputRole;
-import com.CptFranck.SportsPeak.repositories.RoleRepository;
+import com.CptFranck.SportsPeak.repository.RoleRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

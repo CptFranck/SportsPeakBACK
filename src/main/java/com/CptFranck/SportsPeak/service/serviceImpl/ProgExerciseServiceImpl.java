@@ -2,7 +2,7 @@ package com.CptFranck.SportsPeak.service.serviceImpl;
 
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.exception.progExercise.ProgExerciseNotFoundException;
-import com.CptFranck.SportsPeak.repositories.ProgExerciseRepository;
+import com.CptFranck.SportsPeak.repository.ProgExerciseRepository;
 import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import org.springframework.stereotype.Service;
 

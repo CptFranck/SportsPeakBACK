@@ -8,8 +8,8 @@ import com.CptFranck.SportsPeak.domain.exception.exerciseType.ExerciseTypeNotFou
 import com.CptFranck.SportsPeak.domain.exception.exerciseType.ExerciseTypeStillUsedInExerciseException;
 import com.CptFranck.SportsPeak.domain.input.exerciseType.InputExerciseType;
 import com.CptFranck.SportsPeak.domain.input.exerciseType.InputNewExerciseType;
-import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
-import com.CptFranck.SportsPeak.repositories.ExerciseTypeRepository;
+import com.CptFranck.SportsPeak.repository.ExerciseRepository;
+import com.CptFranck.SportsPeak.repository.ExerciseTypeRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

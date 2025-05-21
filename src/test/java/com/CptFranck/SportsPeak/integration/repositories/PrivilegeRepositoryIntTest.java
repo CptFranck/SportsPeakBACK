@@ -1,7 +1,7 @@
 package com.CptFranck.SportsPeak.integration.repositories;
 
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
-import com.CptFranck.SportsPeak.repositories.PrivilegeRepository;
+import com.CptFranck.SportsPeak.repository.PrivilegeRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

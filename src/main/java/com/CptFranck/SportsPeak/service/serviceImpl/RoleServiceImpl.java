@@ -4,7 +4,7 @@ import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.exception.role.RoleExistsException;
 import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
-import com.CptFranck.SportsPeak.repositories.RoleRepository;
+import com.CptFranck.SportsPeak.repository.RoleRepository;
 import com.CptFranck.SportsPeak.service.RoleService;
 import org.springframework.stereotype.Service;
 

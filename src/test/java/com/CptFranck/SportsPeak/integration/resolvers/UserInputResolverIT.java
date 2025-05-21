@@ -4,7 +4,7 @@ import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserIdentity;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserUsername;
-import com.CptFranck.SportsPeak.repositories.UserRepository;
+import com.CptFranck.SportsPeak.repository.UserRepository;
 import com.CptFranck.SportsPeak.resolver.UserInputResolver;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

@@ -9,7 +9,7 @@ import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundExc
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputNewTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSet;
 import com.CptFranck.SportsPeak.domain.input.targetSet.InputTargetSetState;
-import com.CptFranck.SportsPeak.repositories.*;
+import com.CptFranck.SportsPeak.repository.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

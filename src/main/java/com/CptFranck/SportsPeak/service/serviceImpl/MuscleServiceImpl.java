@@ -3,7 +3,7 @@ package com.CptFranck.SportsPeak.service.serviceImpl;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
 import com.CptFranck.SportsPeak.domain.exception.muscle.MuscleNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.muscle.MuscleStillUsedInExerciseException;
-import com.CptFranck.SportsPeak.repositories.MuscleRepository;
+import com.CptFranck.SportsPeak.repository.MuscleRepository;
 import com.CptFranck.SportsPeak.service.MuscleService;
 import org.springframework.stereotype.Service;
 

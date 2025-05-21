@@ -2,7 +2,7 @@ package com.CptFranck.SportsPeak.integration.services.services;
 
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.model.CustomUserDetails;
-import com.CptFranck.SportsPeak.repositories.UserRepository;
+import com.CptFranck.SportsPeak.repository.UserRepository;
 import com.CptFranck.SportsPeak.service.serviceImpl.CustomUserDetailsService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

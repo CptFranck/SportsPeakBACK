@@ -2,7 +2,7 @@ package com.CptFranck.SportsPeak.integration.services.services;
 
 import com.CptFranck.SportsPeak.domain.entity.*;
 import com.CptFranck.SportsPeak.domain.exception.performanceLog.PerformanceLogNotFoundException;
-import com.CptFranck.SportsPeak.repositories.*;
+import com.CptFranck.SportsPeak.repository.*;
 import com.CptFranck.SportsPeak.service.serviceImpl.PerformanceLogServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

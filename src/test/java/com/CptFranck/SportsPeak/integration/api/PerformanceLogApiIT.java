@@ -4,7 +4,7 @@ import com.CptFranck.SportsPeak.domain.dto.PerformanceLogDto;
 import com.CptFranck.SportsPeak.domain.entity.*;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputNewPerformanceLog;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputPerformanceLog;
-import com.CptFranck.SportsPeak.repositories.*;
+import com.CptFranck.SportsPeak.repository.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.graphql.dgs.DgsQueryExecutor;

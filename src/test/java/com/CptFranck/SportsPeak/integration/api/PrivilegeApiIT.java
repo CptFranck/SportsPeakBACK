@@ -4,7 +4,7 @@ import com.CptFranck.SportsPeak.domain.dto.PrivilegeDto;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.input.privilege.InputNewPrivilege;
 import com.CptFranck.SportsPeak.domain.input.privilege.InputPrivilege;
-import com.CptFranck.SportsPeak.repositories.PrivilegeRepository;
+import com.CptFranck.SportsPeak.repository.PrivilegeRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.graphql.dgs.DgsQueryExecutor;

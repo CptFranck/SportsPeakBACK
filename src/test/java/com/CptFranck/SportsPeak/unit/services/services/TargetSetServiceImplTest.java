@@ -6,7 +6,7 @@ import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
 import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
-import com.CptFranck.SportsPeak.repositories.TargetSetRepository;
+import com.CptFranck.SportsPeak.repository.TargetSetRepository;
 import com.CptFranck.SportsPeak.service.serviceImpl.TargetSetServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

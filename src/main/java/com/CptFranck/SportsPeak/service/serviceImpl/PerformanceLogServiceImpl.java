@@ -2,7 +2,7 @@ package com.CptFranck.SportsPeak.service.serviceImpl;
 
 import com.CptFranck.SportsPeak.domain.entity.PerformanceLogEntity;
 import com.CptFranck.SportsPeak.domain.exception.performanceLog.PerformanceLogNotFoundException;
-import com.CptFranck.SportsPeak.repositories.PerformanceLogRepository;
+import com.CptFranck.SportsPeak.repository.PerformanceLogRepository;
 import com.CptFranck.SportsPeak.service.PerformanceLogService;
 import org.springframework.stereotype.Service;
 

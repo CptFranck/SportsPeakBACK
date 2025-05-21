@@ -3,7 +3,7 @@ package com.CptFranck.SportsPeak.service.serviceImpl;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.enumType.TargetSetState;
 import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
-import com.CptFranck.SportsPeak.repositories.TargetSetRepository;
+import com.CptFranck.SportsPeak.repository.TargetSetRepository;
 import com.CptFranck.SportsPeak.service.TargetSetService;
 import org.springframework.stereotype.Service;
 

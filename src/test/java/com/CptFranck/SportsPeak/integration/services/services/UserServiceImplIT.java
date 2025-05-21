@@ -7,7 +7,7 @@ import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailAlreadyUsedException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UsernameExistsException;
-import com.CptFranck.SportsPeak.repositories.*;
+import com.CptFranck.SportsPeak.repository.*;
 import com.CptFranck.SportsPeak.service.serviceImpl.UserServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

@@ -4,7 +4,7 @@ import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
-import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
+import com.CptFranck.SportsPeak.repository.ExerciseRepository;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import org.springframework.stereotype.Service;
 

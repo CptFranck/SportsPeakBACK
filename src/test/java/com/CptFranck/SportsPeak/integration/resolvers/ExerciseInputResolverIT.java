@@ -4,7 +4,7 @@ import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.exception.exercise.ExerciseNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.exercise.InputExercise;
 import com.CptFranck.SportsPeak.domain.input.exercise.InputNewExercise;
-import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
+import com.CptFranck.SportsPeak.repository.ExerciseRepository;
 import com.CptFranck.SportsPeak.resolver.ExerciseInputResolver;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

@@ -7,7 +7,7 @@ import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeExistsExcept
 import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.privilege.InputNewPrivilege;
 import com.CptFranck.SportsPeak.domain.input.privilege.InputPrivilege;
-import com.CptFranck.SportsPeak.repositories.PrivilegeRepository;
+import com.CptFranck.SportsPeak.repository.PrivilegeRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

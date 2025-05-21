@@ -10,8 +10,8 @@ import com.CptFranck.SportsPeak.domain.exception.userAuth.InvalidCredentialsExce
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UsernameExistsException;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
-import com.CptFranck.SportsPeak.repositories.RoleRepository;
-import com.CptFranck.SportsPeak.repositories.UserRepository;
+import com.CptFranck.SportsPeak.repository.RoleRepository;
+import com.CptFranck.SportsPeak.repository.UserRepository;
 import com.CptFranck.SportsPeak.service.AuthService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.repositories;
+package com.CptFranck.SportsPeak.repository;
 
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;

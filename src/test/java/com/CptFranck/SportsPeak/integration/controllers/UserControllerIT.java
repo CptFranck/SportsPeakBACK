@@ -12,10 +12,10 @@ import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailAlreadyUsedExcept
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UsernameExistsException;
 import com.CptFranck.SportsPeak.domain.input.user.*;
-import com.CptFranck.SportsPeak.repositories.ExerciseRepository;
-import com.CptFranck.SportsPeak.repositories.ProgExerciseRepository;
-import com.CptFranck.SportsPeak.repositories.RoleRepository;
-import com.CptFranck.SportsPeak.repositories.UserRepository;
+import com.CptFranck.SportsPeak.repository.ExerciseRepository;
+import com.CptFranck.SportsPeak.repository.ProgExerciseRepository;
+import com.CptFranck.SportsPeak.repository.RoleRepository;
+import com.CptFranck.SportsPeak.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
