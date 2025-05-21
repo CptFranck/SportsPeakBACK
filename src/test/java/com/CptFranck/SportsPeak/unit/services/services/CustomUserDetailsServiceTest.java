@@ -27,12 +27,10 @@ public class CustomUserDetailsServiceTest {
     private UserService userService;
 
     private UserEntity user;
-    private UserDetails userDetails;
 
     @BeforeEach
     void setUp() {
         user = createTestUser(1L);
-        userDetails = new CustomUserDetails(user);
     }
 
     @Test
@@ -41,6 +39,7 @@ public class CustomUserDetailsServiceTest {
 
         UserDetails userFound = customUserDetailsService.loadUserByUsername(user.getUsername());
 
+        UserDetails userDetails = new CustomUserDetails(user);
         Assertions.assertEquals(userDetails.getUsername(), userFound.getUsername());
     }
 }

@@ -37,11 +37,11 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
 
-    @Mock
-    private UserRepository userRepository;
-
     @InjectMocks
     private UserServiceImpl userServiceImpl;
+
+    @Mock
+    private UserRepository userRepository;
 
     private UserEntity user;
 
