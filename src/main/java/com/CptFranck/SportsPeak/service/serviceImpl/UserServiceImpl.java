@@ -92,12 +92,12 @@ public class UserServiceImpl implements UserService {
     public void updateRoleRelation(Set<Long> newIds, Set<Long> oldIds, RoleEntity roleEntity) {
         this.findMany(oldIds).forEach(u -> {
             u.getRoles().removeIf(r -> Objects.equals(r.getId(), roleEntity.getId()));
-            userRepository.save(u);
+            save(u);
         });
 
         this.findMany(newIds).forEach(u -> {
             u.getRoles().add(roleEntity);
-            userRepository.save(u);
+            save(u);
         });
     }
 

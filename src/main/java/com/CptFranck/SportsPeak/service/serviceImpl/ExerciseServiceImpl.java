@@ -65,12 +65,12 @@ public class ExerciseServiceImpl implements ExerciseService {
     public void updateExerciseTypeRelation(Set<Long> newIds, Set<Long> oldIds, ExerciseTypeEntity exerciseType) {
         this.findMany(oldIds).forEach(e -> {
             e.getExerciseTypes().removeIf(et -> Objects.equals(et.getId(), exerciseType.getId()));
-            exerciseRepository.save(e);
+            save(e);
         });
 
         this.findMany(newIds).forEach(e -> {
             e.getExerciseTypes().add(exerciseType);
-            exerciseRepository.save(e);
+            save(e);
         });
     }
 
@@ -78,12 +78,12 @@ public class ExerciseServiceImpl implements ExerciseService {
     public void updateMuscleRelation(Set<Long> newIds, Set<Long> oldIds, MuscleEntity muscle) {
         this.findMany(oldIds).forEach(e -> {
             e.getMuscles().removeIf(et -> Objects.equals(et.getId(), muscle.getId()));
-            exerciseRepository.save(e);
+            save(e);
         });
 
         this.findMany(newIds).forEach(e -> {
             e.getMuscles().add(muscle);
-            exerciseRepository.save(e);
+            save(e);
         });
     }
 
