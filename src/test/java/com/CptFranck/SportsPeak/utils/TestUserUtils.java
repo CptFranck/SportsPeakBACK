@@ -11,19 +11,6 @@ import java.util.List;
 
 public class TestUserUtils {
 
-    public static void assertEqualsUser(UserEntity userToGet, UserEntity obtainedUser, boolean justBeenCreated) {
-        if (!justBeenCreated)
-            Assertions.assertEquals(userToGet.getId(), obtainedUser.getId());
-        Assertions.assertEquals(userToGet.getEmail(), obtainedUser.getEmail());
-        Assertions.assertEquals(userToGet.getFirstName(), obtainedUser.getFirstName());
-        Assertions.assertEquals(userToGet.getLastName(), obtainedUser.getLastName());
-        Assertions.assertEquals(userToGet.getUsername(), obtainedUser.getUsername());
-        Assertions.assertEquals(userToGet.getPassword(), obtainedUser.getPassword());
-        Assertions.assertEquals(userToGet.getRoles().size(), obtainedUser.getRoles().size());
-        Assertions.assertEquals(userToGet.getSubscribedProgExercises().size(), obtainedUser.getSubscribedProgExercises().size());
-        Assertions.assertEquals(userToGet.getProgExercisesCreated().size(), obtainedUser.getProgExercisesCreated().size());
-    }
-
     public static UserEntity createTestUser(Long id) {
         return new UserEntity(
                 id,
@@ -82,7 +69,6 @@ public class TestUserUtils {
         return new InputUserRoles(
                 id,
                 new ArrayList<>()
-
         );
     }
 
@@ -107,5 +93,28 @@ public class TestUserUtils {
                 olRawPassword,
                 "NewPassword"
         );
+    }
+
+    public static void assertEqualsUser(UserEntity userToGet, UserEntity obtainedUser, boolean justBeenCreated) {
+        if (!justBeenCreated)
+            Assertions.assertEquals(userToGet.getId(), obtainedUser.getId());
+        Assertions.assertEquals(userToGet.getEmail(), obtainedUser.getEmail());
+        Assertions.assertEquals(userToGet.getFirstName(), obtainedUser.getFirstName());
+        Assertions.assertEquals(userToGet.getLastName(), obtainedUser.getLastName());
+        Assertions.assertEquals(userToGet.getUsername(), obtainedUser.getUsername());
+        Assertions.assertEquals(userToGet.getPassword(), obtainedUser.getPassword());
+        Assertions.assertEquals(userToGet.getRoles().size(), obtainedUser.getRoles().size());
+        Assertions.assertEquals(userToGet.getSubscribedProgExercises().size(), obtainedUser.getSubscribedProgExercises().size());
+        Assertions.assertEquals(userToGet.getProgExercisesCreated().size(), obtainedUser.getProgExercisesCreated().size());
+    }
+
+    public static void assertUserDtoAndEntity(UserEntity userEntity, UserDto userDto, boolean isEmailUpdated) {
+        Assertions.assertNotNull(userDto);
+        if (!isEmailUpdated)
+            Assertions.assertEquals(userEntity.getEmail(), userDto.getEmail());
+        Assertions.assertEquals(userEntity.getFirstName(), userDto.getFirstName());
+        Assertions.assertEquals(userEntity.getLastName(), userDto.getLastName());
+        Assertions.assertEquals(userEntity.getUsername(), userDto.getUsername());
+        Assertions.assertEquals(userEntity.getRoles().size(), userDto.getRoles().size());
     }
 }
