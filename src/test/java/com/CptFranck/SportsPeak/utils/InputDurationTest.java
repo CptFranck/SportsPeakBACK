@@ -4,7 +4,7 @@ import com.CptFranck.SportsPeak.domain.input.duration.InputDuration;
 import org.junit.jupiter.api.Assertions;
 
 
-public class TestInputDuration {
+public class InputDurationTest {
 
     public static void assertInputDuration(InputDuration expected, InputDuration actual) {
         Assertions.assertEquals(expected.getHours(), actual.getHours());

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.CptFranck.SportsPeak.utils.DateTimeTestUtils.assertDatetimeWithTimestamp;
-import static com.CptFranck.SportsPeak.utils.TestInputDuration.assertInputDuration;
+import static com.CptFranck.SportsPeak.utils.InputDurationTest.assertInputDuration;
 
 public class TargetSetTestUtils {
 
