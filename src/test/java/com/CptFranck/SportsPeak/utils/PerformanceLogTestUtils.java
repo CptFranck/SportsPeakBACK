@@ -7,9 +7,12 @@ import com.CptFranck.SportsPeak.domain.enumType.VisibilityLabel;
 import com.CptFranck.SportsPeak.domain.enumType.WeightUnit;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputNewPerformanceLog;
 import com.CptFranck.SportsPeak.domain.input.performanceLog.InputPerformanceLog;
+import org.junit.jupiter.api.Assertions;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static com.CptFranck.SportsPeak.utils.DateTimeTestUtils.assertDatetimeWithTimestamp;
 
 public class PerformanceLogTestUtils {
 
@@ -70,5 +73,32 @@ public class PerformanceLogTestUtils {
                 logDate,
                 targetSetId
         );
+    }
+
+    public static void assertEqualPerformanceLog(PerformanceLogEntity expected, PerformanceLogEntity actual) {
+        Assertions.assertEquals(expected.getId(), actual.getId());
+        Assertions.assertEquals(expected.getSetIndex(), actual.getSetIndex());
+        Assertions.assertEquals(expected.getRepetitionNumber(), actual.getRepetitionNumber());
+        Assertions.assertEquals(expected.getWeight(), actual.getWeight());
+        Assertions.assertEquals(expected.getWeightUnit(), actual.getWeightUnit());
+        assertDatetimeWithTimestamp(expected.getLogDate(), actual.getLogDate());
+    }
+
+    public static void assertPerformanceLogDtoAndEntity(PerformanceLogEntity performanceLogEntity, PerformanceLogDto performanceLogDto) {
+        Assertions.assertNotNull(performanceLogDto);
+        Assertions.assertEquals(performanceLogEntity.getId(), performanceLogDto.getId());
+        Assertions.assertEquals(performanceLogEntity.getSetIndex(), performanceLogDto.getSetIndex());
+        Assertions.assertEquals(performanceLogEntity.getRepetitionNumber(), performanceLogDto.getRepetitionNumber());
+        Assertions.assertEquals(performanceLogEntity.getWeight(), performanceLogDto.getWeight());
+        Assertions.assertEquals(performanceLogEntity.getWeightUnit().label, performanceLogDto.getWeightUnit());
+    }
+
+    public static void assertPerformanceLogDtoAndInput(InputNewPerformanceLog inputNewPerformanceLog, PerformanceLogDto performanceLogDto) {
+        Assertions.assertNotNull(performanceLogDto);
+        Assertions.assertEquals(inputNewPerformanceLog.getSetIndex(), performanceLogDto.getSetIndex());
+        Assertions.assertEquals(inputNewPerformanceLog.getRepetitionNumber(), performanceLogDto.getRepetitionNumber());
+        Assertions.assertEquals(inputNewPerformanceLog.getWeight(), performanceLogDto.getWeight());
+        Assertions.assertEquals(inputNewPerformanceLog.getWeightUnit(), performanceLogDto.getWeightUnit());
+        assertDatetimeWithTimestamp(inputNewPerformanceLog.getLogDate(), performanceLogDto.getLogDate());
     }
 }
