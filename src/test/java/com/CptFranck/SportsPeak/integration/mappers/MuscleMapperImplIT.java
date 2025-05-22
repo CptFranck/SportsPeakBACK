@@ -15,11 +15,11 @@ import static com.CptFranck.SportsPeak.utils.MuscleTestUtils.createTestMuscleDto
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExerciseDto;
 
-public class MuscleMapperImplIntTest {
+public class MuscleMapperImplIT {
 
     private final Mapper<MuscleEntity, MuscleDto> muscleMapper;
 
-    public MuscleMapperImplIntTest() {
+    public MuscleMapperImplIT() {
         this.muscleMapper = new MuscleMapperImpl(new ModelMapper());
     }
 

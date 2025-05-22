@@ -15,11 +15,11 @@ import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.createTestPrivil
 import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
 import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRoleDto;
 
-public class PrivilegeMapperImplIntTest {
+public class PrivilegeMapperImplIT {
 
     private final Mapper<PrivilegeEntity, PrivilegeDto> privilegeMapper;
 
-    public PrivilegeMapperImplIntTest() {
+    public PrivilegeMapperImplIT() {
         this.privilegeMapper = new PrivilegeMapperImpl(new ModelMapper());
     }
 

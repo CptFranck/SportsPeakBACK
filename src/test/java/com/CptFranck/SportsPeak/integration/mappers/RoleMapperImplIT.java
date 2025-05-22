@@ -17,11 +17,11 @@ import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
 import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRoleDto;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 
-public class RoleMapperImplIntTest {
+public class RoleMapperImplIT {
 
     private final Mapper<RoleEntity, RoleDto> roleMapper;
 
-    public RoleMapperImplIntTest() {
+    public RoleMapperImplIT() {
         this.roleMapper = new RoleMapperImpl(new ModelMapper());
     }
 

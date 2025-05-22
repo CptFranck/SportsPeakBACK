@@ -8,18 +8,18 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 
+import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.TargetSetTestUtils.createTestTargetSet;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.TestPerformanceLogUtils.createTestPerformanceLog;
 import static com.CptFranck.SportsPeak.utils.TestPerformanceLogUtils.createTestPerformanceLogDto;
-import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.utils.TargetSetTestUtils.createTestTargetSet;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 
-public class PerformanceLogMapperImplIntTest {
+public class PerformanceLogMapperImplIT {
 
     private final Mapper<PerformanceLogEntity, PerformanceLogDto> performanceLogMapper;
 
-    public PerformanceLogMapperImplIntTest() {
+    public PerformanceLogMapperImplIT() {
         this.performanceLogMapper = new PerformanceLogMapperImpl(new ModelMapper());
     }
 

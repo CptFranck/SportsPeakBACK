@@ -12,18 +12,18 @@ import static com.CptFranck.SportsPeak.utils.ExerciseTypeTestUtils.createTestExe
 import static com.CptFranck.SportsPeak.utils.ExerciseTypeTestUtils.createTestExerciseTypeDto;
 import static com.CptFranck.SportsPeak.utils.MuscleTestUtils.createTestMuscle;
 import static com.CptFranck.SportsPeak.utils.MuscleTestUtils.createTestMuscleDto;
-import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExerciseDto;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExerciseDto;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExerciseDto;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserDto;
 
-public class ExerciseMapperImplIntTest {
+public class ExerciseMapperImplIT {
 
     private final Mapper<ExerciseEntity, ExerciseDto> exerciseMapper;
 
-    public ExerciseMapperImplIntTest() {
+    public ExerciseMapperImplIT() {
         this.exerciseMapper = new ExerciseMapperImpl(new ModelMapper());
     }
 

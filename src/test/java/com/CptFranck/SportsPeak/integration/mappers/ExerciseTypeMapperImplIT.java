@@ -15,11 +15,11 @@ import static com.CptFranck.SportsPeak.utils.ExerciseTypeTestUtils.createTestExe
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExerciseDto;
 
-public class ExerciseTypeMapperImplIntTest {
+public class ExerciseTypeMapperImplIT {
 
     private final Mapper<ExerciseTypeEntity, ExerciseTypeDto> exerciseTypeMapper;
 
-    public ExerciseTypeMapperImplIntTest() {
+    public ExerciseTypeMapperImplIT() {
         this.exerciseTypeMapper = new ExerciseTypeMapperImpl(new ModelMapper());
     }
 
