@@ -24,7 +24,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.TestPropertySource;
 
 import static com.CptFranck.SportsPeak.utils.AuthTestUtils.createRegisterInput;
-import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
+import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserBis;
 

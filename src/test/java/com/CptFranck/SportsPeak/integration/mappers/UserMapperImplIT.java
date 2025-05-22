@@ -13,9 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
+import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRoleDto;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
-import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRoleDto;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserDto;
 

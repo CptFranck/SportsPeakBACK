@@ -21,8 +21,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.createTestPrivilege;
-import static com.CptFranck.SportsPeak.utils.TestRoleUtils.assertEqualsRole;
-import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
+import static com.CptFranck.SportsPeak.utils.RoleTestUtils.assertEqualsRole;
+import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest()

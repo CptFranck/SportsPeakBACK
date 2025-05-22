@@ -21,7 +21,7 @@ import org.springframework.test.context.TestPropertySource;
 import java.util.List;
 import java.util.Objects;
 
-import static com.CptFranck.SportsPeak.utils.TestRoleUtils.*;
+import static com.CptFranck.SportsPeak.utils.RoleTestUtils.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest()

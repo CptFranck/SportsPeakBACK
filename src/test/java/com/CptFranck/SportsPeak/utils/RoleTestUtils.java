@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class TestRoleUtils {
+public class RoleTestUtils {
 
     public static RoleEntity createTestRole(Long id, int option) {
         String roleName = "USER";

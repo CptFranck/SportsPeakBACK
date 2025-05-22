@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashSet;
 
-import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
+import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestInputUserRoles;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static org.mockito.Mockito.when;

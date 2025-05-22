@@ -22,8 +22,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.createTestPrivilege;
-import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createNewTestRoleList;
-import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
+import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createNewTestRoleList;
+import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;

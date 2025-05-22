@@ -27,7 +27,7 @@ import java.util.LinkedHashMap;
 import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.AuthQuery.loginQuery;
 import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.AuthQuery.registerQuery;
 import static com.CptFranck.SportsPeak.utils.AuthTestUtils.createRegisterInput;
-import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
+import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserBis;
 

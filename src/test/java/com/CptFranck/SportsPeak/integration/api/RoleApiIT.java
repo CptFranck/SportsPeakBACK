@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.RoleQuery.*;
-import static com.CptFranck.SportsPeak.utils.TestRoleUtils.*;
+import static com.CptFranck.SportsPeak.utils.RoleTestUtils.*;
 
 
 @SpringBootTest()
