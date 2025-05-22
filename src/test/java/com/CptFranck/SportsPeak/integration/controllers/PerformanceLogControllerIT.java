@@ -22,7 +22,6 @@ import org.springframework.test.context.TestPropertySource;
 import java.util.List;
 import java.util.Objects;
 
-import static com.CptFranck.SportsPeak.utils.DateTimeTestUtils.assertDatetimeWithTimestamp;
 import static com.CptFranck.SportsPeak.utils.PerformanceLogTestUtils.*;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.TargetSetTestUtils.createTestTargetSet;
@@ -229,24 +228,5 @@ class PerformanceLogControllerIT {
                 ).toList().getFirst(),
                 performanceLogDto)
         );
-    }
-
-    private void assertPerformanceLogDtoAndEntity(PerformanceLogEntity performanceLogEntity, PerformanceLogDto performanceLogDto) {
-        Assertions.assertNotNull(performanceLogDto);
-        Assertions.assertEquals(performanceLogEntity.getId(), performanceLogDto.getId());
-        Assertions.assertEquals(performanceLogEntity.getSetIndex(), performanceLogDto.getSetIndex());
-        Assertions.assertEquals(performanceLogEntity.getRepetitionNumber(), performanceLogDto.getRepetitionNumber());
-        Assertions.assertEquals(performanceLogEntity.getWeight(), performanceLogDto.getWeight());
-        Assertions.assertEquals(performanceLogEntity.getWeightUnit().label, performanceLogDto.getWeightUnit());
-        assertDatetimeWithTimestamp(performanceLogEntity.getLogDate(), performanceLogDto.getLogDate());
-    }
-
-    private void assertPerformanceLogDtoAndInput(InputNewPerformanceLog inputNewPerformanceLog, PerformanceLogDto performanceLogDto) {
-        Assertions.assertNotNull(performanceLogDto);
-        Assertions.assertEquals(inputNewPerformanceLog.getSetIndex(), performanceLogDto.getSetIndex());
-        Assertions.assertEquals(inputNewPerformanceLog.getRepetitionNumber(), performanceLogDto.getRepetitionNumber());
-        Assertions.assertEquals(inputNewPerformanceLog.getWeight(), performanceLogDto.getWeight());
-        Assertions.assertEquals(inputNewPerformanceLog.getWeightUnit(), performanceLogDto.getWeightUnit());
-        assertDatetimeWithTimestamp(inputNewPerformanceLog.getLogDate(), performanceLogDto.getLogDate());
     }
 }

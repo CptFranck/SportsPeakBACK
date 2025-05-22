@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import static com.CptFranck.SportsPeak.utils.DateTimeTestUtils.assertDatetimeWithTimestamp;
+import static com.CptFranck.SportsPeak.utils.PerformanceLogTestUtils.assertEqualPerformanceLog;
 import static com.CptFranck.SportsPeak.utils.PerformanceLogTestUtils.createTestPerformanceLog;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.TargetSetTestUtils.createTestTargetSet;
@@ -159,14 +159,5 @@ public class PerformanceLogServiceImplIT {
                 ).toList().getFirst(),
                 performanceLogFound)
         );
-    }
-
-    private void assertEqualPerformanceLog(PerformanceLogEntity expected, PerformanceLogEntity actual) {
-        Assertions.assertEquals(expected.getId(), actual.getId());
-        Assertions.assertEquals(expected.getSetIndex(), actual.getSetIndex());
-        Assertions.assertEquals(expected.getRepetitionNumber(), actual.getRepetitionNumber());
-        Assertions.assertEquals(expected.getWeight(), actual.getWeight());
-        Assertions.assertEquals(expected.getWeightUnit(), actual.getWeightUnit());
-        assertDatetimeWithTimestamp(expected.getLogDate(), actual.getLogDate());
     }
 }
