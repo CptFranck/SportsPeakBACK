@@ -11,7 +11,7 @@ import com.CptFranck.SportsPeak.domain.input.performanceLog.InputPerformanceLog;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class TestPerformanceLogUtils {
+public class PerformanceLogTestUtils {
 
     public static PerformanceLogEntity createTestPerformanceLog(Long id, TargetSetEntity targetSet) {
         LocalDateTime creationDate = LocalDateTime.now();

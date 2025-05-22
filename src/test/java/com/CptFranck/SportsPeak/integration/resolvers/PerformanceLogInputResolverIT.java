@@ -18,11 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
-import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.utils.TestPerformanceLogUtils.createTestInputNewPerformanceLog;
-import static com.CptFranck.SportsPeak.utils.TestPerformanceLogUtils.createTestInputPerformanceLog;
+import static com.CptFranck.SportsPeak.utils.PerformanceLogTestUtils.createTestInputNewPerformanceLog;
+import static com.CptFranck.SportsPeak.utils.PerformanceLogTestUtils.createTestInputPerformanceLog;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.TargetSetTestUtils.createTestTargetSet;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
 
 @SpringBootTest()
