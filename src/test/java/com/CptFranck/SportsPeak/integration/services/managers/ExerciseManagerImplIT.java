@@ -3,10 +3,13 @@ package com.CptFranck.SportsPeak.integration.services.managers;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ExerciseTypeEntity;
 import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
+import com.CptFranck.SportsPeak.domain.exception.exerciseType.ExerciseTypeNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.muscle.MuscleNotFoundException;
 import com.CptFranck.SportsPeak.repository.ExerciseRepository;
 import com.CptFranck.SportsPeak.repository.ExerciseTypeRepository;
 import com.CptFranck.SportsPeak.repository.MuscleRepository;
 import com.CptFranck.SportsPeak.service.managerImpl.ExerciseManagerImpl;
+import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,6 +68,13 @@ public class ExerciseManagerImplIT {
     }
 
     @Test
+    void saveExerciseType_InvalidExerciseTypeId_ThrowExerciseTypeNotFoundException() {
+        ExerciseTypeEntity exerciseType = createTestExerciseType(1L);
+
+        Assert.assertThrows(ExerciseTypeNotFoundException.class, () -> exerciseManager.saveExerciseType(exerciseType));
+    }
+
+    @Test
     void saveExerciseType_UpdateExerciseType_ReturnExerciseTypeEntity() {
         ExerciseTypeEntity exerciseType = exerciseTypeRepository.save(createTestExerciseType(null));
         exercise.getExerciseTypes().add(exerciseType);
@@ -86,6 +96,13 @@ public class ExerciseManagerImplIT {
         MuscleEntity muscleResolved = exerciseManager.saveMuscle(muscle);
 
         assertEqualMuscle(muscle, muscleResolved);
+    }
+
+    @Test
+    void saveMuscle_InvalidMuscleId_ThrowMuscleNotFoundException() {
+        MuscleEntity muscle = createTestMuscle(1L);
+
+        Assert.assertThrows(MuscleNotFoundException.class, () -> exerciseManager.saveMuscle(muscle));
     }
 
     @Test
