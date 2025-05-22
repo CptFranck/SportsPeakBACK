@@ -146,23 +146,4 @@ class ExerciseControllerIT {
                 exerciseDto)
         );
     }
-
-    private void assertExerciseDtoAndEntity(ExerciseEntity exerciseEntity, ExerciseDto exerciseDto) {
-        Assertions.assertNotNull(exerciseDto);
-        Assertions.assertEquals(exerciseEntity.getName(), exerciseDto.getName());
-        Assertions.assertEquals(exerciseEntity.getGoal(), exerciseDto.getGoal());
-        Assertions.assertEquals(exerciseEntity.getDescription(), exerciseDto.getDescription());
-        Assertions.assertEquals(exerciseEntity.getMuscles().size(), exerciseDto.getMuscles().size());
-        Assertions.assertEquals(exerciseEntity.getExerciseTypes().size(), exerciseDto.getExerciseTypes().size());
-        Assertions.assertEquals(exerciseEntity.getProgExercises().size(), exerciseDto.getProgExercises().size());
-    }
-
-    private void assertExerciseDtoAndInput(InputNewExercise inputNewExercise, ExerciseDto exerciseDto) {
-        Assertions.assertNotNull(exerciseDto);
-        Assertions.assertEquals(inputNewExercise.getName(), exerciseDto.getName());
-        Assertions.assertEquals(inputNewExercise.getGoal(), exerciseDto.getGoal());
-        Assertions.assertEquals(inputNewExercise.getDescription(), exerciseDto.getDescription());
-        Assertions.assertEquals(inputNewExercise.getMuscleIds().size(), exerciseDto.getMuscles().size());
-        Assertions.assertEquals(inputNewExercise.getExerciseTypeIds().size(), exerciseDto.getProgExercises().size());
-    }
 }

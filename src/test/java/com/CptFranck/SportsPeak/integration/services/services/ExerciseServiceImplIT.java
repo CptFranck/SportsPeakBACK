@@ -18,6 +18,7 @@ import java.util.*;
 
 import static com.CptFranck.SportsPeak.utils.ExerciseTypeTestUtils.createTestExerciseType;
 import static com.CptFranck.SportsPeak.utils.MuscleTestUtils.createTestMuscle;
+import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.assertEqualExercise;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -95,7 +96,7 @@ public class ExerciseServiceImplIT {
 
         ExerciseEntity exerciseSaved = exerciseServiceImpl.save(unsavedExercise);
 
-        assertEqualInputNewExercise(exercise, exerciseSaved);
+        assertEqualExercise(unsavedExercise, exerciseSaved);
     }
 
     @Test
@@ -184,24 +185,5 @@ public class ExerciseServiceImplIT {
                 ).toList().getFirst(),
                 exerciseFound)
         );
-    }
-
-    private void assertEqualInputNewExercise(ExerciseEntity expected, ExerciseEntity actual) {
-        Assertions.assertEquals(expected.getName(), actual.getName());
-        Assertions.assertEquals(expected.getDescription(), actual.getDescription());
-        Assertions.assertEquals(expected.getGoal(), actual.getGoal());
-        Assertions.assertEquals(expected.getMuscles().size(), actual.getMuscles().size());
-        Assertions.assertEquals(expected.getExerciseTypes().size(), actual.getExerciseTypes().size());
-        Assertions.assertEquals(expected.getProgExercises().size(), actual.getProgExercises().size());
-    }
-
-    private void assertEqualExercise(ExerciseEntity expected, ExerciseEntity actual) {
-        Assertions.assertEquals(expected.getId(), actual.getId());
-        Assertions.assertEquals(expected.getName(), actual.getName());
-        Assertions.assertEquals(expected.getDescription(), actual.getDescription());
-        Assertions.assertEquals(expected.getGoal(), actual.getGoal());
-        Assertions.assertEquals(expected.getMuscles().size(), actual.getMuscles().size());
-        Assertions.assertEquals(expected.getExerciseTypes().size(), actual.getExerciseTypes().size());
-        Assertions.assertEquals(expected.getProgExercises().size(), actual.getProgExercises().size());
     }
 }
