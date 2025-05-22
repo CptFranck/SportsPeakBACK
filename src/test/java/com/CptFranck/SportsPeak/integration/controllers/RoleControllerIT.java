@@ -166,16 +166,4 @@ class RoleControllerIT {
                 ).toList().getFirst())
         );
     }
-
-    private void assertRoleDtoAndEntity(RoleEntity roleEntity, RoleDto roleDto) {
-        Assertions.assertNotNull(roleDto);
-        Assertions.assertEquals(roleEntity.getName(), roleDto.getName());
-        Assertions.assertEquals(roleEntity.getPrivileges().size(), roleDto.getPrivileges().size());
-    }
-
-    private void assertRoleDtoAndInput(InputNewRole inputNewRole, RoleDto roleDto) {
-        Assertions.assertNotNull(roleDto);
-        Assertions.assertEquals(inputNewRole.getName(), roleDto.getName());
-        Assertions.assertEquals(inputNewRole.getPrivilegeIds().size(), roleDto.getPrivileges().size());
-    }
 }

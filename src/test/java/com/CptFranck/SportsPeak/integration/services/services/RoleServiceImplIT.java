@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.createTestPrivilege;
+import static com.CptFranck.SportsPeak.utils.TestRoleUtils.assertEqualsRole;
 import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -174,10 +175,5 @@ public class RoleServiceImplIT {
                 ).toList().getFirst(),
                 roleFound)
         );
-    }
-
-    private void assertEqualsRole(RoleEntity expected, RoleEntity actual) {
-        Assertions.assertEquals(expected.getId(), actual.getId());
-        Assertions.assertEquals(expected.getName(), actual.getName());
     }
 }

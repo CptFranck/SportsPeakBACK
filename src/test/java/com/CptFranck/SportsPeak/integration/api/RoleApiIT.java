@@ -250,14 +250,4 @@ class RoleApiIT {
                 ).toList().getFirst())
         );
     }
-
-    private void assertRoleDtoAndEntity(RoleEntity roleEntity, RoleDto roleDto) {
-        Assertions.assertNotNull(roleDto);
-        Assertions.assertEquals(roleEntity.getName(), roleDto.getName());
-    }
-
-    private void assertRoleDtoAndInput(InputNewRole inputNewRole, RoleDto roleDto) {
-        Assertions.assertNotNull(roleDto);
-        Assertions.assertEquals(inputNewRole.getName(), roleDto.getName());
-    }
 }
