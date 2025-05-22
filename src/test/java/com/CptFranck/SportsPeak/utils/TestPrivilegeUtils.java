@@ -4,6 +4,7 @@ import com.CptFranck.SportsPeak.domain.dto.PrivilegeDto;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.input.privilege.InputNewPrivilege;
 import com.CptFranck.SportsPeak.domain.input.privilege.InputPrivilege;
+import org.junit.jupiter.api.Assertions;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -54,5 +55,21 @@ public class TestPrivilegeUtils {
                 "Privilege name",
                 new ArrayList<>()
         );
+    }
+
+    public static void assertEqualPrivilege(PrivilegeEntity expected, PrivilegeEntity actual) {
+        Assertions.assertEquals(expected.getId(), actual.getId());
+        Assertions.assertEquals(expected.getName(), actual.getName());
+    }
+
+    public static void assertPrivilegeDtoAndEntity(PrivilegeEntity privilegeEntity, PrivilegeDto privilegeDto) {
+        Assertions.assertNotNull(privilegeDto);
+        Assertions.assertEquals(privilegeEntity.getId(), privilegeDto.getId());
+        Assertions.assertEquals(privilegeEntity.getName(), privilegeDto.getName());
+    }
+
+    public static void assertPrivilegeDtoAndInput(InputNewPrivilege inputNewPrivilege, PrivilegeDto privilegeDto) {
+        Assertions.assertNotNull(privilegeDto);
+        Assertions.assertEquals(inputNewPrivilege.getName(), privilegeDto.getName());
     }
 }
