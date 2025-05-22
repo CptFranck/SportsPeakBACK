@@ -2,6 +2,7 @@ package com.CptFranck.SportsPeak.integration.services.managers;
 
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
+import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeNotFoundException;
 import com.CptFranck.SportsPeak.repository.PrivilegeRepository;
 import com.CptFranck.SportsPeak.repository.RoleRepository;
 import com.CptFranck.SportsPeak.service.managerImpl.RoleManagerImpl;
@@ -44,6 +45,13 @@ public class RoleManagerImplIT {
         PrivilegeEntity privilegeResolved = roleManager.savePrivilege(privilege);
 
         assertEqualPrivilege(privilege, privilegeResolved);
+    }
+
+    @Test
+    void savePrivilege_InvalidPrivilegeId_ReturnPrivilegeEntity() {
+        PrivilegeEntity privilege = createTestPrivilege(1L, 0);
+
+        Assertions.assertThrows(PrivilegeNotFoundException.class, () -> roleManager.savePrivilege(privilege));
     }
 
     @Test
