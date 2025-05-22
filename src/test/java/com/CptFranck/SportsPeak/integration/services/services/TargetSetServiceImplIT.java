@@ -144,9 +144,9 @@ public class TargetSetServiceImplIT {
         TargetSetEntity targetSet2 = targetSetRepository.save(createTestTargetSet(null, progExercise, targetSet));
         TargetSetEntity targetSet3 = targetSetRepository.save(createTestTargetSet(null, progExercise, targetSet2));
 
-        targetSetServiceImpl.delete(targetSet2.getId());
+        assertAll(() -> targetSetServiceImpl.delete(targetSet2.getId()));
 
-        boolean targetSetFound = targetSetServiceImpl.exists(targetSet2.getId());
+        boolean targetSetFound = targetSetRepository.existsById(targetSet2.getId());
         targetSet = targetSetRepository.findById(targetSet.getId()).orElseThrow();
         targetSet3 = targetSetRepository.findById(targetSet3.getId()).orElseThrow();
         Assertions.assertFalse(targetSetFound);
