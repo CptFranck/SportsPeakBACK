@@ -64,6 +64,7 @@ public class ExerciseTypeTestUtils {
 
     public static void assertExerciseTypeDtoAndEntity(ExerciseTypeEntity exerciseTypeEntity, ExerciseTypeDto exerciseTypeDto) {
         Assertions.assertNotNull(exerciseTypeDto);
+        Assertions.assertEquals(exerciseTypeEntity.getId(), exerciseTypeDto.getId());
         Assertions.assertEquals(exerciseTypeEntity.getName(), exerciseTypeDto.getName());
         Assertions.assertEquals(exerciseTypeEntity.getGoal(), exerciseTypeDto.getGoal());
         Assertions.assertEquals(exerciseTypeEntity.getExercises().size(), exerciseTypeDto.getExercises().size());

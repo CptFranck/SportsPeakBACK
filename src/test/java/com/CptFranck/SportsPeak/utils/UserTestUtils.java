@@ -110,6 +110,7 @@ public class UserTestUtils {
 
     public static void assertUserDtoAndEntity(UserEntity userEntity, UserDto userDto, boolean isEmailUpdated) {
         Assertions.assertNotNull(userDto);
+        Assertions.assertEquals(userEntity.getId(), userDto.getId());
         if (!isEmailUpdated)
             Assertions.assertEquals(userEntity.getEmail(), userDto.getEmail());
         Assertions.assertEquals(userEntity.getFirstName(), userDto.getFirstName());

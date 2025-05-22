@@ -66,6 +66,7 @@ public class RoleTestUtils {
 
     public static void assertRoleDtoAndEntity(RoleEntity roleEntity, RoleDto roleDto) {
         Assertions.assertNotNull(roleDto);
+        Assertions.assertEquals(roleEntity.getId(), roleDto.getId());
         Assertions.assertEquals(roleEntity.getName(), roleDto.getName());
         Assertions.assertEquals(roleEntity.getPrivileges().size(), roleDto.getPrivileges().size());
     }
