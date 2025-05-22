@@ -91,6 +91,7 @@ public class ProgExerciseTestUtils {
 
     public static void assertProgExerciseDtoAndEntity(ProgExerciseEntity progExercise, ProgExerciseDto progExerciseDto) {
         Assertions.assertNotNull(progExerciseDto);
+        Assertions.assertEquals(progExercise.getId(), progExerciseDto.getId());
         Assertions.assertEquals(progExercise.getName(), progExerciseDto.getName());
         Assertions.assertEquals(progExercise.getNote(), progExerciseDto.getNote());
         Assertions.assertEquals(progExercise.getVisibility().label, progExerciseDto.getVisibility());
