@@ -25,7 +25,7 @@ import java.util.Objects;
 
 import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.ExerciseTypeQuery.*;
 import static com.CptFranck.SportsPeak.utils.ExerciseTypeTestUtils.*;
-import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.ExerciseTestUtils.createTestExercise;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class TestExerciseUtils {
+public class ExerciseTestUtils {
 
     public static ExerciseEntity createTestExercise(Long id) {
         return new ExerciseEntity(

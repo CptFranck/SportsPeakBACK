@@ -14,8 +14,8 @@ import static com.CptFranck.SportsPeak.utils.MuscleTestUtils.createTestMuscle;
 import static com.CptFranck.SportsPeak.utils.MuscleTestUtils.createTestMuscleDto;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExerciseDto;
-import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExerciseDto;
+import static com.CptFranck.SportsPeak.utils.ExerciseTestUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.ExerciseTestUtils.createTestExerciseDto;
 import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUser;
 import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUserDto;
 

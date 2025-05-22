@@ -22,7 +22,7 @@ import static com.CptFranck.SportsPeak.utils.PerformanceLogTestUtils.createTestI
 import static com.CptFranck.SportsPeak.utils.PerformanceLogTestUtils.createTestInputPerformanceLog;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.TargetSetTestUtils.createTestTargetSet;
-import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.ExerciseTestUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUser;
 
 @SpringBootTest()

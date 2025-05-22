@@ -35,7 +35,7 @@ import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.UserQuery.
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.assertProgExerciseDtoAndEntity;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
-import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.ExerciseTestUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.UserTestUtils.*;
 
 @SpringBootTest()

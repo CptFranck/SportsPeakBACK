@@ -18,8 +18,8 @@ import java.util.*;
 
 import static com.CptFranck.SportsPeak.utils.ExerciseTypeTestUtils.createTestExerciseType;
 import static com.CptFranck.SportsPeak.utils.MuscleTestUtils.createTestMuscle;
-import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.assertEqualExercise;
-import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.ExerciseTestUtils.assertEqualExercise;
+import static com.CptFranck.SportsPeak.utils.ExerciseTestUtils.createTestExercise;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest()

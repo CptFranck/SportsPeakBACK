@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 import static com.CptFranck.SportsPeak.utils.ExerciseTypeTestUtils.createTestExerciseType;
 import static com.CptFranck.SportsPeak.utils.ExerciseTypeTestUtils.createTestExerciseTypeList;
-import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.ExerciseTestUtils.createTestExercise;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
