@@ -60,7 +60,7 @@ public class PerformanceLogServiceImplIT {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         this.performanceLogRepository.deleteAll();
         this.targetSetRepository.deleteAll();
         this.progExerciseRepository.deleteAll();

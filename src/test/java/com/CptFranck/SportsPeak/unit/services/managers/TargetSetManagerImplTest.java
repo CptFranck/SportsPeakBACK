@@ -56,7 +56,7 @@ public class TargetSetManagerImplTest {
     }
 
     @Test
-    void savePerformanceLogUpdatePerformanceLog_ReturnPerformanceLogEntity() {
+    void savePerformanceLog_UpdatePerformanceLog_ReturnPerformanceLogEntity() {
         PerformanceLogEntity performanceLog = createTestPerformanceLog(1L, targetSet);
         when(performanceLogService.save(Mockito.any(PerformanceLogEntity.class))).thenReturn(performanceLog);
 
