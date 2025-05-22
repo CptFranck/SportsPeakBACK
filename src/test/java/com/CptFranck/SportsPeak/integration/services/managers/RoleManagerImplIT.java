@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
-import java.util.Collections;
 import java.util.Objects;
 
 import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.assertEqualPrivilege;
@@ -34,12 +33,8 @@ public class RoleManagerImplIT {
 
     @AfterEach
     public void AfterEach() {
-        roleRepository.findAll().forEach(role -> {
-            role.setPrivileges(Collections.emptySet());
-            roleRepository.save(role);
-        });
-        privilegeRepository.deleteAll();
         roleRepository.deleteAll();
+        privilegeRepository.deleteAll();
     }
 
     @Test
