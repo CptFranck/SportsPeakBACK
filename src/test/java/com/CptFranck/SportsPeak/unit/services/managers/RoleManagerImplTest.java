@@ -12,7 +12,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.createTestPrivilege;
+import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.createTestPrivilege;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

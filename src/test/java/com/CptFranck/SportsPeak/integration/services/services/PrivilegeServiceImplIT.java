@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.assertEqualPrivilege;
-import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.createTestPrivilege;
+import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.assertEqualPrivilege;
+import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.createTestPrivilege;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

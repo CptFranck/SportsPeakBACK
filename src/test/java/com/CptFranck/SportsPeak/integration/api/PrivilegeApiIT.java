@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.PrivilegeQuery.*;
-import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.*;
+import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.*;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")

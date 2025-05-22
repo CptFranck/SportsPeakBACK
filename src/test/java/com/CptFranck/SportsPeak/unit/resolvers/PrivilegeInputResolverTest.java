@@ -15,8 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashSet;
 
-import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.createTestInputNewPrivilege;
-import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.createTestInputPrivilege;
+import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.createTestInputNewPrivilege;
+import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.createTestInputPrivilege;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

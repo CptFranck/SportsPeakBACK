@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 
-import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.createTestPrivilege;
-import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.createTestPrivilegeDto;
+import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.createTestPrivilege;
+import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.createTestPrivilegeDto;
 import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
 import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRoleDto;
 import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;

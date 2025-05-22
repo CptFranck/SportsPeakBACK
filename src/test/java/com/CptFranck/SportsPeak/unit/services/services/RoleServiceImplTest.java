@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.CptFranck.SportsPeak.utils.TestPrivilegeUtils.createTestPrivilege;
+import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.createTestPrivilege;
 import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createNewTestRoleList;
 import static com.CptFranck.SportsPeak.utils.TestRoleUtils.createTestRole;
 import static org.junit.jupiter.api.Assertions.assertAll;

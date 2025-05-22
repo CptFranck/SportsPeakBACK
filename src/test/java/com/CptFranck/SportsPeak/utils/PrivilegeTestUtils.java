@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class TestPrivilegeUtils {
+public class PrivilegeTestUtils {
 
     public static PrivilegeEntity createTestPrivilege(Long id, int option) {
         String privilegeName = "Privilege name";
