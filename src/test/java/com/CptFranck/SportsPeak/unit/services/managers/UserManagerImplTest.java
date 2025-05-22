@@ -17,8 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.HashSet;
 
 import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
-import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestInputUserRoles;
-import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestInputUserRoles;
+import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUser;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

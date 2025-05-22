@@ -20,8 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.CptFranck.SportsPeak.utils.AuthTestUtils.createInputCredentials;
 import static com.CptFranck.SportsPeak.utils.AuthTestUtils.createRegisterInput;
-import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserDto;
+import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUserDto;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

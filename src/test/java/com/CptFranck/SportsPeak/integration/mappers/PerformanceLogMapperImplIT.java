@@ -13,7 +13,7 @@ import static com.CptFranck.SportsPeak.utils.PerformanceLogTestUtils.createTestP
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.TargetSetTestUtils.createTestTargetSet;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
-import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUser;
 
 public class PerformanceLogMapperImplIT {
 

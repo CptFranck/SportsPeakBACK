@@ -33,7 +33,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import static com.CptFranck.SportsPeak.utils.AuthTestUtils.createInputCredentials;
 import static com.CptFranck.SportsPeak.utils.AuthTestUtils.createRegisterInput;
 import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
-import static com.CptFranck.SportsPeak.utils.TestUserUtils.*;
+import static com.CptFranck.SportsPeak.utils.UserTestUtils.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

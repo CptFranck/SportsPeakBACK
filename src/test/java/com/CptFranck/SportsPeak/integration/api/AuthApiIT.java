@@ -28,8 +28,8 @@ import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.AuthQuery.
 import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.AuthQuery.registerQuery;
 import static com.CptFranck.SportsPeak.utils.AuthTestUtils.createRegisterInput;
 import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
-import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserBis;
+import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUserBis;
 
 
 @SpringBootTest()

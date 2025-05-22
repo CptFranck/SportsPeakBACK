@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.CptFranck.SportsPeak.utils.TestUserUtils.*;
+import static com.CptFranck.SportsPeak.utils.UserTestUtils.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

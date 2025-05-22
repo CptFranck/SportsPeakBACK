@@ -16,8 +16,8 @@ import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestPro
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExerciseDto;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExerciseDto;
-import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserDto;
+import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUserDto;
 
 public class ExerciseMapperImplIT {
 

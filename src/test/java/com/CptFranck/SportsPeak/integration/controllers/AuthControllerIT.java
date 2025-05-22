@@ -25,8 +25,8 @@ import org.springframework.test.context.TestPropertySource;
 
 import static com.CptFranck.SportsPeak.utils.AuthTestUtils.createRegisterInput;
 import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
-import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
-import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUserBis;
+import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUserBis;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")

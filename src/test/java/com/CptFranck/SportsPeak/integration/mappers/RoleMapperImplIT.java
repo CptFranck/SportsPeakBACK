@@ -15,7 +15,7 @@ import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.createTestPrivil
 import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.createTestPrivilegeDto;
 import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
 import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRoleDto;
-import static com.CptFranck.SportsPeak.utils.TestUserUtils.createTestUser;
+import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUser;
 
 public class RoleMapperImplIT {
 
