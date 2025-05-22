@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 
 import java.time.LocalDateTime;
 
-public class TestDateTimeUtils {
+public class DateTimeTestUtils {
 
     public static void assertDatetimeWithTimestamp(LocalDateTime expected, LocalDateTime actual) {
         Assertions.assertEquals(expected.getSecond(), actual.getSecond());

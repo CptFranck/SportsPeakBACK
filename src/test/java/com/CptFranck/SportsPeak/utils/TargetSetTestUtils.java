@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
-import static com.CptFranck.SportsPeak.utils.TestDateTimeUtils.assertDatetimeWithTimestamp;
+import static com.CptFranck.SportsPeak.utils.DateTimeTestUtils.assertDatetimeWithTimestamp;
 import static com.CptFranck.SportsPeak.utils.TestInputDuration.assertInputDuration;
 
 public class TargetSetTestUtils {
