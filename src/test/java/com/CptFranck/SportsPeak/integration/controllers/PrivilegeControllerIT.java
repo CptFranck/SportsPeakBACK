@@ -174,15 +174,4 @@ class PrivilegeControllerIT {
                 exerciseDto)
         );
     }
-
-    private void assertPrivilegeDtoAndEntity(PrivilegeEntity privilegeEntity, PrivilegeDto privilegeDto) {
-        Assertions.assertNotNull(privilegeDto);
-        Assertions.assertEquals(privilegeEntity.getId(), privilegeDto.getId());
-        Assertions.assertEquals(privilegeEntity.getName(), privilegeDto.getName());
-    }
-
-    private void assertPrivilegeDtoAndInput(InputNewPrivilege inputNewPrivilege, PrivilegeDto privilegeDto) {
-        Assertions.assertNotNull(privilegeDto);
-        Assertions.assertEquals(inputNewPrivilege.getName(), privilegeDto.getName());
-    }
 }
