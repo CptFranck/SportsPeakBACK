@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
+import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.assertProgExerciseDtoAndEntity;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
@@ -140,14 +141,7 @@ class UserControllerIT {
 
         List<ProgExerciseDto> progExerciseDtos = userController.getUserProgExercises(user.getId());
 
-        Assertions.assertEquals(progExercise.getId(), progExerciseDtos.getFirst().getId());
-        Assertions.assertEquals(progExercise.getName(), progExerciseDtos.getFirst().getName());
-        Assertions.assertEquals(progExercise.getNote(), progExerciseDtos.getFirst().getNote());
-        Assertions.assertEquals(progExercise.getVisibility().label, progExerciseDtos.getFirst().getVisibility());
-        Assertions.assertEquals(progExercise.getTrustLabel().label, progExerciseDtos.getFirst().getTrustLabel());
-        Assertions.assertEquals(progExercise.getCreator().getId(), progExerciseDtos.getFirst().getCreator().getId());
-        Assertions.assertEquals(progExercise.getExercise().getId(), progExerciseDtos.getFirst().getExercise().getId());
-        Assertions.assertEquals(progExercise.getTargetSets().size(), progExerciseDtos.getFirst().getTargetSets().size());
+        assertProgExerciseDtoAndEntity(progExercise, progExerciseDtos.getFirst());
     }
 
 
@@ -304,15 +298,5 @@ class UserControllerIT {
                 ).toList().getFirst(),
                 userDto, false)
         );
-    }
-
-    private void assertUserDtoAndEntity(UserEntity userEntity, UserDto userDto, boolean isEmailUpdated) {
-        Assertions.assertNotNull(userDto);
-        if (!isEmailUpdated)
-            Assertions.assertEquals(userEntity.getEmail(), userDto.getEmail());
-        Assertions.assertEquals(userEntity.getFirstName(), userDto.getFirstName());
-        Assertions.assertEquals(userEntity.getLastName(), userDto.getLastName());
-        Assertions.assertEquals(userEntity.getUsername(), userDto.getUsername());
-        Assertions.assertEquals(userEntity.getRoles().size(), userDto.getRoles().size());
     }
 }

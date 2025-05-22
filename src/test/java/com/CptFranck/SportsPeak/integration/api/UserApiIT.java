@@ -32,6 +32,7 @@ import java.util.Objects;
 
 import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.ProgExerciseQuery.getUserProgExercisesQuery;
 import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.UserQuery.*;
+import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.assertProgExerciseDtoAndEntity;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
 import static com.CptFranck.SportsPeak.utils.TestExerciseUtils.createTestExercise;
@@ -142,7 +143,7 @@ class UserApiIT {
                 "data.getUserById", variables);
 
         UserDto userDto = objectMapper.convertValue(response, UserDto.class);
-        assertUserDtoAndEntity(user, userDto);
+        assertUserDtoAndEntity(user, userDto, false);
     }
 
     @Test
@@ -184,14 +185,7 @@ class UserApiIT {
 
         List<ProgExerciseDto> progExerciseDtos = objectMapper.convertValue(response, new TypeReference<>() {
         });
-        Assertions.assertEquals(progExercise.getId(), progExerciseDtos.getFirst().getId());
-        Assertions.assertEquals(progExercise.getName(), progExerciseDtos.getFirst().getName());
-        Assertions.assertEquals(progExercise.getNote(), progExerciseDtos.getFirst().getNote());
-        Assertions.assertEquals(progExercise.getVisibility().label, progExerciseDtos.getFirst().getVisibility());
-        Assertions.assertEquals(progExercise.getTrustLabel().label, progExerciseDtos.getFirst().getTrustLabel());
-        Assertions.assertEquals(progExercise.getCreator().getId(), progExerciseDtos.getFirst().getCreator().getId());
-        Assertions.assertEquals(progExercise.getExercise().getId(), progExerciseDtos.getFirst().getExercise().getId());
-        Assertions.assertEquals(progExercise.getTargetSets().size(), progExerciseDtos.getFirst().getTargetSets().size());
+        assertProgExerciseDtoAndEntity(progExercise, progExerciseDtos.getFirst());
     }
 
     @Test
@@ -321,6 +315,7 @@ class UserApiIT {
                 "data.modifyUserEmail", variables);
 
         UserDto userDto = objectMapper.convertValue(response.get("user"), UserDto.class);
+        assertUserDtoAndEntity(user, userDto, true);
         Assertions.assertEquals(inputUserIdentity.getNewEmail(), userDto.getEmail());
     }
 
@@ -397,7 +392,7 @@ class UserApiIT {
         LinkedHashMap<String, Object> response = dgsQueryExecutor.executeAndExtractJsonPath(modifyUserPasswordQuery, "data.modifyUserPassword", variables);
 
         UserDto userDto = objectMapper.convertValue(response.get("user"), UserDto.class);
-        assertUserDtoAndEntity(user, userDto);
+        assertUserDtoAndEntity(user, userDto, false);
         UserEntity modifyUser = userRepository.findById(user.getId()).orElseThrow();
         Assertions.assertTrue(passwordEncoder.matches(inputUserPassword.getNewPassword(), modifyUser.getPassword()));
     }
@@ -445,16 +440,7 @@ class UserApiIT {
                 userEntities.stream().filter(
                         userEntity -> Objects.equals(userEntity.getId(), userDto.getId())
                 ).toList().getFirst(),
-                userDto)
+                userDto, false)
         );
-    }
-
-    private void assertUserDtoAndEntity(UserEntity userEntity, UserDto userDto) {
-        Assertions.assertNotNull(userDto);
-        Assertions.assertEquals(userEntity.getEmail(), userDto.getEmail());
-        Assertions.assertEquals(userEntity.getFirstName(), userDto.getFirstName());
-        Assertions.assertEquals(userEntity.getLastName(), userDto.getLastName());
-        Assertions.assertEquals(userEntity.getUsername(), userDto.getUsername());
-        Assertions.assertEquals(userEntity.getRoles().size(), userDto.getRoles().size());
     }
 }
