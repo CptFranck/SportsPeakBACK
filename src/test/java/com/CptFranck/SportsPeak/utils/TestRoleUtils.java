@@ -4,6 +4,7 @@ import com.CptFranck.SportsPeak.domain.dto.RoleDto;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.input.role.InputNewRole;
 import com.CptFranck.SportsPeak.domain.input.role.InputRole;
+import org.junit.jupiter.api.Assertions;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -56,5 +57,22 @@ public class TestRoleUtils {
                 new ArrayList<>(),
                 new ArrayList<>()
         );
+    }
+
+    public static void assertEqualsRole(RoleEntity expected, RoleEntity actual) {
+        Assertions.assertEquals(expected.getId(), actual.getId());
+        Assertions.assertEquals(expected.getName(), actual.getName());
+    }
+
+    public static void assertRoleDtoAndEntity(RoleEntity roleEntity, RoleDto roleDto) {
+        Assertions.assertNotNull(roleDto);
+        Assertions.assertEquals(roleEntity.getName(), roleDto.getName());
+        Assertions.assertEquals(roleEntity.getPrivileges().size(), roleDto.getPrivileges().size());
+    }
+
+    public static void assertRoleDtoAndInput(InputNewRole inputNewRole, RoleDto roleDto) {
+        Assertions.assertNotNull(roleDto);
+        Assertions.assertEquals(inputNewRole.getName(), roleDto.getName());
+        Assertions.assertEquals(inputNewRole.getPrivilegeIds().size(), roleDto.getPrivileges().size());
     }
 }
