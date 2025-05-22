@@ -4,7 +4,9 @@ import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.TargetSetEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.exception.progExercise.ProgExerciseNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.progExercise.ProgExerciseStillUsedException;
+import com.CptFranck.SportsPeak.domain.exception.tartgetSet.TargetSetNotFoundException;
 import com.CptFranck.SportsPeak.repository.ExerciseRepository;
 import com.CptFranck.SportsPeak.repository.ProgExerciseRepository;
 import com.CptFranck.SportsPeak.repository.TargetSetRepository;
@@ -92,6 +94,13 @@ public class ProgExerciseManagerImplIT {
     }
 
     @Test
+    void saveTargetSet_InvalidTargetSetId_ThrowTargetSetNotFoundException() {
+        TargetSetEntity targetSet = createTestTargetSet(1L, progExercise, null);
+
+        Assertions.assertThrows(TargetSetNotFoundException.class, () -> progExerciseManager.saveTargetSet(targetSet, null));
+    }
+
+    @Test
     void deleteProgExercise_UserStillLinkedToProgExercise_ThrowProgExerciseStillUsedException() {
         UserEntity userBis = userRepository.save(createTestUserBis(null));
         user.getSubscribedProgExercises().add(progExercise);
@@ -103,8 +112,10 @@ public class ProgExerciseManagerImplIT {
     }
 
     @Test
-    void deleteProgExercise_ValidUseWithoutUser_Void() {
-        assertAll(() -> progExerciseManager.deleteProgExercise(progExercise.getId()));
+    void deleteProgExercise_InvalidProgExerciseId_Void() {
+        progExerciseRepository.delete(progExercise);
+
+        Assertions.assertThrows(ProgExerciseNotFoundException.class, () -> progExerciseManager.deleteProgExercise(progExercise.getId()));
     }
 
     @Test
