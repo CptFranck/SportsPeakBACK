@@ -3,11 +3,14 @@ package com.CptFranck.SportsPeak.integration.controllers;
 import com.CptFranck.SportsPeak.controller.PrivilegeController;
 import com.CptFranck.SportsPeak.domain.dto.PrivilegeDto;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
+import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeExistsException;
 import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeStillUsedByRoleException;
 import com.CptFranck.SportsPeak.domain.input.privilege.InputNewPrivilege;
 import com.CptFranck.SportsPeak.domain.input.privilege.InputPrivilege;
 import com.CptFranck.SportsPeak.repository.PrivilegeRepository;
+import com.CptFranck.SportsPeak.repository.RoleRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +25,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.*;
+import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
@@ -35,6 +39,9 @@ class PrivilegeControllerIT {
     @Autowired
     private PrivilegeRepository privilegeRepository;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
     private PrivilegeEntity privilege;
 
     @BeforeEach
@@ -44,6 +51,7 @@ class PrivilegeControllerIT {
 
     @AfterEach
     public void afterEach() {
+        roleRepository.deleteAll();
         this.privilegeRepository.deleteAll();
     }
 
@@ -139,6 +147,16 @@ class PrivilegeControllerIT {
         PrivilegeDto exerciseDto = privilegeController.modifyPrivilege(inputExercise);
 
         assertPrivilegeDtoAndInput(inputExercise, exerciseDto);
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void deletePrivilege_PrivilegeStillUsed_ThrowPrivilegeStillUsedByRoleException() {
+        RoleEntity role = createTestRole(null, 0);
+        role.getPrivileges().add(privilege);
+        roleRepository.save(role);
+
+        assertThrows(PrivilegeStillUsedByRoleException.class, () -> privilegeController.deletePrivilege(privilege.getId()));
     }
 
     @Test

@@ -1,9 +1,12 @@
 package com.CptFranck.SportsPeak.integration.services.services;
 
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
+import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeExistsException;
 import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeStillUsedByRoleException;
 import com.CptFranck.SportsPeak.repository.PrivilegeRepository;
+import com.CptFranck.SportsPeak.repository.RoleRepository;
 import com.CptFranck.SportsPeak.service.serviceImpl.PrivilegeServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -19,6 +22,7 @@ import java.util.Set;
 
 import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.assertEqualPrivilege;
 import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.createTestPrivilege;
+import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -27,10 +31,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class PrivilegeServiceImplIT {
 
     @Autowired
+    private PrivilegeServiceImpl privilegeServiceImpl;
+
+    @Autowired
     private PrivilegeRepository privilegeRepository;
 
     @Autowired
-    private PrivilegeServiceImpl privilegeServiceImpl;
+    private RoleRepository roleRepository;
 
     private PrivilegeEntity privilege;
 
@@ -41,7 +48,8 @@ public class PrivilegeServiceImplIT {
 
     @AfterEach
     public void afterEach() {
-        this.privilegeRepository.deleteAll();
+        roleRepository.deleteAll();
+        privilegeRepository.deleteAll();
     }
 
     @Test
@@ -117,6 +125,15 @@ public class PrivilegeServiceImplIT {
         privilegeRepository.delete(privilege);
 
         assertThrows(PrivilegeNotFoundException.class, () -> privilegeServiceImpl.delete(privilege.getId()));
+    }
+
+    @Test
+    void delete_PrivilegeStillUsed_ThrowPrivilegeStillUsedByRoleException() {
+        RoleEntity role = createTestRole(null, 0);
+        role.getPrivileges().add(privilege);
+        roleRepository.save(role);
+
+        assertThrows(PrivilegeStillUsedByRoleException.class, () -> privilegeServiceImpl.delete(privilege.getId()));
     }
 
     @Test

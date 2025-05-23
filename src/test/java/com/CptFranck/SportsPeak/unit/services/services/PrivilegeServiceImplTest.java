@@ -3,6 +3,7 @@ package com.CptFranck.SportsPeak.unit.services.services;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeExistsException;
 import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeStillUsedByRoleException;
 import com.CptFranck.SportsPeak.repository.PrivilegeRepository;
 import com.CptFranck.SportsPeak.service.serviceImpl.PrivilegeServiceImpl;
 import org.junit.jupiter.api.Assertions;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.createNewTestPrivilegeList;
 import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.createTestPrivilege;
+import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -124,7 +126,16 @@ public class PrivilegeServiceImplTest {
     }
 
     @Test
+    void delete_PrivilegeStillUsed_ThrowPrivilegeStillUsedByRoleException() {
+        privilege.getRoles().add(createTestRole(1L, 0));
+        when(privilegeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(privilege));
+
+        assertThrows(PrivilegeStillUsedByRoleException.class, () -> privilegeServiceImpl.delete(privilege.getId()));
+    }
+
+    @Test
     void delete_ValidInput_Void() {
+        privilege.getRoles().add(createTestRole(1L, 0));
         when(privilegeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(privilege));
 
         assertAll(() -> privilegeServiceImpl.delete(privilege.getId()));
