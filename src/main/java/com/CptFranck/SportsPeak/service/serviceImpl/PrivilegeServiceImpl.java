@@ -3,6 +3,7 @@ package com.CptFranck.SportsPeak.service.serviceImpl;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeExistsException;
 import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeStillUsedByRoleException;
 import com.CptFranck.SportsPeak.repository.PrivilegeRepository;
 import com.CptFranck.SportsPeak.service.PrivilegeService;
 import org.springframework.stereotype.Service;
@@ -59,8 +60,11 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 
     @Override
     public void delete(Long id) {
-        PrivilegeEntity exercise = this.findOne(id);
-        privilegeRepository.delete(exercise);
+        PrivilegeEntity privilege = this.findOne(id);
+        if (privilege.getRoles().isEmpty())
+            privilegeRepository.delete(privilege);
+        else
+            throw new PrivilegeStillUsedByRoleException(id, (long) privilege.getRoles().size());
     }
 
     @Override
