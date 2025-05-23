@@ -52,7 +52,7 @@ class PrivilegeControllerIT {
     @AfterEach
     public void afterEach() {
         roleRepository.deleteAll();
-        this.privilegeRepository.deleteAll();
+        privilegeRepository.deleteAll();
     }
 
     @Test
