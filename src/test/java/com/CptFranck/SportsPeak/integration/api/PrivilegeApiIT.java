@@ -2,9 +2,11 @@ package com.CptFranck.SportsPeak.integration.api;
 
 import com.CptFranck.SportsPeak.domain.dto.PrivilegeDto;
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
+import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.input.privilege.InputNewPrivilege;
 import com.CptFranck.SportsPeak.domain.input.privilege.InputPrivilege;
 import com.CptFranck.SportsPeak.repository.PrivilegeRepository;
+import com.CptFranck.SportsPeak.repository.RoleRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.graphql.dgs.DgsQueryExecutor;
@@ -24,6 +26,7 @@ import java.util.Objects;
 
 import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.PrivilegeQuery.*;
 import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.*;
+import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
@@ -38,6 +41,9 @@ class PrivilegeApiIT {
     @Autowired
     private PrivilegeRepository privilegeRepository;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
     private PrivilegeEntity privilege;
     private LinkedHashMap<String, Object> variables;
 
@@ -49,6 +55,7 @@ class PrivilegeApiIT {
 
     @AfterEach
     void afterEach() {
+        roleRepository.deleteAll();
         privilegeRepository.deleteAll();
     }
 
@@ -233,6 +240,21 @@ class PrivilegeApiIT {
 
         Assertions.assertTrue(exception.getMessage().contains("PrivilegeNotFoundException"));
         Assertions.assertTrue(exception.getMessage().contains(String.format("The privilege with the id %s has not been found", privilege.getId())));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "ADMIN")
+    void deletePrivilege_PrivilegeStillUsed_ThrowPrivilegeStillUsedByRoleException() {
+        RoleEntity role = createTestRole(null, 0);
+        role.getPrivileges().add(privilege);
+        roleRepository.save(role);
+        variables.put("privilegeId", privilege.getId());
+
+        QueryException exception = Assertions.assertThrows(QueryException.class,
+                () -> dgsQueryExecutor.executeAndExtractJsonPath(deletePrivilegeQuery, "data.deletePrivilege", variables));
+
+        Assertions.assertTrue(exception.getMessage().contains("PrivilegeStillUsedByRoleException"));
+        Assertions.assertTrue(exception.getMessage().contains(String.format("The privilege with id %s is still used by %s role(s)", privilege.getId(), 1)));
 
     }
 
