@@ -2,6 +2,7 @@ package com.CptFranck.SportsPeak.integration.services.managers;
 
 import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
+import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeExistsException;
 import com.CptFranck.SportsPeak.domain.exception.privilege.PrivilegeNotFoundException;
 import com.CptFranck.SportsPeak.repository.PrivilegeRepository;
 import com.CptFranck.SportsPeak.repository.RoleRepository;
@@ -18,6 +19,7 @@ import java.util.Objects;
 import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.assertEqualPrivilege;
 import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.createTestPrivilege;
 import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest()
 @TestPropertySource(properties = "spring.config.additional-location=classpath:application-test.yml")
@@ -36,6 +38,14 @@ public class RoleManagerImplIT {
     public void AfterEach() {
         roleRepository.deleteAll();
         privilegeRepository.deleteAll();
+    }
+
+    @Test
+    void savePrivilege_AddNewPrivilegeWithNameAlreadyTaken_ThrowPrivilegeExistsException() {
+        privilegeRepository.save(createTestPrivilege(null, 0));
+        PrivilegeEntity privilege = createTestPrivilege(null, 0);
+
+        assertThrows(PrivilegeExistsException.class, () -> roleManager.savePrivilege(privilege));
     }
 
     @Test
