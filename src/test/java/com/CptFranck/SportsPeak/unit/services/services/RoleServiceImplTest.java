@@ -71,7 +71,14 @@ public class RoleServiceImplTest {
     }
 
     @Test
-    void findByName_ValidRoleId_ReturnOptionalOfRoleEntity() {
+    void findByName_InvalidRoleName_ThrowRoleNotFoundException() {
+        when(roleRepository.findByName(Mockito.any(String.class))).thenReturn(Optional.empty());
+
+        assertThrows(RoleNotFoundException.class, () -> roleServiceImpl.findByName(role.getName()));
+    }
+
+    @Test
+    void findByName_ValidRoleName_ReturnOptionalOfRoleEntity() {
         when(roleRepository.findByName(Mockito.any(String.class))).thenReturn(Optional.of(role));
 
         RoleEntity roleFound = roleServiceImpl.findByName(role.getName());
