@@ -3,6 +3,11 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+*.p12
+*.jks
+*.pem
+*.crt
+*.key
 
 ### STS ###
 .apt_generated
@@ -36,4 +41,3 @@ build/
 /data/
 /data/pg_xact/
 /data/pg_wal/
-/src/main/resources/ssl/
