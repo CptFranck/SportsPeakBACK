@@ -4,6 +4,8 @@ import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.exception.role.RoleExistsException;
 import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.role.RoleStillUsedByPrivilegeException;
+import com.CptFranck.SportsPeak.domain.exception.role.RoleStillUsedByUserException;
 import com.CptFranck.SportsPeak.repository.RoleRepository;
 import com.CptFranck.SportsPeak.service.RoleService;
 import org.springframework.stereotype.Service;
@@ -66,7 +68,13 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void delete(Long id) {
         RoleEntity role = this.findOne(id);
-        roleRepository.delete(role);
+        if (role.getUsers().isEmpty())
+            if (role.getPrivileges().isEmpty())
+                roleRepository.delete(role);
+            else
+                throw new RoleStillUsedByPrivilegeException(id, (long) role.getPrivileges().size());
+        else
+            throw new RoleStillUsedByUserException(id, (long) role.getUsers().size());
     }
 
     @Override
