@@ -36,3 +36,4 @@ build/
 /data/
 /data/pg_xact/
 /data/pg_wal/
+/src/main/resources/ssl/
