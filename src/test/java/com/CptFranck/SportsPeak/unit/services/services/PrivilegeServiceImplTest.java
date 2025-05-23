@@ -135,7 +135,6 @@ public class PrivilegeServiceImplTest {
 
     @Test
     void delete_ValidInput_Void() {
-        privilege.getRoles().add(createTestRole(1L, 0));
         when(privilegeRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(privilege));
 
         assertAll(() -> privilegeServiceImpl.delete(privilege.getId()));
