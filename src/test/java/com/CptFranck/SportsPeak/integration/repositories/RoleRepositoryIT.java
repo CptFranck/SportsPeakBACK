@@ -12,7 +12,7 @@ import java.util.Optional;
 import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
 
 @DataJpaTest
-public class RoleRepositoryIntTest {
+public class RoleRepositoryIT {
 
     @Autowired
     private RoleRepository roleRepository;

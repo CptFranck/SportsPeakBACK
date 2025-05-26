@@ -13,12 +13,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
 
-import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createNewTestProgExerciseList;
 import static com.CptFranck.SportsPeak.utils.ExerciseTestUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createNewTestProgExerciseList;
 import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUser;
 
 @DataJpaTest
-class ProgExerciseRepositoryIntTest {
+class ProgExerciseRepositoryIT {
 
     @Autowired
     private UserRepository userRepository;

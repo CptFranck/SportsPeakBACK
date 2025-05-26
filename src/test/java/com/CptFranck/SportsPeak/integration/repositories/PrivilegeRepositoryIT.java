@@ -12,7 +12,7 @@ import java.util.Optional;
 import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.createTestPrivilege;
 
 @DataJpaTest
-public class PrivilegeRepositoryIntTest {
+public class PrivilegeRepositoryIT {
 
     @Autowired
     private PrivilegeRepository privilegeRepository;
