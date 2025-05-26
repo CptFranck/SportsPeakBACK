@@ -4,14 +4,17 @@ import com.CptFranck.SportsPeak.domain.entity.MuscleEntity;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import com.CptFranck.SportsPeak.service.ExerciseTypeService;
 import com.CptFranck.SportsPeak.service.MuscleService;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,7 +30,7 @@ public class IllustrationController {
     private static final long MAX_FILE_SIZE = 1024 * 1024; // 1MB
     private static final List<String> ALLOWED_TYPES = List.of("image/png");
     private static final List<String> ALLOWED_FOLDER_TYPE = List.of("muscle", "exercise", "exerciseType");
-    private final String BASE_UPLOAD_DIR = "src/main/resources/static/uploads/";
+    private final String BASE_UPLOAD_DIR = "static/uploads/";
     private final MuscleService muscleService;
     private final ExerciseService exerciseService;
     private final ExerciseTypeService exerciseTypeService;
@@ -40,50 +43,59 @@ public class IllustrationController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/{type}/{id}")
-    public ResponseEntity<?> upload(@PathVariable String type, @PathVariable Long id, @RequestParam("file") MultipartFile file) throws IOException {
+    @PostMapping("/upload/{type}/{id}")
+    public ResponseEntity<?> uploadImage(@PathVariable String type, @PathVariable Long id, @RequestParam("file") MultipartFile file) {
+        try {
+            if (!ALLOWED_TYPES.contains(file.getContentType()))
+                return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body("Unauthorized file type.");
+            if (MAX_FILE_SIZE < file.getSize())
+                return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body("File too large.");
+            if (!ALLOWED_FOLDER_TYPE.contains(type))
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Type not supported");
 
-        if (!ALLOWED_TYPES.contains(file.getContentType()))
-            return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body("Unauthorized file type.");
-        if (MAX_FILE_SIZE < file.getSize())
-            return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body("File too large.");
-        if (!ALLOWED_FOLDER_TYPE.contains(type))
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Type not supported");
+            String safeName = Objects.requireNonNull(file.getOriginalFilename()).replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
+            String filename = UUID.randomUUID() + "_" + safeName;
+            Path filePath = Paths.get(BASE_UPLOAD_DIR + type + "s/" + filename);
+            Files.createDirectories(filePath.getParent());
+            Files.write(filePath, file.getBytes());
 
-        String originalName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        String filename = UUID.randomUUID() + "_" + originalName;
+            String imageUrl = "/api/illustrations/" + type + "s/" + filename;
 
-        String folder = BASE_UPLOAD_DIR + type + "s/";
-        Files.createDirectories(Paths.get(folder));
+            switch (type) {
+                case "muscle":
+                    this.updateMuscleIllustrationPath(id, imageUrl);
+                    break;
+                case "exercise":
+                    //                this.updateExerciseIllustrationPath(id, imageUrl);
+                    break;
+                case "exerciseType":
+                    //                this.updateExerciseTypeIllustrationPath(id, imageUrl);
+                    break;
+                default:
+                    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Type not supported");
+            }
 
-        Path path = Paths.get(folder + filename);
-        Files.write(path, file.getBytes());
-
-        String publicPath = "/uploads/" + type + "s/" + filename;
-
-        switch (type) {
-            case "muscle":
-                this.updateMuscleIllustrationPath(id, publicPath);
-                break;
-//            case "exercise":
-//                this.updateExerciseIllustrationPath(id, publicPath);
-//                break;
-//            case "exerciseType":
-//                this.updateExerciseTypeIllustrationPath(id, publicPath);
-//                break;
-            default:
-                return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("Type not supported");
+            return ResponseEntity.ok(Map.of("url", imageUrl));
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Upload failed");
         }
-
-        return ResponseEntity.ok(Map.of("url", publicPath));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{type}/{filename}")
-    public ResponseEntity<?> delete(@PathVariable String type, @PathVariable String filename) throws IOException {
-        String path = BASE_UPLOAD_DIR + type + "s/" + filename;
-        Files.deleteIfExists(Paths.get(path));
-        return ResponseEntity.ok().build();
+    @GetMapping("/{filename:.+}")
+    public ResponseEntity<Resource> getImage(@PathVariable String filename) {
+        try {
+            Path filePath = Paths.get(BASE_UPLOAD_DIR).resolve(filename).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+            if (resource.exists()) {
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_PNG)
+                        .body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (MalformedURLException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     private void updateMuscleIllustrationPath(Long muscleId, String illustrationPath) {
