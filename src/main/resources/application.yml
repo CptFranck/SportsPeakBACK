@@ -40,6 +40,15 @@ security:
     token:
       secret-key: Y2hhbmdlbWVpbnByb2QhY2hhbmdlbWVpbnByb2Qh
 
+server:
+  port: 8443
+  ssl:
+    enabled: true
+    key-store-type: PKCS12
+    key-alias: SportsPeak
+    key-store: classpath:keystore/SportsPeak.p12
+    key-store-password: changemeinprod!
+
 # STORAGE
 storage:
   location: src/main/resources/static/uploads
