@@ -1,11 +1,15 @@
 package com.CptFranck.SportsPeak.integration.services.managers;
 
+import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
+import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.role.RoleExistsException;
 import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserRoles;
+import com.CptFranck.SportsPeak.repository.ExerciseRepository;
+import com.CptFranck.SportsPeak.repository.ProgExerciseRepository;
 import com.CptFranck.SportsPeak.repository.RoleRepository;
 import com.CptFranck.SportsPeak.repository.UserRepository;
 import com.CptFranck.SportsPeak.service.managerImpl.UserManagerImpl;
@@ -16,8 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
+import static com.CptFranck.SportsPeak.utils.ExerciseTestUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.assertEqualProgExercise;
+import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.RoleTestUtils.assertEqualsRole;
 import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
 import static com.CptFranck.SportsPeak.utils.UserTestUtils.*;
@@ -30,15 +39,39 @@ public class UserManagerImplIT {
     private UserManagerImpl userManager;
 
     @Autowired
+    private ExerciseRepository exerciseRepository;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private ProgExerciseRepository progExerciseRepository;
 
     @AfterEach
     public void afterEach() {
+        userRepository.findAll().forEach(user -> {
+            user.setSubscribedProgExercises(new HashSet<>());
+            userRepository.save(user);
+        });
+        progExerciseRepository.deleteAll();
+        exerciseRepository.deleteAll();
         userRepository.deleteAll();
         roleRepository.deleteAll();
+    }
+
+    @Test
+    void saveProgExercise_AddNewRole_ReturnRoleEntity() {
+        UserEntity user = userRepository.save(createTestUser(null));
+        ExerciseEntity exercise = exerciseRepository.save(createTestExercise(null));
+        ProgExerciseEntity progExercise = createTestProgExercise(null, user, exercise);
+
+        ProgExerciseEntity progExerciseSaved = userManager.saveProgExercise(progExercise);
+
+        user = userRepository.findById(user.getId()).orElseThrow();
+        assertEqualProgExercise(progExercise, progExerciseSaved);
+        Assertions.assertTrue(user.getSubscribedProgExercises().stream().anyMatch(pe -> Objects.equals(pe.getId(), progExerciseSaved.getId())));
     }
 
     @Test
