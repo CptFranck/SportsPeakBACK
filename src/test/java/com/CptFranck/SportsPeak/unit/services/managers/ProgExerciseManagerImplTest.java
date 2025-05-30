@@ -21,9 +21,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Collections;
 import java.util.Set;
 
+import static com.CptFranck.SportsPeak.utils.ExerciseTestUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.TargetSetTestUtils.createTestTargetSet;
-import static com.CptFranck.SportsPeak.utils.ExerciseTestUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUser;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -79,7 +79,16 @@ public class ProgExerciseManagerImplTest {
 
     @Test
     void deleteProgExercise_UserStillLinkedToProgExercise_ThrowProgExerciseStillUsedException() {
-        UserEntity userBis = createTestUser(1L);
+        UserEntity userBis = createTestUser(2L);
+        when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(progExercise);
+        when(userService.findUserBySubscribedProgExercises(Mockito.any(ProgExerciseEntity.class))).thenReturn(Set.of(userBis));
+
+        assertThrows(ProgExerciseStillUsedException.class, () -> progExerciseManager.deleteProgExercise(progExercise.getId()));
+    }
+
+    @Test
+    void deleteProgExercise_UserStillLinkedToProgExerciseBis_ThrowProgExerciseStillUsedException() {
+        UserEntity userBis = createTestUser(2L);
         when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(progExercise);
         when(userService.findUserBySubscribedProgExercises(Mockito.any(ProgExerciseEntity.class))).thenReturn(Set.of(userBis, user));
 
@@ -96,6 +105,7 @@ public class ProgExerciseManagerImplTest {
 
     @Test
     void deleteProgExercise_ValidUseWithUserAuthor_UpdatePrivilege_Void() {
+        user.getSubscribedProgExercises().add(progExercise);
         when(progExerciseService.findOne(Mockito.any(Long.class))).thenReturn(progExercise);
         when(userService.findUserBySubscribedProgExercises(Mockito.any(ProgExerciseEntity.class))).thenReturn(Set.of(user));
         when(userService.findOne(Mockito.any(Long.class))).thenReturn(user);
