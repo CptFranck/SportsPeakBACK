@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.ProgExerciseQuery.*;
-import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.*;
 import static com.CptFranck.SportsPeak.utils.ExerciseTestUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.*;
 import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUser;
 import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUserBis;
 
@@ -190,6 +190,8 @@ class ProgExerciseApiIT {
         ProgExerciseDto progExerciseDto = objectMapper.convertValue(response, new TypeReference<>() {
         });
         assertProgExerciseDtoAndInputNew(newProgExercise, progExerciseDto);
+        user = userRepository.findById(user.getId()).orElseThrow();
+        Assertions.assertTrue(user.getSubscribedProgExercises().stream().anyMatch(pe -> Objects.equals(pe.getId(), progExerciseDto.getId())));
     }
 
     @Test
