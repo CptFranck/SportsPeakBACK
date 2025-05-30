@@ -9,6 +9,7 @@ import com.CptFranck.SportsPeak.mapper.Mapper;
 import com.CptFranck.SportsPeak.resolver.ProgExerciseInputResolver;
 import com.CptFranck.SportsPeak.service.ProgExerciseManager;
 import com.CptFranck.SportsPeak.service.ProgExerciseService;
+import com.CptFranck.SportsPeak.service.UserManager;
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsMutation;
 import com.netflix.graphql.dgs.DgsQuery;
@@ -20,12 +21,14 @@ import java.util.List;
 @DgsComponent
 public class ProgExerciseController {
 
-    private final ProgExerciseService progExerciseService;
+    private final UserManager userManager;
     private final ProgExerciseManager progExerciseManager;
+    private final ProgExerciseService progExerciseService;
     private final ProgExerciseInputResolver progExerciseInputResolver;
     private final Mapper<ProgExerciseEntity, ProgExerciseDto> progExerciseMapper;
 
-    public ProgExerciseController(ProgExerciseService progExerciseService, ProgExerciseManager progExerciseManager, ProgExerciseInputResolver progExerciseInputResolver, Mapper<ProgExerciseEntity, ProgExerciseDto> progExerciseMapper) {
+    public ProgExerciseController(UserManager userManager, ProgExerciseService progExerciseService, ProgExerciseManager progExerciseManager, ProgExerciseInputResolver progExerciseInputResolver, Mapper<ProgExerciseEntity, ProgExerciseDto> progExerciseMapper) {
+        this.userManager = userManager;
         this.progExerciseManager = progExerciseManager;
         this.progExerciseMapper = progExerciseMapper;
         this.progExerciseService = progExerciseService;
@@ -47,7 +50,7 @@ public class ProgExerciseController {
     @DgsMutation
     public ProgExerciseDto addProgExercise(@InputArgument InputNewProgExercise inputNewProgExercise) {
         ProgExerciseEntity progExercise = progExerciseInputResolver.resolveInput(inputNewProgExercise);
-        return progExerciseMapper.mapTo(progExerciseService.save(progExercise));
+        return progExerciseMapper.mapTo(userManager.saveProgExercise(progExercise));
     }
 
     @PreAuthorize("hasRole('USER')")
