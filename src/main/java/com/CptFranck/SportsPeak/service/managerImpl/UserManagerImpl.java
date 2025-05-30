@@ -1,8 +1,10 @@
 package com.CptFranck.SportsPeak.service.managerImpl;
 
+import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserRoles;
+import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import com.CptFranck.SportsPeak.service.RoleService;
 import com.CptFranck.SportsPeak.service.UserManager;
 import com.CptFranck.SportsPeak.service.UserService;
@@ -21,9 +23,22 @@ public class UserManagerImpl implements UserManager {
 
     private final RoleService roleService;
 
-    public UserManagerImpl(UserService userService, RoleService roleService) {
+    private final ProgExerciseService progExerciseService;
+
+    public UserManagerImpl(UserService userService, RoleService roleService, ProgExerciseService progExerciseService) {
         this.userService = userService;
         this.roleService = roleService;
+        this.progExerciseService = progExerciseService;
+    }
+
+    @Override
+    public ProgExerciseEntity saveProgExercise(ProgExerciseEntity progExercise) {
+        ProgExerciseEntity progExerciseSaved = progExerciseService.save(progExercise);
+
+        progExerciseSaved.getCreator().getSubscribedProgExercises().add(progExerciseSaved);
+        userService.save(progExerciseSaved.getCreator());
+
+        return progExerciseSaved;
     }
 
     @Override
