@@ -58,12 +58,12 @@ public class ProgExerciseInputResolver {
     public ProgExerciseEntity resolveInput(InputProgExercise inputProgExercise) {
 
         ProgExerciseEntity progExercise = progExerciseService.findOne(inputProgExercise.getId());
-        ExerciseEntity newExercise = exerciseService.findOne(inputProgExercise.getExerciseId());
+        ExerciseEntity exercise = exerciseService.findOne(inputProgExercise.getExerciseId());
 
         progExercise.setNote(inputProgExercise.getNote());
         progExercise.setName(inputProgExercise.getName());
         progExercise.setVisibility(VisibilityLabel.valueOfLabel(inputProgExercise.getVisibility()));
-        progExercise.setExercise(newExercise);
+        progExercise.setExercise(exercise);
 
         return progExercise;
     }
