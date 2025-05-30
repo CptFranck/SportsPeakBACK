@@ -14,6 +14,7 @@ import com.CptFranck.SportsPeak.mapper.Mapper;
 import com.CptFranck.SportsPeak.resolver.ProgExerciseInputResolver;
 import com.CptFranck.SportsPeak.service.ProgExerciseManager;
 import com.CptFranck.SportsPeak.service.ProgExerciseService;
+import com.CptFranck.SportsPeak.service.UserManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,9 +26,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.*;
 import static com.CptFranck.SportsPeak.utils.ExerciseTestUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.ExerciseTestUtils.createTestExerciseDto;
+import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.*;
 import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUser;
 import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUserDto;
 import static org.mockito.Mockito.when;
@@ -46,6 +47,9 @@ class ProgExerciseControllerTest {
 
     @Mock
     private ProgExerciseManager progExerciseManager;
+
+    @Mock
+    private UserManager userManager;
 
     @Mock
     private ProgExerciseService progExerciseService;
@@ -86,7 +90,7 @@ class ProgExerciseControllerTest {
     @Test
     void addProgExercise_ValidInput_ReturnProgExerciseDto() {
         when(progExerciseInputResolver.resolveInput(Mockito.any(InputNewProgExercise.class))).thenReturn(progExercise);
-        when(progExerciseService.save(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExercise);
+        when(userManager.saveProgExercise(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExercise);
         when(progExerciseMapper.mapTo(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExerciseDto);
 
         ProgExerciseDto progExerciseDto = progExerciseController.addProgExercise(
