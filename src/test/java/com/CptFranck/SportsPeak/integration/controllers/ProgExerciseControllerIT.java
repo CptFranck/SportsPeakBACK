@@ -30,8 +30,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
-import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.*;
 import static com.CptFranck.SportsPeak.utils.ExerciseTestUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.*;
 import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUser;
 import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUserBis;
 
@@ -137,6 +137,8 @@ class ProgExerciseControllerIT {
         ProgExerciseDto progExerciseDto = progExerciseController.addProgExercise(inputNewExercise);
 
         assertProgExerciseDtoAndInputNew(inputNewExercise, progExerciseDto);
+        user = userRepository.findById(user.getId()).orElseThrow();
+        Assertions.assertTrue(user.getSubscribedProgExercises().stream().anyMatch(pe -> Objects.equals(pe.getId(), progExerciseDto.getId())));
     }
 
 
