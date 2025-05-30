@@ -1,8 +1,11 @@
 package com.CptFranck.SportsPeak.unit.services.managers;
 
+import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
+import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserRoles;
+import com.CptFranck.SportsPeak.service.ProgExerciseService;
 import com.CptFranck.SportsPeak.service.RoleService;
 import com.CptFranck.SportsPeak.service.UserService;
 import com.CptFranck.SportsPeak.service.managerImpl.UserManagerImpl;
@@ -16,6 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashSet;
 
+import static com.CptFranck.SportsPeak.utils.ExerciseTestUtils.createTestExercise;
+import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
 import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestInputUserRoles;
 import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUser;
@@ -31,7 +36,22 @@ public class UserManagerImplTest {
     private UserService userService;
 
     @Mock
+    private ProgExerciseService progExerciseService;
+
+    @Mock
     private RoleService roleService;
+
+    @Test
+    void saveProgExercise_AddNewRole_ReturnRoleEntity() {
+        UserEntity user = createTestUser(1L);
+        ExerciseEntity exercise = createTestExercise(1L);
+        ProgExerciseEntity progExercise = createTestProgExercise(null, user, exercise);
+        when(progExerciseService.save(Mockito.any(ProgExerciseEntity.class))).thenReturn(progExercise);
+
+        ProgExerciseEntity roleSaved = userManager.saveProgExercise(progExercise);
+
+        Assertions.assertEquals(progExercise, roleSaved);
+    }
 
     @Test
     void saveRole_AddNewRole_ReturnRoleEntity() {
