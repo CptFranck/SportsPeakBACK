@@ -27,27 +27,19 @@ public class JwtUtils {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateAccessToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        return createRefreshToken(claims, userDetails.getUsername());
+        return createToken(claims, userDetails.getUsername(), accessTokenValidity);
     }
 
-    private String createRefreshToken(Map<String, Object> claims, String subject) {
+    public String generateRefreshToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, userDetails.getUsername(), refreshTokenValidity);
+    }
+
+    private String createToken(Map<String, Object> claims, String subject, long validityMs) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + accessTokenValidity);
-
-        return Jwts.builder()
-                .claims(claims)
-                .subject(subject)
-                .issuedAt(now)
-                .expiration(expiryDate)
-                .signWith(getSigningKey())
-                .compact();
-    }
-
-    private String createAccessToken(Map<String, Object> claims, String subject) {
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + refreshTokenValidity);
 
         return Jwts.builder()
                 .claims(claims)
