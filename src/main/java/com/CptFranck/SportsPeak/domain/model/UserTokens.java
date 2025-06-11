@@ -6,7 +6,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class UserToken {
-    String token;
-    UserEntity user;
+public class UserTokens {
+    private final UserEntity user;
+    private final String accessToken;
+    private final String refreshToken;
 }
