@@ -3,7 +3,6 @@ package com.CptFranck.SportsPeak.config.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -14,31 +13,45 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.CptFranck.SportsPeak.config.security.SecurityConstant.JWT_EXPIRATION;
+import static com.CptFranck.SportsPeak.config.security.SecurityProperties.*;
 
 @Component
 public class JwtUtils {
 
-    @Value("${security.jwt.token.secret-key}")
-    private String secretKey;
+    final private SecretKey signingKey;
 
-    private SecretKey getSigningKey() {
-        byte[] keyBytes = this.secretKey.getBytes(StandardCharsets.UTF_8);
-        return Keys.hmacShaKeyFor(keyBytes);
+    public JwtUtils() {
+        this.signingKey = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+        return createRefreshToken(claims, userDetails.getUsername());
     }
 
-    private String createToken(Map<String, Object> claims, String subject) {
+    private String createRefreshToken(Map<String, Object> claims, String subject) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + ACCESS_TOKEN_VALIDITY);
+
         return Jwts.builder()
                 .claims(claims)
                 .subject(subject)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION))
-                .signWith(getSigningKey())
+                .issuedAt(now)
+                .expiration(expiryDate)
+                .signWith(signingKey)
+                .compact();
+    }
+
+    private String createAccessToken(Map<String, Object> claims, String subject) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + REFRESH_TOKEN_VALIDITY);
+
+        return Jwts.builder()
+                .claims(claims)
+                .subject(subject)
+                .issuedAt(now)
+                .expiration(expiryDate)
+                .signWith(signingKey)
                 .compact();
     }
 
@@ -66,7 +79,7 @@ public class JwtUtils {
 
     private Claims extractClaimAll(String token) {
         return Jwts.parser()
-                .verifyWith(getSigningKey())
+                .verifyWith(signingKey)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
