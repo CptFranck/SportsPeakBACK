@@ -39,7 +39,7 @@ public class JwtUtils {
 
     private String createToken(Map<String, Object> claims, String subject, long validityMs) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + accessTokenValidity);
+        Date expiryDate = new Date(now.getTime() + validityMs);
 
         return Jwts.builder()
                 .claims(claims)
