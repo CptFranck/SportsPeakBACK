@@ -38,9 +38,8 @@ dgs:
 
 # SECURITY
 security:
-  security:
-    cors:
-      allowed-origin: http://localhost:4200
+  cors:
+    allowed-origin: http://localhost:4200
   jwt:
     token:
       secret-key: Y2hhbmdlbWVpbnByb2QhY2hhbmdlbWVpbnByb2Qh
