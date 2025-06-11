@@ -1,7 +1,7 @@
 mutation ($inputUserEmail : InputUserEmail!){
     modifyUserEmail(inputUserEmail: $inputUserEmail) {
         tokenType
-        token
+        accessToken
         user {
             id
             email
