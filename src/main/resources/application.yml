@@ -1,8 +1,10 @@
 spring:
+  # FILE UPLOAD
   servlet:
     multipart:
       max-file-size: 1MB
       max-request-size: 1MB
+  # COLOR IN CONSOLE :D
   output:
     ansi:
       enabled: ALWAYS
@@ -36,10 +38,14 @@ dgs:
 
 # SECURITY
 security:
+  security:
+    cors:
+      allowed-origin: http://localhost:4200
   jwt:
     token:
       secret-key: Y2hhbmdlbWVpbnByb2QhY2hhbmdlbWVpbnByb2Qh
 
+# TSL / SSL
 server:
   port: 8443
   ssl:
