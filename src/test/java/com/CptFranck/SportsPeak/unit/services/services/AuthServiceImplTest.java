@@ -3,14 +3,13 @@ package com.CptFranck.SportsPeak.unit.services.services;
 import com.CptFranck.SportsPeak.config.security.JwtUtils;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
-import com.CptFranck.SportsPeak.domain.exception.userAuth.IncorrectPasswordException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.InvalidCredentialsException;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserEmail;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserPassword;
 import com.CptFranck.SportsPeak.domain.model.CustomUserDetails;
-import com.CptFranck.SportsPeak.domain.model.UserToken;
+import com.CptFranck.SportsPeak.domain.model.UserTokens;
 import com.CptFranck.SportsPeak.service.RoleService;
 import com.CptFranck.SportsPeak.service.UserService;
 import com.CptFranck.SportsPeak.service.serviceImpl.AuthServiceImpl;
@@ -62,18 +61,20 @@ public class AuthServiceImplTest {
     @Mock
     private JwtUtils jwtUtils;
 
-    private String token;
+    private String accessToken;
+    private String refreshToken;
     private RoleEntity role;
     private UserEntity user;
-    private UserToken userToken;
+    private UserTokens userTokens;
     private UserDetails userDetails;
 
     @BeforeEach
     public void setUp() {
-        token = "token";
+        accessToken = "accessToken";
+        refreshToken = "refreshToken";
         role = createTestRole(1L, 0);
         user = createTestUser(1L);
-        userToken = new UserToken(token, user);
+        userTokens = new UserTokens(user, accessToken, refreshToken);
         userDetails = new CustomUserDetails(user);
     }
 
@@ -90,14 +91,16 @@ public class AuthServiceImplTest {
     void login_CorrectCredentials_ReturnUserTokenEntity() {
         when(authenticationManager.authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class))).thenReturn(mock(Authentication.class));
         when(userDetailsService.loadUserByUsername(Mockito.any(String.class))).thenReturn(userDetails);
-        when(jwtUtils.generateToken(Mockito.any(UserDetails.class))).thenReturn(token);
+        when(jwtUtils.generateAccessToken(Mockito.any(UserDetails.class))).thenReturn(accessToken);
+        when(jwtUtils.generateRefreshToken(Mockito.any(UserDetails.class))).thenReturn(refreshToken);
         when(userService.findByLogin(Mockito.any(String.class))).thenReturn(user);
 
         InputCredentials inputCredentials = createInputCredentials(user);
-        UserToken returnedUser = authServiceImpl.login(inputCredentials);
+        UserTokens returnedUser = authServiceImpl.login(inputCredentials);
 
-        Assertions.assertEquals(userToken.getToken(), returnedUser.getToken());
-        Assertions.assertEquals(userToken.getUser(), returnedUser.getUser());
+        Assertions.assertEquals(userTokens.getAccessToken(), returnedUser.getAccessToken());
+        Assertions.assertEquals(userTokens.getRefreshToken(), returnedUser.getRefreshToken());
+        Assertions.assertEquals(userTokens.getUser(), returnedUser.getUser());
     }
 
     @Test
@@ -107,62 +110,69 @@ public class AuthServiceImplTest {
         when(userService.save(Mockito.any(UserEntity.class))).thenReturn(user);
         when(authenticationManager.authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class))).thenReturn(mock(Authentication.class));
         when(userDetailsService.loadUserByUsername(Mockito.any(String.class))).thenReturn(userDetails);
-        when(jwtUtils.generateToken(Mockito.any(UserDetails.class))).thenReturn(token);
+        when(jwtUtils.generateAccessToken(Mockito.any(UserDetails.class))).thenReturn(accessToken);
+        when(jwtUtils.generateRefreshToken(Mockito.any(UserDetails.class))).thenReturn(refreshToken);
 
         RegisterInput registerInput = createRegisterInput(user);
-        UserToken returnedUser = authServiceImpl.register(registerInput);
+        UserTokens returnedUser = authServiceImpl.register(registerInput);
 
-        Assertions.assertEquals(userToken.getToken(), returnedUser.getToken());
-        Assertions.assertEquals(userToken.getUser(), returnedUser.getUser());
+        Assertions.assertEquals(userTokens.getAccessToken(), returnedUser.getAccessToken());
+        Assertions.assertEquals(userTokens.getRefreshToken(), returnedUser.getRefreshToken());
+        Assertions.assertEquals(userTokens.getUser(), returnedUser.getUser());
     }
 
     @Test
     void updateEmail_InvalidPassword_ThrowIncorrectPasswordException() {
         when(userService.findOne(Mockito.any(Long.class))).thenReturn(user);
-        when(passwordEncoder.matches(Mockito.any(CharSequence.class), Mockito.any(String.class))).thenThrow(IncorrectPasswordException.class);
+        when(authenticationManager.authenticate(Mockito.any(Authentication.class))).thenThrow(new BadCredentialsException("Bad credentials"));
+        ;
 
-        InputUserEmail inputUserEmail = createTestInputUserEmail(user.getId(), user.getPassword());
-        assertThrows(IncorrectPasswordException.class, () -> authServiceImpl.updateEmail(inputUserEmail));
+
+        InputUserEmail inputUserEmail = createTestInputUserEmail(user.getId(), "user.getPassword()");
+        assertThrows(InvalidCredentialsException.class, () -> authServiceImpl.updateEmail(inputUserEmail));
     }
 
     @Test
     void updateEmail_ValidInputs_ReturnUserEntity() {
         when(userService.findOne(Mockito.any(Long.class))).thenReturn(user);
-        when(passwordEncoder.matches(Mockito.any(CharSequence.class), Mockito.any(String.class))).thenReturn(true);
         when(userService.save(Mockito.any(UserEntity.class))).thenReturn(user);
         when(authenticationManager.authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class))).thenReturn(mock(Authentication.class));
         when(userDetailsService.loadUserByUsername(Mockito.any(String.class))).thenReturn(userDetails);
-        when(jwtUtils.generateToken(Mockito.any(UserDetails.class))).thenReturn(token);
+        when(jwtUtils.generateAccessToken(Mockito.any(UserDetails.class))).thenReturn(accessToken);
+        when(jwtUtils.generateRefreshToken(Mockito.any(UserDetails.class))).thenReturn(refreshToken);
 
         InputUserEmail inputUserEmail = createTestInputUserEmail(user.getId(), user.getPassword());
-        UserToken returnedUser = authServiceImpl.updateEmail(inputUserEmail);
+        UserTokens returnedUser = authServiceImpl.updateEmail(inputUserEmail);
 
-        Assertions.assertEquals(userToken.getToken(), returnedUser.getToken());
-        Assertions.assertEquals(userToken.getUser(), returnedUser.getUser());
+        Assertions.assertEquals(userTokens.getAccessToken(), returnedUser.getAccessToken());
+        Assertions.assertEquals(userTokens.getRefreshToken(), returnedUser.getRefreshToken());
+        Assertions.assertEquals(userTokens.getUser(), returnedUser.getUser());
     }
 
     @Test
     void updatePassword_InvalidPassword_ThrowIncorrectPasswordException() {
         when(userService.findOne(Mockito.any(Long.class))).thenReturn(user);
-        when(passwordEncoder.matches(Mockito.any(CharSequence.class), Mockito.any(String.class))).thenReturn(false);
+        when(authenticationManager.authenticate(Mockito.any(Authentication.class))).thenThrow(new BadCredentialsException("Bad credentials"));
+        ;
 
-        InputUserPassword inputUserPassword = createTestInputUserPassword(user.getId(), user.getPassword());
-        assertThrows(IncorrectPasswordException.class, () -> authServiceImpl.updatePassword(inputUserPassword));
+        InputUserPassword inputUserPassword = createTestInputUserPassword(user.getId(), "user.getPassword()");
+        assertThrows(InvalidCredentialsException.class, () -> authServiceImpl.updatePassword(inputUserPassword));
     }
 
     @Test
     void updatePassword_ValidInputs_ReturnUserEntity() {
         when(userService.findOne(Mockito.any(Long.class))).thenReturn(user);
-        when(passwordEncoder.matches(Mockito.any(CharSequence.class), Mockito.any(String.class))).thenReturn(true);
         when(userService.save(Mockito.any(UserEntity.class))).thenReturn(user);
         when(authenticationManager.authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class))).thenReturn(mock(Authentication.class));
         when(userDetailsService.loadUserByUsername(Mockito.any(String.class))).thenReturn(userDetails);
-        when(jwtUtils.generateToken(Mockito.any(UserDetails.class))).thenReturn(token);
+        when(jwtUtils.generateAccessToken(Mockito.any(UserDetails.class))).thenReturn(accessToken);
+        when(jwtUtils.generateRefreshToken(Mockito.any(UserDetails.class))).thenReturn(refreshToken);
 
         InputUserPassword inputUserPassword = createTestInputUserPassword(user.getId(), user.getPassword());
-        UserToken returnedUser = authServiceImpl.updatePassword(inputUserPassword);
+        UserTokens returnedUser = authServiceImpl.updatePassword(inputUserPassword);
 
-        Assertions.assertEquals(userToken.getToken(), returnedUser.getToken());
-        Assertions.assertEquals(userToken.getUser(), returnedUser.getUser());
+        Assertions.assertEquals(userTokens.getAccessToken(), returnedUser.getAccessToken());
+        Assertions.assertEquals(userTokens.getRefreshToken(), returnedUser.getRefreshToken());
+        Assertions.assertEquals(userTokens.getUser(), returnedUser.getUser());
     }
 }

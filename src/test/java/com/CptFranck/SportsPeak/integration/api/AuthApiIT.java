@@ -211,7 +211,7 @@ public class AuthApiIT {
     private void assertAuthDtoValid(UserEntity userEntity, LinkedHashMap<String, Object> response, boolean beenRegistered) {
         Assertions.assertNotNull(response);
         UserDto userDto = objectMapper.convertValue(response.get("user"), UserDto.class);
-        String token = objectMapper.convertValue(response.get("token"), String.class);
+        String token = objectMapper.convertValue(response.get("accessToken"), String.class);
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(userEntity.getEmail());
         Assertions.assertTrue(jwtProvider.validateToken(token, userDetails));
