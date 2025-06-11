@@ -125,8 +125,6 @@ public class AuthServiceImplTest {
     void updateEmail_InvalidPassword_ThrowIncorrectPasswordException() {
         when(userService.findOne(Mockito.any(Long.class))).thenReturn(user);
         when(authenticationManager.authenticate(Mockito.any(Authentication.class))).thenThrow(new BadCredentialsException("Bad credentials"));
-        ;
-
 
         InputUserEmail inputUserEmail = createTestInputUserEmail(user.getId(), "user.getPassword()");
         assertThrows(InvalidCredentialsException.class, () -> authServiceImpl.updateEmail(inputUserEmail));
@@ -153,7 +151,6 @@ public class AuthServiceImplTest {
     void updatePassword_InvalidPassword_ThrowIncorrectPasswordException() {
         when(userService.findOne(Mockito.any(Long.class))).thenReturn(user);
         when(authenticationManager.authenticate(Mockito.any(Authentication.class))).thenThrow(new BadCredentialsException("Bad credentials"));
-        ;
 
         InputUserPassword inputUserPassword = createTestInputUserPassword(user.getId(), "user.getPassword()");
         assertThrows(InvalidCredentialsException.class, () -> authServiceImpl.updatePassword(inputUserPassword));
