@@ -9,6 +9,7 @@ import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserEmail;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserPassword;
+import com.CptFranck.SportsPeak.domain.model.CustomUserDetails;
 import com.CptFranck.SportsPeak.domain.model.UserTokens;
 import com.CptFranck.SportsPeak.security.JwtUtils;
 import com.CptFranck.SportsPeak.service.AuthService;
@@ -88,6 +89,24 @@ public class AuthServiceImpl implements AuthService {
         UserEntity user = userService.findByLogin(login);
 
         tokenService.revokeAllUserTokens(user);
+        return generateTokens(user);
+    }
+
+    @Override
+    public UserTokens refreshAccessToken(String refreshToken) {
+        final String username = jwtUtils.extractUsername(refreshToken);
+
+        if (username == null)
+            throw new RuntimeException("Username token missing");
+
+        UserEntity user = userService.findByLogin(username);
+        UserDetails userDetails = new CustomUserDetails(user);
+
+        tokenService.revokeAllUserTokens(user);
+
+        if (!jwtUtils.validateToken(refreshToken, userDetails) || !tokenService.isValidToken(refreshToken))
+            throw new RuntimeException("RefreshToken token invalid or expired");
+
         return generateTokens(user);
     }
 
