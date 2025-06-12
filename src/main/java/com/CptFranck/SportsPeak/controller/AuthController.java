@@ -7,41 +7,43 @@ import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
 import com.CptFranck.SportsPeak.domain.model.UserTokens;
 import com.CptFranck.SportsPeak.mapper.Mapper;
+import com.CptFranck.SportsPeak.security.RefreshTokenCookieHandler;
 import com.CptFranck.SportsPeak.service.AuthService;
+import com.CptFranck.SportsPeak.service.TokenService;
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsMutation;
 import com.netflix.graphql.dgs.InputArgument;
+import graphql.GraphQLContext;
+import graphql.schema.DataFetchingEnvironment;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @DgsComponent
 public class AuthController {
 
+
     private final AuthService authService;
+
+    private final TokenService tokenService;
 
     private final Mapper<UserEntity, UserDto> userMapper;
 
-    public AuthController(AuthService authService, Mapper<UserEntity, UserDto> userMapper) {
+    private final RefreshTokenCookieHandler refreshTokenCookieHandler;
+
+    public AuthController(AuthService authService,
+                          TokenService tokenService,
+                          Mapper<UserEntity, UserDto> userMapper,
+                          RefreshTokenCookieHandler refreshTokenCookieHandler) {
         this.userMapper = userMapper;
         this.authService = authService;
+        this.tokenService = tokenService;
+        this.refreshTokenCookieHandler = refreshTokenCookieHandler;
     }
 
     @DgsMutation
-    public AuthDto login(@InputArgument InputCredentials inputCredentials
-//            , DataFetchingEnvironment dfe
-    ) {
+    public AuthDto login(@InputArgument InputCredentials inputCredentials) {
         UserTokens userToken = authService.login(inputCredentials);
 
-//        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-//        if (attributes != null) {
-//            HttpServletResponse response = attributes.getResponse();
-//            if (response != null) {
-//                Cookie refreshTokenCookie = new Cookie("refreshToken", userToken.getRefreshToken());
-//                refreshTokenCookie.setHttpOnly(true);
-//                refreshTokenCookie.setSecure(false); // mettre à false en dev HTTP
-//                refreshTokenCookie.setPath("/");
-//                refreshTokenCookie.setMaxAge(Duration.ofDays(7).toMillisPart()); // 7 jours
-//                response.addCookie(refreshTokenCookie);
-//            }
-//        }
+        refreshTokenCookieHandler.addRefreshTokenToCookie(userToken.getRefreshToken());
 
         return new AuthDto(userToken.getAccessToken(), userMapper.mapTo(userToken.getUser()));
     }
@@ -50,27 +52,42 @@ public class AuthController {
     public AuthDto register(@InputArgument RegisterInput registerInput) {
         UserTokens userToken = authService.register(registerInput);
 
-//        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-//        if (attributes != null) {
-//            HttpServletResponse response = attributes.getResponse();
-//            if (response != null) {
-//                Cookie refreshTokenCookie = new Cookie("refreshToken", userToken.getRefreshToken());
-//                refreshTokenCookie.setHttpOnly(true);
-//                refreshTokenCookie.setSecure(true); // mettre à false en dev HTTP
-//                refreshTokenCookie.setPath("/");
-//                refreshTokenCookie.setMaxAge(7 * 24 * 3600); // 7 jours
-//                response.addCookie(refreshTokenCookie);
-//            }
-//        }
+        refreshTokenCookieHandler.addRefreshTokenToCookie(userToken.getRefreshToken());
 
         return new AuthDto(userToken.getAccessToken(), userMapper.mapTo(userToken.getUser()));
     }
 
-//    @DgsMutation
-//    public AuthDto refreshToken() {
-//        String oldRefreshToken = extractFromCookie(); // depuis HttpServletRequest
-//        UserTokens tokens = authService.refreshTokens(oldRefreshToken);
-//        cookieService.setRefreshTokenCookie(tokens.getRefreshToken());
-//        return new AuthDto(tokens.getAccessToken(), ...);
-//    }
+    @DgsMutation
+    public AuthDto refreshToken(DataFetchingEnvironment env) {
+        GraphQLContext context = env.getGraphQlContext();
+        String refreshToken = context.get("refreshToken");
+
+        if (refreshToken == null)
+            throw new RuntimeException("Refresh token missing");
+
+        UserTokens userToken = authService.refreshAccessToken(refreshToken);
+
+        refreshTokenCookieHandler.addRefreshTokenToCookie(userToken.getRefreshToken());
+
+        return new AuthDto(userToken.getAccessToken(), userMapper.mapTo(userToken.getUser()));
+    }
+
+    @DgsMutation
+    public boolean logout(DataFetchingEnvironment env) {
+        GraphQLContext context = env.getGraphQlContext();
+
+        String accessToken = context.get("accessToken");
+        String refreshToken = context.get("refreshToken");
+
+        if (accessToken == null || refreshToken == null)
+            throw new RuntimeException("Tokens missing");
+
+        tokenService.revokeToken(accessToken);
+        tokenService.revokeToken(refreshToken);
+
+        SecurityContextHolder.clearContext();
+
+        refreshTokenCookieHandler.clearRefreshTokenCookie();
+        return true;
+    }
 }
