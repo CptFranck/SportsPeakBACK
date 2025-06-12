@@ -6,7 +6,7 @@ import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.user.*;
-import com.CptFranck.SportsPeak.domain.model.UserToken;
+import com.CptFranck.SportsPeak.domain.model.UserTokens;
 import com.CptFranck.SportsPeak.mapper.Mapper;
 import com.CptFranck.SportsPeak.resolver.UserInputResolver;
 import com.CptFranck.SportsPeak.service.AuthService;
@@ -82,8 +82,8 @@ public class UserController {
     @PreAuthorize("hasRole('USER')")
     @DgsMutation
     public AuthDto modifyUserEmail(@InputArgument InputUserEmail inputUserEmail) {
-        UserToken userToken = authService.updateEmail(inputUserEmail);
-        return new AuthDto(userToken.getToken(), userMapper.mapTo(userToken.getUser()));
+        UserTokens userToken = authService.updateEmail(inputUserEmail);
+        return new AuthDto(userToken.getAccessToken(), userMapper.mapTo(userToken.getUser()));
     }
 
     @PreAuthorize("hasRole('USER')")
@@ -96,8 +96,8 @@ public class UserController {
     @PreAuthorize("hasRole('USER')")
     @DgsMutation
     public AuthDto modifyUserPassword(@InputArgument InputUserPassword inputUserPassword) {
-        UserToken userToken = authService.updatePassword(inputUserPassword);
-        return new AuthDto(userToken.getToken(), userMapper.mapTo(userToken.getUser()));
+        UserTokens userToken = authService.updatePassword(inputUserPassword);
+        return new AuthDto(userToken.getAccessToken(), userMapper.mapTo(userToken.getUser()));
     }
 
     @PreAuthorize("hasRole('USER')")

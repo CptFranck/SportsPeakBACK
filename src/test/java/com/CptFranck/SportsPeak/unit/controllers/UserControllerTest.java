@@ -9,7 +9,7 @@ import com.CptFranck.SportsPeak.domain.entity.ExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.user.*;
-import com.CptFranck.SportsPeak.domain.model.UserToken;
+import com.CptFranck.SportsPeak.domain.model.UserTokens;
 import com.CptFranck.SportsPeak.mapper.Mapper;
 import com.CptFranck.SportsPeak.resolver.UserInputResolver;
 import com.CptFranck.SportsPeak.service.AuthService;
@@ -28,10 +28,10 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
-import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
-import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExerciseDto;
 import static com.CptFranck.SportsPeak.utils.ExerciseTestUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.ExerciseTestUtils.createTestExerciseDto;
+import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
+import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExerciseDto;
 import static com.CptFranck.SportsPeak.utils.UserTestUtils.*;
 import static org.mockito.Mockito.when;
 
@@ -129,15 +129,15 @@ class UserControllerTest {
 
     @Test
     void modifyUserEmail_ValidInput_ReturnAuthDto() {
-        UserToken userToken = new UserToken("token", user);
-        AuthDto returnValue = new AuthDto("token", userDto);
+        UserTokens userToken = new UserTokens(user, "accessToken", "refreshToken");
+        AuthDto returnValue = new AuthDto("accessToken", userDto);
 
         when(authService.updateEmail(Mockito.any(InputUserEmail.class))).thenReturn(userToken);
         when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
 
         AuthDto authDto = userController.modifyUserEmail(createTestInputUserEmail(1L, "rawPassword"));
 
-        Assertions.assertEquals(returnValue.getToken(), authDto.getToken());
+        Assertions.assertEquals(returnValue.getAccessToken(), authDto.getAccessToken());
         Assertions.assertEquals(returnValue.getUser(), authDto.getUser());
     }
 
@@ -154,15 +154,15 @@ class UserControllerTest {
 
     @Test
     void modifyUserPassword_ValidInput_ReturnAuthDto() {
-        UserToken userToken = new UserToken("token", user);
-        AuthDto returnValue = new AuthDto("token", userDto);
+        UserTokens userToken = new UserTokens(user, "accessToken", "refreshToken");
+        AuthDto returnValue = new AuthDto("accessToken", userDto);
 
         when(authService.updatePassword(Mockito.any(InputUserPassword.class))).thenReturn(userToken);
         when(userMapper.mapTo(Mockito.any(UserEntity.class))).thenReturn(userDto);
 
         AuthDto authDto = userController.modifyUserPassword(createTestInputUserPassword(1L, "rawPassword"));
 
-        Assertions.assertEquals(returnValue.getToken(), authDto.getToken());
+        Assertions.assertEquals(returnValue.getAccessToken(), authDto.getAccessToken());
         Assertions.assertEquals(returnValue.getUser(), authDto.getUser());
     }
 
