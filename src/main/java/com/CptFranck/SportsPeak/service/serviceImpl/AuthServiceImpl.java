@@ -2,7 +2,9 @@ package com.CptFranck.SportsPeak.service.serviceImpl;
 
 import com.CptFranck.SportsPeak.config.security.JwtUtils;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
+import com.CptFranck.SportsPeak.domain.entity.TokenEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.enumType.TokenType;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.InvalidCredentialsException;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
@@ -11,6 +13,7 @@ import com.CptFranck.SportsPeak.domain.input.user.InputUserPassword;
 import com.CptFranck.SportsPeak.domain.model.UserTokens;
 import com.CptFranck.SportsPeak.service.AuthService;
 import com.CptFranck.SportsPeak.service.RoleService;
+import com.CptFranck.SportsPeak.service.TokenService;
 import com.CptFranck.SportsPeak.service.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,6 +32,8 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserService userService;
 
+    private final TokenService tokenService;
+
     private final PasswordEncoder passwordEncoder;
 
     private final UserDetailsService userDetailsService;
@@ -37,27 +42,17 @@ public class AuthServiceImpl implements AuthService {
 
     public AuthServiceImpl(JwtUtils jwtUtils,
                            RoleService roleService,
-                           UserService userService,
+                           UserService userService, TokenService tokenService,
                            PasswordEncoder passwordEncoder,
                            UserDetailsService userDetailsService,
                            AuthenticationManager authenticationManager) {
         this.jwtUtils = jwtUtils;
         this.roleService = roleService;
         this.userService = userService;
+        this.tokenService = tokenService;
         this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;
-    }
-
-    @Override
-    public UserTokens login(InputCredentials credentials) {
-        String login = credentials.getLogin();
-        String password = credentials.getPassword();
-
-        authenticate(login, password);
-        UserEntity user = userService.findByLogin(login);
-
-        return generateTokens(user);
     }
 
     @Override
@@ -80,7 +75,20 @@ public class AuthServiceImpl implements AuthService {
         UserEntity userSaved = userService.save(user);
         authenticate(email, password);
 
+        tokenService.revokeAllUserTokens(userSaved);
         return generateTokens(userSaved);
+    }
+
+    @Override
+    public UserTokens login(InputCredentials credentials) {
+        String login = credentials.getLogin();
+        String password = credentials.getPassword();
+
+        authenticate(login, password);
+        UserEntity user = userService.findByLogin(login);
+
+        tokenService.revokeAllUserTokens(user);
+        return generateTokens(user);
     }
 
     @Override
@@ -95,6 +103,7 @@ public class AuthServiceImpl implements AuthService {
         user.setEmail(newEmail);
         UserEntity userUpdated = userService.save(user);
 
+        tokenService.revokeAllUserTokens(userUpdated);
         return generateTokens(userUpdated);
     }
 
@@ -111,6 +120,7 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(passwordEncoder.encode(newPassword));
         UserEntity userUpdated = userService.save(user);
 
+        tokenService.revokeAllUserTokens(userUpdated);
         return generateTokens(userUpdated);
     }
 
@@ -124,8 +134,21 @@ public class AuthServiceImpl implements AuthService {
 
     private UserTokens generateTokens(UserEntity user) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+
         String accessToken = jwtUtils.generateAccessToken(userDetails);
+
+        TokenEntity tokenAccessEntity = new TokenEntity(hashToken(accessToken), TokenType.ACCESS, user);
+        tokenService.save(tokenAccessEntity);
+
         String refreshToken = jwtUtils.generateRefreshToken(userDetails);
+        TokenEntity tokenRefreshEntity = new TokenEntity(hashToken(refreshToken), TokenType.REFRESH, user);
+        tokenService.save(tokenRefreshEntity);
+
         return new UserTokens(user, accessToken, refreshToken);
+    }
+
+    private String hashToken(String token) {
+        String toEncode = token.length() > 72 ? token.substring(0, 72) : token;
+        return passwordEncoder.encode(toEncode);
     }
 }
