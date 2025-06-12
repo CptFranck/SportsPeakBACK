@@ -1,5 +1,8 @@
 package com.CptFranck.SportsPeak.config.security;
 
+import com.CptFranck.SportsPeak.security.JwtAuthenticationEntryPoint;
+import com.CptFranck.SportsPeak.security.JwtAuthenticationFilter;
+import com.CptFranck.SportsPeak.security.JwtUtils;
 import com.CptFranck.SportsPeak.service.TokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
