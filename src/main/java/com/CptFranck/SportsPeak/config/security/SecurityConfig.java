@@ -1,5 +1,6 @@
 package com.CptFranck.SportsPeak.config.security;
 
+import com.CptFranck.SportsPeak.service.TokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -24,13 +25,16 @@ public class SecurityConfig {
 
     private final CorsConfig corsConfig;
 
+    private final TokenService tokenService;
+
     private final UserDetailsService userDetailsService;
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    public SecurityConfig(JwtUtils jwtUtils, CorsConfig corsConfig, UserDetailsService userDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+    public SecurityConfig(JwtUtils jwtUtils, CorsConfig corsConfig, TokenService tokenService, UserDetailsService userDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
         this.jwtUtils = jwtUtils;
         this.corsConfig = corsConfig;
+        this.tokenService = tokenService;
         this.userDetailsService = userDetailsService;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     }
@@ -42,7 +46,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtUtils, userDetailsService);
+        return new JwtAuthenticationFilter(jwtUtils, tokenService, userDetailsService);
     }
 
     @Bean
