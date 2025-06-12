@@ -17,10 +17,12 @@ import java.util.function.Function;
 @Component
 public class JwtUtils {
 
-    @Value("${security.jwt.token.secret-key}")
+    @Value("${security.jwt.secret-key}")
     private String secretKey;
-    final private long accessTokenValidity = 15 * 60 * 1000;            // 15 minutes
-    final private long refreshTokenValidity = 7 * 24 * 60 * 60 * 1000;  // 7 jours
+    @Value("${security.jwt.expiration}")
+    private long jwtExpiration;
+    @Value("${security.jwt.refresh-token.expiration}")
+    private long refreshTokenExpiration;
 
     private SecretKey getSigningKey() {
         byte[] keyBytes = this.secretKey.getBytes(StandardCharsets.UTF_8);
@@ -29,12 +31,12 @@ public class JwtUtils {
 
     public String generateAccessToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername(), accessTokenValidity);
+        return createToken(claims, userDetails.getUsername(), jwtExpiration);
     }
 
     public String generateRefreshToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername(), refreshTokenValidity);
+        return createToken(claims, userDetails.getUsername(), refreshTokenExpiration);
     }
 
     private String createToken(Map<String, Object> claims, String subject, long validityMs) {
