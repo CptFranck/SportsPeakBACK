@@ -35,24 +35,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         final String bearerToken = request.getHeader("Authorization");
 
-        String jwt = null;
-        String username = null;
-
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            jwt = bearerToken.substring(7);
-            username = jwtUtils.extractUsername(jwt);
+        if (bearerToken == null || !bearerToken.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
         }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        final String jwt = bearerToken.substring(7);
+        final String username = jwtUtils.extractUsername(jwt);
 
-            if (jwtUtils.validateToken(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+        if (username == null || SecurityContextHolder.getContext().getAuthentication() != null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+        if (jwtUtils.validateToken(jwt, userDetails)) {
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
-                usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-            }
+            usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
         }
         filterChain.doFilter(request, response);
     }
