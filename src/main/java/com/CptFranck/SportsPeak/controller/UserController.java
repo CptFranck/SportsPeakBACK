@@ -9,6 +9,7 @@ import com.CptFranck.SportsPeak.domain.input.user.*;
 import com.CptFranck.SportsPeak.domain.model.UserTokens;
 import com.CptFranck.SportsPeak.mapper.Mapper;
 import com.CptFranck.SportsPeak.resolver.UserInputResolver;
+import com.CptFranck.SportsPeak.security.RefreshTokenCookieHandler;
 import com.CptFranck.SportsPeak.service.AuthService;
 import com.CptFranck.SportsPeak.service.UserManager;
 import com.CptFranck.SportsPeak.service.UserService;
@@ -32,17 +33,20 @@ public class UserController {
 
     private final UserInputResolver userInputResolver;
 
+    private final RefreshTokenCookieHandler refreshTokenCookieHandler;
+
     private final Mapper<UserEntity, UserDto> userMapper;
 
     private final Mapper<ProgExerciseEntity, ProgExerciseDto> progExerciseMapper;
 
-    public UserController(UserManager userManager, UserInputResolver userInputResolver, UserService userService, Mapper<UserEntity, UserDto> userMapper, Mapper<ProgExerciseEntity, ProgExerciseDto> progExerciseMapper, AuthenticationManager authenticationManager, AuthService authService) {
+    public UserController(UserManager userManager, UserInputResolver userInputResolver, UserService userService, Mapper<UserEntity, UserDto> userMapper, Mapper<ProgExerciseEntity, ProgExerciseDto> progExerciseMapper, AuthenticationManager authenticationManager, AuthService authService, RefreshTokenCookieHandler refreshTokenCookieHandler) {
         this.userMapper = userMapper;
         this.userManager = userManager;
         this.userService = userService;
         this.authService = authService;
         this.userInputResolver = userInputResolver;
         this.progExerciseMapper = progExerciseMapper;
+        this.refreshTokenCookieHandler = refreshTokenCookieHandler;
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -83,6 +87,9 @@ public class UserController {
     @DgsMutation
     public AuthDto modifyUserEmail(@InputArgument InputUserEmail inputUserEmail) {
         UserTokens userToken = authService.updateEmail(inputUserEmail);
+
+        refreshTokenCookieHandler.addRefreshTokenToCookie(userToken.getRefreshToken());
+
         return new AuthDto(userToken.getAccessToken(), userMapper.mapTo(userToken.getUser()));
     }
 
@@ -97,6 +104,9 @@ public class UserController {
     @DgsMutation
     public AuthDto modifyUserPassword(@InputArgument InputUserPassword inputUserPassword) {
         UserTokens userToken = authService.updatePassword(inputUserPassword);
+
+        refreshTokenCookieHandler.addRefreshTokenToCookie(userToken.getRefreshToken());
+
         return new AuthDto(userToken.getAccessToken(), userMapper.mapTo(userToken.getUser()));
     }
 
