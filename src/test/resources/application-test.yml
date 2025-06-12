@@ -45,9 +45,13 @@ dgs:
 
 # SECURITY
 security:
+  cors:
+    allowed-origin: http://localhost:4200
   jwt:
-    token:
-      secret-key: TestY2hhbmdlbWVpbnByb2QhY2hhbmdlbWVpbnByb2Qh
+    secret-key: Y2hhbmdlbWVpbnByb2QhY2hhbmdlbWVpbnByb2Qh
+    expiration: 900000 # 15 min
+    refresh-token:
+      expiration: 604800000 # 7 j
 
 # STORAGE
 storage:
