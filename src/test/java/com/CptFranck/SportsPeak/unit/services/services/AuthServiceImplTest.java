@@ -1,6 +1,5 @@
 package com.CptFranck.SportsPeak.unit.services.services;
 
-import com.CptFranck.SportsPeak.config.security.JwtUtils;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.InvalidCredentialsException;
@@ -10,6 +9,7 @@ import com.CptFranck.SportsPeak.domain.input.user.InputUserEmail;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserPassword;
 import com.CptFranck.SportsPeak.domain.model.CustomUserDetails;
 import com.CptFranck.SportsPeak.domain.model.UserTokens;
+import com.CptFranck.SportsPeak.security.JwtUtils;
 import com.CptFranck.SportsPeak.service.RoleService;
 import com.CptFranck.SportsPeak.service.UserService;
 import com.CptFranck.SportsPeak.service.serviceImpl.AuthServiceImpl;

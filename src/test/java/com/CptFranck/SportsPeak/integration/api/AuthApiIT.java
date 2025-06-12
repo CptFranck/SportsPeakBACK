@@ -1,12 +1,12 @@
 package com.CptFranck.SportsPeak.integration.api;
 
-import com.CptFranck.SportsPeak.config.security.JwtUtils;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
 import com.CptFranck.SportsPeak.repository.RoleRepository;
 import com.CptFranck.SportsPeak.repository.UserRepository;
+import com.CptFranck.SportsPeak.security.JwtUtils;
 import com.CptFranck.SportsPeak.service.AuthService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
