@@ -9,9 +9,9 @@ import com.CptFranck.SportsPeak.domain.model.UserTokens;
 
 public interface AuthService {
 
-    UserTokens login(InputCredentials credentials);
-
     UserTokens register(RegisterInput registerInput);
+
+    UserTokens login(InputCredentials credentials);
 
     UserTokens updateEmail(InputUserEmail inputUserEmail);
 
