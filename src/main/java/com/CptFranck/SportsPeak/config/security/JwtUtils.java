@@ -17,10 +17,10 @@ import java.util.function.Function;
 @Component
 public class JwtUtils {
 
-    final private long accessTokenValidity = 15 * 60 * 1000;            // 15 minutes
-    final private long refreshTokenValidity = 7 * 24 * 60 * 60 * 1000;  // 7 jours
     @Value("${security.jwt.token.secret-key}")
     private String secretKey;
+    final private long accessTokenValidity = 15 * 60 * 1000;            // 15 minutes
+    final private long refreshTokenValidity = 7 * 24 * 60 * 60 * 1000;  // 7 jours
 
     private SecretKey getSigningKey() {
         byte[] keyBytes = this.secretKey.getBytes(StandardCharsets.UTF_8);
