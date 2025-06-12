@@ -13,6 +13,8 @@ public interface AuthService {
 
     UserTokens login(InputCredentials credentials);
 
+    UserTokens refreshAccessToken(String refreshToken);
+
     UserTokens updateEmail(InputUserEmail inputUserEmail);
 
     UserTokens updatePassword(InputUserPassword inputUserPassword);
