@@ -20,6 +20,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -69,13 +72,16 @@ public class AuthServiceImpl implements AuthService {
         String encodedPassword = passwordEncoder.encode(password);
 
         UserEntity user = new UserEntity(
+                null,
                 email,
                 registerInput.getFirstName(),
                 registerInput.getLastName(),
                 registerInput.getUsername(),
-                encodedPassword
+                encodedPassword,
+                Set.of(userRole),
+                new HashSet<>(),
+                new HashSet<>()
         );
-        user.getRoles().add(userRole);
 
         UserEntity userSaved = userService.save(user);
         authenticate(email, password);

@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -42,28 +41,14 @@ public class UserEntity {
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "app_user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<RoleEntity> roles = new HashSet<>();
+    private Set<RoleEntity> roles;
 
     @ManyToMany
     @JoinTable(name = "user_prog_exercise_subscriptions",
             joinColumns = @JoinColumn(name = "app_user_id"),
             inverseJoinColumns = @JoinColumn(name = "prog_exercise_id"))
-    private Set<ProgExerciseEntity> subscribedProgExercises = new HashSet<>();
-    ;
+    private Set<ProgExerciseEntity> subscribedProgExercises;
 
     @OneToMany(mappedBy = "creator")
-    private Set<ProgExerciseEntity> progExercisesCreated = new HashSet<>();
-    ;
-
-    @OneToMany(mappedBy = "user")
-    private Set<TokenEntity> tokens = new HashSet<>();
-    ;
-
-    public UserEntity(String email, String firstName, String lastName, String username, String encodedPassword) {
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.username = username;
-        this.password = encodedPassword;
-    }
+    private Set<ProgExerciseEntity> progExercisesCreated;
 }
