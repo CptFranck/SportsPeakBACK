@@ -53,6 +53,7 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public void revokeToken(String token) {
         TokenEntity tokenEntity = tokenRepository.findByToken(hashToken(token)).orElseThrow(TokenNotFoundException::new);
+        tokenEntity.setExpired(true);
         tokenEntity.setRevoked(true);
         tokenRepository.save(tokenEntity);
     }
