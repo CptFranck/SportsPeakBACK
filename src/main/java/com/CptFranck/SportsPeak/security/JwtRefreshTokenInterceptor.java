@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.config.graphql;
+package com.CptFranck.SportsPeak.security;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.graphql.server.WebGraphQlInterceptor;
@@ -18,7 +18,7 @@ public class JwtRefreshTokenInterceptor implements WebGraphQlInterceptor {
     public @NotNull Mono<WebGraphQlResponse> intercept(WebGraphQlRequest request, @NotNull Chain chain) {
         Map<String, Object> contextMap = new HashMap<>();
 
-        String jwt = request.getHeaders().getFirst("Authorization");
+        String jwt = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         String cookieHeader = request.getHeaders().getFirst(HttpHeaders.COOKIE);
 
         if (cookieHeader != null) {
