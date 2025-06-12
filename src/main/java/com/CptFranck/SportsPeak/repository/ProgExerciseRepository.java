@@ -1,12 +1,10 @@
 package com.CptFranck.SportsPeak.repository;
 
 import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-@Repository
-public interface ProgExerciseRepository extends CrudRepository<ProgExerciseEntity, Long> {
+public interface ProgExerciseRepository extends JpaRepository<ProgExerciseEntity, Long> {
     List<ProgExerciseEntity> findAllBySubscribedUsersId(Long id);
 }
