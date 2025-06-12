@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.config.security;
+package com.CptFranck.SportsPeak.security;
 
 import com.CptFranck.SportsPeak.service.TokenService;
 import jakarta.servlet.FilterChain;

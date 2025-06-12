@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.config.security;
+package com.CptFranck.SportsPeak.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
