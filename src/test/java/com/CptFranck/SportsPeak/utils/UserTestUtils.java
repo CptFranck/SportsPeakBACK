@@ -21,6 +21,7 @@ public class UserTestUtils {
                 "password",
                 new HashSet<>(),
                 new HashSet<>(),
+                new HashSet<>(),
                 new HashSet<>()
         );
     }
@@ -33,6 +34,7 @@ public class UserTestUtils {
                 "Doe",
                 "Jane_Doe",
                 "password",
+                new HashSet<>(),
                 new HashSet<>(),
                 new HashSet<>(),
                 new HashSet<>()

@@ -6,7 +6,7 @@ import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
-import com.CptFranck.SportsPeak.domain.model.UserToken;
+import com.CptFranck.SportsPeak.domain.model.UserTokens;
 import com.CptFranck.SportsPeak.mapper.Mapper;
 import com.CptFranck.SportsPeak.service.AuthService;
 import org.junit.jupiter.api.Assertions;
@@ -38,15 +38,15 @@ public class AuthControllerTest {
 
     private UserEntity user;
     private UserDto userDto;
-    private UserToken userToken;
+    private UserTokens userToken;
     private AuthDto authDto;
 
     @BeforeEach
     void setUp() {
         user = createTestUser(1L);
         userDto = createTestUserDto(1L);
-        userToken = new UserToken("token", user);
-        authDto = new AuthDto("token", userDto);
+        userToken = new UserTokens(user, "accessToken", "refreshToken");
+        authDto = new AuthDto("accessToken", userDto);
     }
     @Test
     public void login_ValidCredentials_ReturnsAuthDto() {
@@ -70,6 +70,6 @@ public class AuthControllerTest {
 
     private void assertEqualsAuth(AuthDto authDto, AuthDto authDtoReturn) {
         Assertions.assertEquals(authDto.getUser(), authDtoReturn.getUser());
-        Assertions.assertEquals(authDto.getToken(), authDtoReturn.getToken());
+        Assertions.assertEquals(authDto.getAccessToken(), authDtoReturn.getAccessToken());
     }
 }
