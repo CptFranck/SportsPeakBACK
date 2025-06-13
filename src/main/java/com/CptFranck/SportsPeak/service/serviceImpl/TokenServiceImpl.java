@@ -7,7 +7,6 @@ import com.CptFranck.SportsPeak.domain.enumType.TokenType;
 import com.CptFranck.SportsPeak.domain.exception.token.TokenNotFoundException;
 import com.CptFranck.SportsPeak.repository.TokenRepository;
 import com.CptFranck.SportsPeak.service.TokenService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +18,7 @@ public class TokenServiceImpl implements TokenService {
 
     private final TokenHashConfig.Sha256Hasher sha256Hasher;
 
-    public TokenServiceImpl(TokenRepository tokenRepository, PasswordEncoder passwordEncoder, TokenHashConfig.Sha256Hasher sha256Hasher) {
+    public TokenServiceImpl(TokenRepository tokenRepository, TokenHashConfig.Sha256Hasher sha256Hasher) {
         this.sha256Hasher = sha256Hasher;
         this.tokenRepository = tokenRepository;
     }

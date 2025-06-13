@@ -18,7 +18,6 @@ import com.netflix.graphql.dgs.DgsMutation;
 import com.netflix.graphql.dgs.DgsQuery;
 import com.netflix.graphql.dgs.InputArgument;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
 
 import java.util.List;
 
@@ -39,7 +38,13 @@ public class UserController {
 
     private final Mapper<ProgExerciseEntity, ProgExerciseDto> progExerciseMapper;
 
-    public UserController(UserManager userManager, UserInputResolver userInputResolver, UserService userService, Mapper<UserEntity, UserDto> userMapper, Mapper<ProgExerciseEntity, ProgExerciseDto> progExerciseMapper, AuthenticationManager authenticationManager, AuthService authService, RefreshTokenCookieHandler refreshTokenCookieHandler) {
+    public UserController(UserManager userManager,
+                          AuthService authService,
+                          UserService userService,
+                          UserInputResolver userInputResolver,
+                          RefreshTokenCookieHandler refreshTokenCookieHandler,
+                          Mapper<UserEntity, UserDto> userMapper,
+                          Mapper<ProgExerciseEntity, ProgExerciseDto> progExerciseMapper) {
         this.userMapper = userMapper;
         this.userManager = userManager;
         this.userService = userService;
