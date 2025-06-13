@@ -1,6 +1,7 @@
 package com.CptFranck.SportsPeak.repository;
 
 import com.CptFranck.SportsPeak.domain.entity.TokenEntity;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +19,7 @@ public interface TokenRepository extends JpaRepository<TokenEntity, Long> {
     Optional<TokenEntity> findByToken(String token);
 
     @Modifying
+    @Transactional
     @Query("DELETE FROM TokenEntity t WHERE t.expired_at < CURRENT_TIMESTAMP OR t.revoked = true")
     int deleteInvalidTokens();
 }

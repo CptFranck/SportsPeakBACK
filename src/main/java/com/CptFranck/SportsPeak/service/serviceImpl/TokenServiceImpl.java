@@ -72,7 +72,7 @@ public class TokenServiceImpl implements TokenService {
         tokenRepository.save(tokenEntity);
     }
 
-    @Scheduled(fixedRateString = "${security.jwt.cleanup.fixedRate}")
+    @Scheduled(fixedRateString = "${security.jwt.cleanup.fixedRate}", fixedDelayString = "${security.jwt.cleanup.initialDelay}")
     public void removeInvalidTokens() {
         int deletedCount = tokenRepository.deleteInvalidTokens();
         System.out.println("Tokens invalides supprimés : " + deletedCount);
