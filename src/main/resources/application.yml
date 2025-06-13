@@ -48,7 +48,9 @@ security:
     refresh-token:
       expiration: 604800000 # 7 j
     cleanup:
-      fixedRate: 60000 # 1 min
+      initialDelay: 300000
+      fixedRate: 3600000
+#      fixedRate: 60000 # 1 min
 #      fixedRate: 300000 # 5 min
 #      fixedRate: 3600000 # 1H
 
