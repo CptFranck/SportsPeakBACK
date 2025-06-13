@@ -1,31 +1,31 @@
 package com.CptFranck.SportsPeak.service.serviceImpl;
 
+import com.CptFranck.SportsPeak.config.security.TokenHashConfig;
 import com.CptFranck.SportsPeak.domain.entity.TokenEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.token.TokenNotFoundException;
 import com.CptFranck.SportsPeak.repository.TokenRepository;
 import com.CptFranck.SportsPeak.service.TokenService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TokenServiceImpl implements TokenService {
 
     private final TokenRepository tokenRepository;
 
-    private final PasswordEncoder passwordEncoder;
+    private final TokenHashConfig.Sha256Hasher sha256Hasher;
 
-    public TokenServiceImpl(TokenRepository tokenRepository, PasswordEncoder passwordEncoder) {
+    public TokenServiceImpl(TokenRepository tokenRepository, TokenHashConfig.Sha256Hasher sha256Hasher) {
+        this.sha256Hasher = sha256Hasher;
         this.tokenRepository = tokenRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public String hashToken(String token) {
-        String toEncode = token.length() > 72 ? token.substring(0, 72) : token;
-        return passwordEncoder.encode(toEncode);
+        return sha256Hasher.hash(token);
     }
 
     @Override
@@ -45,9 +45,10 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public boolean isValidToken(String token) {
-        return tokenRepository.findByToken(hashToken(token))
-                .map(t -> !t.isExpired() && !t.isRevoked())
+        Optional<TokenEntity> test = tokenRepository.findByToken(hashToken(token));
+        return test.map(t -> !t.isExpired() && !t.isRevoked())
                 .orElse(false);
+
     }
 
     @Override
