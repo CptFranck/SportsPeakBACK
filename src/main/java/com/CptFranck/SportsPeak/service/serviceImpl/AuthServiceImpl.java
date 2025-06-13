@@ -156,11 +156,19 @@ public class AuthServiceImpl implements AuthService {
 
         String accessToken = jwtUtils.generateAccessToken(userDetails);
 
-        TokenEntity tokenAccessEntity = new TokenEntity(tokenService.hashToken(accessToken), TokenType.ACCESS, user);
+        TokenEntity tokenAccessEntity = new TokenEntity(
+                tokenService.hashToken(accessToken),
+                TokenType.ACCESS,
+                jwtUtils.extractExpiration(accessToken).toInstant(),
+                user);
         tokenService.save(tokenAccessEntity);
 
         String refreshToken = jwtUtils.generateRefreshToken(userDetails);
-        TokenEntity tokenRefreshEntity = new TokenEntity(tokenService.hashToken(refreshToken), TokenType.REFRESH, user);
+        TokenEntity tokenRefreshEntity = new TokenEntity(
+                tokenService.hashToken(refreshToken),
+                TokenType.REFRESH,
+                jwtUtils.extractExpiration(refreshToken).toInstant(),
+                user);
         tokenService.save(tokenRefreshEntity);
 
         return new UserTokens(user, accessToken, refreshToken);
