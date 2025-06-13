@@ -102,7 +102,7 @@ public class AuthServiceImpl implements AuthService {
         UserEntity user = userService.findByLogin(username);
         UserDetails userDetails = new CustomUserDetails(user);
 
-        tokenService.revokeAllUserTokens(user);
+        tokenService.revokeUserAccessTokens(user);
 
         if (!jwtUtils.validateToken(refreshToken, userDetails) || !tokenService.isValidToken(refreshToken))
             throw new RuntimeException("RefreshToken token invalid or expired");
