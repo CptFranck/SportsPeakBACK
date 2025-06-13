@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.security;
+package com.CptFranck.SportsPeak.config.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

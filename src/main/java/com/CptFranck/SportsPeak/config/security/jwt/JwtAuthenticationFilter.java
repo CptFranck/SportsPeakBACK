@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.security;
+package com.CptFranck.SportsPeak.config.security.jwt;
 
 import com.CptFranck.SportsPeak.service.TokenService;
 import jakarta.servlet.FilterChain;
@@ -55,7 +55,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-        if (jwtUtils.validateToken(jwt, userDetails) && tokenService.isValidToken(jwt)) {
+        boolean t1 = jwtUtils.validateToken(jwt, userDetails);
+        boolean t2 = tokenService.isValidToken(jwt);
+
+        if (t1 && t2) {
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

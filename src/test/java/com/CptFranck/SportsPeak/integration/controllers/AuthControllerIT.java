@@ -1,5 +1,6 @@
 package com.CptFranck.SportsPeak.integration.controllers;
 
+import com.CptFranck.SportsPeak.config.security.jwt.JwtUtils;
 import com.CptFranck.SportsPeak.controller.AuthController;
 import com.CptFranck.SportsPeak.domain.dto.AuthDto;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
@@ -11,7 +12,6 @@ import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
 import com.CptFranck.SportsPeak.repository.RoleRepository;
 import com.CptFranck.SportsPeak.repository.UserRepository;
-import com.CptFranck.SportsPeak.security.JwtUtils;
 import com.CptFranck.SportsPeak.service.AuthService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

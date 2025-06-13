@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.security;
+package com.CptFranck.SportsPeak.config.security.jwt;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.graphql.server.WebGraphQlInterceptor;
