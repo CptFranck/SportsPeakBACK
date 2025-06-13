@@ -1,5 +1,6 @@
 package com.CptFranck.SportsPeak.controller;
 
+import com.CptFranck.SportsPeak.config.security.jwt.RefreshTokenCookieHandler;
 import com.CptFranck.SportsPeak.domain.dto.AuthDto;
 import com.CptFranck.SportsPeak.domain.dto.ProgExerciseDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
@@ -9,7 +10,6 @@ import com.CptFranck.SportsPeak.domain.input.user.*;
 import com.CptFranck.SportsPeak.domain.model.UserTokens;
 import com.CptFranck.SportsPeak.mapper.Mapper;
 import com.CptFranck.SportsPeak.resolver.UserInputResolver;
-import com.CptFranck.SportsPeak.security.RefreshTokenCookieHandler;
 import com.CptFranck.SportsPeak.service.AuthService;
 import com.CptFranck.SportsPeak.service.UserManager;
 import com.CptFranck.SportsPeak.service.UserService;
