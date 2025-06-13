@@ -3,6 +3,7 @@ package com.CptFranck.SportsPeak.service.serviceImpl;
 import com.CptFranck.SportsPeak.config.security.TokenHashConfig;
 import com.CptFranck.SportsPeak.domain.entity.TokenEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.enumType.TokenType;
 import com.CptFranck.SportsPeak.domain.exception.token.TokenNotFoundException;
 import com.CptFranck.SportsPeak.repository.TokenRepository;
 import com.CptFranck.SportsPeak.service.TokenService;
@@ -26,6 +27,19 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public String hashToken(String token) {
         return sha256Hasher.hash(token);
+    }
+
+    @Override
+    public void revokeUserAccessTokens(UserEntity user) {
+        List<TokenEntity> tokens = tokenRepository.findAllValidTokenByUser(user.getId())
+                .stream()
+                .filter(t -> t.getTokenType() == TokenType.ACCESS)
+                .toList();
+        tokens.forEach(token -> {
+            token.setRevoked(true);
+            token.setExpired(true);
+        });
+        tokenRepository.saveAll(tokens);
     }
 
     @Override
