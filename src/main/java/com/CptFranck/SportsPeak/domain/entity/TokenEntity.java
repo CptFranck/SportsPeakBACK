@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -34,13 +36,17 @@ public class TokenEntity {
     @Column(name = "expired", nullable = false)
     private boolean expired = false;
 
+    @Column(name = "expired_at", nullable = false)
+    private Instant expired_at;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    public TokenEntity(String token, TokenType tokenType, UserEntity user) {
+    public TokenEntity(String token, TokenType tokenType, Instant expired_at, UserEntity user) {
         this.token = token;
         this.tokenType = tokenType;
+        this.expired_at = expired_at;
         this.user = user;
     }
 }
