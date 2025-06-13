@@ -7,6 +7,7 @@ import com.CptFranck.SportsPeak.domain.enumType.TokenType;
 import com.CptFranck.SportsPeak.domain.exception.token.TokenNotFoundException;
 import com.CptFranck.SportsPeak.repository.TokenRepository;
 import com.CptFranck.SportsPeak.service.TokenService;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -69,6 +70,12 @@ public class TokenServiceImpl implements TokenService {
         tokenEntity.setExpired(true);
         tokenEntity.setRevoked(true);
         tokenRepository.save(tokenEntity);
+    }
+
+    @Scheduled(fixedRateString = "${security.jwt.cleanup.fixedRate}")
+    public void removeInvalidTokens() {
+        int deletedCount = tokenRepository.deleteInvalidTokens();
+        System.out.println("Tokens invalides supprimés : " + deletedCount);
     }
 }
 
