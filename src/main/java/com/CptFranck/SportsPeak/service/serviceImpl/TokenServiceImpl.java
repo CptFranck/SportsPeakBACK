@@ -48,7 +48,6 @@ public class TokenServiceImpl implements TokenService {
         return tokenRepository.findByToken(hashToken(token))
                 .map(t -> !t.isExpired() && !t.isRevoked())
                 .orElse(false);
-
     }
 
     @Override
