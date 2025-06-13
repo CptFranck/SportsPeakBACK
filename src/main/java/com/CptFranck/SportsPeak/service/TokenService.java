@@ -15,4 +15,6 @@ public interface TokenService {
     void revokeToken(String token);
 
     void revokeAllUserTokens(UserEntity user);
+
+    void revokeUserAccessTokens(UserEntity user);
 }
