@@ -6,10 +6,10 @@ import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.exception.token.TokenNotFoundException;
 import com.CptFranck.SportsPeak.repository.TokenRepository;
 import com.CptFranck.SportsPeak.service.TokenService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TokenServiceImpl implements TokenService {
@@ -18,7 +18,7 @@ public class TokenServiceImpl implements TokenService {
 
     private final TokenHashConfig.Sha256Hasher sha256Hasher;
 
-    public TokenServiceImpl(TokenRepository tokenRepository, TokenHashConfig.Sha256Hasher sha256Hasher) {
+    public TokenServiceImpl(TokenRepository tokenRepository, PasswordEncoder passwordEncoder, TokenHashConfig.Sha256Hasher sha256Hasher) {
         this.sha256Hasher = sha256Hasher;
         this.tokenRepository = tokenRepository;
     }
@@ -45,8 +45,8 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public boolean isValidToken(String token) {
-        Optional<TokenEntity> test = tokenRepository.findByToken(hashToken(token));
-        return test.map(t -> !t.isExpired() && !t.isRevoked())
+        return tokenRepository.findByToken(hashToken(token))
+                .map(t -> !t.isExpired() && !t.isRevoked())
                 .orElse(false);
 
     }
