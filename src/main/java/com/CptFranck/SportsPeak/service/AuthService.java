@@ -5,6 +5,7 @@ import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserEmail;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserPassword;
+import com.CptFranck.SportsPeak.domain.model.UserAccessToken;
 import com.CptFranck.SportsPeak.domain.model.UserTokens;
 
 public interface AuthService {
@@ -13,7 +14,7 @@ public interface AuthService {
 
     UserTokens login(InputCredentials credentials);
 
-    UserTokens refreshAccessToken(String refreshToken);
+    UserAccessToken refreshAccessToken(String refreshToken);
 
     UserTokens updateEmail(InputUserEmail inputUserEmail);
 
