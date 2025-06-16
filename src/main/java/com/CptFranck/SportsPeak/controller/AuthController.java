@@ -6,6 +6,7 @@ import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
+import com.CptFranck.SportsPeak.domain.model.UserAccessToken;
 import com.CptFranck.SportsPeak.domain.model.UserTokens;
 import com.CptFranck.SportsPeak.mapper.Mapper;
 import com.CptFranck.SportsPeak.service.AuthService;
@@ -19,7 +20,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 @DgsComponent
 public class AuthController {
-
 
     private final AuthService authService;
 
@@ -65,9 +65,7 @@ public class AuthController {
         if (refreshToken == null)
             throw new RuntimeException("Refresh token missing");
 
-        UserTokens userToken = authService.refreshAccessToken(refreshToken);
-
-        refreshTokenCookieHandler.addRefreshTokenToCookie(userToken.getRefreshToken());
+        UserAccessToken userToken = authService.refreshAccessToken(refreshToken);
 
         return new AuthDto(userToken.getAccessToken(), userMapper.mapTo(userToken.getUser()));
     }
