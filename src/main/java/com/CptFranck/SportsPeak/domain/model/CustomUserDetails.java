@@ -16,12 +16,12 @@ import java.util.Set;
 @Getter
 public class CustomUserDetails implements UserDetails, CredentialsContainer {
 
-    private final String email;
+    private final String username;
     private final Set<GrantedAuthority> authorities;
     private String password;
 
     public CustomUserDetails(UserEntity user) {
-        email = user.getEmail();
+        username = user.getUsername();
         password = user.getPassword();
         authorities = buildAuthorities(user);
     }
@@ -49,7 +49,7 @@ public class CustomUserDetails implements UserDetails, CredentialsContainer {
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
     @Override
