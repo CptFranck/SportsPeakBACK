@@ -2,12 +2,14 @@ package com.CptFranck.SportsPeak.config.graphql;
 
 import com.CptFranck.SportsPeak.config.security.jwt.RefreshTokenCookieHandler;
 import com.CptFranck.SportsPeak.domain.exception.token.RefreshTokenExpiredException;
+import com.CptFranck.SportsPeak.domain.exception.token.TokenMissingException;
 import com.netflix.graphql.dgs.exceptions.DefaultDataFetcherExceptionHandler;
 import com.netflix.graphql.types.errors.TypedGraphQLError;
 import graphql.GraphQLError;
 import graphql.execution.DataFetcherExceptionHandler;
 import graphql.execution.DataFetcherExceptionHandlerParameters;
 import graphql.execution.DataFetcherExceptionHandlerResult;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -28,8 +30,12 @@ public class GraphQLExceptionHandler implements DataFetcherExceptionHandler {
         Throwable exception = handlerParameters.getException();
         Map<String, Object> extensions = new HashMap<>();
 
-        if (exception instanceof RefreshTokenExpiredException) {
-            extensions.put("code", "REFRESH_TOKEN_EXPIRED");
+        if (exception instanceof RefreshTokenExpiredException ||
+                exception instanceof TokenMissingException) {
+            if (exception instanceof RefreshTokenExpiredException)
+                extensions.put("code", "REFRESH_TOKEN_EXPIRED");
+            if (exception instanceof TokenMissingException)
+                extensions.put("code", "REFRESH_TOKEN_MISSING");
 
             GraphQLError graphqlError = TypedGraphQLError.newInternalErrorBuilder()
                     .extensions(extensions)
@@ -41,8 +47,8 @@ public class GraphQLExceptionHandler implements DataFetcherExceptionHandler {
                     .error(graphqlError)
                     .build();
 
-//            SecurityContextHolder.clearContext();
-//            refreshTokenCookieHandler.clearRefreshTokenCookie();
+            SecurityContextHolder.clearContext();
+            refreshTokenCookieHandler.clearRefreshTokenCookie();
 
             return CompletableFuture.completedFuture(result);
         } else {
