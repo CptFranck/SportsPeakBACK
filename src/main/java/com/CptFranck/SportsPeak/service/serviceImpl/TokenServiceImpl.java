@@ -44,7 +44,7 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public boolean isValidToken(String token) {
+    public boolean isTokenValidInStore(String token) {
         return tokenRepository.findByToken(hashToken(token))
                 .map(t -> !t.isExpired() && !t.isRevoked())
                 .orElse(false);
