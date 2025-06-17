@@ -1,8 +1,8 @@
 package com.CptFranck.SportsPeak.config.security.jwt;
 
+import com.CptFranck.SportsPeak.domain.exception.token.InvalidTokenException;
+import com.CptFranck.SportsPeak.domain.exception.token.RefreshTokenExpiredException;
 import com.CptFranck.SportsPeak.service.TokenService;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,31 +47,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             final String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-            if (bearerToken == null || !bearerToken.startsWith("Bearer ")) {
+            if (bearerToken == null || !bearerToken.startsWith("Bearer ") ||
+                    SecurityContextHolder.getContext().getAuthentication() != null) {
                 filterChain.doFilter(request, response);
                 return;
             }
 
             final String jwt = bearerToken.substring(7);
-            final String username = jwtUtils.extractUsername(jwt);
 
-            if (username == null || SecurityContextHolder.getContext().getAuthentication() != null) {
-                filterChain.doFilter(request, response);
-                return;
-            }
+            if (jwtUtils.validateToken(jwt) && tokenService.isTokenValidInStore(jwt)) {
+                String username = jwtUtils.extractUsername(jwt);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-            if (jwtUtils.validateToken(jwt, userDetails) && tokenService.isValidToken(jwt)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
             filterChain.doFilter(request, response);
-        } catch (ExpiredJwtException ex) {
+        } catch (RefreshTokenExpiredException ex) {
             jwtAuthenticationEntryPoint.commence(request, response, new InsufficientAuthenticationException("Token has expired"));
-        } catch (JwtException | IllegalArgumentException ex) {
+        } catch (InvalidTokenException | IllegalArgumentException ex) {
             jwtAuthenticationEntryPoint.commence(request, response, new InsufficientAuthenticationException("Invalid token"));
         }
     }
