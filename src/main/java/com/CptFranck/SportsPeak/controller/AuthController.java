@@ -6,7 +6,6 @@ import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
-import com.CptFranck.SportsPeak.domain.model.UserAccessToken;
 import com.CptFranck.SportsPeak.domain.model.UserTokens;
 import com.CptFranck.SportsPeak.mapper.Mapper;
 import com.CptFranck.SportsPeak.service.AuthService;
@@ -42,18 +41,14 @@ public class AuthController {
     @DgsMutation
     public AuthDto login(@InputArgument InputCredentials inputCredentials) {
         UserTokens userToken = authService.login(inputCredentials);
-
         refreshTokenCookieHandler.addRefreshTokenToCookie(userToken.getRefreshToken());
-
         return new AuthDto(userToken.getAccessToken(), userMapper.mapTo(userToken.getUser()));
     }
 
     @DgsMutation
     public AuthDto register(@InputArgument RegisterInput registerInput) {
         UserTokens userToken = authService.register(registerInput);
-
         refreshTokenCookieHandler.addRefreshTokenToCookie(userToken.getRefreshToken());
-
         return new AuthDto(userToken.getAccessToken(), userMapper.mapTo(userToken.getUser()));
     }
 
@@ -65,7 +60,8 @@ public class AuthController {
         if (refreshToken == null)
             throw new RuntimeException("Refresh token missing");
 
-        UserAccessToken userToken = authService.refreshAccessToken(refreshToken);
+        UserTokens userToken = authService.refreshAccessToken(refreshToken);
+        refreshTokenCookieHandler.addRefreshTokenToCookie(userToken.getRefreshToken());
 
         return new AuthDto(userToken.getAccessToken(), userMapper.mapTo(userToken.getUser()));
     }
