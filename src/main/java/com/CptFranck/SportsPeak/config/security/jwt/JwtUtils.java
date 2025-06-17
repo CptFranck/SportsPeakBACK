@@ -1,10 +1,15 @@
 package com.CptFranck.SportsPeak.config.security.jwt;
 
+import com.CptFranck.SportsPeak.domain.exception.token.InvalidTokenException;
+import com.CptFranck.SportsPeak.domain.exception.token.RefreshTokenExpiredException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -23,6 +28,12 @@ public class JwtUtils {
     private long jwtExpiration;
     @Value("${security.jwt.refresh-token.expiration}")
     private long refreshTokenExpiration;
+
+    private final UserDetailsService userDetailsService;
+
+    public JwtUtils(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     private SecretKey getSigningKey() {
         byte[] keyBytes = this.secretKey.getBytes(StandardCharsets.UTF_8);
@@ -52,13 +63,14 @@ public class JwtUtils {
                 .compact();
     }
 
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+    public Boolean validateToken(String token) {
+        String username = this.extractUsername(token);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = this.extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
     }
 
     private Boolean isTokenExpired(String token) {
@@ -75,10 +87,16 @@ public class JwtUtils {
     }
 
     private Claims extractClaimAll(String token) {
-        return Jwts.parser()
+        try {
+            return Jwts.parser()
                 .verifyWith(getSigningKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+        } catch (ExpiredJwtException e) {
+            throw new RefreshTokenExpiredException("Token expiré");
+        } catch (JwtException e) {
+            throw new InvalidTokenException("Token invalide");
+        }
     }
 }
