@@ -5,6 +5,7 @@ import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.TokenEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.enumType.TokenType;
+import com.CptFranck.SportsPeak.domain.exception.token.InvalidTokenException;
 import com.CptFranck.SportsPeak.domain.exception.token.RefreshTokenExpiredException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.InvalidCredentialsException;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
@@ -99,16 +100,18 @@ public class AuthServiceImpl implements AuthService {
         final String username = jwtUtils.extractUsername(refreshToken);
 
         if (username == null)
-            throw new RefreshTokenExpiredException("Username token missing");
+            throw new InvalidTokenException("Username token missing");
+
+        if (tokenService.isValidToken(refreshToken))
+            throw new RefreshTokenExpiredException("Refresh token revoked or expired");
 
         UserEntity user = userService.findByLogin(username);
         UserDetails userDetails = new CustomUserDetails(user);
 
+        if (!jwtUtils.validateToken(refreshToken, userDetails))
+            throw new InvalidTokenException("Invalid refresh token");
+
         tokenService.revokeAllUserTokens(user);
-
-        if (!jwtUtils.validateToken(refreshToken, userDetails) || !tokenService.isValidToken(refreshToken))
-            throw new RefreshTokenExpiredException("RefreshToken token invalid or expired");
-
         return generateTokens(user);
     }
 
