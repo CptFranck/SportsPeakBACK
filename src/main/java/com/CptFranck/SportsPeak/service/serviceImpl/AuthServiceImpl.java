@@ -11,7 +11,6 @@ import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserEmail;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserPassword;
 import com.CptFranck.SportsPeak.domain.model.CustomUserDetails;
-import com.CptFranck.SportsPeak.domain.model.UserAccessToken;
 import com.CptFranck.SportsPeak.domain.model.UserTokens;
 import com.CptFranck.SportsPeak.service.AuthService;
 import com.CptFranck.SportsPeak.service.RoleService;
@@ -95,7 +94,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public UserAccessToken refreshAccessToken(String refreshToken) {
+    public UserTokens refreshAccessToken(String refreshToken) {
         final String username = jwtUtils.extractUsername(refreshToken);
 
         if (username == null)
@@ -104,14 +103,12 @@ public class AuthServiceImpl implements AuthService {
         UserEntity user = userService.findByLogin(username);
         UserDetails userDetails = new CustomUserDetails(user);
 
-        tokenService.revokeUserAccessTokens(user);
+        tokenService.revokeAllUserTokens(user);
 
         if (!jwtUtils.validateToken(refreshToken, userDetails) || !tokenService.isValidToken(refreshToken))
             throw new RuntimeException("RefreshToken token invalid or expired");
 
-        String accessToken = createAndStoreAccessToken(userDetails, user);
-
-        return new UserAccessToken(user, accessToken);
+        return generateTokens(user);
     }
 
     @Override
@@ -158,29 +155,26 @@ public class AuthServiceImpl implements AuthService {
     private UserTokens generateTokens(UserEntity user) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
 
-        String accessToken = createAndStoreAccessToken(userDetails, user);
-
-        String refreshToken = jwtUtils.generateRefreshToken(userDetails);
-        TokenEntity tokenRefreshEntity = new TokenEntity(
-                tokenService.hashToken(refreshToken),
-                TokenType.REFRESH,
-                jwtUtils.extractExpiration(refreshToken).toInstant(),
-                user);
-        tokenService.save(tokenRefreshEntity);
+        String accessToken = createAndStoreToken(userDetails, user, TokenType.ACCESS);
+        String refreshToken = createAndStoreToken(userDetails, user, TokenType.REFRESH);
 
         return new UserTokens(user, accessToken, refreshToken);
     }
 
-    private String createAndStoreAccessToken(UserDetails userDetails, UserEntity user) {
-        String accessToken = jwtUtils.generateAccessToken(userDetails);
+    private String createAndStoreToken(UserDetails userDetails, UserEntity user, TokenType tokenType) {
+        String token;
+        if (tokenType.equals(TokenType.REFRESH))
+            token = jwtUtils.generateRefreshToken(userDetails);
+        else
+            token = jwtUtils.generateAccessToken(userDetails);
 
-        TokenEntity tokenAccessEntity = new TokenEntity(
-                tokenService.hashToken(accessToken),
-                TokenType.ACCESS,
-                jwtUtils.extractExpiration(accessToken).toInstant(),
+        TokenEntity tokenEntity = new TokenEntity(
+                tokenService.hashToken(token),
+                tokenType,
+                jwtUtils.extractExpiration(token).toInstant(),
                 user);
-        tokenService.save(tokenAccessEntity);
+        tokenService.save(tokenEntity);
 
-        return accessToken;
+        return token;
     }
 }
