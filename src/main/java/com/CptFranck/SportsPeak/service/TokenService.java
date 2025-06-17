@@ -10,7 +10,7 @@ public interface TokenService {
 
     TokenEntity save(TokenEntity token);
 
-    boolean isValidToken(String token);
+    boolean isTokenValidInStore(String token);
 
     void revokeToken(String token);
 
