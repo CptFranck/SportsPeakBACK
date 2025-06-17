@@ -4,7 +4,6 @@ import com.CptFranck.SportsPeak.config.security.jwt.RefreshTokenCookieHandler;
 import com.CptFranck.SportsPeak.domain.dto.AuthDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
-import com.CptFranck.SportsPeak.domain.exception.token.RefreshTokenExpiredException;
 import com.CptFranck.SportsPeak.domain.exception.token.TokenMissingException;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
@@ -15,7 +14,6 @@ import com.CptFranck.SportsPeak.service.TokenService;
 import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsMutation;
 import com.netflix.graphql.dgs.InputArgument;
-import com.netflix.graphql.dgs.exceptions.DgsBadRequestException;
 import graphql.GraphQLContext;
 import graphql.schema.DataFetchingEnvironment;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -59,18 +57,12 @@ public class AuthController {
     public AuthDto refreshToken(DataFetchingEnvironment env) {
         GraphQLContext context = env.getGraphQlContext();
         String refreshToken = context.get("refreshToken");
-        try {
-            if (refreshToken == null) throw new TokenMissingException("Refresh token missing");
+        if (refreshToken == null) throw new TokenMissingException("Refresh token missing");
 
-            UserTokens userToken = authService.refreshAccessToken(refreshToken);
-            refreshTokenCookieHandler.addRefreshTokenToCookie(userToken.getRefreshToken());
+        UserTokens userToken = authService.refreshAccessToken(refreshToken);
+        refreshTokenCookieHandler.addRefreshTokenToCookie(userToken.getRefreshToken());
 
-            return new AuthDto(userToken.getAccessToken(), userMapper.mapTo(userToken.getUser()));
-        } catch (RefreshTokenExpiredException | TokenMissingException e) {
-            SecurityContextHolder.clearContext();
-            refreshTokenCookieHandler.clearRefreshTokenCookie();
-            throw new DgsBadRequestException("REFRESH_TOKEN_EXPIRED");
-        }
+        return new AuthDto(userToken.getAccessToken(), userMapper.mapTo(userToken.getUser()));
     }
 
     @DgsMutation
