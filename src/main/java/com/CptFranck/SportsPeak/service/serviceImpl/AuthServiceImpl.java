@@ -12,7 +12,6 @@ import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserEmail;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserPassword;
-import com.CptFranck.SportsPeak.domain.model.CustomUserDetails;
 import com.CptFranck.SportsPeak.domain.model.UserTokens;
 import com.CptFranck.SportsPeak.service.AuthService;
 import com.CptFranck.SportsPeak.service.RoleService;
@@ -97,19 +96,16 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserTokens refreshAccessToken(String refreshToken) {
-        final String username = jwtUtils.extractUsername(refreshToken);
+        if (!jwtUtils.validateToken(refreshToken))
+            throw new InvalidTokenException("Invalid refresh token");
 
-        if (username == null)
-            throw new InvalidTokenException("Username token missing");
-
-        if (tokenService.isValidToken(refreshToken))
+        if (tokenService.isTokenValidInStore(refreshToken))
             throw new RefreshTokenExpiredException("Refresh token revoked or expired");
 
-        UserEntity user = userService.findByLogin(username);
-        UserDetails userDetails = new CustomUserDetails(user);
+        final String username = jwtUtils.extractUsername(refreshToken);
+        if (username == null) throw new InvalidTokenException("Username token missing");
 
-        if (!jwtUtils.validateToken(refreshToken, userDetails))
-            throw new InvalidTokenException("Invalid refresh token");
+        UserEntity user = userService.findByLogin(username);
 
         tokenService.revokeAllUserTokens(user);
         return generateTokens(user);
