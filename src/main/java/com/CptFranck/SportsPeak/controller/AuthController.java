@@ -4,6 +4,7 @@ import com.CptFranck.SportsPeak.config.security.jwt.RefreshTokenCookieHandler;
 import com.CptFranck.SportsPeak.domain.dto.AuthDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.exception.token.TokenMissingException;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
 import com.CptFranck.SportsPeak.domain.model.UserTokens;
@@ -58,7 +59,7 @@ public class AuthController {
         String refreshToken = context.get("refreshToken");
 
         if (refreshToken == null)
-            throw new RuntimeException("Refresh token missing");
+            throw new TokenMissingException("Refresh token missing");
 
         UserTokens userToken = authService.refreshAccessToken(refreshToken);
         refreshTokenCookieHandler.addRefreshTokenToCookie(userToken.getRefreshToken());
@@ -74,7 +75,7 @@ public class AuthController {
         String refreshToken = context.get("refreshToken");
 
         if (accessToken == null || refreshToken == null)
-            throw new RuntimeException("Tokens missing");
+            throw new TokenMissingException("access and / or refresh missing");
 
         tokenService.revokeToken(accessToken);
         tokenService.revokeToken(refreshToken);
