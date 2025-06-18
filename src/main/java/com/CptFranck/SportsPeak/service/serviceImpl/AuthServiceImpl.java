@@ -99,7 +99,7 @@ public class AuthServiceImpl implements AuthService {
         if (!jwtUtils.validateToken(refreshToken))
             throw new InvalidTokenException("Invalid refresh token");
 
-        if (tokenService.isTokenValidInStore(refreshToken))
+        if (!tokenService.isTokenValidInStore(refreshToken))
             throw new RefreshTokenExpiredException("Refresh token revoked or expired");
 
         final String username = jwtUtils.extractUsername(refreshToken);
