@@ -1,5 +1,6 @@
 package com.CptFranck.SportsPeak.unit.controllers;
 
+import com.CptFranck.SportsPeak.config.security.jwt.RefreshTokenCookieHandler;
 import com.CptFranck.SportsPeak.controller.AuthController;
 import com.CptFranck.SportsPeak.domain.dto.AuthDto;
 import com.CptFranck.SportsPeak.domain.dto.UserDto;
@@ -29,6 +30,9 @@ public class AuthControllerTest {
 
     @InjectMocks
     private AuthController authController;
+
+    @Mock
+    private RefreshTokenCookieHandler refreshTokenCookieHandler;
 
     @Mock
     private AuthService authService;
