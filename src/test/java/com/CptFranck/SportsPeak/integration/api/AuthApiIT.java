@@ -18,7 +18,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.TestPropertySource;
 
@@ -213,8 +212,7 @@ public class AuthApiIT {
         UserDto userDto = objectMapper.convertValue(response.get("user"), UserDto.class);
         String token = objectMapper.convertValue(response.get("accessToken"), String.class);
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userEntity.getEmail());
-        Assertions.assertTrue(jwtProvider.validateToken(token, userDetails));
+        Assertions.assertTrue(jwtProvider.validateToken(token));
 
         Assertions.assertEquals(userEntity.getEmail(), userDto.getEmail());
         Assertions.assertEquals(userEntity.getFirstName(), userDto.getFirstName());

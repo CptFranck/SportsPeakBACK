@@ -19,7 +19,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.TestPropertySource;
 
@@ -145,8 +144,7 @@ public class AuthControllerIT {
     private void assertAuthDto(AuthDto authDto, UserEntity userEntity, boolean beenRegistered) {
         Assertions.assertNotNull(authDto);
         Assertions.assertEquals("Bearer", authDto.getTokenType());
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userEntity.getEmail());
-        Assertions.assertTrue(jwtProvider.validateToken(authDto.getAccessToken(), userDetails));
+        Assertions.assertTrue(jwtProvider.validateToken(authDto.getAccessToken()));
 
         Assertions.assertEquals(userEntity.getEmail(), authDto.getUser().getEmail());
         Assertions.assertEquals(userEntity.getFirstName(), authDto.getUser().getFirstName());
