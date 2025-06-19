@@ -4,6 +4,8 @@ import com.CptFranck.SportsPeak.domain.entity.PrivilegeEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.exception.role.RoleExistsException;
 import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
+import com.CptFranck.SportsPeak.domain.exception.role.RoleStillUsedByPrivilegeException;
+import com.CptFranck.SportsPeak.domain.exception.role.RoleStillUsedByUserException;
 import com.CptFranck.SportsPeak.repository.RoleRepository;
 import com.CptFranck.SportsPeak.service.serviceImpl.RoleServiceImpl;
 import org.junit.jupiter.api.Assertions;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 import static com.CptFranck.SportsPeak.utils.PrivilegeTestUtils.createTestPrivilege;
 import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createNewTestRoleList;
 import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
+import static com.CptFranck.SportsPeak.utils.UserTestUtils.createTestUser;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -140,6 +143,22 @@ public class RoleServiceImplTest {
         when(roleRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.empty());
 
         assertThrows(RoleNotFoundException.class, () -> roleServiceImpl.delete(role.getId()));
+    }
+
+    @Test
+    void delete_RoleStillUsed_ThrowRoleStillUsedByPrivilegeException() {
+        role.getPrivileges().add(createTestPrivilege(1L, 0));
+        when(roleRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(role));
+
+        assertThrows(RoleStillUsedByPrivilegeException.class, () -> roleServiceImpl.delete(role.getId()));
+    }
+
+    @Test
+    void delete_RoleStillUsed_ThrowRoleStillUsedByUserException() {
+        role.getUsers().add(createTestUser(1L));
+        when(roleRepository.findById(Mockito.any(Long.class))).thenReturn(Optional.of(role));
+
+        assertThrows(RoleStillUsedByUserException.class, () -> roleServiceImpl.delete(role.getId()));
     }
 
     @Test
