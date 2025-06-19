@@ -11,6 +11,7 @@ import com.CptFranck.SportsPeak.domain.input.user.InputUserPassword;
 import com.CptFranck.SportsPeak.domain.model.CustomUserDetails;
 import com.CptFranck.SportsPeak.domain.model.UserTokens;
 import com.CptFranck.SportsPeak.service.RoleService;
+import com.CptFranck.SportsPeak.service.TokenService;
 import com.CptFranck.SportsPeak.service.UserService;
 import com.CptFranck.SportsPeak.service.serviceImpl.AuthServiceImpl;
 import org.junit.jupiter.api.Assertions;
@@ -28,6 +29,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.time.Instant;
+import java.util.Date;
 
 import static com.CptFranck.SportsPeak.utils.AuthTestUtils.createInputCredentials;
 import static com.CptFranck.SportsPeak.utils.AuthTestUtils.createRegisterInput;
@@ -51,6 +55,9 @@ public class AuthServiceImplTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private TokenService tokenService;
 
     @Mock
     private UserService userService;
@@ -89,11 +96,11 @@ public class AuthServiceImplTest {
 
     @Test
     void login_CorrectCredentials_ReturnUserTokenEntity() {
-        when(authenticationManager.authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class))).thenReturn(mock(Authentication.class));
         when(userDetailsService.loadUserByUsername(Mockito.any(String.class))).thenReturn(userDetails);
+        when(userService.findByLogin(Mockito.any(String.class))).thenReturn(user);
         when(jwtUtils.generateAccessToken(Mockito.any(UserDetails.class))).thenReturn(accessToken);
         when(jwtUtils.generateRefreshToken(Mockito.any(UserDetails.class))).thenReturn(refreshToken);
-        when(userService.findByLogin(Mockito.any(String.class))).thenReturn(user);
+        when(jwtUtils.extractExpiration(Mockito.any(String.class))).thenReturn(Date.from(Instant.now()));
 
         InputCredentials inputCredentials = createInputCredentials(user);
         UserTokens returnedUser = authServiceImpl.login(inputCredentials);
@@ -112,6 +119,7 @@ public class AuthServiceImplTest {
         when(userDetailsService.loadUserByUsername(Mockito.any(String.class))).thenReturn(userDetails);
         when(jwtUtils.generateAccessToken(Mockito.any(UserDetails.class))).thenReturn(accessToken);
         when(jwtUtils.generateRefreshToken(Mockito.any(UserDetails.class))).thenReturn(refreshToken);
+        when(jwtUtils.extractExpiration(Mockito.any(String.class))).thenReturn(Date.from(Instant.now()));
 
         RegisterInput registerInput = createRegisterInput(user);
         UserTokens returnedUser = authServiceImpl.register(registerInput);
@@ -138,6 +146,7 @@ public class AuthServiceImplTest {
         when(userDetailsService.loadUserByUsername(Mockito.any(String.class))).thenReturn(userDetails);
         when(jwtUtils.generateAccessToken(Mockito.any(UserDetails.class))).thenReturn(accessToken);
         when(jwtUtils.generateRefreshToken(Mockito.any(UserDetails.class))).thenReturn(refreshToken);
+        when(jwtUtils.extractExpiration(Mockito.any(String.class))).thenReturn(Date.from(Instant.now()));
 
         InputUserEmail inputUserEmail = createTestInputUserEmail(user.getId(), user.getPassword());
         UserTokens returnedUser = authServiceImpl.updateEmail(inputUserEmail);
@@ -164,6 +173,7 @@ public class AuthServiceImplTest {
         when(userDetailsService.loadUserByUsername(Mockito.any(String.class))).thenReturn(userDetails);
         when(jwtUtils.generateAccessToken(Mockito.any(UserDetails.class))).thenReturn(accessToken);
         when(jwtUtils.generateRefreshToken(Mockito.any(UserDetails.class))).thenReturn(refreshToken);
+        when(jwtUtils.extractExpiration(Mockito.any(String.class))).thenReturn(Date.from(Instant.now()));
 
         InputUserPassword inputUserPassword = createTestInputUserPassword(user.getId(), user.getPassword());
         UserTokens returnedUser = authServiceImpl.updatePassword(inputUserPassword);
