@@ -23,7 +23,7 @@ public class TokenEntity {
     @SequenceGenerator(name = "token_id_seq", sequenceName = "token_id_seq", allocationSize = 1)
     private Long id;
 
-    @Column(name = "token", length = 50, nullable = false)
+    @Column(name = "token", unique = true, length = 50, nullable = false)
     private String token;
 
     @Column(name = "token_type", length = 50, nullable = false)
