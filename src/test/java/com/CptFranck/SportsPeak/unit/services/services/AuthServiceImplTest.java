@@ -3,6 +3,8 @@ package com.CptFranck.SportsPeak.unit.services.services;
 import com.CptFranck.SportsPeak.config.security.jwt.JwtUtils;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.exception.token.InvalidTokenException;
+import com.CptFranck.SportsPeak.domain.exception.token.RefreshTokenExpiredException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.InvalidCredentialsException;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
@@ -123,6 +125,48 @@ public class AuthServiceImplTest {
 
         RegisterInput registerInput = createRegisterInput(user);
         UserTokens returnedUser = authServiceImpl.register(registerInput);
+
+        Assertions.assertEquals(userTokens.getAccessToken(), returnedUser.getAccessToken());
+        Assertions.assertEquals(userTokens.getRefreshToken(), returnedUser.getRefreshToken());
+        Assertions.assertEquals(userTokens.getUser(), returnedUser.getUser());
+    }
+
+    @Test
+    void refreshAccessToken_InvalidRefreshToken_ThrowInvalidTokenException() {
+        when(jwtUtils.validateToken(Mockito.any(String.class))).thenReturn(false);
+
+        assertThrows(InvalidTokenException.class, () -> authServiceImpl.refreshAccessToken("refreshToken"));
+    }
+
+    @Test
+    void refreshAccessToken_InvalidRefreshTokenExpired_ThrowRefreshTokenExpiredException() {
+        when(jwtUtils.validateToken(Mockito.any(String.class))).thenReturn(true);
+        when(tokenService.isTokenValidInStore(Mockito.any(String.class))).thenReturn(false);
+
+        assertThrows(RefreshTokenExpiredException.class, () -> authServiceImpl.refreshAccessToken("refreshToken"));
+    }
+
+    @Test
+    void refreshAccessToken_InvalidUsernameToken_ThrowInvalidTokenException() {
+        when(jwtUtils.validateToken(Mockito.any(String.class))).thenReturn(true);
+        when(tokenService.isTokenValidInStore(Mockito.any(String.class))).thenReturn(true);
+        when(jwtUtils.extractUsername(Mockito.any(String.class))).thenReturn(null);
+
+        assertThrows(InvalidTokenException.class, () -> authServiceImpl.refreshAccessToken("refreshToken"));
+    }
+
+    @Test
+    void refreshAccessToken_ValidInputs_ThrowIncorrectPasswordException() {
+        when(jwtUtils.validateToken(Mockito.any(String.class))).thenReturn(true);
+        when(tokenService.isTokenValidInStore(Mockito.any(String.class))).thenReturn(true);
+        when(jwtUtils.extractUsername(Mockito.any(String.class))).thenReturn("username");
+        when(userService.findByLogin(Mockito.any(String.class))).thenReturn(user);
+        when(userDetailsService.loadUserByUsername(Mockito.any(String.class))).thenReturn(userDetails);
+        when(jwtUtils.generateAccessToken(Mockito.any(UserDetails.class))).thenReturn(accessToken);
+        when(jwtUtils.generateRefreshToken(Mockito.any(UserDetails.class))).thenReturn(refreshToken);
+        when(jwtUtils.extractExpiration(Mockito.any(String.class))).thenReturn(Date.from(Instant.now()));
+
+        UserTokens returnedUser = authServiceImpl.refreshAccessToken("refreshToken");
 
         Assertions.assertEquals(userTokens.getAccessToken(), returnedUser.getAccessToken());
         Assertions.assertEquals(userTokens.getRefreshToken(), returnedUser.getRefreshToken());
