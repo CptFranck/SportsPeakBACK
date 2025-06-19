@@ -1,5 +1,6 @@
 package com.CptFranck.SportsPeak.unit.controllers;
 
+import com.CptFranck.SportsPeak.config.security.jwt.RefreshTokenCookieHandler;
 import com.CptFranck.SportsPeak.controller.UserController;
 import com.CptFranck.SportsPeak.domain.dto.AuthDto;
 import com.CptFranck.SportsPeak.domain.dto.ExerciseDto;
@@ -44,6 +45,9 @@ class UserControllerTest {
 
     @Mock
     private Mapper<ProgExerciseEntity, ProgExerciseDto> progExerciseMapper;
+
+    @Mock
+    private RefreshTokenCookieHandler refreshTokenCookieHandler;
 
     @Mock
     private Mapper<UserEntity, UserDto> userMapper;
