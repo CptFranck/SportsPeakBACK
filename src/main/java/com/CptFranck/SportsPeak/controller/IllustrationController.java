@@ -21,10 +21,9 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/illustrations")
+@RequestMapping("/service/api/rest/illustrations")
 public class IllustrationController {
 
     private static final long MAX_FILE_SIZE = 1024 * 1024; // 1MB
@@ -42,8 +41,21 @@ public class IllustrationController {
         this.exerciseService = exerciseService;
     }
 
+    @GetMapping("/log")
+    public ResponseEntity<String> testLog() {
+        System.out.println("✅ [TestController] Endpoint /api/test/log appelé !");
+        return ResponseEntity.ok("Log imprimé !");
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/upload/{type}/{id}")
+    @PostMapping(value = "/upload/test", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadTest(@RequestParam("file") MultipartFile file) {
+        System.out.println("📝 Nom du fichier reçu : " + file.getOriginalFilename());
+        return ResponseEntity.ok("Fichier reçu : " + file.getOriginalFilename());
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping(value = "/upload/{type}/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadImage(@PathVariable String type, @PathVariable Long id, @RequestParam("file") MultipartFile file) {
         try {
             if (!ALLOWED_TYPES.contains(file.getContentType()))
@@ -54,12 +66,10 @@ public class IllustrationController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Type not supported");
 
             String safeName = Objects.requireNonNull(file.getOriginalFilename()).replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
-            String filename = UUID.randomUUID() + "_" + safeName;
-            Path filePath = Paths.get(BASE_UPLOAD_DIR + type + "s/" + filename);
+            Path filePath = Paths.get(BASE_UPLOAD_DIR + type + "s/" + safeName);
             Files.createDirectories(filePath.getParent());
             Files.write(filePath, file.getBytes());
-
-            String imageUrl = "/api/illustrations/" + type + "s/" + filename;
+            String imageUrl = "/illustrations/" + type + "/" + safeName;
 
             switch (type) {
                 case "muscle":
@@ -81,11 +91,15 @@ public class IllustrationController {
         }
     }
 
-    @GetMapping("/{filename:.+}")
-    public ResponseEntity<Resource> getImage(@PathVariable String filename) {
+    @GetMapping("/{type}/{filename:.+}")
+    public ResponseEntity<?> getImage(@PathVariable String type, @PathVariable String filename) {
         try {
-            Path filePath = Paths.get(BASE_UPLOAD_DIR).resolve(filename).normalize();
+            if (!ALLOWED_FOLDER_TYPE.contains(type))
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Type not supported");
+
+            Path filePath = Paths.get(BASE_UPLOAD_DIR + type + "s/").resolve(filename).normalize();
             Resource resource = new UrlResource(filePath.toUri());
+
             if (resource.exists()) {
                 return ResponseEntity.ok()
                         .contentType(MediaType.IMAGE_PNG)
