@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Component
@@ -53,6 +54,8 @@ public class JwtUtils {
     private String createToken(Map<String, Object> claims, String subject, long validityMs) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + validityMs);
+
+        claims.put("jti", UUID.randomUUID().toString());
 
         return Jwts.builder()
                 .claims(claims)
