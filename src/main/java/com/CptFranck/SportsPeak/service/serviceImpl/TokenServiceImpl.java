@@ -29,16 +29,6 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public void revokeAllUserTokens(UserEntity user) {
-        List<TokenEntity> tokens = tokenRepository.findAllValidTokenByUser(user.getId());
-        tokens.forEach(token -> {
-            token.setRevoked(true);
-            token.setExpired(true);
-        });
-        tokenRepository.saveAll(tokens);
-    }
-
-    @Override
     public TokenEntity save(TokenEntity token) {
         return tokenRepository.save(token);
     }
@@ -56,6 +46,16 @@ public class TokenServiceImpl implements TokenService {
         tokenEntity.setExpired(true);
         tokenEntity.setRevoked(true);
         tokenRepository.save(tokenEntity);
+    }
+
+    @Override
+    public void revokeAllUserTokens(UserEntity user) {
+        List<TokenEntity> tokens = tokenRepository.findAllValidTokenByUser(user.getId());
+        tokens.forEach(token -> {
+            token.setRevoked(true);
+            token.setExpired(true);
+        });
+        tokenRepository.saveAll(tokens);
     }
 
     @Scheduled(fixedRateString = "${security.jwt.cleanup.initialDelay}", initialDelayString = "${security.jwt.cleanup.fixedRate}")
