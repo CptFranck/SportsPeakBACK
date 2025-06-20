@@ -16,7 +16,6 @@ import com.CptFranck.SportsPeak.service.RoleService;
 import com.CptFranck.SportsPeak.service.TokenService;
 import com.CptFranck.SportsPeak.service.UserService;
 import com.CptFranck.SportsPeak.service.serviceImpl.AuthServiceImpl;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,6 +37,7 @@ import java.util.Date;
 import static com.CptFranck.SportsPeak.utils.AuthTestUtils.createInputCredentials;
 import static com.CptFranck.SportsPeak.utils.AuthTestUtils.createRegisterInput;
 import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
+import static com.CptFranck.SportsPeak.utils.TokenTestUtils.assertUserTokens;
 import static com.CptFranck.SportsPeak.utils.UserTestUtils.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
@@ -107,9 +107,7 @@ public class AuthServiceImplTest {
         InputCredentials inputCredentials = createInputCredentials(user);
         UserTokens returnedUser = authServiceImpl.login(inputCredentials);
 
-        Assertions.assertEquals(userTokens.getAccessToken(), returnedUser.getAccessToken());
-        Assertions.assertEquals(userTokens.getRefreshToken(), returnedUser.getRefreshToken());
-        Assertions.assertEquals(userTokens.getUser(), returnedUser.getUser());
+        assertUserTokens(userTokens, returnedUser);
     }
 
     @Test
@@ -126,9 +124,7 @@ public class AuthServiceImplTest {
         RegisterInput registerInput = createRegisterInput(user);
         UserTokens returnedUser = authServiceImpl.register(registerInput);
 
-        Assertions.assertEquals(userTokens.getAccessToken(), returnedUser.getAccessToken());
-        Assertions.assertEquals(userTokens.getRefreshToken(), returnedUser.getRefreshToken());
-        Assertions.assertEquals(userTokens.getUser(), returnedUser.getUser());
+        assertUserTokens(userTokens, returnedUser);
     }
 
     @Test
@@ -168,9 +164,7 @@ public class AuthServiceImplTest {
 
         UserTokens returnedUser = authServiceImpl.refreshAccessToken("refreshToken");
 
-        Assertions.assertEquals(userTokens.getAccessToken(), returnedUser.getAccessToken());
-        Assertions.assertEquals(userTokens.getRefreshToken(), returnedUser.getRefreshToken());
-        Assertions.assertEquals(userTokens.getUser(), returnedUser.getUser());
+        assertUserTokens(userTokens, returnedUser);
     }
 
     @Test
@@ -195,9 +189,7 @@ public class AuthServiceImplTest {
         InputUserEmail inputUserEmail = createTestInputUserEmail(user.getId(), user.getPassword());
         UserTokens returnedUser = authServiceImpl.updateEmail(inputUserEmail);
 
-        Assertions.assertEquals(userTokens.getAccessToken(), returnedUser.getAccessToken());
-        Assertions.assertEquals(userTokens.getRefreshToken(), returnedUser.getRefreshToken());
-        Assertions.assertEquals(userTokens.getUser(), returnedUser.getUser());
+        assertUserTokens(userTokens, returnedUser);
     }
 
     @Test
@@ -222,8 +214,6 @@ public class AuthServiceImplTest {
         InputUserPassword inputUserPassword = createTestInputUserPassword(user.getId(), user.getPassword());
         UserTokens returnedUser = authServiceImpl.updatePassword(inputUserPassword);
 
-        Assertions.assertEquals(userTokens.getAccessToken(), returnedUser.getAccessToken());
-        Assertions.assertEquals(userTokens.getRefreshToken(), returnedUser.getRefreshToken());
-        Assertions.assertEquals(userTokens.getUser(), returnedUser.getUser());
+        assertUserTokens(userTokens, returnedUser);
     }
 }
