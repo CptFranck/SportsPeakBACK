@@ -7,11 +7,7 @@ import com.CptFranck.SportsPeak.repository.TargetSetRepository;
 import com.CptFranck.SportsPeak.service.TargetSetService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.*;
 
 @Service
 public class TargetSetServiceImpl implements TargetSetService {
@@ -24,11 +20,7 @@ public class TargetSetServiceImpl implements TargetSetService {
 
     @Override
     public List<TargetSetEntity> findAll() {
-        return StreamSupport.stream(targetSetRepository
-                                .findAll()
-                                .spliterator(),
-                        false)
-                .collect(Collectors.toList());
+        return new ArrayList<>(targetSetRepository.findAll());
     }
 
     @Override
@@ -43,11 +35,7 @@ public class TargetSetServiceImpl implements TargetSetService {
 
     @Override
     public Set<TargetSetEntity> findMany(Set<Long> ids) {
-        return StreamSupport.stream(targetSetRepository
-                                .findAllById(ids)
-                                .spliterator(),
-                        false)
-                .collect(Collectors.toSet());
+        return new HashSet<>(targetSetRepository.findAllById(ids));
     }
 
     @Override

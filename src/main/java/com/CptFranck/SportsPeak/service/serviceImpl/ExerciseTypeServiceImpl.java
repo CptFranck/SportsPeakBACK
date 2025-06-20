@@ -7,10 +7,10 @@ import com.CptFranck.SportsPeak.repository.ExerciseTypeRepository;
 import com.CptFranck.SportsPeak.service.ExerciseTypeService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class ExerciseTypeServiceImpl implements ExerciseTypeService {
@@ -23,11 +23,7 @@ public class ExerciseTypeServiceImpl implements ExerciseTypeService {
 
     @Override
     public List<ExerciseTypeEntity> findAll() {
-        return StreamSupport.stream(exerciseTypeRepository
-                                .findAll()
-                                .spliterator(),
-                        false)
-                .collect(Collectors.toList());
+        return new ArrayList<>(exerciseTypeRepository.findAll());
     }
 
     @Override
@@ -37,11 +33,7 @@ public class ExerciseTypeServiceImpl implements ExerciseTypeService {
 
     @Override
     public Set<ExerciseTypeEntity> findMany(Set<Long> ids) {
-        return StreamSupport.stream(exerciseTypeRepository
-                                .findAllById(ids)
-                                .spliterator(),
-                        false)
-                .collect(Collectors.toSet());
+        return new HashSet<>(exerciseTypeRepository.findAllById(ids));
     }
 
     @Override

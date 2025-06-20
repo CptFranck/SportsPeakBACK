@@ -12,8 +12,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -26,11 +24,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserEntity> findAll() {
-        return StreamSupport.stream(userRepository
-                                .findAll()
-                                .spliterator(),
-                        false)
-                .collect(Collectors.toList());
+        return new ArrayList<>(userRepository.findAll());
     }
 
     @Override
@@ -40,11 +34,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Set<UserEntity> findMany(Set<Long> ids) {
-        return StreamSupport.stream(userRepository
-                                .findAllById(ids)
-                                .spliterator(),
-                        false)
-                .collect(Collectors.toSet());
+        return new HashSet<>(userRepository.findAllById(ids));
     }
 
     @Override

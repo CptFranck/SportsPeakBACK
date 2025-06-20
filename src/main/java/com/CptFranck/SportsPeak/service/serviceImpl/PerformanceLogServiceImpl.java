@@ -6,10 +6,10 @@ import com.CptFranck.SportsPeak.repository.PerformanceLogRepository;
 import com.CptFranck.SportsPeak.service.PerformanceLogService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class PerformanceLogServiceImpl implements PerformanceLogService {
@@ -23,11 +23,7 @@ public class PerformanceLogServiceImpl implements PerformanceLogService {
 
     @Override
     public List<PerformanceLogEntity> findAll() {
-        return StreamSupport.stream(performanceLogRepository
-                                .findAll()
-                                .spliterator(),
-                        false)
-                .collect(Collectors.toList());
+        return new ArrayList<>(performanceLogRepository.findAll());
     }
 
     @Override
@@ -37,11 +33,7 @@ public class PerformanceLogServiceImpl implements PerformanceLogService {
 
     @Override
     public Set<PerformanceLogEntity> findMany(Set<Long> ids) {
-        return StreamSupport.stream(performanceLogRepository
-                                .findAllById(ids)
-                                .spliterator(),
-                        false)
-                .collect(Collectors.toSet());
+        return new HashSet<>(performanceLogRepository.findAllById(ids));
     }
 
     @Override

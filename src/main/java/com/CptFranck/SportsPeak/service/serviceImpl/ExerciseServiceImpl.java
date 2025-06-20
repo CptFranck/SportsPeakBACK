@@ -8,11 +8,7 @@ import com.CptFranck.SportsPeak.repository.ExerciseRepository;
 import com.CptFranck.SportsPeak.service.ExerciseService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.*;
 
 @Service
 public class ExerciseServiceImpl implements ExerciseService {
@@ -25,11 +21,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     @Override
     public List<ExerciseEntity> findAll() {
-        return StreamSupport.stream(exerciseRepository
-                                .findAll()
-                                .spliterator(),
-                        false)
-                .collect(Collectors.toList());
+        return new ArrayList<>(exerciseRepository.findAll());
     }
 
     @Override
@@ -39,11 +31,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     @Override
     public Set<ExerciseEntity> findMany(Set<Long> ids) {
-        return StreamSupport.stream(exerciseRepository
-                                .findAllById(ids)
-                                .spliterator(),
-                        false)
-                .collect(Collectors.toSet());
+        return new HashSet<>(exerciseRepository.findAllById(ids));
     }
 
     @Override

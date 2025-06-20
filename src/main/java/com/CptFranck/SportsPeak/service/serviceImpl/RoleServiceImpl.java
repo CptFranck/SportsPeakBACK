@@ -10,12 +10,7 @@ import com.CptFranck.SportsPeak.repository.RoleRepository;
 import com.CptFranck.SportsPeak.service.RoleService;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.*;
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -28,11 +23,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<RoleEntity> findAll() {
-        return StreamSupport.stream(roleRepository
-                                .findAll()
-                                .spliterator(),
-                        false)
-                .collect(Collectors.toList());
+        return new ArrayList<>(roleRepository.findAll());
     }
 
     @Override

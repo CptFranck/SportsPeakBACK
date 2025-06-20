@@ -7,10 +7,10 @@ import com.CptFranck.SportsPeak.repository.MuscleRepository;
 import com.CptFranck.SportsPeak.service.MuscleService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class MuscleServiceImpl implements MuscleService {
@@ -23,11 +23,7 @@ public class MuscleServiceImpl implements MuscleService {
 
     @Override
     public List<MuscleEntity> findAll() {
-        return StreamSupport.stream(muscleRepository
-                                .findAll()
-                                .spliterator(),
-                        false)
-                .collect(Collectors.toList());
+        return new ArrayList<>(muscleRepository.findAll());
     }
 
     @Override
@@ -37,11 +33,7 @@ public class MuscleServiceImpl implements MuscleService {
 
     @Override
     public Set<MuscleEntity> findMany(Set<Long> ids) {
-        return StreamSupport.stream(muscleRepository
-                                .findAllById(ids)
-                                .spliterator(),
-                        false)
-                .collect(Collectors.toSet());
+        return new HashSet<>(muscleRepository.findAllById(ids));
     }
 
     @Override

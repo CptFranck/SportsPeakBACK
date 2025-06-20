@@ -8,11 +8,7 @@ import com.CptFranck.SportsPeak.repository.PrivilegeRepository;
 import com.CptFranck.SportsPeak.service.PrivilegeService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.*;
 
 @Service
 public class PrivilegeServiceImpl implements PrivilegeService {
@@ -25,11 +21,7 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 
     @Override
     public List<PrivilegeEntity> findAll() {
-        return StreamSupport.stream(privilegeRepository
-                                .findAll()
-                                .spliterator(),
-                        false)
-                .collect(Collectors.toList());
+        return new ArrayList<>(privilegeRepository.findAll());
     }
 
     @Override
@@ -39,11 +31,7 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 
     @Override
     public Set<PrivilegeEntity> findMany(Set<Long> ids) {
-        return StreamSupport.stream(privilegeRepository
-                                .findAllById(ids)
-                                .spliterator(),
-                        false)
-                .collect(Collectors.toSet());
+        return new HashSet<>(privilegeRepository.findAllById(ids));
     }
 
     @Override
