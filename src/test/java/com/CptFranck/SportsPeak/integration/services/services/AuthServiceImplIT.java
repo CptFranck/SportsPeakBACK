@@ -1,6 +1,9 @@
 package com.CptFranck.SportsPeak.integration.services.services;
 
+import com.CptFranck.SportsPeak.config.security.TokenHashConfig;
+import com.CptFranck.SportsPeak.domain.entity.TokenEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
+import com.CptFranck.SportsPeak.domain.enumType.TokenType;
 import com.CptFranck.SportsPeak.domain.exception.role.RoleNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailAlreadyUsedException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.InvalidCredentialsException;
@@ -12,6 +15,7 @@ import com.CptFranck.SportsPeak.domain.input.user.InputUserEmail;
 import com.CptFranck.SportsPeak.domain.input.user.InputUserPassword;
 import com.CptFranck.SportsPeak.domain.model.UserTokens;
 import com.CptFranck.SportsPeak.repository.RoleRepository;
+import com.CptFranck.SportsPeak.repository.TokenRepository;
 import com.CptFranck.SportsPeak.repository.UserRepository;
 import com.CptFranck.SportsPeak.service.serviceImpl.AuthServiceImpl;
 import org.junit.jupiter.api.AfterEach;
@@ -23,6 +27,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
 
+import java.time.Instant;
+
 import static com.CptFranck.SportsPeak.utils.AuthTestUtils.createRegisterInput;
 import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
 import static com.CptFranck.SportsPeak.utils.UserTestUtils.*;
@@ -33,10 +39,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class AuthServiceImplIT {
 
     @Autowired
+    private TokenHashConfig.Sha256Hasher sha256Hasher;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private TokenRepository tokenRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -44,8 +56,8 @@ public class AuthServiceImplIT {
     @Autowired
     private AuthServiceImpl authServiceImpl;
 
-    private UserEntity user;
     private String rawPassword;
+    private UserEntity user;
 
     @BeforeEach
     void setUp() {
@@ -54,10 +66,12 @@ public class AuthServiceImplIT {
         rawPassword = user.getPassword();
         user.setPassword(passwordEncoder.encode("password"));
         user = userRepository.save(user);
+        tokenRepository.save(new TokenEntity(sha256Hasher.hash("token"), TokenType.ACCESS, Instant.now(), user));
     }
 
     @AfterEach
     public void afterEach() {
+        tokenRepository.deleteAll();
         userRepository.deleteAll();
         roleRepository.deleteAll();
     }
@@ -86,6 +100,7 @@ public class AuthServiceImplIT {
     @Test
     void login_UserDeleted_ThrowInvalidCredentialsException() {
         InputCredentials inputCredentials = new InputCredentials(user.getEmail(), rawPassword);
+        tokenRepository.deleteAll();
         userRepository.delete(user);
 
         assertThrows(InvalidCredentialsException.class, () -> authServiceImpl.login(inputCredentials));
@@ -97,6 +112,8 @@ public class AuthServiceImplIT {
 
         UserTokens returnedUserToken = authServiceImpl.login(inputCredentials);
 
+        tokenRepository.findByToken(sha256Hasher.hash(returnedUserToken.getAccessToken())).orElseThrow();
+        tokenRepository.findByToken(sha256Hasher.hash(returnedUserToken.getRefreshToken())).orElseThrow();
         assertEqualsUser(user, returnedUserToken.getUser(), false);
     }
 
@@ -106,6 +123,8 @@ public class AuthServiceImplIT {
 
         UserTokens returnedUserToken = authServiceImpl.login(inputCredentials);
 
+        tokenRepository.findByToken(sha256Hasher.hash(returnedUserToken.getAccessToken())).orElseThrow();
+        tokenRepository.findByToken(sha256Hasher.hash(returnedUserToken.getRefreshToken())).orElseThrow();
         assertEqualsUser(user, returnedUserToken.getUser(), false);
     }
 
@@ -143,6 +162,8 @@ public class AuthServiceImplIT {
 
         UserTokens returnedUserToken = authServiceImpl.register(registerInput);
 
+        tokenRepository.findByToken(sha256Hasher.hash(returnedUserToken.getAccessToken())).orElseThrow();
+        tokenRepository.findByToken(sha256Hasher.hash(returnedUserToken.getRefreshToken())).orElseThrow();
         UserEntity user = returnedUserToken.getUser();
         Assertions.assertEquals(userToRegister.getEmail(), user.getEmail());
         Assertions.assertEquals(userToRegister.getFirstName(), user.getFirstName());
@@ -154,6 +175,7 @@ public class AuthServiceImplIT {
     @Test
     void updateEmail_InvalidUserId_ThrowUserNotFoundException() {
         InputUserEmail inputUserEmail = createTestInputUserEmail(user.getId(), rawPassword);
+        tokenRepository.deleteAll();
         userRepository.delete(user);
 
         Assertions.assertThrows(UserNotFoundException.class, () -> authServiceImpl.updateEmail(inputUserEmail));
@@ -181,6 +203,8 @@ public class AuthServiceImplIT {
 
         UserTokens returnedUserToken = authServiceImpl.updateEmail(inputUserEmail);
 
+        tokenRepository.findByToken(sha256Hasher.hash(returnedUserToken.getAccessToken())).orElseThrow();
+        tokenRepository.findByToken(sha256Hasher.hash(returnedUserToken.getRefreshToken())).orElseThrow();
         UserEntity userSaved = returnedUserToken.getUser();
         Assertions.assertNotEquals(user.getEmail(), userSaved.getEmail());
         Assertions.assertEquals(user.getFirstName(), userSaved.getFirstName());
@@ -194,6 +218,7 @@ public class AuthServiceImplIT {
     @Test
     void updatePassword_InvalidUserId_ThrowUserNotFoundException() {
         InputUserPassword inputUserPassword = createTestInputUserPassword(user.getId(), rawPassword);
+        tokenRepository.deleteAll();
         userRepository.delete(user);
 
         Assertions.assertThrows(UserNotFoundException.class, () -> authServiceImpl.updatePassword(inputUserPassword));
@@ -212,6 +237,8 @@ public class AuthServiceImplIT {
 
         UserTokens returnedUserToken = authServiceImpl.updatePassword(inputUserPassword);
 
+        tokenRepository.findByToken(sha256Hasher.hash(returnedUserToken.getAccessToken())).orElseThrow();
+        tokenRepository.findByToken(sha256Hasher.hash(returnedUserToken.getRefreshToken())).orElseThrow();
         UserEntity userSaved = returnedUserToken.getUser();
         Assertions.assertNotEquals(user.getPassword(), userSaved.getPassword());
         Assertions.assertEquals(user.getEmail(), userSaved.getEmail());
