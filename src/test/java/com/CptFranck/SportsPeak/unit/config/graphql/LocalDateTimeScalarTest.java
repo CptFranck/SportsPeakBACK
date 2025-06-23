@@ -1,7 +1,6 @@
 package com.CptFranck.SportsPeak.unit.config.graphql;
 
 import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
-import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
 import graphql.GraphQLContext;
 import graphql.execution.CoercedVariables;
 import graphql.language.IntValue;
@@ -12,17 +11,15 @@ import graphql.schema.CoercingParseValueException;
 import graphql.schema.CoercingSerializeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-@SpringBootTest(classes = {
-        LocalDateTimeScalar.class,
-        DgsAutoConfiguration.class,
-})
+@ExtendWith(MockitoExtension.class)
 public class LocalDateTimeScalarTest {
 
     private final LocalDateTimeScalar localDateTimeScalar = new LocalDateTimeScalar();
