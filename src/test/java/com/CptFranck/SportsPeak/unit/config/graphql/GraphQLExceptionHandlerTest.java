@@ -3,6 +3,7 @@ package com.CptFranck.SportsPeak.unit.config.graphql;
 import com.CptFranck.SportsPeak.config.graphql.GraphQLExceptionHandler;
 import com.CptFranck.SportsPeak.config.security.jwt.RefreshTokenCookieHandler;
 import com.CptFranck.SportsPeak.domain.exception.token.RefreshTokenExpiredException;
+import com.CptFranck.SportsPeak.domain.exception.token.TokenMissingException;
 import graphql.GraphQLError;
 import graphql.execution.*;
 import graphql.language.Field;
@@ -61,7 +62,7 @@ public class GraphQLExceptionHandlerTest {
     public void handleException_refreshTokenMissing_returnDataFetcherExceptionHandlerResult() {
         ExecutionStepInfo mockStepInfo = mock(ExecutionStepInfo.class);
         DataFetchingEnvironment mockEnv = mock(DataFetchingEnvironment.class);
-        RefreshTokenExpiredException exception = new RefreshTokenExpiredException("Token expired");
+        TokenMissingException exception = new TokenMissingException("Refresh token missing");
         DataFetcherExceptionHandlerParameters params = DataFetcherExceptionHandlerParameters.newExceptionParameters()
                 .dataFetchingEnvironment(mockEnv)
                 .exception(exception)
