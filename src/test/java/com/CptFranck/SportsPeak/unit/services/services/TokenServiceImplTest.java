@@ -66,10 +66,22 @@ public class TokenServiceImplTest {
     }
 
     @Test
-    void isTokenValidInStore_InValidToken_ReturnFalse() {
+    void isTokenValidInStore_InValidTokenExpired_ReturnFalse() {
         UserEntity user = createTestUser(1L);
         TokenEntity token = new TokenEntity("Token", TokenType.ACCESS, Instant.now(), user);
         token.setExpired(true);
+        when(sha256Hasher.hash(Mockito.any(String.class))).thenReturn("hashedToken");
+        when(tokenRepository.findByToken(Mockito.any(String.class))).thenReturn(Optional.of(token));
+
+        boolean isValidToken = tokenService.isTokenValidInStore("token");
+
+        assertFalse(isValidToken);
+    }
+
+    @Test
+    void isTokenValidInStore_InValidTokenRevoked_ReturnFalse() {
+        UserEntity user = createTestUser(1L);
+        TokenEntity token = new TokenEntity("Token", TokenType.ACCESS, Instant.now(), user);
         token.setRevoked(true);
         when(sha256Hasher.hash(Mockito.any(String.class))).thenReturn("hashedToken");
         when(tokenRepository.findByToken(Mockito.any(String.class))).thenReturn(Optional.of(token));
@@ -92,9 +104,8 @@ public class TokenServiceImplTest {
     }
 
     @Test
-    void revokeToken_NoTokenFound_ThrowTokenNotFoundException() {
+    void revokeToken_ValidToken_ThrowTokenNotFoundException() {
         UserEntity user = createTestUser(1L);
-        TokenEntity token = new TokenEntity("Token", TokenType.ACCESS, Instant.now(), user);
         when(sha256Hasher.hash(Mockito.any(String.class))).thenReturn("hashedToken");
         when(tokenRepository.findByToken(Mockito.any(String.class))).thenReturn(Optional.empty());
 
@@ -102,13 +113,13 @@ public class TokenServiceImplTest {
     }
 
     @Test
-    void revokeToken_ValidToken_Void() {
+    void revokeToken_Valid_ThrowTokenNotFoundException() {
         UserEntity user = createTestUser(1L);
         TokenEntity token = new TokenEntity("Token", TokenType.ACCESS, Instant.now(), user);
         when(sha256Hasher.hash(Mockito.any(String.class))).thenReturn("hashedToken");
         when(tokenRepository.findByToken(Mockito.any(String.class))).thenReturn(Optional.of(token));
 
-        assertAll(() -> tokenService.isTokenValidInStore("token"));
+        assertAll(() -> tokenService.revokeToken("token"));
     }
 
     @Test
@@ -118,5 +129,12 @@ public class TokenServiceImplTest {
         when(tokenRepository.findAllValidTokenByUser(Mockito.any(Long.class))).thenReturn(List.of(token));
 
         assertAll(() -> tokenService.revokeAllUserTokens(user));
+    }
+
+    @Test
+    void removeInvalidTokens_ValidUserTokens_Void() {
+        when(tokenRepository.deleteInvalidTokens()).thenReturn(2);
+
+        assertAll(() -> tokenService.removeInvalidTokens());
     }
 }
