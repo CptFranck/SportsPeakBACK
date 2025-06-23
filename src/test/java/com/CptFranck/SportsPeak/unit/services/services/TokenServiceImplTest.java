@@ -105,7 +105,6 @@ public class TokenServiceImplTest {
 
     @Test
     void revokeToken_ValidToken_ThrowTokenNotFoundException() {
-        UserEntity user = createTestUser(1L);
         when(sha256Hasher.hash(Mockito.any(String.class))).thenReturn("hashedToken");
         when(tokenRepository.findByToken(Mockito.any(String.class))).thenReturn(Optional.empty());
 
