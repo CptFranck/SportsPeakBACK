@@ -1,4 +1,4 @@
-package com.CptFranck.SportsPeak.integration.config.graphql;
+package com.CptFranck.SportsPeak.unit.config.graphql;
 
 import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
 import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
@@ -12,7 +12,6 @@ import graphql.schema.CoercingParseValueException;
 import graphql.schema.CoercingSerializeException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigInteger;
@@ -24,43 +23,40 @@ import java.util.Locale;
         LocalDateTimeScalar.class,
         DgsAutoConfiguration.class,
 })
-public class LocalDateTimeScalarIntTest {
+public class LocalDateTimeScalarTest {
 
-    @Autowired
-    private LocalDateTimeScalar localDateTimeScalar;
+    private final LocalDateTimeScalar localDateTimeScalar = new LocalDateTimeScalar();
 
-    private final GraphQLContext graphQLContext = GraphQLContext.getDefault();
+    private final GraphQLContext graphQLContext = GraphQLContext.newContext().build();
 
     private final Locale locale = Locale.getDefault();
 
     @Test
     public void serialize_InvalidInputType_ThrowCoercingSerializeException() {
-        String localDateTime = LocalDateTime.now().toString();
-
-        Assertions.assertThrows(CoercingSerializeException.class, () -> localDateTimeScalar.serialize(localDateTime, graphQLContext, locale));
+        Assertions.assertThrows(CoercingSerializeException.class,
+                () -> localDateTimeScalar.serialize("invalid", graphQLContext, locale));
     }
 
     @Test
     public void serialize_ValidInputType_Void() {
-        LocalDateTime localDateTime = LocalDateTime.now();
-        String expected = localDateTime.format(DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime now = LocalDateTime.now();
+        String expected = now.format(DateTimeFormatter.ISO_DATE_TIME);
 
-        String result = localDateTimeScalar.serialize(localDateTime, graphQLContext, locale);
+        String result = localDateTimeScalar.serialize(now, graphQLContext, locale);
 
         Assertions.assertEquals(expected, result);
     }
 
     @Test
     public void parseValue_InvalidEmptyStringInput_ThrowCoercingSerializeException() {
-        String input = "";
-
-        Assertions.assertThrows(CoercingParseValueException.class, () -> localDateTimeScalar.parseValue(input, graphQLContext, locale));
+        Assertions.assertThrows(CoercingParseValueException.class, () ->
+                localDateTimeScalar.parseValue("bad date", graphQLContext, locale));
     }
 
     @Test
     public void parseValue_ValidStringInput_Void() {
         LocalDateTime expected = LocalDateTime.now();
-        String input = expected.toString();
+        String input = expected.format(DateTimeFormatter.ISO_DATE_TIME);
 
         LocalDateTime result = localDateTimeScalar.parseValue(input, graphQLContext, locale);
 
@@ -84,7 +80,7 @@ public class LocalDateTimeScalarIntTest {
     }
 
     @Test
-    public void LocalDateTimeScalar_parseLiteral_Void() {
+    public void parseLiteral_Void() {
         LocalDateTime expected = LocalDateTime.now();
         StringValue input = new StringValue(expected.toString());
 
@@ -94,7 +90,7 @@ public class LocalDateTimeScalarIntTest {
     }
 
     @Test
-    public void LocalDateTimeScalar_valueToLiteral_Void() {
+    public void valueToLiteral_Void() {
         LocalDateTime localDateTime = LocalDateTime.now();
         String localDateTimeString = localDateTime.format(DateTimeFormatter.ISO_DATE_TIME);
         StringValue expected = new StringValue(localDateTimeString);
