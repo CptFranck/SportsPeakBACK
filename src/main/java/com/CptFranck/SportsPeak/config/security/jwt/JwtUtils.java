@@ -97,9 +97,9 @@ public class JwtUtils {
                 .parseSignedClaims(token)
                 .getPayload();
         } catch (ExpiredJwtException e) {
-            throw new RefreshTokenExpiredException("Token expiré");
+            throw new RefreshTokenExpiredException("Token has expired");
         } catch (JwtException e) {
-            throw new InvalidTokenException("Token invalide");
+            throw new InvalidTokenException("Invalid token");
         }
     }
 }
