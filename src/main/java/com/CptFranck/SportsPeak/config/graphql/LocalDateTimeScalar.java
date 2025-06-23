@@ -28,7 +28,7 @@ public class LocalDateTimeScalar implements Coercing<LocalDateTime, String> {
         if (dataFetcherResult instanceof LocalDateTime)
             return ((LocalDateTime) dataFetcherResult).format(DateTimeFormatter.ISO_DATE_TIME);
         else
-            throw new CoercingSerializeException("Not a valid DateTime");
+            throw new CoercingSerializeException("Not a valid LocalDateTime");
     }
 
     @Override
