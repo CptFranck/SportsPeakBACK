@@ -1,5 +1,6 @@
-package com.CptFranck.SportsPeak.config.graphql;
+package com.CptFranck.SportsPeak.integration.config.graphql;
 
+import com.CptFranck.SportsPeak.config.graphql.LocalDateTimeScalar;
 import com.netflix.graphql.dgs.autoconfig.DgsAutoConfiguration;
 import graphql.GraphQLContext;
 import graphql.execution.CoercedVariables;
