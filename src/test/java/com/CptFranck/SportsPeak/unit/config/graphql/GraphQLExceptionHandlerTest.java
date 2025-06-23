@@ -3,7 +3,6 @@ package com.CptFranck.SportsPeak.unit.config.graphql;
 import com.CptFranck.SportsPeak.config.graphql.GraphQLExceptionHandler;
 import com.CptFranck.SportsPeak.config.security.jwt.RefreshTokenCookieHandler;
 import com.CptFranck.SportsPeak.domain.exception.token.RefreshTokenExpiredException;
-import com.CptFranck.SportsPeak.domain.exception.token.TokenMissingException;
 import graphql.GraphQLError;
 import graphql.execution.*;
 import graphql.language.Field;
@@ -39,11 +38,12 @@ public class GraphQLExceptionHandlerTest {
 
     @Test
     public void handleException_refreshTokenExpired_returnDataFetcherExceptionHandlerResult() {
-        DataFetchingEnvironment mockEnv = mock(DataFetchingEnvironment.class);
         ExecutionStepInfo mockStepInfo = mock(ExecutionStepInfo.class);
+        DataFetchingEnvironment mockEnv = mock(DataFetchingEnvironment.class);
+        RefreshTokenExpiredException exception = new RefreshTokenExpiredException("Token expired");
         DataFetcherExceptionHandlerParameters params = DataFetcherExceptionHandlerParameters.newExceptionParameters()
                 .dataFetchingEnvironment(mockEnv)
-                .exception(new RefreshTokenExpiredException("Token expired"))
+                .exception(exception)
                 .build();
         when(mockEnv.getExecutionStepInfo()).thenReturn(mockStepInfo);
         when(mockStepInfo.getPath()).thenReturn(ResultPath.fromList(List.of("somePath")));
@@ -59,11 +59,12 @@ public class GraphQLExceptionHandlerTest {
 
     @Test
     public void handleException_refreshTokenMissing_returnDataFetcherExceptionHandlerResult() {
-        DataFetchingEnvironment mockEnv = mock(DataFetchingEnvironment.class);
         ExecutionStepInfo mockStepInfo = mock(ExecutionStepInfo.class);
+        DataFetchingEnvironment mockEnv = mock(DataFetchingEnvironment.class);
+        RefreshTokenExpiredException exception = new RefreshTokenExpiredException("Token expired");
         DataFetcherExceptionHandlerParameters params = DataFetcherExceptionHandlerParameters.newExceptionParameters()
                 .dataFetchingEnvironment(mockEnv)
-                .exception(new TokenMissingException("Refresh token missing"))
+                .exception(exception)
                 .build();
         when(mockEnv.getExecutionStepInfo()).thenReturn(mockStepInfo);
         when(mockStepInfo.getPath()).thenReturn(ResultPath.fromList(List.of("somePath")));
@@ -79,16 +80,17 @@ public class GraphQLExceptionHandlerTest {
 
     @Test
     void handleException_onOtherException_shouldDelegateToDefaultHandler() {
+        RuntimeException exception = new RuntimeException("Unexpected error");
         Field field = Field.newField().name("somePath").build();
         MergedField mergedField = MergedField.newMergedField(Collections.singletonList(field)).build();
         DataFetchingEnvironment mockEnv = mock(DataFetchingEnvironment.class);
         ExecutionStepInfo mockStepInfo = mock(ExecutionStepInfo.class);
         DataFetcherExceptionHandlerParameters params = DataFetcherExceptionHandlerParameters.newExceptionParameters()
-                .exception(new RuntimeException("Unexpected error"))
+                .exception(exception)
                 .dataFetchingEnvironment(mockEnv)
                 .build();
-        when(mockEnv.getExecutionStepInfo()).thenReturn(mockStepInfo);
         when(mockEnv.getMergedField()).thenReturn(mergedField);
+        when(mockEnv.getExecutionStepInfo()).thenReturn(mockStepInfo);
 
         DataFetcherExceptionHandlerResult result = graphQLExceptionHandler.handleException(params).join();
 
