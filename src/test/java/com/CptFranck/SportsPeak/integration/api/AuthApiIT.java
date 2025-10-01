@@ -6,6 +6,7 @@ import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
 import com.CptFranck.SportsPeak.repository.RoleRepository;
+import com.CptFranck.SportsPeak.repository.TokenRepository;
 import com.CptFranck.SportsPeak.repository.UserRepository;
 import com.CptFranck.SportsPeak.service.AuthService;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -48,6 +49,9 @@ public class AuthApiIT {
     private RoleRepository roleRepository;
 
     @Autowired
+    private TokenRepository tokenRepository;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
@@ -71,6 +75,7 @@ public class AuthApiIT {
 
     @AfterEach
     public void afterEach() {
+        tokenRepository.deleteAll();
         userRepository.deleteAll();
         roleRepository.deleteAll();
     }
@@ -109,7 +114,8 @@ public class AuthApiIT {
                 new InputCredentials(user.getEmail(), rawPassword),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
-        userRepository.delete(user);
+        tokenRepository.deleteAll();
+        userRepository.deleteAll();
 
         QueryException exception = Assertions.assertThrows(QueryException.class,
                 () -> dgsQueryExecutor.executeAndExtractJsonPath(loginQuery, "data.login", variables));
@@ -150,7 +156,7 @@ public class AuthApiIT {
                 createRegisterInput(user),
                 new TypeReference<LinkedHashMap<String, Object>>() {
                 }));
-
+        tokenRepository.deleteAll();
         userRepository.deleteAll();
         roleRepository.deleteAll();
 
