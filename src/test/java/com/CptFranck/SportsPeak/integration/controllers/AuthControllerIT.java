@@ -151,7 +151,7 @@ public class AuthControllerIT {
     private void assertAuthDto(AuthDto authDto, UserEntity userEntity, boolean beenRegistered) {
         Assertions.assertNotNull(authDto);
         Assertions.assertEquals("Bearer", authDto.getTokenType());
-        Assertions.assertTrue(jwtProvider.validateToken(authDto.getAccessToken()));
+        Assertions.assertDoesNotThrow(() -> jwtProvider.extractUsername(authDto.getAccessToken()));
 
         Assertions.assertEquals(userEntity.getEmail(), authDto.getUser().getEmail());
         Assertions.assertEquals(userEntity.getFirstName(), authDto.getUser().getFirstName());
