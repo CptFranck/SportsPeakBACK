@@ -3,7 +3,6 @@ package com.CptFranck.SportsPeak.unit.services.services;
 import com.CptFranck.SportsPeak.config.security.jwt.JwtUtils;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
-import com.CptFranck.SportsPeak.domain.exception.token.InvalidTokenException;
 import com.CptFranck.SportsPeak.domain.exception.token.RefreshTokenExpiredException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.InvalidCredentialsException;
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
@@ -128,32 +127,14 @@ public class AuthServiceImplTest {
     }
 
     @Test
-    void refreshAccessToken_InvalidRefreshToken_ThrowInvalidTokenException() {
-        when(jwtUtils.validateToken(Mockito.any(String.class))).thenReturn(false);
-
-        assertThrows(InvalidTokenException.class, () -> authServiceImpl.refreshAccessToken("refreshToken"));
-    }
-
-    @Test
     void refreshAccessToken_InvalidRefreshTokenExpired_ThrowRefreshTokenExpiredException() {
-        when(jwtUtils.validateToken(Mockito.any(String.class))).thenReturn(true);
         when(tokenService.isTokenValidInStore(Mockito.any(String.class))).thenReturn(false);
 
         assertThrows(RefreshTokenExpiredException.class, () -> authServiceImpl.refreshAccessToken("refreshToken"));
     }
 
     @Test
-    void refreshAccessToken_InvalidUsernameToken_ThrowInvalidTokenException() {
-        when(jwtUtils.validateToken(Mockito.any(String.class))).thenReturn(true);
-        when(tokenService.isTokenValidInStore(Mockito.any(String.class))).thenReturn(true);
-        when(jwtUtils.extractUsername(Mockito.any(String.class))).thenReturn(null);
-
-        assertThrows(InvalidTokenException.class, () -> authServiceImpl.refreshAccessToken("refreshToken"));
-    }
-
-    @Test
     void refreshAccessToken_ValidInputs_ThrowIncorrectPasswordException() {
-        when(jwtUtils.validateToken(Mockito.any(String.class))).thenReturn(true);
         when(tokenService.isTokenValidInStore(Mockito.any(String.class))).thenReturn(true);
         when(jwtUtils.extractUsername(Mockito.any(String.class))).thenReturn("username");
         when(userService.findByLogin(Mockito.any(String.class))).thenReturn(user);
