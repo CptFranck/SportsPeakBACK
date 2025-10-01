@@ -12,10 +12,7 @@ import com.CptFranck.SportsPeak.domain.exception.userAuth.EmailAlreadyUsedExcept
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UserNotFoundException;
 import com.CptFranck.SportsPeak.domain.exception.userAuth.UsernameExistsException;
 import com.CptFranck.SportsPeak.domain.input.user.*;
-import com.CptFranck.SportsPeak.repository.ExerciseRepository;
-import com.CptFranck.SportsPeak.repository.ProgExerciseRepository;
-import com.CptFranck.SportsPeak.repository.RoleRepository;
-import com.CptFranck.SportsPeak.repository.UserRepository;
+import com.CptFranck.SportsPeak.repository.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,10 +28,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
+import static com.CptFranck.SportsPeak.utils.ExerciseTestUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.assertProgExerciseDtoAndEntity;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
-import static com.CptFranck.SportsPeak.utils.ExerciseTestUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.UserTestUtils.*;
 
 @SpringBootTest()
@@ -52,6 +49,9 @@ class UserControllerIT {
 
     @Autowired
     private ProgExerciseRepository progExerciseRepository;
+
+    @Autowired
+    private TokenRepository tokenRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -80,6 +80,7 @@ class UserControllerIT {
         });
         progExerciseRepository.deleteAll();
         exerciseRepository.deleteAll();
+        tokenRepository.deleteAll();
         userRepository.deleteAll();
         roleRepository.deleteAll();
     }
