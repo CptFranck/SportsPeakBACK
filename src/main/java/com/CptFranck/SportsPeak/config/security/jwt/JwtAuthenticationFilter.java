@@ -1,8 +1,7 @@
 package com.CptFranck.SportsPeak.config.security.jwt;
 
-import com.CptFranck.SportsPeak.domain.exception.token.InvalidTokenException;
-import com.CptFranck.SportsPeak.domain.exception.token.RefreshTokenExpiredException;
 import com.CptFranck.SportsPeak.service.TokenService;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,7 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             final String jwt = bearerToken.substring(7);
 
-            if (jwtUtils.validateToken(jwt) && tokenService.isTokenValidInStore(jwt)) {
+            if (tokenService.isTokenValidInStore(jwt)) {
                 String username = jwtUtils.extractUsername(jwt);
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
@@ -65,9 +64,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
             filterChain.doFilter(request, response);
-        } catch (RefreshTokenExpiredException ex) {
-            jwtAuthenticationEntryPoint.commence(request, response, new InsufficientAuthenticationException("Token has expired"));
-        } catch (InvalidTokenException | IllegalArgumentException ex) {
+        } catch (JwtException | IllegalArgumentException ex) {
             jwtAuthenticationEntryPoint.commence(request, response, new InsufficientAuthenticationException("Invalid token"));
         }
     }

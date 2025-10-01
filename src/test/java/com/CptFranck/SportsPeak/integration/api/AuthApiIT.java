@@ -218,8 +218,7 @@ public class AuthApiIT {
         UserDto userDto = objectMapper.convertValue(response.get("user"), UserDto.class);
         String token = objectMapper.convertValue(response.get("accessToken"), String.class);
 
-        Assertions.assertTrue(jwtProvider.validateToken(token));
-
+        Assertions.assertDoesNotThrow(() -> jwtProvider.extractUsername(token));
         Assertions.assertEquals(userEntity.getEmail(), userDto.getEmail());
         Assertions.assertEquals(userEntity.getFirstName(), userDto.getFirstName());
         Assertions.assertEquals(userEntity.getLastName(), userDto.getLastName());
