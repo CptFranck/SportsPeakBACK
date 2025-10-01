@@ -127,7 +127,6 @@ public class AuthControllerTest {
     public void logout_ValidRegisterInput_ReturnsAuthDto() {
         DataFetchingEnvironment env = Mockito.mock(DataFetchingEnvironment.class);
         GraphQLContext context = Mockito.mock(GraphQLContext.class);
-        UserTokens usertokens = new UserTokens(user, "accessToken", "refreshToken");
         when(env.getGraphQlContext()).thenReturn(context);
         when(context.get("accessToken")).thenReturn("accessToken");
         when(context.get("refreshToken")).thenReturn("refreshToken");
