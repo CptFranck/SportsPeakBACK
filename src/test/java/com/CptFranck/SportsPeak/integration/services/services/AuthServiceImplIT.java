@@ -172,6 +172,46 @@ public class AuthServiceImplIT {
         Assertions.assertTrue(passwordEncoder.matches(userToRegister.getPassword(), user.getPassword()));
     }
 
+//    @Test
+//    void refreshAccessToken_InvalidRefreshToken_ThrowInvalidTokenException() {
+//        when(jwtUtils.validateToken(Mockito.any(String.class))).thenReturn(false);
+//
+//        assertThrows(InvalidTokenException.class, () -> authServiceImpl.refreshAccessToken("refreshToken"));
+//    }
+//
+//    @Test
+//    void refreshAccessToken_InvalidRefreshTokenExpired_ThrowRefreshTokenExpiredException() {
+//        when(jwtUtils.validateToken(Mockito.any(String.class))).thenReturn(true);
+//        when(tokenService.isTokenValidInStore(Mockito.any(String.class))).thenReturn(false);
+//
+//        assertThrows(RefreshTokenExpiredException.class, () -> authServiceImpl.refreshAccessToken("refreshToken"));
+//    }
+//
+//    @Test
+//    void refreshAccessToken_InvalidUsernameToken_ThrowInvalidTokenException() {
+//        when(jwtUtils.validateToken(Mockito.any(String.class))).thenReturn(true);
+//        when(tokenService.isTokenValidInStore(Mockito.any(String.class))).thenReturn(true);
+//        when(jwtUtils.extractUsername(Mockito.any(String.class))).thenReturn(null);
+//
+//        assertThrows(InvalidTokenException.class, () -> authServiceImpl.refreshAccessToken("refreshToken"));
+//    }
+//
+//    @Test
+//    void refreshAccessToken_ValidInputs_ThrowIncorrectPasswordException() {
+//        when(jwtUtils.validateToken(Mockito.any(String.class))).thenReturn(true);
+//        when(tokenService.isTokenValidInStore(Mockito.any(String.class))).thenReturn(true);
+//        when(jwtUtils.extractUsername(Mockito.any(String.class))).thenReturn("username");
+//        when(userService.findByLogin(Mockito.any(String.class))).thenReturn(user);
+//        when(userDetailsService.loadUserByUsername(Mockito.any(String.class))).thenReturn(userDetails);
+//        when(jwtUtils.generateAccessToken(Mockito.any(UserDetails.class))).thenReturn(accessToken);
+//        when(jwtUtils.generateRefreshToken(Mockito.any(UserDetails.class))).thenReturn(refreshToken);
+//        when(jwtUtils.extractExpiration(Mockito.any(String.class))).thenReturn(Date.from(Instant.now()));
+//
+//        UserTokens returnedUser = authServiceImpl.refreshAccessToken("refreshToken");
+//
+//        assertUserTokens(userTokens, returnedUser);
+//    }
+
     @Test
     void updateEmail_InvalidUserId_ThrowUserNotFoundException() {
         InputUserEmail inputUserEmail = createTestInputUserEmail(user.getId(), rawPassword);
