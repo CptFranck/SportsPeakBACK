@@ -11,6 +11,7 @@ import com.CptFranck.SportsPeak.domain.exception.userAuth.UsernameExistsExceptio
 import com.CptFranck.SportsPeak.domain.input.credentials.InputCredentials;
 import com.CptFranck.SportsPeak.domain.input.credentials.RegisterInput;
 import com.CptFranck.SportsPeak.repository.RoleRepository;
+import com.CptFranck.SportsPeak.repository.TokenRepository;
 import com.CptFranck.SportsPeak.repository.UserRepository;
 import com.CptFranck.SportsPeak.service.AuthService;
 import org.junit.jupiter.api.AfterEach;
@@ -44,6 +45,9 @@ public class AuthControllerIT {
     private RoleRepository roleRepository;
 
     @Autowired
+    private TokenRepository tokenRepository;
+
+    @Autowired
     private AuthService authService;
 
     @Autowired
@@ -62,6 +66,7 @@ public class AuthControllerIT {
 
     @AfterEach
     public void afterEach() {
+        tokenRepository.deleteAll();
         userRepository.deleteAll();
         roleRepository.deleteAll();
     }
@@ -83,7 +88,8 @@ public class AuthControllerIT {
     @Test
     public void login_UserDeleted_ThrowInvalidCredentialsException() {
         InputCredentials inputCredentials = new InputCredentials(user.getEmail(), rawPassword);
-        userRepository.delete(user);
+        tokenRepository.deleteAll();
+        userRepository.deleteAll();
 
         Assertions.assertThrows(InvalidCredentialsException.class, () -> authController.login(inputCredentials));
     }
@@ -109,6 +115,7 @@ public class AuthControllerIT {
     @Test
     public void register_MissingUserRoleInDB_ThrowRoleNotFoundException() {
         RegisterInput registerInput = createRegisterInput(user);
+        tokenRepository.deleteAll();
         userRepository.deleteAll();
         roleRepository.deleteAll();
 
