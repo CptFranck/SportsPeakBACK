@@ -7,10 +7,7 @@ import com.CptFranck.SportsPeak.domain.entity.ProgExerciseEntity;
 import com.CptFranck.SportsPeak.domain.entity.RoleEntity;
 import com.CptFranck.SportsPeak.domain.entity.UserEntity;
 import com.CptFranck.SportsPeak.domain.input.user.*;
-import com.CptFranck.SportsPeak.repository.ExerciseRepository;
-import com.CptFranck.SportsPeak.repository.ProgExerciseRepository;
-import com.CptFranck.SportsPeak.repository.RoleRepository;
-import com.CptFranck.SportsPeak.repository.UserRepository;
+import com.CptFranck.SportsPeak.repository.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.graphql.dgs.DgsQueryExecutor;
@@ -32,10 +29,10 @@ import java.util.Objects;
 
 import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.ProgExerciseQuery.getUserProgExercisesQuery;
 import static com.CptFranck.SportsPeak.integration.api.graphqlQueries.UserQuery.*;
+import static com.CptFranck.SportsPeak.utils.ExerciseTestUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.assertProgExerciseDtoAndEntity;
 import static com.CptFranck.SportsPeak.utils.ProgExerciseTestUtils.createTestProgExercise;
 import static com.CptFranck.SportsPeak.utils.RoleTestUtils.createTestRole;
-import static com.CptFranck.SportsPeak.utils.ExerciseTestUtils.createTestExercise;
 import static com.CptFranck.SportsPeak.utils.UserTestUtils.*;
 
 @SpringBootTest()
@@ -56,6 +53,9 @@ class UserApiIT {
 
     @Autowired
     private ProgExerciseRepository progExerciseRepository;
+
+    @Autowired
+    private TokenRepository tokenRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -86,6 +86,7 @@ class UserApiIT {
         });
         progExerciseRepository.deleteAll();
         exerciseRepository.deleteAll();
+        tokenRepository.deleteAll();
         userRepository.deleteAll();
         roleRepository.deleteAll();
     }
