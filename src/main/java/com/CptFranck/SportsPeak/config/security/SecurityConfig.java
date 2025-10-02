@@ -1,5 +1,6 @@
 package com.CptFranck.SportsPeak.config.security;
 
+import com.CptFranck.SportsPeak.config.security.jwt.JwtAccessDeniedHandler;
 import com.CptFranck.SportsPeak.config.security.jwt.JwtAuthenticationEntryPoint;
 import com.CptFranck.SportsPeak.config.security.jwt.JwtAuthenticationFilter;
 import com.CptFranck.SportsPeak.config.security.jwt.JwtUtils;
@@ -32,13 +33,17 @@ public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
 
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    public SecurityConfig(JwtUtils jwtUtils, CorsConfig corsConfig, TokenService tokenService, UserDetailsService userDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+
+    public SecurityConfig(JwtUtils jwtUtils, CorsConfig corsConfig, TokenService tokenService, UserDetailsService userDetailsService, JwtAccessDeniedHandler jwtAccessDeniedHandler, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
         this.jwtUtils = jwtUtils;
         this.corsConfig = corsConfig;
         this.tokenService = tokenService;
         this.userDetailsService = userDetailsService;
+        this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     }
 
@@ -58,7 +63,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfig.corsConfigurationSource()))
                 .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+                .exceptionHandling(exception -> {
+                    exception.authenticationEntryPoint(jwtAuthenticationEntryPoint);
+                    exception.accessDeniedHandler(jwtAccessDeniedHandler);
+                })
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .redirectToHttps(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
